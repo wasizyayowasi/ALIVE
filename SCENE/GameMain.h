@@ -2,6 +2,7 @@
 #include "SceneBase.h"
 #include "DxLib.h"
 #include <memory>
+#include <vector>
 
 class Player;
 class Camera;
@@ -28,6 +29,8 @@ private:
 
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Camera> camera_;
+
+	std::vector<Player> player;
 
 	void (GameMain::* updateFunc_)(const InputState& input);
 

@@ -13,6 +13,8 @@ enum class InputType
 	down,			///下
 	left,			///左
 	right,			///右
+	space,			///space
+	death,			//死亡入力
 	max,			///最大入力インデックス
 };
 
