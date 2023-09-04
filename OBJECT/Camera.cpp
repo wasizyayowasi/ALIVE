@@ -1,6 +1,10 @@
 #include "Camera.h"
 #include <algorithm>
 
+namespace {
+	constexpr float horizonta_size_of_one_room = 1000.0f;
+}
+
 Camera::Camera()
 {
 	/////////////// 3DŠÖ˜A‚ÌÝ’è /////////////
@@ -36,14 +40,40 @@ void Camera::trackingCameraUpdate(VECTOR playerPos)
 void Camera::fixedPointCamera(VECTOR playerPos)
 {
 	//ˆê’è”ÍˆÍ‚ðo‚½‚çƒJƒƒ‰‚ªŽŸ‚ÌêŠ‚Öƒkƒ‹‚Á‚Æ“®‚­
-	if (playerPos.x >= 500) {
-		fixedPointCameraDestinationPosX = 1000;
+
+	int playerRoomNum = (playerPos.x + horizonta_size_of_one_room / 2 ) / (horizonta_size_of_one_room) ;
+	int cameraRoomNum = fixedPointCameraDestinationPosX / (horizonta_size_of_one_room);
+	if (playerRoomNum != cameraRoomNum) {
+		fixedPointCameraDestinationPosX = horizonta_size_of_one_room * playerRoomNum;
+	}
+
+	float sub = fixedPointCameraDestinationPosX - cameraPos_.x;
+	if (cameraPos_.x != fixedPointCameraDestinationPosX) {
+		if (sub > 0.0f) {
+			cameraPos_.x = (std::min)(cameraPos_.x + 20.0f, fixedPointCameraDestinationPosX);
+		}
+		else {
+			cameraPos_.x = (std::max)(cameraPos_.x - 20.0f, fixedPointCameraDestinationPosX);
+		}
+	}
+
+	DrawFormatString(0, 16, 0xffffff, "player:%d,camera%d", playerRoomNum, cameraRoomNum);
+	DrawFormatString(0, 32, 0xffffff, "player:%.2f", playerPos.x);
+	DrawFormatString(0, 48, 0xffffff, "fiexd%.2f", fixedPointCameraDestinationPosX);
+	DrawFormatString(0, 64, 0xffffff, "sub%.2f", sub);
+
+	/*if (playerPos.x <= -500) {
+		fixedPointCameraDestinationPosX = -horizonta_size_of_one_room;
+		cameraPos_.x = (std::max)(cameraPos_.x - 20.0f, fixedPointCameraDestinationPosX);
+	}
+	else if (playerPos.x >= 500) {
+		fixedPointCameraDestinationPosX = horizonta_size_of_one_room;
 		cameraPos_.x = (std::min)(cameraPos_.x + 20.0f, fixedPointCameraDestinationPosX);
 	}
 	else {
 		fixedPointCameraDestinationPosX = 0;
 		cameraPos_.x = (std::max)(cameraPos_.x - 20.0f, fixedPointCameraDestinationPosX);
-	}
+	}*/
 
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, playerPos);
 }
