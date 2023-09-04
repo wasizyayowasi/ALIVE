@@ -1,13 +1,18 @@
 #include "Player.h"
-#include "../UTIL/InputState.h"
+#include "../util/InputState.h"
+#include "../util/model.h"
 
 namespace {
 	constexpr float jump_power = 30.0f;
 	constexpr float gravity = -1.0f;
+	const char* const filename = "data/model/run.mv1";
 }
 
 Player::Player()
 {
+	player_ = std::make_shared<Model>(filename);
+	player_->setScale({ 32,32,32 });
+	player_->setAnimation(0, true, false);
 }
 
 Player::~Player()
@@ -83,10 +88,17 @@ void Player::update(const InputState& input)
 			}
 		}
 	}
+
+	player_->update();
+	player_->setPos(playerPos_);
+
 }
 
 void Player::draw()
 {
+
+	player_->draw();
+
 	DrawSphere3D(playerPos_, 16, 32, 0x0000ff, 0x0000ff, true);
 
 	for (const auto person : deadPlayer_) {
