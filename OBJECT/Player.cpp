@@ -18,18 +18,21 @@ void Player::update(const InputState& input)
 {
 	//移動
 	{
-		if (input.isPressed(InputType::up)) {
-			playerPos_.z += movingSpeed_;
+		if (!tempBool) {
+			if (input.isPressed(InputType::up)) {
+				playerPos_.z += movingSpeed_;
+			}
+			if (input.isPressed(InputType::down)) {
+				playerPos_.z -= movingSpeed_;
+			}
+			if (input.isPressed(InputType::left)) {
+				playerPos_.x -= movingSpeed_;
+			}
+			if (input.isPressed(InputType::right)) {
+				playerPos_.x += movingSpeed_;
+			}
 		}
-		if (input.isPressed(InputType::down)) {
-			playerPos_.z -= movingSpeed_;
-		}
-		if (input.isPressed(InputType::left)) {
-			playerPos_.x -= movingSpeed_;
-		}
-		if (input.isPressed(InputType::right)) {
-			playerPos_.x += movingSpeed_;
-		}
+		
 
 		//デバッグ用
 		/*{
@@ -80,7 +83,6 @@ void Player::update(const InputState& input)
 			}
 		}
 	}
-
 }
 
 void Player::draw()

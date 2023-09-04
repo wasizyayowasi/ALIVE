@@ -29,6 +29,7 @@ private:
 	float jumpVec_ = 0.0f;					//ジャンプベクトル
 
 	bool jumpFlag_ = false;					//ジャンプしているかどうかのフラグ
+	bool tempBool = false;
 
 	VECTOR playerPos_ = { 0,16,0 };			//プレイヤーのポジション
 
