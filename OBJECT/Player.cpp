@@ -1,13 +1,18 @@
 #include "Player.h"
 #include "../UTIL/InputState.h"
+#include "../UTIL/Model.h"
 
 namespace {
 	constexpr float jump_power = 30.0f;
 	constexpr float gravity = -1.0f;
+	const char* const filename = "DATA/player/idle.mv1";
 }
 
 Player::Player()
 {
+	player_ = std::make_shared<Model>(filename);
+	player_->setAnimation(0, true, false);
+	player_->setScale({ 32,32,32 });
 }
 
 Player::~Player()
@@ -16,6 +21,9 @@ Player::~Player()
 
 void Player::update(const InputState& input)
 {
+
+	player_->update();
+
 	//ˆÚ“®
 	{
 		if (!tempBool) {
@@ -45,6 +53,8 @@ void Player::update(const InputState& input)
 		}*/
 	}
 	
+	player_->setPos(playerPos_);
+
 	//ƒWƒƒƒ“ƒvˆ—
 	{
 		if (!jumpFlag_) {
@@ -87,6 +97,8 @@ void Player::update(const InputState& input)
 
 void Player::draw()
 {
+	player_->draw();
+
 	DrawSphere3D(playerPos_, 16, 32, 0x0000ff, 0x0000ff, true);
 
 	for (const auto person : deadPlayer_) {

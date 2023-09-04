@@ -20,6 +20,7 @@ public:
 
 	void setPos(VECTOR pos);
 	void setRot(VECTOR rot);
+	void setScale(VECTOR scale);
 
 	void setAnimation(int animNo,bool isLoop,bool IsForceChange);
 

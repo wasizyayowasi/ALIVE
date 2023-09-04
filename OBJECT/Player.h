@@ -1,8 +1,10 @@
 #pragma once
 #include "DxLib.h"
 #include <vector>
+#include <memory>
 
 class InputState;
+class Model;
 
 struct DeadPlayer {
 	bool isEnable;
@@ -34,6 +36,7 @@ private:
 	VECTOR playerPos_ = { 0,16,0 };			//プレイヤーのポジション
 
 	std::vector<DeadPlayer> deadPlayer_;	//死体を保存するため
+	std::shared_ptr<Model> player_;
 
 };
 
