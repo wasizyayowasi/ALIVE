@@ -141,41 +141,41 @@
   <ItemGroup>
     <ClCompile Include="staging\Broom.cpp" />
     <ClCompile Include="staging\DepthOfField.cpp" />
-    <ClCompile Include="OBJECT\Camera.cpp" />
+    <ClCompile Include="object\Camera.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="OBJECT\Player.cpp" />
-    <ClCompile Include="SCENE\GameEnd.cpp" />
-    <ClCompile Include="SCENE\GameMain.cpp" />
-    <ClCompile Include="SCENE\SceneBase.cpp" />
-    <ClCompile Include="SCENE\SceneManager.cpp" />
-    <ClCompile Include="SCENE\SceneTitle.cpp" />
-    <ClCompile Include="UTIL\InputState.cpp" />
-    <ClCompile Include="UTIL\Model.cpp" />
-    <ClCompile Include="UTIL\Vec2.cpp" />
+    <ClCompile Include="object\Player.cpp" />
+    <ClCompile Include="scene\GameEnd.cpp" />
+    <ClCompile Include="scene\GameMain.cpp" />
+    <ClCompile Include="scene\SceneBase.cpp" />
+    <ClCompile Include="scene\SceneManager.cpp" />
+    <ClCompile Include="scene\SceneTitle.cpp" />
+    <ClCompile Include="util\InputState.cpp" />
+    <ClCompile Include="util\Model.cpp" />
+    <ClCompile Include="util\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="staging\Broom.h" />
     <ClInclude Include="staging\DepthOfField.h" />
-    <ClInclude Include="OBJECT\Camera.h" />
-    <ClInclude Include="OBJECT\Player.h" />
-    <ClInclude Include="SCENE\GameEnd.h" />
-    <ClInclude Include="SCENE\GameMain.h" />
-    <ClInclude Include="SCENE\SceneBase.h" />
-    <ClInclude Include="SCENE\SceneManager.h" />
-    <ClInclude Include="SCENE\SceneTitle.h" />
-    <ClInclude Include="UTIL\game.h" />
-    <ClInclude Include="UTIL\InputState.h" />
-    <ClInclude Include="UTIL\Model.h" />
-    <ClInclude Include="UTIL\Vec2.h" />
+    <ClInclude Include="object\Camera.h" />
+    <ClInclude Include="object\Player.h" />
+    <ClInclude Include="scene\GameEnd.h" />
+    <ClInclude Include="scene\GameMain.h" />
+    <ClInclude Include="scene\SceneBase.h" />
+    <ClInclude Include="scene\SceneManager.h" />
+    <ClInclude Include="scene\SceneTitle.h" />
+    <ClInclude Include="util\game.h" />
+    <ClInclude Include="util\InputState.h" />
+    <ClInclude Include="util\Model.h" />
+    <ClInclude Include="util\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="DATA\shader\DepthOfField.hlsl">
+    <FxCompile Include="data\shader\DepthOfField.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="DATA\shader\PixelShader.hlsl">
+    <FxCompile Include="data\shader\PixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
