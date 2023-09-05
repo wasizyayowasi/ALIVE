@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="staging\Broom.cpp" />
+    <ClCompile Include="staging\DepthOfField.cpp" />
     <ClCompile Include="OBJECT\Camera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OBJECT\Player.cpp" />
@@ -152,6 +154,8 @@
     <ClCompile Include="UTIL\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="staging\Broom.h" />
+    <ClInclude Include="staging\DepthOfField.h" />
     <ClInclude Include="OBJECT\Camera.h" />
     <ClInclude Include="OBJECT\Player.h" />
     <ClInclude Include="SCENE\GameEnd.h" />
@@ -163,6 +167,20 @@
     <ClInclude Include="UTIL\InputState.h" />
     <ClInclude Include="UTIL\Model.h" />
     <ClInclude Include="UTIL\Vec2.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="DATA\shader\DepthOfField.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="DATA\shader\PixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

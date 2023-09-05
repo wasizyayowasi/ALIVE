@@ -31,6 +31,12 @@
     <Filter Include="ヘッダー ファイル\object">
       <UniqueIdentifier>{a8ee3eca-8b49-444c-b1b4-ad298a3e53cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\stanging">
+      <UniqueIdentifier>{727da84c-dbe4-4f60-9aa2-bf337bc88dea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\stanging">
+      <UniqueIdentifier>{0b3a7111-eecb-4f5e-92d6-cd0670344fbf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -65,6 +71,12 @@
     </ClCompile>
     <ClCompile Include="OBJECT\Camera.cpp">
       <Filter>ソース ファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="staging\DepthOfField.cpp">
+      <Filter>ソース ファイル\stanging</Filter>
+    </ClCompile>
+    <ClCompile Include="staging\Broom.cpp">
+      <Filter>ソース ファイル\stanging</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,5 +113,19 @@
     <ClInclude Include="OBJECT\Camera.h">
       <Filter>ヘッダー ファイル\object</Filter>
     </ClInclude>
+    <ClInclude Include="staging\Broom.h">
+      <Filter>ヘッダー ファイル\stanging</Filter>
+    </ClInclude>
+    <ClInclude Include="staging\DepthOfField.h">
+      <Filter>ヘッダー ファイル\stanging</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="DATA\shader\DepthOfField.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="DATA\shader\PixelShader.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

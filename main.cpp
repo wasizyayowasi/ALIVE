@@ -4,6 +4,7 @@
 #include "Scene/SceneTitle.h"
 #include "Scene/GameMain.h"
 #include "util/InputState.h"
+#include "staging/Broom.h"
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -17,23 +18,34 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//画面サイズの設定
 	SetGraphMode(Game::kScreenWidth,Game::kScreenHeight, Game::kScreenDepth);
 
+	//Direct3D9Exを使用する
+	SetUseDirect3DVersion(DX_DIRECT3D_9EX);
 
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
 	{
 		return -1;			// エラーが起きたら直ちに終了
 	}
 
+	// シェーダーモデル２．０が使用できるかどうかをチェック
+	if (GetValidShaderVersion() < 200)
+	{
+		DrawString(0, 0, "シェーダーモデル２．０が使用できません", GetColor(255, 255, 255));
+		DxLib_End();
+		return 0;
+	}
 
 	//ダブルバッファモード
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	InputState input;
 	SceneManager manager;
+	Broom broom;
 	manager.changeScene(new GameMain(manager));
 
 	while (ProcessMessage() == 0) {
 
 		LONGLONG time = GetNowHiPerformanceCount();
+
 		//画面のクリア
 		ClearDrawScreen();
 

@@ -5,13 +5,21 @@
 #include "../OBJECT/Player.h"
 #include "../OBJECT/Camera.h"
 
+#include "../staging/Broom.h"
+#include "../staging/DepthOfField.h"
+
 #include "../util/game.h"
 #include "../util/InputState.h"
 
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::fadeInUpdate)
 {
 	player_ = std::make_shared<Player>();
-	camera_ = std::make_shared<Camera>();
+	//camera_ = std::make_shared<Camera>();
+	broom_ = std::make_shared<Broom>();
+	depthOfField_ = std::make_shared<DepthOfField>();
+
+	SetUseLighting(false);
+
 }
 
 GameMain::~GameMain()
@@ -25,10 +33,10 @@ void GameMain::update(const InputState& input)
 
 void GameMain::draw()
 {
+	broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
 
 	int color;
-
 	{//グリッド線表示　※消去予定
 		for (float x = -500.0f; x <= 500.0f; x += 100.0f)
 		{
@@ -88,7 +96,11 @@ void GameMain::draw()
 		}
 	}
 	
+	DrawSphere3D(VAdd(player_->getPos(), { 40,0,0 }), 16, 32, 0xffffff,0xffffff, true);
+
 	player_->draw();
+	broom_->graphFilterUpdate();
+	broom_->draw();
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	//画面全体を真っ黒に塗りつぶす
@@ -109,9 +121,8 @@ void GameMain::normalUpdate(const InputState& input)
 {
 
 	player_->update(input);
-	camera_->fixedPointCamera(player_->getPos());
+	//camera_->fixedPointCamera(player_->getPos());
 
-	
 }
 
 void GameMain::fadeOutUpdate(const InputState& input)
