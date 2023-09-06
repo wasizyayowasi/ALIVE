@@ -97,28 +97,42 @@ void Player::moving(const InputState& input)
 			playerPos_.z += movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
-			model_->setRot({ 0.0f,180.0f * DX_PI_F / 180.0f,0.0f });
+			targetAngle_ = 180.0f;
 		}
 		if (input.isPressed(InputType::down)) {
 			playerPos_.z -= movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
-			model_->setRot({ 0.0f,0.0f,0.0f });
+			targetAngle_ = 0.0f;
 		}
 		if (input.isPressed(InputType::left)) {
 			playerPos_.x -= movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
-			model_->setRot({ 0.0f,90.0f * DX_PI_F / 180.0f,0.0f });
+			targetAngle_ = 90.0f;
 		}
 		if (input.isPressed(InputType::right)) {
 			playerPos_.x += movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
-			model_->setRot({ 0.0f,270.0f * DX_PI_F / 180.0f,0.0f });
+			if (targetAngle_ == 0.0f || targetAngle_ == -90.0f) {
+				targetAngle_ = -90.0f;
+			}
+			else {
+				targetAngle_ = 270.0f;
+			}
+			
 		}
 
+		angle_ = targetAngle_ - rot_.y;
+		if (angle_ > 0.0f) {
+			rot_.y += 30.0f;
+		}
+		else if(angle_ < 0.0f) {
+			rot_.y -= 30.0f;
+		}
 
+		model_->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
 
 		//デバッグ用
 		/*{
