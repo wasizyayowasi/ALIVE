@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "../UTIL/InputState.h"
 #include "../UTIL/Model.h"
+#include<algorithm>
 
 namespace {
 	//アニメーション
@@ -33,6 +34,7 @@ Player::~Player()
 void Player::update(const InputState& input)
 {
 	bool isMoving = false;			//移動中か
+	
 
 	model_->update();
 
@@ -40,31 +42,44 @@ void Player::update(const InputState& input)
 	{
 		if (!tempBool) {
 			if (input.isPressed(InputType::up)) {
-				playerPos_.z += movingSpeed_;
+				pos_.z += movingSpeed_;
 				animNo_ = anim_run_no;
 				isMoving = true;
-				model_->setRot({ 0.0f,180.0f * DX_PI_F / 180.0f,0.0f });
+				tempRot = 180.0f;
 			}
 			if (input.isPressed(InputType::down)) {
-				playerPos_.z -= movingSpeed_;
+				pos_.z -= movingSpeed_;
 				animNo_ = anim_run_no;
 				isMoving = true;
-				model_->setRot({ 0.0f,0.0f,0.0f });
+				tempRot = 0.0f;
 			}
 			if (input.isPressed(InputType::left)) {
-				playerPos_.x -= movingSpeed_;
+				pos_.x -= movingSpeed_;
 				animNo_ = anim_run_no;
 				isMoving = true;
-				model_->setRot({ 0.0f,90.0f * DX_PI_F / 180.0f,0.0f });
+				tempRot = 90.0f;
 			}
 			if (input.isPressed(InputType::right)) {
-				playerPos_.x += movingSpeed_;
+				pos_.x += movingSpeed_;
 				animNo_ = anim_run_no;
 				isMoving = true;
-				model_->setRot({ 0.0f,270.0f * DX_PI_F / 180.0f,0.0f });
+				tempRot = 270.0f;
 			}
 		}
-		
+
+		temp = tempRot - rot_.y / DX_PI_F * 180.0f;
+		if (temp < 0.0f) {
+			//temp += 10.0f;
+			rot_.y = rot_.y + 10.0f * DX_PI_F / 180.0f;
+		}
+		else if(temp > 0.0f){
+			//temp -= 10.0f;
+			rot_.y = rot_.y - 10.0f * DX_PI_F / 180.0f;
+		}
+		//rot_.y = temp * DX_PI_F / 180.0f;
+
+		model_->setRot(rot_);
+
 		model_->changeAnimation(animNo_, true, false, 20);
 
 		//デバッグ用
@@ -78,7 +93,7 @@ void Player::update(const InputState& input)
 		}*/
 	}
 	
-	model_->setPos(playerPos_);
+	model_->setPos(pos_);
 
 	//ジャンプ処理
 	{
@@ -91,8 +106,8 @@ void Player::update(const InputState& input)
 
 		if (jumpFlag_) {
 			jumpVec_ += gravity;
-			playerPos_.y += jumpVec_;
-			if (playerPos_.y <= 16.0f) {
+			pos_.y += jumpVec_;
+			if (pos_.y <= 16.0f) {
 				jumpFlag_ = false;
 			}
 		}
@@ -103,7 +118,7 @@ void Player::update(const InputState& input)
 		if (input.isPressed(InputType::death)) {
 			DeadPlayer deadPerson;
 			deadPerson.isEnable = true;
-			deadPerson.deathPos = playerPos_;
+			deadPerson.deathPos = pos_;
 			deadPlayer_.push_back(deadPerson);
 
 			deathNum = 0;
@@ -133,7 +148,9 @@ void Player::draw()
 {
 	model_->draw();
 
-	DrawSphere3D(playerPos_, 16, 32, 0x0000ff, 0x0000ff, true);
+	DrawFormatString(0, 16, 0x0000ff, "temp:%f,rot:%f,player:%f", temp, tempRot, rot_.y);
+
+	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
 
 	for (const auto person : deadPlayer_) {
 		if (person.isEnable) {

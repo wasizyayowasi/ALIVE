@@ -21,7 +21,7 @@ public:
 	void update(const InputState& input);
 	void draw();
 
-	VECTOR getPos() { return playerPos_; }
+	VECTOR getPos() { return pos_; }
 
 private:
 
@@ -30,11 +30,14 @@ private:
 
 	float movingSpeed_ = 5.0f;				//移動速度
 	float jumpVec_ = 0.0f;					//ジャンプベクトル
+	float tempRot = 0.0f;					//回転
+	float temp = 0.0f;
 
 	bool jumpFlag_ = false;					//ジャンプしているかどうかのフラグ
 	bool tempBool = false;
 
-	VECTOR playerPos_ = { 0,16,0 };			//プレイヤーのポジション
+	VECTOR pos_ = { 0,16,0 };			//プレイヤーのポジション
+	VECTOR rot_ = { 0.0f,0.0f,0.0f };	//プレイヤーの回転
 
 	std::vector<DeadPlayer> deadPlayer_;	//死体を保存するため
 	std::shared_ptr<Model> model_;
