@@ -13,10 +13,10 @@ Broom::Broom()
 	reductionScreenWidth_ = Game::kScreenWidth / reductionScale_;
 	reductionScreenHeight_ = Game::kScreenHeight / reductionScale_;
 
-	normalScreen_ = MakeScreen(Game::kScreenWidth,Game::kScreenHeight,false);
-	highBrightScreen_ = MakeScreen(Game::kScreenWidth, Game::kScreenHeight, false);
-	reductioScaleScreen_ = MakeScreen(reductionScreenWidth_,reductionScreenHeight_,false);
-	gaussScreen_ = MakeScreen(reductionScreenWidth_, reductionScreenHeight_, false);
+	normalScreen_ = MakeScreen(Game::kScreenWidth,Game::kScreenHeight,true);
+	highBrightScreen_ = MakeScreen(Game::kScreenWidth, Game::kScreenHeight, true);
+	reductioScaleScreen_ = MakeScreen(reductionScreenWidth_,reductionScreenHeight_, true);
+	gaussScreen_ = MakeScreen(reductionScreenWidth_, reductionScreenHeight_, true);
 	
 }
 

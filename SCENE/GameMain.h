@@ -8,6 +8,7 @@ class Player;
 //class Camera;
 class Broom;
 class DepthOfField;
+class Model;
 
 class GameMain : public SceneBase
 {
@@ -35,6 +36,7 @@ private:
 	std::shared_ptr<DepthOfField> depthOfField_;
 
 	std::vector<Player> player;
+	std::shared_ptr<Model> temp_;
 
 	void (GameMain::* updateFunc_)(const InputState& input);
 
