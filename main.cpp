@@ -39,7 +39,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	InputState input;
 	SceneManager manager;
-	Broom broom;
 	manager.changeScene(new GameMain(manager));
 
 	while (ProcessMessage() == 0) {

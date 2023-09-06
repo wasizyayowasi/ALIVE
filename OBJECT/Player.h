@@ -24,6 +24,12 @@ public:
 	VECTOR getPos() { return pos_; }
 
 private:
+	//移動処理
+	void moving(const InputState& input);
+	//ジャンプ処理
+	void jump(const InputState& input);
+
+private:
 
 	int animNo_ = 0;						//現在のアニメーション番号
 	int deathNum = 0;						//死亡回数
@@ -34,13 +40,12 @@ private:
 	float temp = 0.0f;
 
 	bool jumpFlag_ = false;					//ジャンプしているかどうかのフラグ
-	bool tempBool = false;
+	bool isMoving = false;					//移動中か
 
 	VECTOR pos_ = { 0,16,0 };			//プレイヤーのポジション
 	VECTOR rot_ = { 0.0f,0.0f,0.0f };	//プレイヤーの回転
 
 	std::vector<DeadPlayer> deadPlayer_;	//死体を保存するため
 	std::shared_ptr<Model> model_;
-
 };
 
