@@ -28,6 +28,10 @@ private:
 	void moving(const InputState& input);
 	//ジャンプ処理
 	void jump(const InputState& input);
+	//死亡処理
+	void death(const InputState& input);
+	//待機処理
+	void idle();
 
 private:
 
@@ -36,8 +40,8 @@ private:
 
 	float movingSpeed_ = 5.0f;				//移動速度
 	float jumpVec_ = 0.0f;					//ジャンプベクトル
-	float tempRot = 0.0f;					//回転
-	float temp = 0.0f;
+	float targetAngle_ = 0.0f;					//回転
+	float angle_ = 0.0f;
 
 	bool jumpFlag_ = false;					//ジャンプしているかどうかのフラグ
 	bool isMoving = false;					//移動中か
