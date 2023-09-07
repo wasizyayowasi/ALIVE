@@ -57,10 +57,10 @@ void Camera::fixedPointCamera(VECTOR playerPos)
 		}
 	}
 
-	DrawFormatString(0, 16, 0xffffff, "player:%d,camera%d", playerRoomNum, cameraRoomNum);
-	DrawFormatString(0, 32, 0xffffff, "player:%.2f", playerPos.x);
-	DrawFormatString(0, 48, 0xffffff, "fiexd%.2f", fixedPointCameraDestinationPosX);
-	DrawFormatString(0, 64, 0xffffff, "sub%.2f", sub);
+//	DrawFormatString(0, 16, 0xffffff, "player:%d,camera%d", playerRoomNum, cameraRoomNum);
+//	DrawFormatString(0, 32, 0xffffff, "player:%.2f", playerPos.x);
+//	DrawFormatString(0, 48, 0xffffff, "fiexd%.2f", fixedPointCameraDestinationPosX);
+//	DrawFormatString(0, 64, 0xffffff, "sub%.2f", sub);
 
 	/*if (playerPos.x <= -500) {
 		fixedPointCameraDestinationPosX = -horizonta_size_of_one_room;

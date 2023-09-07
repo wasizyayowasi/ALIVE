@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "../UTIL/InputState.h"
 #include "../UTIL/Model.h"
+#include<algorithm>
 
 namespace {
 	//アニメーション
@@ -12,8 +13,11 @@ namespace {
 	constexpr int anim_runningJump_no = 5;	//上る
 
 	//ジャンプ
-	constexpr float jump_power = 30.0f;
+	constexpr float jump_power = 15.0f;
 	constexpr float gravity = -1.0f;
+
+	//回転スピード
+	constexpr float rot_speed = 15.0f;
 
 	//ファイルパス
 	const char* const filename = "DATA/player/player3.mv1";
@@ -35,52 +39,22 @@ Player::~Player()
 
 void Player::update(const InputState& input)
 {
-	isMoving = false;
-
 	model_->update();
 
 	moving(input);
 	jump(input);
+	death(input);
+	idle();
 
-	//死亡
-	{
-		if (input.isTriggered(InputType::death)) {
-			DeadPlayer deadPerson;
-			deadPerson.isEnable = true;
-			deadPerson.deathPos = playerPos_;
-			deadPlayer_.push_back(deadPerson);
-
-			deathNum = 0;
-			for (const auto person : deadPlayer_) {
-				if (person.isEnable) {
-					deathNum++;
-					if (deathNum > 9) {
-						deadPlayer_.erase(deadPlayer_.begin());
-						deathNum--;
-					}
-				}
-			}
-		}
-	}
-
-	//待機アニメーションに戻す
-	if (!isMoving) {
-		if (animNo_ == anim_run_no) {
-			animNo_ = anim_idle_no;
-			model_->changeAnimation(animNo_, true, false, 20);
-		}
-	}
-
-	model_->setPos(playerPos_);
-
-
+	model_->setPos(pos_);
 }
 
 void Player::draw()
 {
 	model_->draw();
 
-	DrawSphere3D(playerPos_, 16, 32, 0x0000ff, 0x0000ff, true);
+	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
+	DrawFormatString(0, 16, 0xffffff, "%.2f", targetAngle_);
 
 	for (const auto person : deadPlayer_) {
 		if (person.isEnable) {
@@ -94,25 +68,25 @@ void Player::moving(const InputState& input)
 	//移動
 	{
 		if (input.isPressed(InputType::up)) {
-			playerPos_.z += movingSpeed_;
+			pos_.z += movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
 			targetAngle_ = 180.0f;
 		}
 		if (input.isPressed(InputType::down)) {
-			playerPos_.z -= movingSpeed_;
+			pos_.z -= movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
 			targetAngle_ = 0.0f;
 		}
 		if (input.isPressed(InputType::left)) {
-			playerPos_.x -= movingSpeed_;
+			pos_.x -= movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
 			targetAngle_ = 90.0f;
 		}
 		if (input.isPressed(InputType::right)) {
-			playerPos_.x += movingSpeed_;
+			pos_.x += movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
 			if (targetAngle_ == 0.0f || targetAngle_ == -90.0f) {
@@ -121,32 +95,31 @@ void Player::moving(const InputState& input)
 			else {
 				targetAngle_ = 270.0f;
 			}
-			
 		}
+		
 
 		angle_ = targetAngle_ - rot_.y;
-		if (angle_ > 0.0f) {
-			rot_.y += 30.0f;
+		if (angle_ < 0.0f) {
+			rot_.y -= rot_speed;
 		}
-		else if(angle_ < 0.0f) {
-			rot_.y -= 30.0f;
+		else if (angle_ > 0.0f) {
+			rot_.y += rot_speed;
 		}
 
-		model_->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
+		model_->setRot({rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z});
+
+		model_->changeAnimation(animNo_, true, false, 20);
 
 		//デバッグ用
 		/*{
 			if (input.isPressed(InputType::next)) {
-				playerPos_.y += movingSpeed_;
+				pos_.y += movingSpeed_;
 			}
 			if (input.isPressed(InputType::prev)) {
-				playerPos_.y -= movingSpeed_;
+				pos_.y -= movingSpeed_;
 			}
 		}*/
 	}
-
-	model_->changeAnimation(animNo_, true, false, 30);
-
 }
 
 void Player::jump(const InputState& input)
@@ -163,13 +136,48 @@ void Player::jump(const InputState& input)
 
 		if (jumpFlag_) {
 			jumpVec_ += gravity;
-			playerPos_.y += jumpVec_;
-			if (playerPos_.y <= 16.0f) {
+			pos_.y += jumpVec_;
+			if (pos_.y <= 16.0f) {
 				jumpFlag_ = false;
 			}
 		}
 	}
 
-	model_->changeAnimation(animNo_, false, false, 2);
+	model_->changeAnimation(animNo_, false, false, 20);
 
+}
+
+void Player::death(const InputState& input)
+{
+	//死亡
+	{
+		if (input.isTriggered(InputType::death)) {
+			DeadPlayer deadPerson;
+			deadPerson.isEnable = true;
+			deadPerson.deathPos = pos_;
+			deadPlayer_.push_back(deadPerson);
+
+			deathNum = 0;
+			for (const auto person : deadPlayer_) {
+				if (person.isEnable) {
+					deathNum++;
+					if (deathNum > 9) {
+						deadPlayer_.erase(deadPlayer_.begin());
+						deathNum--;
+					}
+				}
+			}
+		}
+	}
+}
+
+void Player::idle()
+{
+	//待機アニメーションに戻す
+	if (!isMoving) {
+		if (animNo_ == anim_run_no) {
+			animNo_ = anim_idle_no;
+			model_->changeAnimation(animNo_, true, false, 20);
+		}
+	}
 }

@@ -10,6 +10,12 @@
 
 #include "../util/game.h"
 #include "../util/InputState.h"
+#include "../util/model.h"
+
+namespace {
+	const char* const tempFilepath = "data/model/tempFiled.mv1";
+	const VECTOR scale = { 0.5f,0.5f, 0.5f };
+}
 
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::fadeInUpdate)
 {
@@ -17,6 +23,9 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	//camera_ = std::make_shared<Camera>();
 	broom_ = std::make_shared<Broom>();
 	depthOfField_ = std::make_shared<DepthOfField>();
+	temp_ = std::make_shared<Model>(tempFilepath);
+
+	temp_->setScale(scale);
 
 	SetUseLighting(false);
 
@@ -98,6 +107,7 @@ void GameMain::draw()
 	
 	DrawSphere3D(VAdd(player_->getPos(), { 40,0,0 }), 16, 32, 0xffffff,0xffffff, true);
 
+	temp_->draw();
 	player_->draw();
 	broom_->graphFilterUpdate();
 	broom_->draw();
