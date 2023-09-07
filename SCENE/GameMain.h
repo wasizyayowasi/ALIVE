@@ -9,6 +9,7 @@ class Broom;
 class DepthOfField;
 class Model;
 
+
 class GameMain : public SceneBase
 {
 public:
@@ -32,6 +33,7 @@ private:
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Broom> broom_;
 	std::shared_ptr<DepthOfField> depthOfField_;
+	
 
 	std::vector<Player> player;
 	std::shared_ptr<Model> temp_;

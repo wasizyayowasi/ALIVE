@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "../UTIL/InputState.h"
 #include "../UTIL/Model.h"
+#include "../UTIL/CheckCollitionModel.h"
 #include<algorithm>
 
 namespace {
@@ -24,29 +25,44 @@ namespace {
 
 	//プレイヤーサイズ
 	const VECTOR player_scale = { 0.5f,0.5f ,0.5f };
+
+	//初期プレイヤーの回転角度
+	const VECTOR start_player_rot = { 0.0f,0.0f ,0.0f };
+
+	constexpr float player_hegiht = 50.0f;
 }
+
+using namespace std;
 
 Player::Player()
 {
-	model_ = std::make_shared<Model>(filename);
+	model_ = make_shared<Model>(filename);
 	model_->setAnimation(0, true, false);
 	model_->setScale(player_scale);
+	checkCollitionModel_ = make_shared<CheckCollitionModel>(std::shared_ptr<Player>(this));
+
+	jump_.isJump = false;
+	jump_.jumpVec = 0.0f;
+
 }
 
 Player::~Player()
 {
 }
 
-void Player::update(const InputState& input)
+void Player::update(const InputState& input, std::shared_ptr<Model> model)
 {
 	model_->update();
 
 	moving(input);
+	rotation();
 	jump(input);
 	death(input);
 	idle();
 
 	model_->setPos(pos_);
+
+	checkCollitionModel_->checkCollition(moveVec_,model, player_hegiht,jump_.isJump,jump_.jumpVec);
 }
 
 void Player::draw()
@@ -54,7 +70,9 @@ void Player::draw()
 	model_->draw();
 
 	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
-	DrawFormatString(0, 16, 0xffffff, "%.2f", targetAngle_);
+	DrawFormatString(0, 16, 0x448844, "targetAngle : %.2f", targetAngle_);
+	DrawFormatString(0, 32, 0x448844, "rot_ : %.2f", rot_.y);
+	DrawFormatString(0, 48, 0x448844, "tempAngle : %.2f", tempAngle_);
 
 	for (const auto person : deadPlayer_) {
 		if (person.isEnable) {
@@ -63,46 +81,46 @@ void Player::draw()
 	}
 }
 
+void Player::setJumpInfo(bool isJump, float jumpVec)
+{
+	jump_.isJump = isJump;
+	jump_.jumpVec = jumpVec;
+}
+
 void Player::moving(const InputState& input)
 {
 
 	isMoving = false;
+	moveVec_ = { 0.0f,0.0f,0.0f };
 
-	//移動
 	{
 		if (input.isPressed(InputType::up)) {
-			pos_.z += movingSpeed_;
+			//pos_.z += movingSpeed_;
+			moveVec_.z += movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
 			targetAngle_ = 180.0f;
 		}
 		if (input.isPressed(InputType::down)) {
-			pos_.z -= movingSpeed_;
+			//pos_.z -= movingSpeed_;
+			moveVec_.z -= movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
-			if (targetAngle_ == 270.0f || targetAngle_ == 360.0f) {
-				targetAngle_ = 360.0f;
-			}
-			else {
-				targetAngle_ = 0.0f;
-			}
+			targetAngle_ = 0.0f;
 		}
 		if (input.isPressed(InputType::left)) {
-			pos_.x -= movingSpeed_;
+			//pos_.x -= movingSpeed_;
+			moveVec_.x -= movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
 			targetAngle_ = 90.0f;
 		}
 		if (input.isPressed(InputType::right)) {
-			pos_.x += movingSpeed_;
+			//pos_.x += movingSpeed_;
+			moveVec_.x += movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
-			if (targetAngle_ == 0.0f || targetAngle_ == -90.0f) {
-				targetAngle_ = -90.0f;
-			}
-			else {
-				targetAngle_ = 270.0f;
-			}
+			targetAngle_ = 270.0f;
 		}
 		if (input.isPressed(InputType::up) && input.isPressed(InputType::right)) {
 			targetAngle_ = 225.0f;
@@ -116,17 +134,8 @@ void Player::moving(const InputState& input)
 		if (input.isPressed(InputType::down) && input.isPressed(InputType::right)) {
 			targetAngle_ = -45.0f;
 		}
-		
 
-		angle_ = targetAngle_ - rot_.y;
-		if (angle_ < 0.0f) {
-			rot_.y -= rot_speed;
-		}
-		else if (angle_ > 0.0f) {
-			rot_.y += rot_speed;
-		}
-
-		model_->setRot({rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z});
+		rotation();
 
 		model_->changeAnimation(animNo_, true, false, 20);
 
@@ -146,19 +155,19 @@ void Player::jump(const InputState& input)
 {
 	//ジャンプ処理
 	{
-		if (!jumpFlag_) {
+		if (!jump_.isJump) {
 			if (input.isPressed(InputType::space)) {
 				animNo_ = anim_jump_no;
-				jumpVec_ += jump_power;
-				jumpFlag_ = true;
+				jump_.jumpVec += jump_power;
+				jump_.isJump = true;
 			}
 		}
 
-		if (jumpFlag_) {
-			jumpVec_ += gravity;
-			pos_.y += jumpVec_;
-			if (pos_.y <= 16.0f) {
-				jumpFlag_ = false;
+		if (jump_.isJump) {
+			jump_.jumpVec += gravity;
+			pos_.y += jump_.jumpVec;
+			if (pos_.y <= 0.0f) {
+				jump_.isJump = false;
 			}
 		}
 	}
@@ -200,4 +209,40 @@ void Player::idle()
 			model_->changeAnimation(animNo_, true, false, 20);
 		}
 	}
+}
+
+void Player::rotation()
+{
+	differenceAngle_ = targetAngle_ - tempAngle_;
+	//differenceAngle_ = targetAngle_ - rot_.y;
+	if (differenceAngle_ >= 180.0f) {
+		//differenceAngle_ = targetAngle_ - rot_.y - 360.0f;
+		differenceAngle_ = targetAngle_ - tempAngle_ - 360.0f;
+		//differenceAngle_ += rot_speed;
+		//rot_.y += rot_speed;
+	}
+	else if (differenceAngle_ < 0.0f) {
+		differenceAngle_ = targetAngle_ - tempAngle_ + 360.0f;
+	}
+
+	if (differenceAngle_ == 0.0f) {
+	}
+	else if (differenceAngle_ < 0.0f) {
+		rot_.y -= rot_speed;
+		tempAngle_ -= rot_speed;
+	}
+	else {
+		rot_.y += rot_speed;
+		tempAngle_ += rot_speed;
+	}
+
+	if (tempAngle_ == 360.0f || tempAngle_ == -360.0f) {
+		tempAngle_ = 0.0f;
+	}
+
+	if (rot_.y == 360.0f || rot_.y == -360.0f) {
+		rot_.y = 0.0f;
+	}
+
+	model_->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
 }

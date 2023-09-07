@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="UTIL\CheckCollitionModel.cpp" />
     <ClCompile Include="staging\Broom.cpp" />
     <ClCompile Include="staging\DepthOfField.cpp" />
     <ClCompile Include="object\Camera.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="util\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="UTIL\CheckCollitionModel.h" />
     <ClInclude Include="staging\Broom.h" />
     <ClInclude Include="staging\DepthOfField.h" />
     <ClInclude Include="object\Camera.h" />

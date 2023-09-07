@@ -12,6 +12,8 @@
 #include "../util/InputState.h"
 #include "../util/model.h"
 
+using namespace std;
+
 namespace {
 	const char* const tempFilepath = "data/model/tempFiled.mv1";
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
@@ -19,10 +21,11 @@ namespace {
 
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::fadeInUpdate)
 {
-	player_ = std::make_shared<Player>();
-	broom_ = std::make_shared<Broom>();
-	depthOfField_ = std::make_shared<DepthOfField>();
-	temp_ = std::make_shared<Model>(tempFilepath);
+	player_ = make_shared<Player>();
+	broom_ = make_shared<Broom>();
+	depthOfField_ = make_shared<DepthOfField>();
+	temp_ = make_shared<Model>(tempFilepath);
+	
 
 	temp_->setScale(scale);
 
@@ -129,7 +132,7 @@ void GameMain::fadeInUpdate(const InputState& input)
 void GameMain::normalUpdate(const InputState& input)
 {
 
-	player_->update(input);
+	player_->update(input,temp_);
 
 }
 

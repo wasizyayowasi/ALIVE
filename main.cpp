@@ -53,6 +53,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		manager.update(input);
 		manager.draw();
 
+		auto fps = GetFPS();
+		auto DC = GetDrawCallCount();
+
+		DrawFormatString(1180, 0, 0xffff00, "FPS : %2.2f", fps);
+		DrawFormatString(1200, 16, 0xffff00, "DC : %d", DC);
+
 		//ó†âÊñ Çï\âÊñ Ç…êÿÇËë÷Ç¶ÇÈ
 		ScreenFlip();
 
