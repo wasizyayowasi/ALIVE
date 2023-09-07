@@ -49,7 +49,7 @@ private:
 	int animNo_ = 0;						//現在のアニメーション番号
 	int deathNum = 0;						//死亡回数
 
-	float movingSpeed_ = 5.0f;				//移動速度
+	float movingSpeed_ = 0.0f;				//移動速度
 	float targetAngle_ = 0.0f;				//回転
 	float differenceAngle_ = 0.0f;			//目標の角度と現在の角度の差
 	float tempAngle_ = 0.0f;

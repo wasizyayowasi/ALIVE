@@ -10,8 +10,9 @@ namespace {
 	constexpr int anim_run_no = 1;			//走る
 	constexpr int anim_stairs_no = 2;		//階段を上る
 	constexpr int anim_clim_no = 3;			//上る
-	constexpr int anim_jump_no = 4;			//上る
-	constexpr int anim_runningJump_no = 5;	//上る
+	constexpr int anim_jump_no = 4;			//ジャンプ
+	constexpr int anim_runningJump_no = 5;	//走りジャンプ
+	constexpr int anim_walk_no = 6;			//歩く
 
 	//ジャンプ
 	constexpr float jump_power = 15.0f;
@@ -21,7 +22,7 @@ namespace {
 	constexpr float rot_speed = 15.0f;
 
 	//ファイルパス
-	const char* const filename = "DATA/player/player3.mv1";
+	const char* const filename = "DATA/player/player4.mv1";
 
 	//プレイヤーサイズ
 	const VECTOR player_scale = { 0.5f,0.5f ,0.5f };
@@ -29,7 +30,12 @@ namespace {
 	//初期プレイヤーの回転角度
 	const VECTOR start_player_rot = { 0.0f,0.0f ,0.0f };
 
+	//プレイヤーの高さ
 	constexpr float player_hegiht = 50.0f;
+
+	//移動スピード
+	constexpr float walk_speed = 3.0f;
+	constexpr float run_speed = 7.0f;
 }
 
 using namespace std;
@@ -92,33 +98,34 @@ void Player::moving(const InputState& input)
 
 	isMoving = false;
 	moveVec_ = { 0.0f,0.0f,0.0f };
+	movingSpeed_ = 0.0f;
 
 	{
 		if (input.isPressed(InputType::up)) {
-			//pos_.z += movingSpeed_;
+			movingSpeed_ = walk_speed;
 			moveVec_.z += movingSpeed_;
-			animNo_ = anim_run_no;
+			animNo_ = anim_walk_no;
 			isMoving = true;
 			targetAngle_ = 180.0f;
 		}
 		if (input.isPressed(InputType::down)) {
-			//pos_.z -= movingSpeed_;
+			movingSpeed_ = walk_speed;
 			moveVec_.z -= movingSpeed_;
-			animNo_ = anim_run_no;
+			animNo_ = anim_walk_no;
 			isMoving = true;
 			targetAngle_ = 0.0f;
 		}
 		if (input.isPressed(InputType::left)) {
-			//pos_.x -= movingSpeed_;
+			movingSpeed_ = walk_speed;
 			moveVec_.x -= movingSpeed_;
-			animNo_ = anim_run_no;
+			animNo_ = anim_walk_no;
 			isMoving = true;
 			targetAngle_ = 90.0f;
 		}
 		if (input.isPressed(InputType::right)) {
-			//pos_.x += movingSpeed_;
+			movingSpeed_ = walk_speed;
 			moveVec_.x += movingSpeed_;
-			animNo_ = anim_run_no;
+			animNo_ = anim_walk_no;
 			isMoving = true;
 			targetAngle_ = 270.0f;
 		}
@@ -134,6 +141,12 @@ void Player::moving(const InputState& input)
 		if (input.isPressed(InputType::down) && input.isPressed(InputType::right)) {
 			targetAngle_ = -45.0f;
 		}
+		if ((input.isPressed(InputType::up) || input.isPressed(InputType::down) || input.isPressed(InputType::left) || input.isPressed(InputType::right)) && input.isPressed(InputType::shift)) {
+			movingSpeed_ = run_speed;
+			animNo_ = anim_run_no;
+		}
+
+		moveVec_ = VScale(VNorm(moveVec_),movingSpeed_);
 
 		rotation();
 
@@ -180,7 +193,7 @@ void Player::death(const InputState& input)
 {
 	//死亡
 	{
-		if (input.isTriggered(InputType::death)) {
+		if (input.isTriggered(InputType::z)) {
 			DeadPlayer deadPerson;
 			deadPerson.isEnable = true;
 			deadPerson.deathPos = pos_;
@@ -204,9 +217,9 @@ void Player::idle()
 {
 	//待機アニメーションに戻す
 	if (!isMoving) {
-		if (animNo_ == anim_run_no) {
+		if (animNo_ == anim_walk_no || animNo_ == anim_run_no) {
 			animNo_ = anim_idle_no;
-			model_->changeAnimation(animNo_, true, false, 20);
+			model_->changeAnimation(animNo_, true, false, 10);
 		}
 	}
 }

@@ -30,7 +30,10 @@ InputState::InputState()
 	defaultMapTable[InputType::space] = { {InputCategory::keybd,KEY_INPUT_SPACE},
 									  {InputCategory::pad,PAD_INPUT_RIGHT} };
 	//Ž€–S
-	defaultMapTable[InputType::death] = { {InputCategory::keybd,KEY_INPUT_Z},
+	defaultMapTable[InputType::z] = { {InputCategory::keybd,KEY_INPUT_Z},
+									  {InputCategory::pad,PAD_INPUT_RIGHT} };
+	//shift
+	defaultMapTable[InputType::shift] = { {InputCategory::keybd,KEY_INPUT_LSHIFT},
 									  {InputCategory::pad,PAD_INPUT_RIGHT} };
 
 

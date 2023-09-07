@@ -14,7 +14,8 @@ enum class InputType
 	left,			///左
 	right,			///右
 	space,			///space
-	death,			//死亡入力
+	z,				//死亡入力
+	shift,			//shift
 	max,			///最大入力インデックス
 };
 
