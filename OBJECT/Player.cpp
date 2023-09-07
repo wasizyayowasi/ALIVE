@@ -145,7 +145,7 @@ void Player::moving(const InputState& input)
 			movingSpeed_ = run_speed;
 			animNo_ = anim_run_no;
 		}
-
+		
 		moveVec_ = VScale(VNorm(moveVec_),movingSpeed_);
 
 		rotation();
