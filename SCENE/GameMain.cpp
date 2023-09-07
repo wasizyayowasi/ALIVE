@@ -20,7 +20,6 @@ namespace {
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::fadeInUpdate)
 {
 	player_ = std::make_shared<Player>();
-	//camera_ = std::make_shared<Camera>();
 	broom_ = std::make_shared<Broom>();
 	depthOfField_ = std::make_shared<DepthOfField>();
 	temp_ = std::make_shared<Model>(tempFilepath);
@@ -131,7 +130,6 @@ void GameMain::normalUpdate(const InputState& input)
 {
 
 	player_->update(input);
-	//camera_->fixedPointCamera(player_->getPos());
 
 }
 

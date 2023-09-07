@@ -65,6 +65,9 @@ void Player::draw()
 
 void Player::moving(const InputState& input)
 {
+
+	isMoving = false;
+
 	//ˆÚ“®
 	{
 		if (input.isPressed(InputType::up)) {
@@ -77,7 +80,12 @@ void Player::moving(const InputState& input)
 			pos_.z -= movingSpeed_;
 			animNo_ = anim_run_no;
 			isMoving = true;
-			targetAngle_ = 0.0f;
+			if (targetAngle_ == 270.0f || targetAngle_ == 360.0f) {
+				targetAngle_ = 360.0f;
+			}
+			else {
+				targetAngle_ = 0.0f;
+			}
 		}
 		if (input.isPressed(InputType::left)) {
 			pos_.x -= movingSpeed_;
@@ -95,6 +103,18 @@ void Player::moving(const InputState& input)
 			else {
 				targetAngle_ = 270.0f;
 			}
+		}
+		if (input.isPressed(InputType::up) && input.isPressed(InputType::right)) {
+			targetAngle_ = 225.0f;
+		}
+		if (input.isPressed(InputType::up) && input.isPressed(InputType::left)) {
+			targetAngle_ = 135.0f;
+		}
+		if (input.isPressed(InputType::down) && input.isPressed(InputType::left)) {
+			targetAngle_ = 45.0f;
+		}
+		if (input.isPressed(InputType::down) && input.isPressed(InputType::right)) {
+			targetAngle_ = -45.0f;
 		}
 		
 
