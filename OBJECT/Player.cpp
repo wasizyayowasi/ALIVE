@@ -31,7 +31,7 @@ namespace {
 	const VECTOR start_player_rot = { 0.0f,0.0f ,0.0f };
 
 	//プレイヤーの高さ
-	constexpr float player_hegiht = 50.0f;
+	constexpr float player_hegiht = 150.0f;
 
 	//移動スピード
 	constexpr float walk_speed = 3.0f;
@@ -139,7 +139,7 @@ void Player::moving(const InputState& input)
 			targetAngle_ = 45.0f;
 		}
 		if (input.isPressed(InputType::down) && input.isPressed(InputType::right)) {
-			targetAngle_ = -45.0f;
+			targetAngle_ = 315.0f;
 		}
 		if ((input.isPressed(InputType::up) || input.isPressed(InputType::down) || input.isPressed(InputType::left) || input.isPressed(InputType::right)) && input.isPressed(InputType::shift)) {
 			movingSpeed_ = run_speed;

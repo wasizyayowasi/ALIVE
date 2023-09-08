@@ -3,6 +3,9 @@
 
 DepthOfField::DepthOfField()
 {
+
+	
+
 	textureWidth = Game::kScreenWidth;
 	textureHeight = Game::kScreenHeight;
 
@@ -17,7 +20,7 @@ DepthOfField::DepthOfField()
 	//	depthNormalMeshVS = LoadVertexShader("");
 	//	depthSkinMeshVS = LoadVertexShader("");
 	//	depthPS = LoadPixelShader("");
-	depthOfFiledPS = LoadPixelShader("DATA/shader/DepthOfField.hlsl");
+	depthOfFiledPS = LoadPixelShader("DATA/shader/DepthOfField.pso");
 
 }
 
