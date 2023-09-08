@@ -24,7 +24,7 @@ public:
 	Player();
 	virtual ~Player();
 
-	void update(const InputState& input,std::shared_ptr<Model> model);
+	void update(const InputState& input, std::vector<std::shared_ptr<Model>> models);
 	void draw();
 
 	VECTOR getPos() { return pos_; }
@@ -55,6 +55,7 @@ private:
 	float tempAngle_ = 0.0f;
 
 	bool isMoving = false;					//移動中か
+	bool isDead_ = false;					//死んでいるか
 
 	JumpInfo jump_;							//ジャンプ関連の構造体
 
@@ -64,6 +65,8 @@ private:
 
 	std::vector<DeadPlayer> deadPlayer_;	//死体を保存するため
 	std::shared_ptr<Model> model_;
+	std::shared_ptr<Model> cube_;
+	std::vector<std::shared_ptr<Model>> models_;
 	std::shared_ptr<CheckCollitionModel> checkCollitionModel_;
 };
 

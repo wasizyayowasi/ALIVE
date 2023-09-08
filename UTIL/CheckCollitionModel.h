@@ -1,6 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include <memory>
+#include <vector>
 
 class Player;
 class Model;
@@ -14,10 +15,10 @@ public:
 	CheckCollitionModel(std::shared_ptr<Player> player);
 	virtual ~CheckCollitionModel();
 
-	void checkCollitionPersonalArea(VECTOR moveVec, std::shared_ptr<Model> model);
+	void checkCollitionPersonalArea(VECTOR moveVec, std::vector<std::shared_ptr<Model>> model);
 	void checkCollitionWall(VECTOR moveVec, float playerHeight);
 	void checkCollitionFloor(VECTOR moveVec,bool jumpFlag,float playerHeight);
-	void checkCollition(VECTOR moveVec,std::shared_ptr<Model> model,float playerHeight,bool isJump,float jumpVec);
+	void checkCollition(VECTOR moveVec, std::vector<std::shared_ptr<Model>> model,float playerHeight,bool isJump,float jumpVec);
 
 private:
 
@@ -30,7 +31,7 @@ private:
 	bool hitFlag = false;
 
 	//モデルとの当たり判定用メソッド
-	MV1_COLL_RESULT_POLY_DIM HitDim;
+	MV1_COLL_RESULT_POLY_DIM HitDim[2];
 	MV1_COLL_RESULT_POLY* kabe[max_hit_coll];
 	MV1_COLL_RESULT_POLY* yuka[max_hit_coll];
 	MV1_COLL_RESULT_POLY* poly;

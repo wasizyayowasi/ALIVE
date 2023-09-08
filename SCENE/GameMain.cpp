@@ -15,7 +15,8 @@
 using namespace std;
 
 namespace {
-	const char* const tempFilepath = "data/model/tempFiled.mv1";
+	const char* const temp_filepath = "data/model/tempFiled.mv1";
+	const char* const cube_filename = "DATA/model/cube.mv1";
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
@@ -23,11 +24,14 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 {
 	player_ = make_shared<Player>();
 	broom_ = make_shared<Broom>();
-	depthOfField_ = make_shared<DepthOfField>();
-	temp_ = make_shared<Model>(tempFilepath);
-	
+	//depthOfField_ = make_shared<DepthOfField>();
+	//temp_ = make_shared<Model>(temp_filepath);
+	models_.push_back(make_shared<Model>(temp_filepath));
+	models_.push_back(make_shared<Model>(cube_filename));
 
-	temp_->setScale(scale);
+	models_[0]->setScale(scale);
+
+	//temp_->setScale(scale);
 
 	SetUseLighting(false);
 
@@ -109,7 +113,12 @@ void GameMain::draw()
 	
 	DrawSphere3D(VAdd(player_->getPos(), { 40,0,0 }), 16, 32, 0xffffff,0xffffff, true);
 
-	temp_->draw();
+	//temp_->draw();
+
+	for (auto& model : models_) {
+		model->draw();
+	}
+
 	player_->draw();
 	broom_->graphFilterUpdate();
 	broom_->draw();
@@ -132,7 +141,7 @@ void GameMain::fadeInUpdate(const InputState& input)
 void GameMain::normalUpdate(const InputState& input)
 {
 
-	player_->update(input,temp_);
+	player_->update(input,models_);
 
 }
 

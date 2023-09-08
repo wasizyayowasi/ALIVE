@@ -12,7 +12,8 @@ namespace {
 	constexpr int anim_clim_no = 3;			//上る
 	constexpr int anim_jump_no = 4;			//ジャンプ
 	constexpr int anim_runningJump_no = 5;	//走りジャンプ
-	constexpr int anim_walk_no = 6;			//歩く
+	constexpr int anim_death_no = 6;	//走りジャンプ
+	constexpr int anim_walk_no = 7;			//歩く
 
 	//ジャンプ
 	constexpr float jump_power = 15.0f;
@@ -22,7 +23,8 @@ namespace {
 	constexpr float rot_speed = 15.0f;
 
 	//ファイルパス
-	const char* const filename = "DATA/player/player4.mv1";
+	const char* const player_Filename = "DATA/player/player5.mv1";
+	
 
 	//プレイヤーサイズ
 	const VECTOR player_scale = { 0.5f,0.5f ,0.5f };
@@ -42,7 +44,7 @@ using namespace std;
 
 Player::Player()
 {
-	model_ = make_shared<Model>(filename);
+	model_ = make_shared<Model>(player_Filename);
 	model_->setAnimation(0, true, false);
 	model_->setScale(player_scale);
 	checkCollitionModel_ = make_shared<CheckCollitionModel>(std::shared_ptr<Player>(this));
@@ -56,29 +58,43 @@ Player::~Player()
 {
 }
 
-void Player::update(const InputState& input, std::shared_ptr<Model> model)
+void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>> models)
 {
 	model_->update();
 
-	moving(input);
-	rotation();
-	jump(input);
-	death(input);
-	idle();
+	if (!isDead_) {
+		moving(input);
+		rotation();
+		jump(input);
+		death(input);
+		idle();
+	}
+	else {
+		if (model_->isAnimEnd()) {
+			isDead_ = false;
+		}
+	}
+	
+
+	cube_ = models[1];
 
 	model_->setPos(pos_);
 
-	checkCollitionModel_->checkCollition(moveVec_,model, player_hegiht,jump_.isJump,jump_.jumpVec);
+	checkCollitionModel_->checkCollition(moveVec_, models, player_hegiht, jump_.isJump, jump_.jumpVec);
+	
+	//checkCollitionModel_->checkCollition(moveVec_,cube_, player_hegiht, jump_.isJump, jump_.jumpVec);
 }
 
 void Player::draw()
 {
 	model_->draw();
+	//cube_->draw();
 
 	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
 	DrawFormatString(0, 16, 0x448844, "targetAngle : %.2f", targetAngle_);
 	DrawFormatString(0, 32, 0x448844, "rot_ : %.2f", rot_.y);
 	DrawFormatString(0, 48, 0x448844, "tempAngle : %.2f", tempAngle_);
+	DrawFormatString(0, 64, 0x448844, "jumpFlag : %d", jump_.isJump);
 
 	for (const auto person : deadPlayer_) {
 		if (person.isEnable) {
@@ -196,8 +212,13 @@ void Player::death(const InputState& input)
 		if (input.isTriggered(InputType::z)) {
 			DeadPlayer deadPerson;
 			deadPerson.isEnable = true;
+			isDead_ = true;
 			deadPerson.deathPos = pos_;
 			deadPlayer_.push_back(deadPerson);
+			animNo_ = anim_death_no;
+
+			cube_->setPos(deadPerson.deathPos);
+			cube_->setRot({ -90 * DX_PI_F / 180.0f,rot_.y * DX_PI_F / 180.0f,rot_.z });
 
 			deathNum = 0;
 			for (const auto person : deadPlayer_) {
@@ -210,6 +231,9 @@ void Player::death(const InputState& input)
 				}
 			}
 		}
+
+		model_->changeAnimation(animNo_, false, false, 10);
+
 	}
 }
 

@@ -14,7 +14,7 @@ CheckCollitionModel::~CheckCollitionModel()
 {
 }
 
-void CheckCollitionModel::checkCollitionPersonalArea(VECTOR moveVec, std::shared_ptr<Model> model)
+void CheckCollitionModel::checkCollitionPersonalArea(VECTOR moveVec, std::vector<std::shared_ptr<Model>> model)
 {
 
 	//更新前のポジションを取得する
@@ -22,7 +22,11 @@ void CheckCollitionModel::checkCollitionPersonalArea(VECTOR moveVec, std::shared
 	//更新後のポジションを取得する
 	nowPos = VAdd(player_->getPos(), moveVec);
 	//モデルと球の当たり判定
-	HitDim = MV1CollCheck_Sphere(model->getModelHandle(), -1, oldPos, collition_radius + VSize(moveVec));
+	for (int i = 0; i < model.size();i++) {
+		MV1RefreshCollInfo(model[i]->getModelHandle(), -1);
+		HitDim[i] = MV1CollCheck_Sphere(model[i]->getModelHandle(), -1, oldPos, collition_radius + VSize(moveVec));
+	}
+	
 
 	//ベクトルの絶対値を取得し、動いたか動いていないかのフラグをとる
 	if (fabs(moveVec.x) > 0.01f || fabs(moveVec.z) > 0.01f) {
@@ -36,29 +40,32 @@ void CheckCollitionModel::checkCollitionPersonalArea(VECTOR moveVec, std::shared
 	yukaNum = 0;
 
 	//前にとったモデルと球の当たり判定処理
-	for (i = 0; i < HitDim.HitNum; i++) {
-		//モデルの法線ベクトル
-		if (HitDim.Dim[i].Normal.y < 0.000001f && HitDim.Dim[i].Normal.y > -0.000001f) {
-			if (HitDim.Dim[i].Position[0].y > oldPos.y + 1.0f ||
-				HitDim.Dim[i].Position[1].y > oldPos.y + 1.0f ||
-				HitDim.Dim[i].Position[2].y > oldPos.y + 1.0f)
-			{
-				//壁ポリゴン情報の取得？
-				if (kabeNum < max_hit_coll) {
-					kabe[kabeNum] = &HitDim.Dim[i];
-					kabeNum++;
-				}
+	for (auto& result : HitDim) {
+		for (i = 0; i < result.HitNum; i++) {
+			//モデルの法線ベクトル
+			if (result.Dim[i].Normal.y < 0.000001f && result.Dim[i].Normal.y > -0.000001f) {
+				if (result.Dim[i].Position[0].y > oldPos.y + 1.0f ||
+					result.Dim[i].Position[1].y > oldPos.y + 1.0f ||
+					result.Dim[i].Position[2].y > oldPos.y + 1.0f)
+				{
+					//壁ポリゴン情報の取得？
+					if (kabeNum < max_hit_coll) {
+						kabe[kabeNum] = &result.Dim[i];
+						kabeNum++;
+					}
 
+				}
 			}
-		}
-		else {
-			//床ポリゴン情報の取得？
-			if (yukaNum < max_hit_coll) {
-				yuka[yukaNum] = &HitDim.Dim[i];
-				yukaNum++;
+			else {
+				//床ポリゴン情報の取得？
+				if (yukaNum < max_hit_coll) {
+					yuka[yukaNum] = &result.Dim[i];
+					yukaNum++;
+				}
 			}
 		}
 	}
+	
 }
 
 void CheckCollitionModel::checkCollitionWall(VECTOR moveVec,float playerHeight)
@@ -187,7 +194,7 @@ void CheckCollitionModel::checkCollitionFloor(VECTOR moveVec,bool jumpFlag, floa
 
 }
 
-void CheckCollitionModel::checkCollition(VECTOR moveVec, std::shared_ptr<Model> model, float playerHeight, bool isJump, float jumpVec)
+void CheckCollitionModel::checkCollition(VECTOR moveVec, std::vector<std::shared_ptr<Model>> model, float playerHeight, bool isJump, float jumpVec)
 {
 
 	checkCollitionPersonalArea(moveVec,model);
@@ -195,5 +202,8 @@ void CheckCollitionModel::checkCollition(VECTOR moveVec, std::shared_ptr<Model> 
 	checkCollitionFloor(moveVec,isJump,playerHeight);
 
 	player_->setPos(nowPos);
-	MV1CollResultPolyDimTerminate(HitDim);
+	for (auto& result : HitDim) {
+		MV1CollResultPolyDimTerminate(result);
+	}
+	
 }
