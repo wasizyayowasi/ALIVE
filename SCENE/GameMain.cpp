@@ -24,15 +24,14 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 {
 	camera_ = make_shared<Camera>();
 	player_ = make_shared<Player>();
-	broom_ = make_shared<Broom>();
+	//broom_ = make_shared<Broom>();
 	//depthOfField_ = make_shared<DepthOfField>();
-	//temp_ = make_shared<Model>(temp_filepath);
+	tempField_ = make_shared<Model>(temp_filepath);
 	models_.push_back(make_shared<Model>(temp_filepath));
-	models_.push_back(make_shared<Model>(cube_filename));
 
 	models_[0]->setScale(scale);
 
-	//temp_->setScale(scale);
+	tempField_->setScale(scale);
 
 	SetUseLighting(false);
 
@@ -114,7 +113,7 @@ void GameMain::draw()
 	
 	DrawSphere3D(VAdd(player_->getPos(), { 40,0,0 }), 16, 32, 0xffffff,0xffffff, true);
 
-	//temp_->draw();
+	tempField_->draw();
 
 	for (auto& model : models_) {
 		model->draw();

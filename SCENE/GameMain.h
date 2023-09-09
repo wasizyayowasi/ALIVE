@@ -38,7 +38,7 @@ private:
 	
 
 	std::vector<Player> player;
-	std::shared_ptr<Model> temp_;
+	std::shared_ptr<Model> tempField_;
 	std::vector<std::shared_ptr<Model>> models_;
 
 	void (GameMain::* updateFunc_)(const InputState& input);

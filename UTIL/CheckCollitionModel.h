@@ -15,7 +15,7 @@ public:
 	CheckCollitionModel(std::shared_ptr<Player> player);
 	virtual ~CheckCollitionModel();
 
-	void checkCollitionPersonalArea(VECTOR moveVec, std::vector<std::shared_ptr<Model>> model);
+	void checkCollitionPersonalArea(VECTOR moveVec, std::vector<std::shared_ptr<Model>> models);
 	void checkCollitionWall(VECTOR moveVec, float playerHeight);
 	void checkCollitionFloor(VECTOR moveVec,bool jumpFlag,float playerHeight);
 	void checkCollition(VECTOR moveVec, std::vector<std::shared_ptr<Model>> model,float playerHeight,bool isJump,float jumpVec);

@@ -65,7 +65,6 @@ private:
 
 	std::vector<std::shared_ptr<Model>> deadPlayer_;	//Ž€‘Ì‚ð•Û‘¶‚·‚é‚½‚ß
 	std::shared_ptr<Model> PModel_;
-	std::shared_ptr<Model> cube_;
 	std::vector<std::shared_ptr<Model>> models_;
 	std::shared_ptr<CheckCollitionModel> checkCollitionModel_;
 };

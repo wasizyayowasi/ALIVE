@@ -24,7 +24,7 @@ namespace {
 	constexpr float rot_speed = 15.0f;
 
 	//ファイルパス
-	const char* const player_Filename = "DATA/player/player5.mv1";
+	const char* const player_Filename = "DATA/player/player7.mv1";
 	
 
 	//プレイヤーサイズ
@@ -54,6 +54,10 @@ Player::Player()
 	//マップやブロックなどの当たり判定の生成
 	checkCollitionModel_ = make_shared<CheckCollitionModel>(std::shared_ptr<Player>(this));
 
+	deadPlayer_.push_back(make_shared<Model>(PModel_->getModelHandle()));
+
+	deadPlayer_.back()->setScale(player_scale);
+
 	jump_.isJump = false;
 	jump_.jumpVec = 0.0f;
 
@@ -80,12 +84,15 @@ void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>>
 	}
 	else {
 		if (PModel_->isAnimEnd()) {
+
 			isDead_ = false;
 		}
 	}
-	
 
-	cube_ = models[1];
+	for (auto& deadPerson : deadPlayer_) {
+		models.push_back(deadPerson);
+	}
+	
 
 	PModel_->setPos(pos_);
 
@@ -233,10 +240,11 @@ void Player::death(const InputState& input)
 			deadPerson.deathPos = pos_;
 
 			isDead_ = true;
-			deadPlayer_.push_back(make_shared<Model>(PModel_->getModelHandle()));
+			
 			deadPlayer_.back()->setPos(deadPerson.deathPos);
 			deadPlayer_.back()->setScale(player_scale);
 			deadPlayer_.back()->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
+			deadPlayer_.back()->setUseCollision(true, false);
 
 			animNo_ = anim_death_no;
 

@@ -14,17 +14,16 @@ CheckCollitionModel::~CheckCollitionModel()
 {
 }
 
-void CheckCollitionModel::checkCollitionPersonalArea(VECTOR moveVec, std::vector<std::shared_ptr<Model>> model)
+void CheckCollitionModel::checkCollitionPersonalArea(VECTOR moveVec, std::vector<std::shared_ptr<Model>> models)
 {
-
 	//更新前のポジションを取得する
 	oldPos = player_->getPos();
 	//更新後のポジションを取得する
 	nowPos = VAdd(player_->getPos(), moveVec);
 	//モデルと球の当たり判定
-	for (int i = 0; i < model.size();i++) {
-		MV1RefreshCollInfo(model[i]->getModelHandle(), -1);
-		HitDim[i] = MV1CollCheck_Sphere(model[i]->getModelHandle(), -1, oldPos, collition_radius + VSize(moveVec));
+	for (int i = 0; i < models.size();i++) {
+		MV1RefreshCollInfo(models[i]->getModelHandle(), -1);
+		HitDim[i] = MV1CollCheck_Sphere(models[i]->getModelHandle(), -1, oldPos, collition_radius + VSize(moveVec));
 	}
 	
 
