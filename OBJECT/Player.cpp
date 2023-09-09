@@ -3,6 +3,7 @@
 #include "../UTIL/Model.h"
 #include "../UTIL/CheckCollitionModel.h"
 #include<algorithm>
+#include<string>
 
 namespace {
 	//アニメーション
@@ -12,7 +13,7 @@ namespace {
 	constexpr int anim_clim_no = 3;			//上る
 	constexpr int anim_jump_no = 4;			//ジャンプ
 	constexpr int anim_runningJump_no = 5;	//走りジャンプ
-	constexpr int anim_death_no = 6;	//走りジャンプ
+	constexpr int anim_death_no = 6;		//走りジャンプ
 	constexpr int anim_walk_no = 7;			//歩く
 
 	//ジャンプ
@@ -44,9 +45,13 @@ using namespace std;
 
 Player::Player()
 {
-	model_ = make_shared<Model>(player_Filename);
-	model_->setAnimation(0, true, false);
-	model_->setScale(player_scale);
+	//プレイヤーモデルの生成
+	PModel_ = make_shared<Model>(player_Filename);
+	//アニメーションの設定
+	PModel_->setAnimation(anim_idle_no, true, false);
+	//プレイヤーの大きさの調整
+	PModel_->setScale(player_scale);
+	//マップやブロックなどの当たり判定の生成
 	checkCollitionModel_ = make_shared<CheckCollitionModel>(std::shared_ptr<Player>(this));
 
 	jump_.isJump = false;
@@ -60,17 +65,21 @@ Player::~Player()
 
 void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>> models)
 {
-	model_->update();
+
+	moveVec_ = { 0.0f,0.0f,0.0f };
+	movingSpeed_ = 0.0f;
+
+	PModel_->update();
 
 	if (!isDead_) {
-		moving(input);
-		rotation();
-		jump(input);
+		movingUpdate(input);
+		rotationUpdate();
+		jumpUpdate(input);
 		death(input);
-		idle();
+		changeAnimIdle();
 	}
 	else {
-		if (model_->isAnimEnd()) {
+		if (PModel_->isAnimEnd()) {
 			isDead_ = false;
 		}
 	}
@@ -78,16 +87,20 @@ void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>>
 
 	cube_ = models[1];
 
-	model_->setPos(pos_);
+	PModel_->setPos(pos_);
 
 	checkCollitionModel_->checkCollition(moveVec_, models, player_hegiht, jump_.isJump, jump_.jumpVec);
-	
-	//checkCollitionModel_->checkCollition(moveVec_,cube_, player_hegiht, jump_.isJump, jump_.jumpVec);
 }
 
 void Player::draw()
 {
-	model_->draw();
+	PModel_->draw();
+	for (auto& deadPlayer : deadPlayer_) {
+		if (deadPlayer->getEnable()) {
+			deadPlayer->draw();
+		}
+	}
+	
 	//cube_->draw();
 
 	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
@@ -95,10 +108,16 @@ void Player::draw()
 	DrawFormatString(0, 32, 0x448844, "rot_ : %.2f", rot_.y);
 	DrawFormatString(0, 48, 0x448844, "tempAngle : %.2f", tempAngle_);
 	DrawFormatString(0, 64, 0x448844, "jumpFlag : %d", jump_.isJump);
+	DrawFormatString(0, 80, 0x448844, "x:%.2f y:%.2f z:%.2f", pos_.x, pos_.y, pos_.z);
+	for (auto& deadPlayer : deadPlayer_) {
+		if (deadPlayer->getEnable()) {
+			DrawFormatString(0, 96, 0x448844, "x:%.2f y:%.2f z:%.2f", deadPlayer->getPos().x, deadPlayer->getPos().y, deadPlayer->getPos().z);
+		}
+	}
 
 	for (const auto person : deadPlayer_) {
-		if (person.isEnable) {
-			DrawSphere3D(person.deathPos, 16, 32, 0xff0000, 0xff0000, true);
+		if (person->getEnable()) {
+			DrawSphere3D(person->getPos(), 16, 32, 0xff0000, 0xff0000, true);
 		}
 	}
 }
@@ -109,12 +128,11 @@ void Player::setJumpInfo(bool isJump, float jumpVec)
 	jump_.jumpVec = jumpVec;
 }
 
-void Player::moving(const InputState& input)
+void Player::movingUpdate(const InputState& input)
 {
 
 	isMoving = false;
-	moveVec_ = { 0.0f,0.0f,0.0f };
-	movingSpeed_ = 0.0f;
+	
 
 	{
 		if (input.isPressed(InputType::up)) {
@@ -164,9 +182,9 @@ void Player::moving(const InputState& input)
 		
 		moveVec_ = VScale(VNorm(moveVec_),movingSpeed_);
 
-		rotation();
+		rotationUpdate();
 
-		model_->changeAnimation(animNo_, true, false, 20);
+		PModel_->changeAnimation(animNo_, true, false, 20);
 
 		//デバッグ用
 		/*{
@@ -180,7 +198,7 @@ void Player::moving(const InputState& input)
 	}
 }
 
-void Player::jump(const InputState& input)
+void Player::jumpUpdate(const InputState& input)
 {
 	//ジャンプ処理
 	{
@@ -201,7 +219,7 @@ void Player::jump(const InputState& input)
 		}
 	}
 
-	model_->changeAnimation(animNo_, false, false, 20);
+	PModel_->changeAnimation(animNo_, false, false, 20);
 
 }
 
@@ -212,17 +230,19 @@ void Player::death(const InputState& input)
 		if (input.isTriggered(InputType::z)) {
 			DeadPlayer deadPerson;
 			deadPerson.isEnable = true;
-			isDead_ = true;
 			deadPerson.deathPos = pos_;
-			deadPlayer_.push_back(deadPerson);
-			animNo_ = anim_death_no;
 
-			cube_->setPos(deadPerson.deathPos);
-			cube_->setRot({ -90 * DX_PI_F / 180.0f,rot_.y * DX_PI_F / 180.0f,rot_.z });
+			isDead_ = true;
+			deadPlayer_.push_back(make_shared<Model>(PModel_->getModelHandle()));
+			deadPlayer_.back()->setPos(deadPerson.deathPos);
+			deadPlayer_.back()->setScale(player_scale);
+			deadPlayer_.back()->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
+
+			animNo_ = anim_death_no;
 
 			deathNum = 0;
 			for (const auto person : deadPlayer_) {
-				if (person.isEnable) {
+				if (person->getEnable()) {
 					deathNum++;
 					if (deathNum > 9) {
 						deadPlayer_.erase(deadPlayer_.begin());
@@ -230,56 +250,59 @@ void Player::death(const InputState& input)
 					}
 				}
 			}
+
 		}
 
-		model_->changeAnimation(animNo_, false, false, 10);
+		PModel_->changeAnimation(animNo_, false, false, 10);
 
 	}
 }
 
-void Player::idle()
+void Player::changeAnimIdle()
 {
 	//待機アニメーションに戻す
 	if (!isMoving) {
 		if (animNo_ == anim_walk_no || animNo_ == anim_run_no) {
 			animNo_ = anim_idle_no;
-			model_->changeAnimation(animNo_, true, false, 10);
+			PModel_->changeAnimation(animNo_, true, false, 10);
 		}
 	}
 }
 
-void Player::rotation()
+//完成品だから今後いじらなくていいと思う
+void Player::rotationUpdate()
 {
+	//目標の角度から現在の角度を引いて差を出している
 	differenceAngle_ = targetAngle_ - tempAngle_;
-	//differenceAngle_ = targetAngle_ - rot_.y;
+
+	//常にプレイヤーモデルを大周りさせたくないので
+	//181度又は-181度以上の場合、逆回りにしてあげる
 	if (differenceAngle_ >= 180.0f) {
-		//differenceAngle_ = targetAngle_ - rot_.y - 360.0f;
 		differenceAngle_ = targetAngle_ - tempAngle_ - 360.0f;
-		//differenceAngle_ += rot_speed;
-		//rot_.y += rot_speed;
 	}
-	else if (differenceAngle_ < 0.0f) {
+	else if (differenceAngle_ <= -180.0f) {
 		differenceAngle_ = targetAngle_ - tempAngle_ + 360.0f;
 	}
 
-	if (differenceAngle_ == 0.0f) {
-	}
-	else if (differenceAngle_ < 0.0f) {
+	//滑らかに回転させるため
+	//現在の角度に回転スピードを増減させている
+	if (differenceAngle_ < 0.0f) {
 		rot_.y -= rot_speed;
 		tempAngle_ -= rot_speed;
 	}
-	else {
+	else if(differenceAngle_ > 0.0f){
 		rot_.y += rot_speed;
 		tempAngle_ += rot_speed;
 	}
 
+	//360度、一周したら0度に戻すようにしている
 	if (tempAngle_ == 360.0f || tempAngle_ == -360.0f) {
 		tempAngle_ = 0.0f;
 	}
-
 	if (rot_.y == 360.0f || rot_.y == -360.0f) {
 		rot_.y = 0.0f;
 	}
 
-	model_->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
+	//結果をモデルの回転情報として送る
+	PModel_->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
 }

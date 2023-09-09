@@ -15,8 +15,9 @@ public:
 	void draw();
 
 	int getModelHandle() const { return modelHandle_; }
-
 	int getColFrameIndex() const { return colFrameIndex_; }
+	bool getEnable() const { return isEnable_; }
+	VECTOR getPos() const { return pos_; }
 
 	void setPos(VECTOR pos);
 	void setRot(VECTOR rot);
@@ -48,6 +49,8 @@ private:
 
 	bool isUpdateCollsion_ = false;
 
+	bool isEnable_ = false;
+
 	int colFrameIndex_ = 0;
 
 	AnimData animPrev_;
@@ -55,5 +58,8 @@ private:
 
 	int animChangeFrame_ = 0;
 	int animChangeFrameTotal_ = 0;
+
+	VECTOR pos_;
+
 };
 

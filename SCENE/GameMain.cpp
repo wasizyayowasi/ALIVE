@@ -22,6 +22,7 @@ namespace {
 
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::fadeInUpdate)
 {
+	camera_ = make_shared<Camera>();
 	player_ = make_shared<Player>();
 	broom_ = make_shared<Broom>();
 	//depthOfField_ = make_shared<DepthOfField>();
@@ -48,7 +49,7 @@ void GameMain::update(const InputState& input)
 
 void GameMain::draw()
 {
-	broom_->writingScreenUpdate(player_->getPos());
+	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
 
 	int color;
@@ -120,8 +121,8 @@ void GameMain::draw()
 	}
 
 	player_->draw();
-	broom_->graphFilterUpdate();
-	broom_->draw();
+	//broom_->graphFilterUpdate();
+	//broom_->draw();
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	//‰æ–Ê‘S‘Ì‚ð^‚Á•‚É“h‚è‚Â‚Ô‚·
@@ -142,6 +143,7 @@ void GameMain::normalUpdate(const InputState& input)
 {
 
 	player_->update(input,models_);
+	camera_->fixedPointCamera(player_->getPos());
 
 }
 

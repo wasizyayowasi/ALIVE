@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 
+class Camera;
 class Player;
 class Broom;
 class DepthOfField;
@@ -30,6 +31,7 @@ private:
 	int fadeValue_ = 255;
 	int fadeColor_ = 0x000000;
 
+	std::shared_ptr<Camera> camera_;
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Broom> broom_;
 	std::shared_ptr<DepthOfField> depthOfField_;

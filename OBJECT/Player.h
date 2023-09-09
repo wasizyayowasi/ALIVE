@@ -34,15 +34,15 @@ public:
 
 private:
 	//移動処理
-	void moving(const InputState& input);
+	void movingUpdate(const InputState& input);
 	//ジャンプ処理
-	void jump(const InputState& input);
+	void jumpUpdate(const InputState& input);
 	//死亡処理
 	void death(const InputState& input);
 	//待機処理
-	void idle();
+	void changeAnimIdle();
 	//回転処理
-	void rotation();
+	void rotationUpdate();
 
 private:
 
@@ -63,8 +63,8 @@ private:
 	VECTOR rot_ = { 0.0f,0.0f,0.0f };		//プレイヤーの回転
 	VECTOR moveVec_ = { 0.0f,0.0f,0.0f };	//プレイヤーの移動ベクトル
 
-	std::vector<DeadPlayer> deadPlayer_;	//死体を保存するため
-	std::shared_ptr<Model> model_;
+	std::vector<std::shared_ptr<Model>> deadPlayer_;	//死体を保存するため
+	std::shared_ptr<Model> PModel_;
 	std::shared_ptr<Model> cube_;
 	std::vector<std::shared_ptr<Model>> models_;
 	std::shared_ptr<CheckCollitionModel> checkCollitionModel_;

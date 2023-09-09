@@ -10,14 +10,18 @@ Model::Model(const char* fileName)
 	modelHandle_ = MV1LoadModel(fileName);
 	assert(modelHandle_ != -1);
 
+	isEnable_ = true;
+
 	clearAnimData(animPrev_);
 	clearAnimData(animNext_);
 }
 
 Model::Model(int orgModel)
 {
-	assert(modelHandle_ != -1);
 	modelHandle_ = MV1DuplicateModel(orgModel);
+	assert(modelHandle_ != -1);
+
+	isEnable_ = true;
 
 	clearAnimData(animPrev_);
 	clearAnimData(animNext_);
@@ -73,6 +77,7 @@ void Model::draw()
 
 void Model::setPos(VECTOR pos)
 {
+	pos_ = pos;
 	MV1SetPosition(modelHandle_, pos);
 }
 
