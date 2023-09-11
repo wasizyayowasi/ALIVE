@@ -150,6 +150,10 @@ void GameMain::normalUpdate(const InputState& input)
 		manager_.pushScene(new ScenePause(manager_));
 	}
 
+	if (input.isTriggered(InputType::next)) {
+		updateFunc_ = &GameMain::fadeOutUpdate;
+	}
+
 }
 
 void GameMain::fadeOutUpdate(const InputState& input)
