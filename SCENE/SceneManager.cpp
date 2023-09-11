@@ -16,6 +16,12 @@ void SceneManager::pushScene(SceneBase* scene)
 	scenes_.push_front(scene);
 }
 
+void SceneManager::swapScene(SceneBase* scene)
+{
+	scenes_.pop_front();
+	scenes_.push_front(scene);
+}
+
 void SceneManager::popScene()
 {
 	if (scenes_.size() > 1) {

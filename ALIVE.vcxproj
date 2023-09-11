@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SCENE\KeyConfigScene.cpp" />
     <ClCompile Include="SCENE\ScenePause.cpp" />
     <ClCompile Include="UTIL\CheckCollitionModel.cpp" />
     <ClCompile Include="staging\Broom.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="util\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SCENE\KeyConfigScene.h" />
     <ClInclude Include="SCENE\ScenePause.h" />
     <ClInclude Include="UTIL\CheckCollitionModel.h" />
     <ClInclude Include="staging\Broom.h" />

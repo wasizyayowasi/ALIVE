@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneBase.h"
 #include "DxLib.h"
+#include <memory>
 
 class ScenePause : public SceneBase
 {
@@ -16,6 +17,5 @@ private:
 	int selectionNum_ = 0;		//‘I‘ğ”Ô†
 
 	bool isDecision_ = false;
-
 };
 

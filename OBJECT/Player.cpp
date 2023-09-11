@@ -241,7 +241,7 @@ void Player::death(const InputState& input)
 {
 	//Ž€–S
 	{
-		if (input.isTriggered(InputType::z)) {
+		if (input.isTriggered(InputType::death)) {
 			deadPerson_.isEnable = true;
 			deadPerson_.deathPos = pos_;
 

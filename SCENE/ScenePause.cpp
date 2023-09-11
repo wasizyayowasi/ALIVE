@@ -1,6 +1,7 @@
 #include "ScenePause.h"
 #include "SceneManager.h"
 #include "SceneTitle.h"
+#include "KeyConfigScene.h"
 #include "../UTIL/InputState.h"
 #include "../UTIL/game.h"
 #include <algorithm>
@@ -26,13 +27,13 @@ void ScenePause::update(const InputState& input)
 	if (input.isTriggered(InputType::next)) {
 		 switch(selectionNum_) {
 			case 0:
-
+				manager_.swapScene(new KeyConfigScene(manager_,input));
 				break;
 			case 1:
 				manager_.popScene();
 				break;
 			case 2:
-				manager_.changeScene(new SceneTitle(manager_));
+				//manager_.changeScene(new SceneTitle(manager_));
 				break;
 		}
 	}

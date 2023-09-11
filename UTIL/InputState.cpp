@@ -9,7 +9,7 @@ InputState::InputState()
 										{InputCategory::pad,PAD_INPUT_1},
 										{InputCategory::mouse,MOUSE_INPUT_LEFT} };
 	//戻る
-	defaultMapTable[InputType::prev] = { {InputCategory::keybd,KEY_INPUT_DOWN},
+	defaultMapTable[InputType::prev] = { {InputCategory::keybd,KEY_INPUT_BACK},
 										  {InputCategory::pad,PAD_INPUT_2} };
 	//ポーズ
 	defaultMapTable[InputType::pause] = { {InputCategory::keybd,KEY_INPUT_TAB},
@@ -30,7 +30,7 @@ InputState::InputState()
 	defaultMapTable[InputType::space] = { {InputCategory::keybd,KEY_INPUT_SPACE},
 									  {InputCategory::pad,PAD_INPUT_1} };
 	//死亡
-	defaultMapTable[InputType::z] = { {InputCategory::keybd,KEY_INPUT_Z},
+	defaultMapTable[InputType::death] = { {InputCategory::keybd,KEY_INPUT_Z},
 									  {InputCategory::pad,PAD_INPUT_2} };
 	//shift
 	defaultMapTable[InputType::shift] = { {InputCategory::keybd,KEY_INPUT_LSHIFT},
@@ -52,6 +52,14 @@ InputState::InputState()
 	inputNameTable[InputType::next] = "決定";
 	inputNameTable[InputType::prev] = "戻る";
 	inputNameTable[InputType::pause] = "ポーズ";
+	inputNameTable[InputType::up] = "上";
+	inputNameTable[InputType::down] = "下";
+	inputNameTable[InputType::left] = "左";
+	inputNameTable[InputType::right] = "右";
+	inputNameTable[InputType::space] = "space";
+	inputNameTable[InputType::death] = "死亡";
+	inputNameTable[InputType::shift] = "shift";
+	inputNameTable[InputType::ctrl] = "ctrl";
 
 
 	currentInput.resize(static_cast<int>(InputType::max));
