@@ -10,7 +10,6 @@ class Broom;
 class DepthOfField;
 class Model;
 
-
 class GameMain : public SceneBase
 {
 public:

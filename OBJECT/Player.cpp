@@ -15,6 +15,9 @@ namespace {
 	constexpr int anim_runningJump_no = 5;	//走りジャンプ
 	constexpr int anim_death_no = 6;		//走りジャンプ
 	constexpr int anim_walk_no = 7;			//歩く
+	constexpr int anim_idleToSitup_no = 8;	//idle状態から座る
+	constexpr int anim_situpToIdle_no = 9;	//座っている状態からidle
+	constexpr int anim_sit_no = 10;			//座っている
 
 	//ジャンプ
 	constexpr float jump_power = 15.0f;
@@ -24,7 +27,7 @@ namespace {
 	constexpr float rot_speed = 15.0f;
 
 	//ファイルパス
-	const char* const player_Filename = "DATA/player/player7.mv1";
+	const char* const player_Filename = "DATA/player/player9.mv1";
 	
 
 	//プレイヤーサイズ
@@ -54,10 +57,6 @@ Player::Player()
 	//マップやブロックなどの当たり判定の生成
 	checkCollitionModel_ = make_shared<CheckCollitionModel>(std::shared_ptr<Player>(this));
 
-	deadPlayer_.push_back(make_shared<Model>(PModel_->getModelHandle()));
-
-	deadPlayer_.back()->setScale(player_scale);
-
 	jump_.isJump = false;
 	jump_.jumpVec = 0.0f;
 
@@ -74,17 +73,22 @@ void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>>
 	movingSpeed_ = 0.0f;
 
 	PModel_->update();
+	for (auto& dead : deadPlayer_) {
+		dead->update();
+	}
 
 	if (!isDead_) {
 		movingUpdate(input);
 		rotationUpdate();
 		jumpUpdate(input);
-		death(input);
+		sitUpdate(input);
 		changeAnimIdle();
+		death(input);
 	}
 	else {
 		if (PModel_->isAnimEnd()) {
-
+			pos_ = checkPoint_;
+			
 			isDead_ = false;
 		}
 	}
@@ -93,6 +97,7 @@ void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>>
 		models.push_back(deadPerson);
 	}
 	
+	PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 
 	PModel_->setPos(pos_);
 
@@ -111,11 +116,6 @@ void Player::draw()
 	//cube_->draw();
 
 	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
-	DrawFormatString(0, 16, 0x448844, "targetAngle : %.2f", targetAngle_);
-	DrawFormatString(0, 32, 0x448844, "rot_ : %.2f", rot_.y);
-	DrawFormatString(0, 48, 0x448844, "tempAngle : %.2f", tempAngle_);
-	DrawFormatString(0, 64, 0x448844, "jumpFlag : %d", jump_.isJump);
-	DrawFormatString(0, 80, 0x448844, "x:%.2f y:%.2f z:%.2f", pos_.x, pos_.y, pos_.z);
 	for (auto& deadPlayer : deadPlayer_) {
 		if (deadPlayer->getEnable()) {
 			DrawFormatString(0, 96, 0x448844, "x:%.2f y:%.2f z:%.2f", deadPlayer->getPos().x, deadPlayer->getPos().y, deadPlayer->getPos().z);
@@ -146,6 +146,7 @@ void Player::movingUpdate(const InputState& input)
 			movingSpeed_ = walk_speed;
 			moveVec_.z += movingSpeed_;
 			animNo_ = anim_walk_no;
+			isAnimLoop_ = true;
 			isMoving = true;
 			targetAngle_ = 180.0f;
 		}
@@ -153,6 +154,7 @@ void Player::movingUpdate(const InputState& input)
 			movingSpeed_ = walk_speed;
 			moveVec_.z -= movingSpeed_;
 			animNo_ = anim_walk_no;
+			isAnimLoop_ = true;
 			isMoving = true;
 			targetAngle_ = 0.0f;
 		}
@@ -160,6 +162,7 @@ void Player::movingUpdate(const InputState& input)
 			movingSpeed_ = walk_speed;
 			moveVec_.x -= movingSpeed_;
 			animNo_ = anim_walk_no;
+			isAnimLoop_ = true;
 			isMoving = true;
 			targetAngle_ = 90.0f;
 		}
@@ -167,6 +170,7 @@ void Player::movingUpdate(const InputState& input)
 			movingSpeed_ = walk_speed;
 			moveVec_.x += movingSpeed_;
 			animNo_ = anim_walk_no;
+			isAnimLoop_ = true;
 			isMoving = true;
 			targetAngle_ = 270.0f;
 		}
@@ -191,7 +195,7 @@ void Player::movingUpdate(const InputState& input)
 
 		rotationUpdate();
 
-		PModel_->changeAnimation(animNo_, true, false, 20);
+		//PModel_->changeAnimation(animNo_, true, false, 20);
 
 		//デバッグ用
 		/*{
@@ -211,9 +215,15 @@ void Player::jumpUpdate(const InputState& input)
 	{
 		if (!jump_.isJump) {
 			if (input.isPressed(InputType::space)) {
-				animNo_ = anim_jump_no;
+				if (input.isPressed(InputType::shift)) {
+					animNo_ = anim_runningJump_no;
+				}
+				else {
+					animNo_ = anim_jump_no;
+				}
 				jump_.jumpVec += jump_power;
 				jump_.isJump = true;
+				isAnimLoop_ = false;
 			}
 		}
 
@@ -225,9 +235,6 @@ void Player::jumpUpdate(const InputState& input)
 			}
 		}
 	}
-
-	PModel_->changeAnimation(animNo_, false, false, 20);
-
 }
 
 void Player::death(const InputState& input)
@@ -235,34 +242,19 @@ void Player::death(const InputState& input)
 	//死亡
 	{
 		if (input.isTriggered(InputType::z)) {
-			DeadPlayer deadPerson;
-			deadPerson.isEnable = true;
-			deadPerson.deathPos = pos_;
+			deadPerson_.isEnable = true;
+			deadPerson_.deathPos = pos_;
 
-			isDead_ = true;
-			
-			deadPlayer_.back()->setPos(deadPerson.deathPos);
-			deadPlayer_.back()->setScale(player_scale);
-			deadPlayer_.back()->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
-			deadPlayer_.back()->setUseCollision(true, false);
+			deadPersonGenerater();
 
 			animNo_ = anim_death_no;
 
-			deathNum = 0;
-			for (const auto person : deadPlayer_) {
-				if (person->getEnable()) {
-					deathNum++;
-					if (deathNum > 9) {
-						deadPlayer_.erase(deadPlayer_.begin());
-						deathNum--;
-					}
-				}
-			}
+			isAnimLoop_ = false;
+			isDead_ = true;
+			
+			deadPlayer_.back()->changeAnimation(animNo_, false, false, 10);
 
 		}
-
-		PModel_->changeAnimation(animNo_, false, false, 10);
-
 	}
 }
 
@@ -270,9 +262,9 @@ void Player::changeAnimIdle()
 {
 	//待機アニメーションに戻す
 	if (!isMoving) {
-		if (animNo_ == anim_walk_no || animNo_ == anim_run_no) {
+		if (animNo_ == anim_walk_no || animNo_ == anim_run_no||animNo_ == anim_death_no) {
 			animNo_ = anim_idle_no;
-			PModel_->changeAnimation(animNo_, true, false, 10);
+			isAnimLoop_ = true;
 		}
 	}
 }
@@ -313,4 +305,47 @@ void Player::rotationUpdate()
 
 	//結果をモデルの回転情報として送る
 	PModel_->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
+}
+
+void Player::deadPersonGenerater()
+{
+
+	deadPlayer_.push_back(make_shared<Model>(PModel_->getModelHandle()));
+	deadPlayer_.back()->setPos(deadPerson_.deathPos);
+	deadPlayer_.back()->setScale(player_scale);
+	deadPlayer_.back()->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
+	deadPlayer_.back()->setUseCollision(true, false);
+
+	deathNum = 0;
+	for (const auto person : deadPlayer_) {
+		if (person->getEnable()) {
+			deathNum++;
+			if (deathNum > 9) {
+				deadPlayer_.erase(deadPlayer_.begin());
+				deathNum--;
+			}
+		}
+	}
+}
+
+void Player::sitUpdate(const InputState& input)
+{
+	if (input.isTriggered(InputType::ctrl)) {
+		if (!isSitting_) {
+			animNo_ = anim_idleToSitup_no;
+			isSitting_ = true;
+			isAnimLoop_ = false;
+		}
+		else {
+			animNo_ = anim_situpToIdle_no;
+			isSitting_ = false;
+			isAnimLoop_ = false;
+		}
+		
+	}
+
+	if (animNo_ == anim_idleToSitup_no && PModel_->isAnimEnd()) {
+		animNo_ = anim_sit_no;
+	}
+
 }

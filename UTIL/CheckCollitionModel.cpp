@@ -202,7 +202,9 @@ void CheckCollitionModel::checkCollition(VECTOR moveVec, std::vector<std::shared
 
 	player_->setPos(nowPos);
 	for (auto& result : HitDim) {
-		MV1CollResultPolyDimTerminate(result);
+		if (result.HitNum > 0) {
+			MV1CollResultPolyDimTerminate(result);
+		}
 	}
 	
 }

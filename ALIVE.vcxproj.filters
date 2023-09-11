@@ -81,6 +81,9 @@
     <ClCompile Include="UTIL\CheckCollitionModel.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="SCENE\ScenePause.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scene\SceneTitle.h">
@@ -124,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="UTIL\CheckCollitionModel.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SCENE\ScenePause.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

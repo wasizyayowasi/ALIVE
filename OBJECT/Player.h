@@ -43,6 +43,10 @@ private:
 	void changeAnimIdle();
 	//回転処理
 	void rotationUpdate();
+	//死人生成
+	void deadPersonGenerater();
+	//座る
+	void sitUpdate(const InputState& input);
 
 private:
 
@@ -56,12 +60,17 @@ private:
 
 	bool isMoving = false;					//移動中か
 	bool isDead_ = false;					//死んでいるか
+	bool isSitting_ = false;				//座っているか
+	bool isAnimLoop_ = true;				//アニメーションをループさせるか
 
 	JumpInfo jump_;							//ジャンプ関連の構造体
 
-	VECTOR pos_ = { 0.0f,0.0f,0.0f };		//プレイヤーのポジション
-	VECTOR rot_ = { 0.0f,0.0f,0.0f };		//プレイヤーの回転
-	VECTOR moveVec_ = { 0.0f,0.0f,0.0f };	//プレイヤーの移動ベクトル
+	DeadPlayer deadPerson_;
+
+	VECTOR checkPoint_ = { 0.0f,0.0f, 0.0f };	//中間ポイント
+	VECTOR pos_ = { 0.0f,0.0f,0.0f };			//プレイヤーのポジション
+	VECTOR rot_ = { 0.0f,0.0f,0.0f };			//プレイヤーの回転
+	VECTOR moveVec_ = { 0.0f,0.0f,0.0f };		//プレイヤーの移動ベクトル
 
 	std::vector<std::shared_ptr<Model>> deadPlayer_;	//死体を保存するため
 	std::shared_ptr<Model> PModel_;

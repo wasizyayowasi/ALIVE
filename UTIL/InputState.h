@@ -16,6 +16,7 @@ enum class InputType
 	space,			///space
 	z,				//死亡入力
 	shift,			//shift
+	ctrl,			///ctrl
 	max,			///最大入力インデックス
 };
 

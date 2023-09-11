@@ -5,7 +5,7 @@
 InputState::InputState()
 {
 	//ŽŸ‚Ö
-	defaultMapTable[InputType::next] = { {InputCategory::keybd,KEY_INPUT_UP},
+	defaultMapTable[InputType::next] = { {InputCategory::keybd,KEY_INPUT_RETURN},
 										{InputCategory::pad,PAD_INPUT_1},
 										{InputCategory::mouse,MOUSE_INPUT_LEFT} };
 	//–ß‚é
@@ -28,13 +28,16 @@ InputState::InputState()
 									  {InputCategory::pad,PAD_INPUT_RIGHT} };
 	//Space
 	defaultMapTable[InputType::space] = { {InputCategory::keybd,KEY_INPUT_SPACE},
-									  {InputCategory::pad,PAD_INPUT_RIGHT} };
+									  {InputCategory::pad,PAD_INPUT_1} };
 	//Ž€–S
 	defaultMapTable[InputType::z] = { {InputCategory::keybd,KEY_INPUT_Z},
-									  {InputCategory::pad,PAD_INPUT_RIGHT} };
+									  {InputCategory::pad,PAD_INPUT_2} };
 	//shift
 	defaultMapTable[InputType::shift] = { {InputCategory::keybd,KEY_INPUT_LSHIFT},
-									  {InputCategory::pad,PAD_INPUT_RIGHT} };
+									  {InputCategory::pad,PAD_INPUT_3} };
+	//ctrl
+	defaultMapTable[InputType::ctrl] = { {InputCategory::keybd,KEY_INPUT_LCONTROL},
+									  {InputCategory::pad,PAD_INPUT_4} };
 
 
 
