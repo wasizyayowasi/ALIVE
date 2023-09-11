@@ -82,14 +82,44 @@ void KeyConfigScene::changeKeyUpdate(const InputState& input)
 		else {
 			color_ = 0xff0000;
 		}
-		return;
 	}
 
-	if (!isEditing_) {
-		if (input.isTriggered(InputType::prev)) {
-			updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
-			return;
+	//キーボードとパッドの入力を得る
+	if (isEditing_) {
+		char keyState[256];
+		GetHitKeyStateAll(keyState);
+		auto padState = GetJoypadInputState(DX_INPUT_PAD1);
+
+		int idx = 0;
+		InputType currentType = InputType::max;
+		//現在の選択inputNameTableを取得する
+		for (const auto& name : inputState_.inputNameTable) {
+			if (selectNum_ == idx) {
+				currentType = name.first;
+				break;
+			}
+			idx++;
 		}
+
+		//キーボードの入力を変更する
+		for (int i = 0; i < 256; i++) {
+			if (keyState[i]) {
+				configInput.rewriteInputInfo(currentType, InputCategory::keybd, i);
+				break;
+			}
+		}
+		//パッドの入力を変更する
+		if (padState != 0) {
+			configInput.rewriteInputInfo(currentType, InputCategory::pad, padState);
+		}
+	}
+	
+
+	if (input.isTriggered(InputType::prev)) {
+		updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
+		isEditing_ = !isEditing_;
+		color_ = 0xff0000;
+		return;
 	}
 
 }
