@@ -20,14 +20,14 @@ namespace {
 	constexpr int anim_sit_no = 10;			//座っている
 
 	//ジャンプ
-	constexpr float jump_power = 15.0f;
-	constexpr float gravity = -1.0f;
+	constexpr float jump_power = 10.0f;
+	constexpr float gravity = -0.4f;
 
 	//回転スピード
 	constexpr float rot_speed = 15.0f;
 
 	//ファイルパス
-	const char* const player_Filename = "DATA/player/player9.mv1";
+	const char* const player_Filename = "DATA/player/player10.mv1";
 	
 
 	//プレイヤーサイズ
@@ -80,9 +80,9 @@ void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>>
 	if (!isDead_) {
 		movingUpdate(input);
 		rotationUpdate();
-		jumpUpdate(input);
 		sitUpdate(input);
 		changeAnimIdle();
+		jumpUpdate(input);
 		death(input);
 	}
 	else {
@@ -260,7 +260,7 @@ void Player::changeAnimIdle()
 {
 	//待機アニメーションに戻す
 	if (!isMoving) {
-		if (animNo_ == anim_walk_no || animNo_ == anim_run_no||animNo_ == anim_death_no) {
+		if (animNo_ == anim_walk_no || animNo_ == anim_run_no||animNo_ == anim_death_no || (animNo_ == anim_jump_no && !jump_.isJump)) {
 			animNo_ = anim_idle_no;
 			isAnimLoop_ = true;
 		}
