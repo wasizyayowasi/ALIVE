@@ -1,32 +1,31 @@
 #include "SceneManager.h"
 #include "SceneBase.h"
 
-void SceneManager::changeScene(SceneBase* scene)
+using namespace std;
+
+void SceneManager::changeScene(std::shared_ptr<SceneBase> scene)
 {
 	while (!scenes_.empty())
 	{
-		delete scenes_.front();
 		scenes_.pop_front();
 	}
-	scenes_.push_front(scene);
+	scenes_.push_front(shared_ptr<SceneBase>(scene));
 }
 
-void SceneManager::pushScene(SceneBase* scene)
+void SceneManager::pushScene(std::shared_ptr<SceneBase> scene)
 {
 	scenes_.push_front(scene);
 }
 
-void SceneManager::swapScene(SceneBase* scene)
+void SceneManager::swapScene(std::shared_ptr<SceneBase> scene)
 {
-	delete scenes_.front();
 	scenes_.pop_front();
-	scenes_.push_front(scene);
+	scenes_.push_front(shared_ptr<SceneBase>(scene));
 }
 
 void SceneManager::popScene()
 {
 	if (scenes_.size() > 1) {
-		delete scenes_.front();
 		scenes_.pop_front();
 	}
 }

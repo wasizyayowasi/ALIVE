@@ -65,7 +65,7 @@ void KeyConfigScene::selectChangeKeyUpdate(const InputState& input)
 
 	//‚Ğ‚Æ‚Â‘O‚ÌƒV[ƒ“‚É–ß‚é
 	if (input.isTriggered(InputType::prev)) {
-		manager_.swapScene(new ScenePause(manager_));
+		manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 		return;
 	}
 

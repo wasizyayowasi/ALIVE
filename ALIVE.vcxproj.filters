@@ -78,7 +78,7 @@
     <ClCompile Include="staging\Broom.cpp">
       <Filter>ソース ファイル\stanging</Filter>
     </ClCompile>
-    <ClCompile Include="UTIL\CheckCollitionModel.cpp">
+    <ClCompile Include="UTIL\CheckCollisionModel.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="SCENE\ScenePause.cpp">
@@ -128,7 +128,7 @@
     <ClInclude Include="staging\DepthOfField.h">
       <Filter>ヘッダー ファイル\stanging</Filter>
     </ClInclude>
-    <ClInclude Include="UTIL\CheckCollitionModel.h">
+    <ClInclude Include="UTIL\CheckCollisionModel.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="SCENE\ScenePause.h">

@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "../UTIL/InputState.h"
 #include "../UTIL/Model.h"
-#include "../UTIL/CheckCollitionModel.h"
+#include "../UTIL/CheckCollisionModel.h"
 #include<algorithm>
 #include<string>
 
@@ -55,7 +55,7 @@ Player::Player()
 	//プレイヤーの大きさの調整
 	PModel_->setScale(player_scale);
 	//マップやブロックなどの当たり判定の生成
-	checkCollitionModel_ = make_shared<CheckCollitionModel>(std::shared_ptr<Player>(this));
+	checkCollisionModel_ = make_shared<CheckCollisionModel>();
 
 	jump_.isJump = false;
 	jump_.jumpVec = 0.0f;
@@ -101,7 +101,7 @@ void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>>
 
 	PModel_->setPos(pos_);
 
-	checkCollitionModel_->checkCollition(moveVec_, models, player_hegiht, jump_.isJump, jump_.jumpVec);
+	checkCollisionModel_->checkCollision(*this,moveVec_, models, player_hegiht, jump_.isJump, jump_.jumpVec);
 }
 
 void Player::draw()
@@ -194,8 +194,6 @@ void Player::movingUpdate(const InputState& input)
 		moveVec_ = VScale(VNorm(moveVec_),movingSpeed_);
 
 		rotationUpdate();
-
-		//PModel_->changeAnimation(animNo_, true, false, 20);
 
 		//デバッグ用
 		/*{

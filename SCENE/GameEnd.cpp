@@ -49,7 +49,7 @@ void GameEnd::fadeOutUpdate(const InputState& input)
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) {
-		manager_.changeScene(new SceneTitle(manager_));
+		manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
 		return;
 	}
 }

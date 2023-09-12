@@ -141,7 +141,7 @@
   <ItemGroup>
     <ClCompile Include="SCENE\KeyConfigScene.cpp" />
     <ClCompile Include="SCENE\ScenePause.cpp" />
-    <ClCompile Include="UTIL\CheckCollitionModel.cpp" />
+    <ClCompile Include="UTIL\CheckCollisionModel.cpp" />
     <ClCompile Include="staging\Broom.cpp" />
     <ClCompile Include="staging\DepthOfField.cpp" />
     <ClCompile Include="object\Camera.cpp" />
@@ -159,7 +159,7 @@
   <ItemGroup>
     <ClInclude Include="SCENE\KeyConfigScene.h" />
     <ClInclude Include="SCENE\ScenePause.h" />
-    <ClInclude Include="UTIL\CheckCollitionModel.h" />
+    <ClInclude Include="UTIL\CheckCollisionModel.h" />
     <ClInclude Include="staging\Broom.h" />
     <ClInclude Include="staging\DepthOfField.h" />
     <ClInclude Include="object\Camera.h" />

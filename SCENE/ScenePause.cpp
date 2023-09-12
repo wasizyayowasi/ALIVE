@@ -27,13 +27,13 @@ void ScenePause::update(const InputState& input)
 	if (input.isTriggered(InputType::next)) {
 		 switch(selectionNum_) {
 			case 0:
-				manager_.swapScene(new KeyConfigScene(manager_,input));
+				manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<KeyConfigScene>(manager_,input)));
 				break;
 			case 1:
 				manager_.popScene();
 				break;
 			case 2:
-				//manager_.changeScene(new SceneTitle(manager_));
+				manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
 				break;
 		}
 	}
@@ -55,6 +55,4 @@ void ScenePause::draw()
 	DrawString(0, 32, "‘€ìİ’è",0x00ff00);
 	DrawString(0, 48, "–ß‚é",0x00ff00);
 	DrawString(0, 64, "ƒ^ƒCƒgƒ‹‚Ö",0x00ff00);
-
-	
 }

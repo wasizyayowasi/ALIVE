@@ -36,7 +36,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	InputState input;
 	SceneManager manager;
-	manager.changeScene(new GameMain(manager));
+	manager.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager)));
 
 	while (ProcessMessage() == 0) {
 

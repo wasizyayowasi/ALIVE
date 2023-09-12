@@ -1,4 +1,4 @@
-#include "CheckCollitionModel.h"
+#include "CheckCollisionModel.h"
 #include "../OBJECT/Player.h"
 #include "Model.h"
 
@@ -6,20 +6,20 @@ namespace {
 	constexpr float collition_radius = 200.0f;
 }
 
-CheckCollitionModel::CheckCollitionModel(std::shared_ptr<Player> player):player_(player)
+CheckCollisionModel::CheckCollisionModel()
 {
 }
 
-CheckCollitionModel::~CheckCollitionModel()
+CheckCollisionModel::~CheckCollisionModel()
 {
 }
 
-void CheckCollitionModel::checkCollitionPersonalArea(VECTOR moveVec, std::vector<std::shared_ptr<Model>> models)
+void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR moveVec, std::vector<std::shared_ptr<Model>> models)
 {
 	//更新前のポジションを取得する
-	oldPos = player_->getPos();
+	oldPos = player.getPos();
 	//更新後のポジションを取得する
-	nowPos = VAdd(player_->getPos(), moveVec);
+	nowPos = VAdd(player.getPos(), moveVec);
 	//モデルと球の当たり判定
 	for (int i = 0; i < models.size();i++) {
 		MV1RefreshCollInfo(models[i]->getModelHandle(), -1);
@@ -67,7 +67,7 @@ void CheckCollitionModel::checkCollitionPersonalArea(VECTOR moveVec, std::vector
 	
 }
 
-void CheckCollitionModel::checkCollitionWall(VECTOR moveVec,float playerHeight)
+void CheckCollisionModel::checkCollisionWall(VECTOR moveVec,float playerHeight)
 {
 	//壁の処理
 	if (kabeNum != 0) {
@@ -133,11 +133,11 @@ void CheckCollitionModel::checkCollitionWall(VECTOR moveVec,float playerHeight)
 	}
 }
 
-void CheckCollitionModel::checkCollitionFloor(VECTOR moveVec,bool jumpFlag, float playerHeight)
+void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,bool jumpFlag, float playerHeight)
 {
 
-	float jumpVec = player_->getJumpInfo().jumpVec;
-	bool isJump = player_->getJumpInfo().isJump;
+	float jumpVec = player.getJumpInfo().jumpVec;
+	bool isJump = player.getJumpInfo().isJump;
 
 	//床との当たり判定
 	if (yukaNum != 0) {
@@ -189,18 +189,23 @@ void CheckCollitionModel::checkCollitionFloor(VECTOR moveVec,bool jumpFlag, floa
 		}
 	}
 
-	player_->setJumpInfo(isJump, jumpVec);
+	player.setJumpInfo(isJump, jumpVec);
 
 }
 
-void CheckCollitionModel::checkCollition(VECTOR moveVec, std::vector<std::shared_ptr<Model>> model, float playerHeight, bool isJump, float jumpVec)
+void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::vector<std::shared_ptr<Model>> model, float playerHeight, bool isJump, float jumpVec)
 {
+	//プレイヤーから一定範囲の衝突判定をとる
+	checkCollisionPersonalArea(player,moveVec,model);
+	//取得した衝突結果から壁に当たった場合の処理
+	checkCollisionWall(moveVec,playerHeight);
+	//取得した衝突結果から床に当たった場合の処理
+	checkCollisionFloor(player, moveVec,isJump,playerHeight);
 
-	checkCollitionPersonalArea(moveVec,model);
-	checkCollitionWall(moveVec,playerHeight);
-	checkCollitionFloor(moveVec,isJump,playerHeight);
+	//ポジションのセット
+	player.setPos(nowPos);
 
-	player_->setPos(nowPos);
+	//衝突判定の消去
 	for (auto& result : HitDim) {
 		if (result.HitNum > 0) {
 			MV1CollResultPolyDimTerminate(result);
