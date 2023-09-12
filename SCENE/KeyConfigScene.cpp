@@ -12,6 +12,7 @@ KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):S
 
 KeyConfigScene::~KeyConfigScene()
 {
+	inputState_.savekeyInfo();
 }
 
 void KeyConfigScene::update(const InputState& input)

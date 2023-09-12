@@ -18,6 +18,7 @@ void SceneManager::pushScene(SceneBase* scene)
 
 void SceneManager::swapScene(SceneBase* scene)
 {
+	delete scenes_.front();
 	scenes_.pop_front();
 	scenes_.push_front(scene);
 }

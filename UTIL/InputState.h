@@ -23,7 +23,6 @@ enum class InputType
 enum class InputCategory {
 	keybd,		//キーボード
 	pad,		//ゲームパッド
-	mouse,		//マウス
 };
 
 struct InputInfo {

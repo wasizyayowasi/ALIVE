@@ -1,13 +1,13 @@
 #include "InputState.h"
 #include "InputState.h"
 #include "DxLib.h"
+#include <cassert>
 
 InputState::InputState()
 {
 	//次へ
 	defaultMapTable[InputType::next] = { {InputCategory::keybd,KEY_INPUT_RETURN},
-										{InputCategory::pad,PAD_INPUT_1},
-										{InputCategory::mouse,MOUSE_INPUT_LEFT} };
+										{InputCategory::pad,PAD_INPUT_1}};
 	//戻る
 	defaultMapTable[InputType::prev] = { {InputCategory::keybd,KEY_INPUT_BACK},
 										  {InputCategory::pad,PAD_INPUT_2} };
@@ -39,11 +39,9 @@ InputState::InputState()
 	defaultMapTable[InputType::ctrl] = { {InputCategory::keybd,KEY_INPUT_LCONTROL},
 									  {InputCategory::pad,PAD_INPUT_4} };
 
-
-
 	inputMapTable = defaultMapTable;
 
-	loadKeyInfo();
+	//loadKeyInfo();
 
 	//一時マップテーブルにコピー
 	tempMapTable = inputMapTable;
@@ -97,10 +95,7 @@ void InputState::update()
 			else if (input.cat == InputCategory::pad) {
 				currentInput[static_cast<int>(keymap.first)] = padState & input.id;
 			}
-			else if (input.cat == InputCategory::mouse) {
-				currentInput[static_cast<int>(keymap.first)] = mouseState & input.id;
-			}
-			//3つの入力のうちどれかがtrueだったらもう「入力されてる」
+			//2つの入力のうちどれかがtrueだったらもう「入力されてる」
 			//とみなして、breakする。
 			if (currentInput[static_cast<int>(keymap.first)]) {
 				break;
@@ -156,9 +151,7 @@ void InputState::savekeyInfo() const
 	FILE* fp = nullptr;
 
 	auto err = fopen_s(&fp, "key.info", "wb");
-	if (fp == nullptr) {
-		return;
-	}
+	assert(fp != nullptr);
 
 	//仮想キータイプの数を書き込む
 	int keyTypeNum = inputMapTable.size();
@@ -183,12 +176,15 @@ void InputState::savekeyInfo() const
 void InputState::loadKeyInfo()
 {
 	int handle = FileRead_open("key.info");
-	if (handle == 0) {
-		return;
-	}
+	assert(handle != -1);
+
 	int keyTypeNum = 0;
 	FileRead_read(&keyTypeNum, sizeof(keyTypeNum), handle);
+
+	//初期化した中身を消す
 	inputMapTable.clear();
+
+	//外部データの読み込み
 	for (int i = 0; i < keyTypeNum; i++) {
 		int  inputType;
 		FileRead_read(&inputType, sizeof(inputType), handle);
