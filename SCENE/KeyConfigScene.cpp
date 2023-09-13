@@ -12,6 +12,7 @@ KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):S
 
 KeyConfigScene::~KeyConfigScene()
 {
+	//現在のキー入力情報を外部データとして書き出す
 	inputState_.savekeyInfo();
 }
 
@@ -22,7 +23,7 @@ void KeyConfigScene::update(const InputState& input)
 
 void KeyConfigScene::draw()
 {
-
+	//多分削除する
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);

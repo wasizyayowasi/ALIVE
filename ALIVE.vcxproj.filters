@@ -63,9 +63,6 @@
     <ClCompile Include="util\Model.cpp">
       <Filter>ソース ファイル\util</Filter>
     </ClCompile>
-    <ClCompile Include="util\Vec2.cpp">
-      <Filter>ソース ファイル\util</Filter>
-    </ClCompile>
     <ClCompile Include="object\Player.cpp">
       <Filter>ソース ファイル\object</Filter>
     </ClCompile>
@@ -111,9 +108,6 @@
       <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
     <ClInclude Include="util\Model.h">
-      <Filter>ヘッダー ファイル\util</Filter>
-    </ClInclude>
-    <ClInclude Include="util\Vec2.h">
       <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
     <ClInclude Include="object\Player.h">

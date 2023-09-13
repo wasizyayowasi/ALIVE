@@ -23,7 +23,7 @@ void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR move
 	//モデルと球の当たり判定
 	for (int i = 0; i < models.size();i++) {
 		MV1RefreshCollInfo(models[i]->getModelHandle(), -1);
-		HitDim[i] = MV1CollCheck_Sphere(models[i]->getModelHandle(), -1, oldPos, collition_radius + VSize(moveVec));
+		hitDim_.push_back(MV1CollCheck_Sphere(models[i]->getModelHandle(), -1, oldPos, collition_radius + VSize(moveVec)));
 	}
 	
 
@@ -39,7 +39,7 @@ void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR move
 	yukaNum = 0;
 
 	//前にとったモデルと球の当たり判定処理
-	for (auto& result : HitDim) {
+	for (auto& result : hitDim_) {
 		for (i = 0; i < result.HitNum; i++) {
 			//モデルの法線ベクトル
 			if (result.Dim[i].Normal.y < 0.000001f && result.Dim[i].Normal.y > -0.000001f) {
@@ -206,10 +206,8 @@ void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::ve
 	player.setPos(nowPos);
 
 	//衝突判定の消去
-	for (auto& result : HitDim) {
-		if (result.HitNum > 0) {
-			MV1CollResultPolyDimTerminate(result);
-		}
+	for (auto& result : hitDim_) {
+		hitDim_.pop_back();
 	}
 	
 }

@@ -32,11 +32,15 @@ public:
 	JumpInfo getJumpInfo() { return jump_; }
 	void setJumpInfo(bool isJump, float jumpVec);
 
+	void idleUpdate(const InputState& input);
+
 private:
 	//移動処理
 	void movingUpdate(const InputState& input);
 	//ジャンプ処理
 	void jumpUpdate(const InputState& input);
+	//走りジャンプ処理
+	void runningJumpUpdate(const InputState& input);
 	//死亡処理
 	void death(const InputState& input);
 	//待機処理
@@ -76,5 +80,8 @@ private:
 	std::shared_ptr<Model> PModel_;
 	std::vector<std::shared_ptr<Model>> models_;
 	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;
+
+	void(Player::* updateFunc_)(const InputState& input);
+
 };
 

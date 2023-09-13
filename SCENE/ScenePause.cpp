@@ -16,28 +16,35 @@ ScenePause::~ScenePause()
 
 void ScenePause::update(const InputState& input)
 {
-
-	if (input.isTriggered(InputType::up)) {
-		selectionNum_ = (std::max)(selectionNum_ - 1, 0);
+	//項目選択
+	{
+		if (input.isTriggered(InputType::up)) {
+			selectionNum_ = (std::max)(selectionNum_ - 1, 0);
+		}
+		if (input.isTriggered(InputType::down)) {
+			selectionNum_ = (std::min)(selectionNum_ + 1, 2);
+		}
 	}
-	if (input.isTriggered(InputType::down)) {
-		selectionNum_ = (std::min)(selectionNum_ + 1, 2);
-	}
+	
 
 	if (input.isTriggered(InputType::next)) {
 		 switch(selectionNum_) {
+			 //キーコンフィグシーンへの遷移
 			case 0:
 				manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<KeyConfigScene>(manager_,input)));
 				break;
+			//一個前のシーン(メインシーン)へ遷移
 			case 1:
 				manager_.popScene();
 				break;
+			//タイトルシーンへの遷移
 			case 2:
 				manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
 				break;
 		}
 	}
 
+	//一個前のシーン(メインシーン)へ遷移
 	if (input.isTriggered(InputType::pause)) {
 		manager_.popScene();
 	}

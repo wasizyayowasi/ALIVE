@@ -154,7 +154,6 @@
     <ClCompile Include="scene\SceneTitle.cpp" />
     <ClCompile Include="util\InputState.cpp" />
     <ClCompile Include="util\Model.cpp" />
-    <ClCompile Include="util\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SCENE\KeyConfigScene.h" />
@@ -172,7 +171,6 @@
     <ClInclude Include="util\game.h" />
     <ClInclude Include="util\InputState.h" />
     <ClInclude Include="util\Model.h" />
-    <ClInclude Include="util\Vec2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

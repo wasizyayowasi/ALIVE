@@ -31,7 +31,7 @@ private:
 	bool hitFlag = false;
 
 	//モデルとの当たり判定用メソッド
-	MV1_COLL_RESULT_POLY_DIM HitDim[11];
+	std::vector<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 	MV1_COLL_RESULT_POLY* kabe[max_hit_coll];
 	MV1_COLL_RESULT_POLY* yuka[max_hit_coll];
 	MV1_COLL_RESULT_POLY* poly;
