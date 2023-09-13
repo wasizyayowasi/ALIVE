@@ -6,7 +6,7 @@ namespace Game {
 	//windowモード
 	constexpr bool kWindowMode = true;
 	//window名
-	const char* const kTitleText = " ";
+	const char* const kTitleText = "ALIVE";
 	//windowサイズ
 	constexpr int kScreenWidth = 1280;
 	constexpr int kScreenHeight = 880;

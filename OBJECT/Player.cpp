@@ -27,7 +27,7 @@ namespace {
 	constexpr float rot_speed = 15.0f;
 
 	//ファイルパス
-	const char* const player_Filename = "DATA/player/player10.mv1";
+	const char* const player_Filename = "DATA/player/player11.mv1";
 	
 
 	//プレイヤーサイズ
@@ -101,7 +101,9 @@ void Player::draw()
 	}
 	
 	DrawFormatString(0, 96, 0x448844, "%d", animNo_);
-	DrawFormatString(0, 112, 0x448844, "%d", isAnimLoop_);
+	DrawFormatString(0, 112, 0x448844, "%d", jump_.isJump);
+	DrawFormatString(0, 128, 0x448844, "x:%.2f y:%.2f z:%.2f", pos_.x, pos_.y, pos_.z);
+	DrawFormatString(0, 144, 0x448844, "%.2f", jump_.jumpVec);
 
 	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
 	for (auto& deadPlayer : deadPlayer_) {
@@ -153,6 +155,8 @@ void Player::idleUpdate(const InputState& input)
 		if (PModel_->isAnimEnd()) {
 			pos_ = checkPoint_;
 			isDead_ = false;
+			deadPersonGenerater();
+			deadPlayer_.back()->setAnimEndFrame(animNo_);
 		}
 	}
 
@@ -288,9 +292,6 @@ void Player::runningJumpUpdate(const InputState& input)
 	if (jump_.isJump) {
 		jump_.jumpVec += gravity;
 		pos_.y += jump_.jumpVec;
-		if (pos_.y <= 0.0f) {
-			jump_.isJump = false;
-		}
 	}
 
 	if (PModel_->isAnimEnd()) {
@@ -307,16 +308,13 @@ void Player::death(const InputState& input)
 		if (input.isTriggered(InputType::death)) {
 			deadPerson_.isEnable = true;
 			deadPerson_.deathPos = pos_;
-
-			deadPersonGenerater();
-
-			animNo_ = anim_death_no;
+			
+			if (animNo_ != anim_sit_no) {
+				animNo_ = anim_death_no;
+			}
 
 			isAnimLoop_ = false;
 			isDead_ = true;
-			
-			deadPlayer_.back()->changeAnimation(animNo_, false, false, 10);
-
 		}
 	}
 }
@@ -325,10 +323,10 @@ void Player::changeAnimIdle()
 {
 	//待機アニメーションに戻す
 	if (!isMoving) {
-		if (animNo_ == anim_walk_no || animNo_ == anim_run_no||animNo_ == anim_death_no || (animNo_ == anim_jump_no || animNo_ == anim_runningJump_no && !jump_.isJump)) {
+		//if (animNo_ == anim_walk_no || animNo_ == anim_run_no||animNo_ == anim_death_no || (animNo_ == anim_jump_no || animNo_ == anim_runningJump_no && !jump_.isJump)) {
 			animNo_ = anim_idle_no;
 			isAnimLoop_ = true;
-		}
+		//}
 	}
 }
 
@@ -393,23 +391,37 @@ void Player::deadPersonGenerater()
 
 void Player::sitUpdate(const InputState& input)
 {
+	//座る過程のアニメーションが終わったら三角座りにする
+	if (animNo_ == anim_idleToSitup_no && PModel_->isAnimEnd()) {
+		animNo_ = anim_sit_no;
+	}
+
+	//立つ家庭のアニメーションが終わったらidleupdateに変更する
+	if (animNo_ == anim_situpToIdle_no && PModel_->isAnimEnd()) {
+		updateFunc_ = &Player::idleUpdate;
+		isSitting_ = false;
+		return;
+	}
+
+	//アニメーションを座る過程のアニメーションに変更
+	//座っているフラグを立て、アニメーションループ変数を折る
 	if (!isSitting_) {
 		animNo_ = anim_idleToSitup_no;
 		isSitting_ = true;
 		isAnimLoop_ = false;
 	}
+
+	//死ぬコマンド
+	if (input.isTriggered(InputType::death)) {
+		death(input);
+		isSitting_ = false;
+		updateFunc_ = &Player::idleUpdate;
+		return;
+	}
+
+	//立ち上がるためのコマンド
 	if(input.isTriggered(InputType::ctrl)){
 		animNo_ = anim_situpToIdle_no;
-		isSitting_ = false;
 		isAnimLoop_ = false;
 	}
-
-	if (animNo_ == anim_idleToSitup_no && PModel_->isAnimEnd()) {
-		animNo_ = anim_sit_no;
-	}
-
-	if (animNo_ == anim_situpToIdle_no && PModel_->isAnimEnd()) {
-		updateFunc_ = &Player::idleUpdate;
-	}
-
 }

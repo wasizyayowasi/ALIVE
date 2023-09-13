@@ -150,6 +150,13 @@ bool Model::isAnimEnd()
 	return false;
 }
 
+void Model::setAnimEndFrame(int animNo)
+{
+	int momentAnimNo = MV1AttachAnim(modelHandle_, animNo, -1, false);
+	int animEndFrame = MV1GetAttachAnimTotalTime(modelHandle_, momentAnimNo);
+	MV1SetAttachAnimTime(modelHandle_, momentAnimNo, animEndFrame - 1);
+}
+
 void Model::clearAnimData(AnimData& anim)
 {
 	anim.animNo = -1;

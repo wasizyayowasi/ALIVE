@@ -29,6 +29,8 @@ public:
 
 	bool isAnimEnd();
 
+	void setAnimEndFrame(int animNo);
+
 private:
 	struct AnimData {
 		int animNo;

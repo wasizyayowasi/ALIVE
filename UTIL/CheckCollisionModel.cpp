@@ -206,8 +206,13 @@ void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::ve
 	player.setPos(nowPos);
 
 	//è’ìÀîªíËÇÃè¡ãé
-	for (auto& result : hitDim_) {
-		hitDim_.pop_back();
+
+	for (auto& hit : hitDim_) {
+		hitDim_.erase(hitDim_.begin());
 	}
-	
+
+	/*for (auto& result : hitDim_) {
+		hitDim_.pop_back();
+		hitDim_.erase(hitDim_.back());
+	}*/
 }

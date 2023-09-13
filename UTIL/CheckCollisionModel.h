@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include <memory>
 #include <vector>
+#include <deque>
 
 class Player;
 class Model;
