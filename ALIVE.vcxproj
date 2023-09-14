@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CharacterBase.cpp" />
+    <ClCompile Include="object\CharacterBase.cpp" />
     <ClCompile Include="SCENE\KeyConfigScene.cpp" />
     <ClCompile Include="SCENE\ScenePause.cpp" />
     <ClCompile Include="UTIL\SoundManager.cpp" />
@@ -158,7 +158,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CharacterBase.h" />
+    <ClInclude Include="object\CharacterBase.h" />
     <ClInclude Include="SCENE\KeyConfigScene.h" />
     <ClInclude Include="SCENE\ScenePause.h" />
     <ClInclude Include="UTIL\SoundManager.h" />

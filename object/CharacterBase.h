@@ -10,9 +10,12 @@ public:
 	CharacterBase() {}
 	virtual ~CharacterBase() {};
 
-	virtual void update() = 0;
+	virtual void update();
 	virtual void draw() = 0;
-private:
+
+	const VECTOR getPos() { return pos_; }
+
+protected:
 
 	int animNo_;			//アニメーション番号
 

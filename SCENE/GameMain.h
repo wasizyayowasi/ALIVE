@@ -35,8 +35,6 @@ private:
 	std::shared_ptr<Broom> broom_;
 	std::shared_ptr<DepthOfField> depthOfField_;
 	
-
-	std::vector<Player> player;
 	std::vector<std::shared_ptr<Model>> models_;
 
 	void (GameMain::* updateFunc_)(const InputState& input);

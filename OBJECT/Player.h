@@ -1,6 +1,6 @@
 #pragma once
 #include "DxLib.h"
-//#include "../CharacterBase.h"
+//#include "CharacterBase.h"
 #include <vector>
 #include <memory>
 

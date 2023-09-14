@@ -10,17 +10,13 @@ namespace {
 using namespace std;
 
 SoundManager::SoundManager() {
-    loadSoundConfig();
+    //loadSoundConfig();
+    load3DSoundBGMFile("cafe");
     setSEVolume(volumeSE_);
     setBGMVolume(volumeBGM_);
 }
 
-/// <summary>
-/// 2Dサウンドをロードする
-/// </summary>
-/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
-/// <returns>ロードしたサウンド</returns>
-int SoundManager::load2DSoundFile(const char* fileName)
+int SoundManager::load2DSoundSEFile(const char* fileName)
 {
     //ファイルパスの生成
     string path = "data/sound/SE/";
@@ -37,10 +33,51 @@ int SoundManager::load2DSoundFile(const char* fileName)
     return handle;
 }
 
-int SoundManager::load3DSoundFile(const char* fileName)
+/// <summary>
+/// 2Dサウンドをロードする
+/// </summary>
+/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
+/// <returns>ロードしたサウンド</returns>
+int SoundManager::load2DSoundBGMFile(const char* fileName)
+{
+    //ファイルパスの生成
+    string path = "data/sound/BGM/";
+    path += fileName;
+    path += ".mp3";
+
+    //メモリに2Dサウンドをロードする
+    int handle = LoadSoundMem(path.c_str());
+    assert(handle >= 0);
+
+    //配列にロードしたものを加える
+    nameAndHandleTable_[fileName] = handle;
+
+    return handle;
+}
+
+int SoundManager::load3DSoundSEFile(const char* fileName)
 {
     //ファイルパスの生成
     string path = "data/sound/SE/";
+    path += fileName;
+    path += ".mp3";
+
+    //メモリに3Dサウンドをロードする
+    SetCreate3DSoundFlag(true);
+    int handle = LoadSoundMem(path.c_str());
+    SetCreate3DSoundFlag(false);
+    assert(handle >= 0);
+
+    //配列にロードしたものを加える
+    nameAndHandleTable_[fileName] = handle;
+
+    return handle;
+}
+
+int SoundManager::load3DSoundBGMFile(const char* fileName)
+{
+    //ファイルパスの生成
+    string path = "data/sound/BGM/";
     path += fileName;
     path += ".mp3";
 
@@ -142,6 +179,7 @@ void SoundManager::saveSoundConfig()
         fclose(fp);
     }
 }
+
 
 void SoundManager::set3DSoundInfo(VECTOR pos, float audioRange, const char* name)
 {

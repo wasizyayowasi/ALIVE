@@ -36,7 +36,11 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 
 	SetUseLighting(false);
 
-	SoundManager::getInstance();
+	Set3DSoundOneMetre(10.0f);
+
+	SoundManager::getInstance().set3DSoundInfo(VGet(575,120,-60),1000,"cafe");
+
+	SoundManager::getInstance().play("cafe");
 
 
 }
@@ -48,74 +52,13 @@ GameMain::~GameMain()
 void GameMain::update(const InputState& input)
 {
 	(this->*updateFunc_)(input);
+	SoundManager::getInstance().set3DSoundListenerInfo(player_->getPos(), VAdd(player_->getPos(), VGet(10, 0, 0)));
 }
 
 void GameMain::draw()
 {
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
-
-	//int color;
-	//{//グリッド線表示　※消去予定
-	//	for (float x = -500.0f; x <= 500.0f; x += 100.0f)
-	//	{
-	//		VECTOR start = VGet(x, 0.0f, -500.0f);
-	//		VECTOR end = VGet(x, 0.0f, 500.0f);
-	//		if (x == 0.0f) {
-	//			color = 0xff0000;
-	//		}
-	//		else {
-	//			color = 0xffff00;
-	//		}
-	//		DrawLine3D(start, end, color);
-	//	}
-	//	for (float z = -500.0f; z <= 500.0f; z += 100.0f)
-	//	{
-	//		VECTOR start = VGet(-500.0f, 0.0f, z);
-	//		VECTOR end = VGet(500.0f, 0.0f, z);
-	//		DrawLine3D(start, end, GetColor(255, 255, 0));
-	//	}
-
-	//	for (float x = 500.0f; x <= 1500.0f; x += 100.0f)
-	//	{
-	//		VECTOR start = VGet(x, 0.0f, -500.0f);
-	//		VECTOR end = VGet(x, 0.0f, 500.0f);
-	//		if (x == 1000.0f) {
-	//			color = 0xff0000;
-	//		}
-	//		else {
-	//			color = 0x00ff00;
-	//		}
-	//		DrawLine3D(start, end, color);
-	//	}
-	//	for (float z = -500.0f; z <= 500.0f; z += 100.0f)
-	//	{
-	//		VECTOR start = VGet(500.0f, 0.0f, z);
-	//		VECTOR end = VGet(1500.0f, 0.0f, z);
-	//		DrawLine3D(start, end, GetColor(0, 255, 0));
-	//	}
-
-	//	for (float x = 1500.0f; x <= 2500.0f; x += 100.0f)
-	//	{
-	//		VECTOR start = VGet(x, 0.0f, -500.0f);
-	//		VECTOR end = VGet(x, 0.0f, 500.0f);
-	//		if (x == 2000.0f) {
-	//			color = 0xff0000;
-	//		}
-	//		else {
-	//			color = 0x0000ff;
-	//		}
-	//		DrawLine3D(start, end, color);
-	//	}
-	//	for (float z = -500.0f; z <= 500.0f; z += 100.0f)
-	//	{
-	//		VECTOR start = VGet(1500.0f, 0.0f, z);
-	//		VECTOR end = VGet(2500.0f, 0.0f, z);
-	//		DrawLine3D(start, end, GetColor(0, 0, 255));
-	//	}
-	//}
-	
-	DrawSphere3D(VAdd(player_->getPos(), { 40,0,0 }), 16, 32, 0xffffff,0xffffff, true);
 
 	for (auto& model : models_) {
 		model->draw();

@@ -114,11 +114,7 @@ void Player::draw()
 		}
 	}
 	
-	DrawFormatString(0, 32, 0x448844, "%d", animNo_);
-	DrawFormatString(0, 48, 0x448844, "%d", jump_.isJump);
-	DrawFormatString(0, 48, 0x448844, "%f.2", pos_.y);
-
-	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
+	//DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
 
 	for (const auto person : deadPlayer_) {
 		if (person->getEnable()) {
