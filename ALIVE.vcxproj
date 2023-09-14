@@ -142,6 +142,7 @@
     <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="SCENE\KeyConfigScene.cpp" />
     <ClCompile Include="SCENE\ScenePause.cpp" />
+    <ClCompile Include="UTIL\SoundManager.cpp" />
     <ClCompile Include="UTIL\CheckCollisionModel.cpp" />
     <ClCompile Include="staging\Broom.cpp" />
     <ClCompile Include="staging\DepthOfField.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="SCENE\KeyConfigScene.h" />
     <ClInclude Include="SCENE\ScenePause.h" />
+    <ClInclude Include="UTIL\SoundManager.h" />
     <ClInclude Include="UTIL\CheckCollisionModel.h" />
     <ClInclude Include="staging\Broom.h" />
     <ClInclude Include="staging\DepthOfField.h" />

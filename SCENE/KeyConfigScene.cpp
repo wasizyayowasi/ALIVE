@@ -36,6 +36,10 @@ void KeyConfigScene::draw()
 		y += 16;
 	}
 
+	DrawString(0, y, "•ÏX", 0xffffff);
+	y += 16;
+	DrawString(0, y, "ƒLƒƒƒ“ƒZƒ‹", 0xffffff);
+
 	DrawString(0, 0, "keyConfig",0xffffff);
 	DrawFormatString(0, 16, 0xffffff, "%d", selectNum_);
 }

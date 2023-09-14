@@ -68,15 +68,15 @@ private:
 
 	JumpInfo jump_;							//ジャンプ関連の構造体
 
+
 	VECTOR checkPoint_ = { 0.0f,0.0f, 0.0f };					//中間ポイント
 	VECTOR pos_ = { 0.0f,0.0f,0.0f };							//プレイヤーのポジション
 	VECTOR rot_ = { 0.0f,0.0f,0.0f };							//プレイヤーの回転
 	VECTOR moveVec_ = { 0.0f,0.0f,0.0f };						//プレイヤーの移動ベクトル
 	VECTOR deathPos = { 0.0f,0.0f,0.0f };						//死体のポジション
 
-	std::shared_ptr<Model> PModel_;
-	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;
-	//std::vector<std::shared_ptr<Model>> models_;				//引数用
+	std::shared_ptr<Model> PModel_;								//モデルクラスのポインタ
+	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
 	std::vector<std::shared_ptr<Model>> deadPlayer_;			//死体を保存するため
 
 	void(Player::* updateFunc_)(const InputState& input);		//メンバ関数ポインタ

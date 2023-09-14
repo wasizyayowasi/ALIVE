@@ -18,6 +18,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//画面サイズの設定
 	SetGraphMode(Game::kScreenWidth,Game::kScreenHeight, Game::kScreenDepth);
 
+	//3DサウンドにXAudioを使用するか
+	SetEnableXAudioFlag(true);
+
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
 	{
 		return -1;			// エラーが起きたら直ちに終了

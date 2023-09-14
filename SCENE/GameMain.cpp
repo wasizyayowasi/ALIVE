@@ -11,6 +11,7 @@
 #include "ScenePause.h" 
 
 #include "../util/game.h"
+#include "../util/SoundManager.h"
 #include "../util/InputState.h"
 #include "../util/model.h"
 
@@ -34,6 +35,9 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	models_[0]->setCollFrame();
 
 	SetUseLighting(false);
+
+	SoundManager::getInstance();
+
 
 }
 
