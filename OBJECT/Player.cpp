@@ -21,6 +21,7 @@ namespace {
 
 	//ジャンプ
 	constexpr float jump_power = 10.0f;
+	constexpr float runningJump_power = 8.0f;
 	constexpr float gravity = -0.4f;
 
 	//回転スピード
@@ -28,7 +29,10 @@ namespace {
 
 	//ファイルパス
 	const char* const player_Filename = "DATA/player/player11.mv1";
-	
+	//モデルフレーム名
+	const char* const coll_frame_death = "CollisionDeath";
+	const char* const coll_frame_Sit = "CollisionSit";
+	const char* const coll_frame_Stand = "CollisionStand";
 
 	//プレイヤーサイズ
 	const VECTOR player_scale = { 0.5f,0.5f ,0.5f };
@@ -56,6 +60,8 @@ Player::Player():updateFunc_(&Player::idleUpdate)
 	PModel_->setScale(player_scale);
 	//マップやブロックなどの当たり判定の生成
 	checkCollisionModel_ = make_shared<CheckCollisionModel>();
+	//コリジョンフレームの設定
+	PModel_->setCollFrame("Character");
 
 	//ジャンプ情報の初期
 	jump_.isJump = false;
@@ -84,10 +90,6 @@ void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>>
 		models.push_back(deadPerson);
 	}
 
-	PModel_->setPos(pos_);
-
-	PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
-
 	checkCollisionModel_->checkCollision(*this,moveVec_, models, player_hegiht, jump_.isJump, jump_.jumpVec);
 }
 
@@ -100,23 +102,23 @@ void Player::draw()
 		}
 	}
 	
-	DrawFormatString(0, 96, 0x448844, "%d", animNo_);
-	DrawFormatString(0, 112, 0x448844, "%d", jump_.isJump);
-	DrawFormatString(0, 128, 0x448844, "x:%.2f y:%.2f z:%.2f", pos_.x, pos_.y, pos_.z);
-	DrawFormatString(0, 144, 0x448844, "%.2f", jump_.jumpVec);
+	DrawFormatString(0, 32, 0x448844, "%d", animNo_);
+	DrawFormatString(0, 48, 0x448844, "%d", jump_.isJump);
+	DrawFormatString(0, 48, 0x448844, "%f.2", pos_.y);
 
 	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
-	for (auto& deadPlayer : deadPlayer_) {
-		if (deadPlayer->getEnable()) {
-			DrawFormatString(0, 96, 0x448844, "x:%.2f y:%.2f z:%.2f", deadPlayer->getPos().x, deadPlayer->getPos().y, deadPlayer->getPos().z);
-		}
-	}
 
 	for (const auto person : deadPlayer_) {
 		if (person->getEnable()) {
 			DrawSphere3D(person->getPos(), 16, 32, 0xff0000, 0xff0000, true);
 		}
 	}
+}
+
+void Player::setPos(VECTOR pos)
+{
+	pos_ = pos;
+	PModel_->setPos(pos_);
 }
 
 void Player::setJumpInfo(bool isJump, float jumpVec)
@@ -145,10 +147,8 @@ void Player::idleUpdate(const InputState& input)
 	}
 
 	if (!isDead_) {
-		movingUpdate(input);
-		
 		changeAnimIdle();
-
+		movingUpdate(input);
 		death(input);
 	}
 	else {
@@ -157,9 +157,27 @@ void Player::idleUpdate(const InputState& input)
 			isDead_ = false;
 			deadPersonGenerater();
 			deadPlayer_.back()->setAnimEndFrame(animNo_);
+			switch (animNo_) {
+			case anim_death_no:
+				deadPlayer_.back()->setCollFrame(coll_frame_death);
+				break;
+			case anim_sit_no:
+				deadPlayer_.back()->setCollFrame(coll_frame_Sit);
+				break;
+			}
 		}
 	}
 
+	if (jump_.isJump && jump_.jumpVec == 0.0f) {
+		pos_.y += gravity * 20;
+	}
+
+	if (pos_.y <= -400.0f) {
+		pos_ = checkPoint_;
+	}
+	if (input.isTriggered(InputType::next)) {
+		pos_ = checkPoint_;
+	}
 }
 
 void Player::movingUpdate(const InputState& input)
@@ -172,45 +190,24 @@ void Player::movingUpdate(const InputState& input)
 		if (input.isPressed(InputType::up)) {
 			movingSpeed_ = walk_speed;
 			moveVec_.z += movingSpeed_;
-			if (animNo_ != anim_runningJump_no) {
-				animNo_ = anim_walk_no;
-				isAnimLoop_ = true;
-			}
-			
-			
 			isMoving = true;
 			targetAngle_ = 180.0f;
 		}
 		if (input.isPressed(InputType::down)) {
 			movingSpeed_ = walk_speed;
 			moveVec_.z -= movingSpeed_;
-			if (animNo_ != anim_runningJump_no) {
-				animNo_ = anim_walk_no;
-				isAnimLoop_ = true;
-			}
-			
 			isMoving = true;
 			targetAngle_ = 0.0f;
 		}
 		if (input.isPressed(InputType::left)) {
 			movingSpeed_ = walk_speed;
 			moveVec_.x -= movingSpeed_;
-			if (animNo_ != anim_runningJump_no) {
-				animNo_ = anim_walk_no;
-				isAnimLoop_ = true;
-			}
-			
 			isMoving = true;
 			targetAngle_ = 90.0f;
 		}
 		if (input.isPressed(InputType::right)) {
 			movingSpeed_ = walk_speed;
 			moveVec_.x += movingSpeed_;
-			if (animNo_ != anim_runningJump_no) {
-				animNo_ = anim_walk_no;
-				isAnimLoop_ = true;
-			}
-			
 			isMoving = true;
 			targetAngle_ = 270.0f;
 		}
@@ -228,16 +225,27 @@ void Player::movingUpdate(const InputState& input)
 		}
 		if ((input.isPressed(InputType::up) || input.isPressed(InputType::down) || input.isPressed(InputType::left) || input.isPressed(InputType::right)) && input.isPressed(InputType::shift)) {
 			movingSpeed_ = run_speed;
-			
-			if (animNo_ != anim_runningJump_no) {
-				animNo_ = anim_run_no;
-				isAnimLoop_ = true;
+		}
+
+		if (animNo_ != anim_runningJump_no && animNo_ != anim_jump_no) {
+			if (movingSpeed_ != 0.0f) {
+				if (movingSpeed_ > walk_speed) {
+					animNo_ = anim_run_no;
+					isAnimLoop_ = true;
+				}
+				else if (movingSpeed_ <= walk_speed) {
+					animNo_ = anim_walk_no;
+					isAnimLoop_ = true;
+				}
 			}
 		}
+		
 		
 		moveVec_ = VScale(VNorm(moveVec_),movingSpeed_);
 
 		rotationUpdate();
+
+		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 
 		//デバッグ用
 		/*{
@@ -253,51 +261,58 @@ void Player::movingUpdate(const InputState& input)
 
 void Player::jumpUpdate(const InputState& input)
 {
+	movingUpdate(input);
+
 	//ジャンプ処理
 	{
-
-		if (!jump_.isJump && animNo_ == anim_jump_no) {
-			updateFunc_ = &Player::idleUpdate;
-			return;
-		}
-
-		if (!jump_.isJump) {
+		if (!jump_.isJump && animNo_ != anim_jump_no) {
 			animNo_ = anim_jump_no;
 			jump_.jumpVec += jump_power;
 			jump_.isJump = true;
 			isAnimLoop_ = false;
+			PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 		}
 
 		if (jump_.isJump) {
 			jump_.jumpVec += gravity;
 			pos_.y += jump_.jumpVec;
-			if (pos_.y <= 0.0f) {
-				jump_.isJump = false;
-			}
 		}
+
+		if (jump_.jumpVec == 0.0f && !jump_.isJump) {
+			updateFunc_ = &Player::idleUpdate;
+			animNo_ = anim_idle_no;
+			return;
+		}
+
 	}
 }
 
 void Player::runningJumpUpdate(const InputState& input)
 {
-	animNo_ = anim_runningJump_no;
-	isAnimLoop_ = false;
+	
 	movingUpdate(input);
 
-	if (!jump_.isJump) {
-		jump_.jumpVec += jump_power;
+	if (!jump_.isJump&& animNo_ != anim_runningJump_no) {
+		animNo_ = anim_runningJump_no;
+		isAnimLoop_ = false;
+		jump_.jumpVec += runningJump_power;
 		jump_.isJump = true;
+		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 	}
 
+	temp = PModel_->getAnimTotalTime() + 2;
+	tempGravity = -(runningJump_power * 2 / temp);
+
 	if (jump_.isJump) {
-		jump_.jumpVec += gravity;
+		jump_.jumpVec += tempGravity;
 		pos_.y += jump_.jumpVec;
 	}
 
-	if (PModel_->isAnimEnd()) {
+	if (jump_.jumpVec == 0.0f && !jump_.isJump) {
 		updateFunc_ = &Player::idleUpdate;
 		animNo_ = anim_run_no;
 		isAnimLoop_ = true;
+		return;
 	}
 }
 
@@ -309,12 +324,13 @@ void Player::death(const InputState& input)
 			deadPerson_.isEnable = true;
 			deadPerson_.deathPos = pos_;
 			
-			if (animNo_ != anim_sit_no) {
-				animNo_ = anim_death_no;
-			}
-
 			isAnimLoop_ = false;
 			isDead_ = true;
+
+			if (animNo_ != anim_sit_no) {
+				animNo_ = anim_death_no;
+				PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
+			}
 		}
 	}
 }
@@ -323,10 +339,9 @@ void Player::changeAnimIdle()
 {
 	//待機アニメーションに戻す
 	if (!isMoving) {
-		//if (animNo_ == anim_walk_no || animNo_ == anim_run_no||animNo_ == anim_death_no || (animNo_ == anim_jump_no || animNo_ == anim_runningJump_no && !jump_.isJump)) {
-			animNo_ = anim_idle_no;
-			isAnimLoop_ = true;
-		//}
+		animNo_ = anim_idle_no;
+		isAnimLoop_ = true;
+		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 	}
 }
 
@@ -394,6 +409,7 @@ void Player::sitUpdate(const InputState& input)
 	//座る過程のアニメーションが終わったら三角座りにする
 	if (animNo_ == anim_idleToSitup_no && PModel_->isAnimEnd()) {
 		animNo_ = anim_sit_no;
+		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 	}
 
 	//立つ家庭のアニメーションが終わったらidleupdateに変更する
@@ -409,6 +425,7 @@ void Player::sitUpdate(const InputState& input)
 		animNo_ = anim_idleToSitup_no;
 		isSitting_ = true;
 		isAnimLoop_ = false;
+		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 	}
 
 	//死ぬコマンド
@@ -423,5 +440,6 @@ void Player::sitUpdate(const InputState& input)
 	if(input.isTriggered(InputType::ctrl)){
 		animNo_ = anim_situpToIdle_no;
 		isAnimLoop_ = false;
+		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 	}
 }

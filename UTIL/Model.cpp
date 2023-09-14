@@ -91,6 +91,15 @@ void Model::setScale(VECTOR scale)
 	MV1SetScale(modelHandle_,scale);
 }
 
+void Model::setCollFrame(const char* collFrameName)
+{
+	colFrameIndex_ = MV1SearchFrame(modelHandle_, collFrameName);
+	if (colFrameIndex_ < 0) {
+		colFrameIndex_ = -1;
+	}
+	MV1SetupCollInfo(modelHandle_, colFrameIndex_, 8, 8, 8);
+}
+
 void Model::setAnimation(int animNo, bool isLoop, bool IsForceChange)
 {
 	if (!IsForceChange) {

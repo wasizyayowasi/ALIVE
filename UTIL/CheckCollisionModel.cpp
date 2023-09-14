@@ -22,8 +22,8 @@ void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR move
 	nowPos = VAdd(player.getPos(), moveVec);
 	//ƒ‚ƒfƒ‹‚Æ‹…‚Ì“–‚½‚è”»’è
 	for (int i = 0; i < models.size();i++) {
-		MV1RefreshCollInfo(models[i]->getModelHandle(), -1);
-		hitDim_.push_back(MV1CollCheck_Sphere(models[i]->getModelHandle(), -1, oldPos, collition_radius + VSize(moveVec)));
+		MV1RefreshCollInfo(models[i]->getModelHandle(), models[i]->getColFrameIndex());
+		hitDim_.push_back(MV1CollCheck_Sphere(models[i]->getModelHandle(), models[i]->getColFrameIndex(), oldPos, collition_radius + VSize(moveVec)));
 	}
 	
 
@@ -208,11 +208,8 @@ void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::ve
 	//Õ“Ë”»’è‚ÌÁ‹
 
 	for (auto& hit : hitDim_) {
-		hitDim_.erase(hitDim_.begin());
+		MV1CollResultPolyDimTerminate(hit);
 	}
 
-	/*for (auto& result : hitDim_) {
-		hitDim_.pop_back();
-		hitDim_.erase(hitDim_.back());
-	}*/
+	hitDim_.erase(hitDim_.begin(),hitDim_.end());
 }

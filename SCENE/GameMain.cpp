@@ -17,7 +17,7 @@
 using namespace std;
 
 namespace {
-	const char* const temp_filepath = "data/model/tempFiled.mv1";
+	const char* const temp_filepath = "data/model/tempFiled2.mv1";
 	const char* const cube_filename = "DATA/model/cube.mv1";
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
@@ -28,12 +28,10 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	player_ = make_shared<Player>();
 	//broom_ = make_shared<Broom>();
 	//depthOfField_ = make_shared<DepthOfField>();
-	tempField_ = make_shared<Model>(temp_filepath);
 	models_.push_back(make_shared<Model>(temp_filepath));
 
 	models_[0]->setScale(scale);
-
-	tempField_->setScale(scale);
+	models_[0]->setCollFrame();
 
 	SetUseLighting(false);
 
@@ -115,8 +113,6 @@ void GameMain::draw()
 	
 	DrawSphere3D(VAdd(player_->getPos(), { 40,0,0 }), 16, 32, 0xffffff,0xffffff, true);
 
-	tempField_->draw();
-
 	for (auto& model : models_) {
 		model->draw();
 	}
@@ -149,11 +145,6 @@ void GameMain::normalUpdate(const InputState& input)
 	if (input.isTriggered(InputType::pause)) {
 		manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
-
-	if (input.isTriggered(InputType::next)) {
-		updateFunc_ = &GameMain::fadeOutUpdate;
-	}
-
 }
 
 void GameMain::fadeOutUpdate(const InputState& input)

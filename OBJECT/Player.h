@@ -28,7 +28,7 @@ public:
 	void draw();
 
 	VECTOR getPos() { return pos_; }
-	void setPos(VECTOR pos) { pos_ = pos; }
+	void setPos(VECTOR pos);
 	JumpInfo getJumpInfo() { return jump_; }
 	void setJumpInfo(bool isJump, float jumpVec);
 
@@ -53,6 +53,9 @@ private:
 	void sitUpdate(const InputState& input);
 
 private:
+
+	int temp = 0;
+	float tempGravity = 0.0f;
 
 	int animNo_ = 0;						//現在のアニメーション番号
 	int deathNum = 0;						//死亡回数

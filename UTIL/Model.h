@@ -18,10 +18,12 @@ public:
 	int getColFrameIndex() const { return colFrameIndex_; }
 	bool getEnable() const { return isEnable_; }
 	VECTOR getPos() const { return pos_; }
+	int getAnimTotalTime()const { return animNext_.totalTime; }
 
 	void setPos(VECTOR pos);
 	void setRot(VECTOR rot);
 	void setScale(VECTOR scale);
+	void setCollFrame(const char* collFrameName = "");
 
 	void setAnimation(int animNo,bool isLoop,bool IsForceChange);
 
