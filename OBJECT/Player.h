@@ -1,16 +1,12 @@
 #pragma once
 #include "DxLib.h"
+//#include "../CharacterBase.h"
 #include <vector>
 #include <memory>
 
 class InputState;
 class Model;
 class CheckCollisionModel;
-
-struct DeadPlayer {
-	bool isEnable;
-	VECTOR deathPos;
-};
 
 struct JumpInfo {
 	float jumpVec;		//ジャンプベクトル
@@ -58,7 +54,7 @@ private:
 	float tempGravity = 0.0f;
 
 	int animNo_ = 0;						//現在のアニメーション番号
-	int deathNum = 0;						//死亡回数
+	
 
 	float movingSpeed_ = 0.0f;				//移動速度
 	float targetAngle_ = 0.0f;				//回転
@@ -72,19 +68,18 @@ private:
 
 	JumpInfo jump_;							//ジャンプ関連の構造体
 
-	DeadPlayer deadPerson_;
+	VECTOR checkPoint_ = { 0.0f,0.0f, 0.0f };					//中間ポイント
+	VECTOR pos_ = { 0.0f,0.0f,0.0f };							//プレイヤーのポジション
+	VECTOR rot_ = { 0.0f,0.0f,0.0f };							//プレイヤーの回転
+	VECTOR moveVec_ = { 0.0f,0.0f,0.0f };						//プレイヤーの移動ベクトル
+	VECTOR deathPos = { 0.0f,0.0f,0.0f };						//死体のポジション
 
-	VECTOR checkPoint_ = { 0.0f,0.0f, 0.0f };	//中間ポイント
-	VECTOR pos_ = { 0.0f,0.0f,0.0f };			//プレイヤーのポジション
-	VECTOR rot_ = { 0.0f,0.0f,0.0f };			//プレイヤーの回転
-	VECTOR moveVec_ = { 0.0f,0.0f,0.0f };		//プレイヤーの移動ベクトル
-
-	std::vector<std::shared_ptr<Model>> deadPlayer_;	//死体を保存するため
 	std::shared_ptr<Model> PModel_;
-	std::vector<std::shared_ptr<Model>> models_;
 	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;
+	//std::vector<std::shared_ptr<Model>> models_;				//引数用
+	std::vector<std::shared_ptr<Model>> deadPlayer_;			//死体を保存するため
 
-	void(Player::* updateFunc_)(const InputState& input);
+	void(Player::* updateFunc_)(const InputState& input);		//メンバ関数ポインタ
 
 };
 

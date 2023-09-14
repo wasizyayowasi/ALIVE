@@ -69,30 +69,42 @@ Player::Player():updateFunc_(&Player::idleUpdate)
 
 }
 
+/// <summary>
+/// デストラクタ
+/// </summary>
 Player::~Player()
 {
 }
 
+/// <summary>
+/// プレイヤーの更新を行う
+/// </summary>
+/// <param name="input">外部装置の入力情報を参照する</param>
+/// <param name="models">衝突判定を行うモデルのvector型の配列</param>
 void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>> models)
 {
-
+	//移動ベクトルのリセット
 	moveVec_ = { 0.0f,0.0f,0.0f };
+	//移動スピードのリセット
 	movingSpeed_ = 0.0f;
 
+	//プレイヤーのアニメーション更新
 	PModel_->update();
-	for (auto& dead : deadPlayer_) {
-		dead->update();
-	}
-
+	
 	(this->*updateFunc_)(input);
 
+	//死体のvector配列を引数のmodels配列に追加する
 	for (auto& deadPerson : deadPlayer_) {
 		models.push_back(deadPerson);
 	}
 
+	//プレイヤーとその他オブジェクトとの衝突判定
 	checkCollisionModel_->checkCollision(*this,moveVec_, models, player_hegiht, jump_.isJump, jump_.jumpVec);
 }
 
+/// <summary>
+/// プレイヤー関連の描画
+/// </summary>
 void Player::draw()
 {
 	PModel_->draw();
@@ -115,26 +127,43 @@ void Player::draw()
 	}
 }
 
+/// <summary>
+/// 外部からのポジションを受け取る
+/// </summary>
+/// <param name="pos">ポジション情報</param>
 void Player::setPos(VECTOR pos)
 {
 	pos_ = pos;
 	PModel_->setPos(pos_);
 }
 
+/// <summary>
+/// 外部からのジャンプ情報を受け取る
+/// </summary>
+/// <param name="isJump">ジャンプフラグ</param>
+/// <param name="jumpVec">ジャンプベクトル</param>
 void Player::setJumpInfo(bool isJump, float jumpVec)
 {
 	jump_.isJump = isJump;
 	jump_.jumpVec = jumpVec;
 }
 
+
+//HACK:↓汚い、気に食わない
+/// <summary>
+/// アニメーションがidle状態の時に行われる
+/// </summary>
+/// <param name="input">外部装置の入力情報を参照する</param>
 void Player::idleUpdate(const InputState& input)
 {
-
+	//メンバ関数ポインタをsitUpdateに変更する
 	if (input.isTriggered(InputType::ctrl)) {
 		updateFunc_ = &Player::sitUpdate;
 		return;
 	}
 
+	//メンバ関数ポインタをrunningJumpUpdate、
+	//jumpUpdateのどちらかに変更する
 	if (input.isPressed(InputType::space)) {
 		if (input.isPressed(InputType::shift)) {
 			updateFunc_ = &Player::runningJumpUpdate;
@@ -146,6 +175,7 @@ void Player::idleUpdate(const InputState& input)
 		}
 	}
 
+	//死亡演出中でなければ
 	if (!isDead_) {
 		changeAnimIdle();
 		movingUpdate(input);
@@ -153,10 +183,18 @@ void Player::idleUpdate(const InputState& input)
 	}
 	else {
 		if (PModel_->isAnimEnd()) {
+			//チェックポイントにプレイヤーを帰す
 			pos_ = checkPoint_;
+			//死亡演出が終了したことにする
 			isDead_ = false;
+
+			//死体を生成する関数
 			deadPersonGenerater();
+
+			//死体に指定アニメーションの最終フレームを設定する
 			deadPlayer_.back()->setAnimEndFrame(animNo_);
+			
+			//アニメーション番号によって衝突判定用のフレームを変更する
 			switch (animNo_) {
 			case anim_death_no:
 				deadPlayer_.back()->setCollFrame(coll_frame_death);
@@ -168,18 +206,28 @@ void Player::idleUpdate(const InputState& input)
 		}
 	}
 
-	if (jump_.isJump && jump_.jumpVec == 0.0f) {
-		pos_.y += gravity * 20;
-	}
+	//TODO：↓なくしたい
+	{
+		if (jump_.isJump && jump_.jumpVec == 0.0f) {
+			pos_.y += gravity * 20;
+		}
 
-	if (pos_.y <= -400.0f) {
-		pos_ = checkPoint_;
+		if (pos_.y <= -400.0f) {
+			pos_ = checkPoint_;
+		}
+		if (input.isTriggered(InputType::next)) {
+			pos_ = checkPoint_;
+		}
 	}
-	if (input.isTriggered(InputType::next)) {
-		pos_ = checkPoint_;
-	}
+	
 }
 
+
+//HACK:↓汚い、気に食わない
+/// <summary>
+/// プレイヤーを移動させるための関数
+/// </summary>
+/// <param name="input">外部装置の入力情報を参照する</param>
 void Player::movingUpdate(const InputState& input)
 {
 
@@ -187,6 +235,7 @@ void Player::movingUpdate(const InputState& input)
 	
 	//改善しよう
 	{
+		//HACK：汚い、リファクタリング必須
 		if (input.isPressed(InputType::up)) {
 			movingSpeed_ = walk_speed;
 			moveVec_.z += movingSpeed_;
@@ -227,6 +276,7 @@ void Player::movingUpdate(const InputState& input)
 			movingSpeed_ = run_speed;
 		}
 
+		//HACK：もっといいアニメーション番号変更があるはず
 		if (animNo_ != anim_runningJump_no && animNo_ != anim_jump_no) {
 			if (movingSpeed_ != 0.0f) {
 				if (movingSpeed_ > walk_speed) {
@@ -240,11 +290,13 @@ void Player::movingUpdate(const InputState& input)
 			}
 		}
 		
-		
+		//移動ベクトルを用意する
 		moveVec_ = VScale(VNorm(moveVec_),movingSpeed_);
 
+		//回転処理
 		rotationUpdate();
 
+		//アニメーションの変更
 		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 
 		//デバッグ用
@@ -259,12 +311,20 @@ void Player::movingUpdate(const InputState& input)
 	}
 }
 
+
+//HACK:↓汚い、気に食わない
+/// <summary>
+/// 走りジャンプではないときのジャンプ
+/// </summary>
+/// <param name="input">外部装置の入力情報を参照する</param>
 void Player::jumpUpdate(const InputState& input)
 {
+	//プレイヤー移動関数
 	movingUpdate(input);
 
 	//ジャンプ処理
 	{
+		//アニメーション変更と脚力をジャンプベクトルに足す
 		if (!jump_.isJump && animNo_ != anim_jump_no) {
 			animNo_ = anim_jump_no;
 			jump_.jumpVec += jump_power;
@@ -273,11 +333,15 @@ void Player::jumpUpdate(const InputState& input)
 			PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 		}
 
+		//空中にいるとき
+		//重力をベクトルに足してポジションに足す
 		if (jump_.isJump) {
 			jump_.jumpVec += gravity;
 			pos_.y += jump_.jumpVec;
 		}
 
+		//ジャンプベクトルが0でジャンプ中ではなかったら
+		//idle状態のアップデートに変更する、アニメーションも変更する
 		if (jump_.jumpVec == 0.0f && !jump_.isJump) {
 			updateFunc_ = &Player::idleUpdate;
 			animNo_ = anim_idle_no;
@@ -287,27 +351,40 @@ void Player::jumpUpdate(const InputState& input)
 	}
 }
 
+
+//HACK:↓汚い、気に食わない
+/// <summary>
+/// プレイヤーが走っているときのジャンプ
+/// </summary>
+/// <param name="input">外部装置の入力情報を参照する</param>
 void Player::runningJumpUpdate(const InputState& input)
 {
-	
+	//プレイヤー移動関数
 	movingUpdate(input);
 
+	//アニメーション変更と脚力をジャンプベクトルに足す
 	if (!jump_.isJump&& animNo_ != anim_runningJump_no) {
 		animNo_ = anim_runningJump_no;
-		isAnimLoop_ = false;
 		jump_.jumpVec += runningJump_power;
+		isAnimLoop_ = false;
 		jump_.isJump = true;
 		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 	}
 
+	//HACK：変数が仮のまま　+　どうするか悩んでいる
+	//アニメーションの総時間によって、重力を変更する
 	temp = PModel_->getAnimTotalTime() + 2;
 	tempGravity = -(runningJump_power * 2 / temp);
 
+	//空中にいるとき
+	//重力をベクトルに足してポジションに足す
 	if (jump_.isJump) {
 		jump_.jumpVec += tempGravity;
 		pos_.y += jump_.jumpVec;
 	}
 
+	//ジャンプベクトルが0でジャンプ中ではなかったら
+	//idle状態のアップデートに変更する、アニメーションも変更する
 	if (jump_.jumpVec == 0.0f && !jump_.isJump) {
 		updateFunc_ = &Player::idleUpdate;
 		animNo_ = anim_run_no;
@@ -316,17 +393,21 @@ void Player::runningJumpUpdate(const InputState& input)
 	}
 }
 
+/// <summary>
+/// プレイヤーの死体に与える情報を作る関数
+/// </summary>
+/// <param name="input">外部装置の入力情報を参照する</param>
 void Player::death(const InputState& input)
 {
 	//死亡
 	{
 		if (input.isTriggered(InputType::death)) {
-			deadPerson_.isEnable = true;
-			deadPerson_.deathPos = pos_;
+			deathPos = pos_;				//死んだ場所を残す
 			
-			isAnimLoop_ = false;
+			isAnimLoop_ = false;			
 			isDead_ = true;
 
+			//座るアニメーション以外だったら死ぬアニメーションに変える
 			if (animNo_ != anim_sit_no) {
 				animNo_ = anim_death_no;
 				PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
@@ -335,6 +416,9 @@ void Player::death(const InputState& input)
 	}
 }
 
+/// <summary>
+/// アニメーションをidleに戻す関数
+/// </summary>
 void Player::changeAnimIdle()
 {
 	//待機アニメーションに戻す
@@ -346,6 +430,10 @@ void Player::changeAnimIdle()
 }
 
 //完成品だから今後いじらなくていいと思う
+
+/// <summary>
+/// プレイヤーの回転処理を行う関数
+/// </summary>
 void Player::rotationUpdate()
 {
 	//目標の角度から現在の角度を引いて差を出している
@@ -383,27 +471,34 @@ void Player::rotationUpdate()
 	PModel_->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
 }
 
+/// <summary>
+/// プレイヤーの死体をvector配列で管理する関数
+/// </summary>
 void Player::deadPersonGenerater()
 {
-
+	//死体の生成
 	deadPlayer_.push_back(make_shared<Model>(PModel_->getModelHandle()));
-	deadPlayer_.back()->setPos(deadPerson_.deathPos);
+	//死体のポジション設定
+	deadPlayer_.back()->setPos(deathPos);
+	//死体のサイズ設定
 	deadPlayer_.back()->setScale(player_scale);
+	//死体の回転設定
 	deadPlayer_.back()->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
-	deadPlayer_.back()->setUseCollision(true, false);
-
-	deathNum = 0;
+	
+	//死体を数える
+	int deathNum = 0;
 	for (const auto person : deadPlayer_) {
-		if (person->getEnable()) {
-			deathNum++;
-			if (deathNum > 9) {
-				deadPlayer_.erase(deadPlayer_.begin());
-				deathNum--;
-			}
+		deathNum++;
+		if (deathNum > 10) {
+			deadPlayer_.erase(deadPlayer_.begin());		//最大数を超えたら一番古い死体を消す
 		}
 	}
 }
 
+/// <summary>
+/// プレイヤーに座るアニメーションをさせる関数
+/// </summary>
+/// <param name="input">外部装置の入力情報を参照する</param>
 void Player::sitUpdate(const InputState& input)
 {
 	//座る過程のアニメーションが終わったら三角座りにする

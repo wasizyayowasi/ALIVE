@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CharcterBase.cpp" />
+    <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="SCENE\KeyConfigScene.cpp" />
     <ClCompile Include="SCENE\ScenePause.cpp" />
     <ClCompile Include="UTIL\CheckCollisionModel.cpp" />
@@ -157,7 +157,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CharcterBase.h" />
+    <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="SCENE\KeyConfigScene.h" />
     <ClInclude Include="SCENE\ScenePause.h" />
     <ClInclude Include="UTIL\CheckCollisionModel.h" />
