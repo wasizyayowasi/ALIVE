@@ -5,6 +5,7 @@
 #include "Scene/GameMain.h"
 #include "util/InputState.h"
 #include "staging/Broom.h"
+#include "util/LoadExternalFile.h"
 
 // ÉvÉçÉOÉâÉÄÇÕ WinMain Ç©ÇÁénÇ‹ÇËÇ‹Ç∑
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -39,6 +40,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	InputState input;
 	SceneManager manager;
+	
 	manager.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager)));
 
 	while (ProcessMessage() == 0) {
@@ -55,6 +57,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		auto fps = GetFPS();
 		auto DC = GetDrawCallCount();
+
+		LoadExternalFile::getInstance().draw();
 
 		DrawFormatString(1180, 0, 0xffff00, "FPS : %2.2f", fps);
 		DrawFormatString(1200, 16, 0xffff00, "DC : %d", DC);

@@ -52,7 +52,7 @@ GameMain::~GameMain()
 void GameMain::update(const InputState& input)
 {
 	(this->*updateFunc_)(input);
-	SoundManager::getInstance().set3DSoundListenerInfo(player_->getPos(), VAdd(player_->getPos(), VGet(10, 0, 0)));
+	SoundManager::getInstance().set3DSoundListenerInfo(player_->getPos(), VAdd(player_->getPos(), player_->getRot()));
 }
 
 void GameMain::draw()

@@ -24,7 +24,9 @@ void SceneManager::pushScene(std::shared_ptr<SceneBase> scene)
 void SceneManager::swapScene(std::shared_ptr<SceneBase> scene)
 {
 	//先頭のシーンを削除する
-	scenes_.pop_front();
+	if (scenes_.size() > 1) {
+		scenes_.pop_front();
+	}
 	//先頭に引数で得たシーンを追加する
 	scenes_.push_front(shared_ptr<SceneBase>(scene));
 }

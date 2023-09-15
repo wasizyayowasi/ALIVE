@@ -1,6 +1,7 @@
 #include "KeyConfigScene.h"
 #include "SceneManager.h"
 #include "ScenePause.h"
+#include "PopUpTextScene.h"
 #include"../UTIL/InputState.h"
 #include"../UTIL/game.h"
 #include "DxLib.h"
@@ -61,6 +62,21 @@ void KeyConfigScene::selectChangeKeyUpdate(const InputState& input)
 		}
 	}
 
+	if (selectNum_ == input.inputNameTable.size()) {
+		if (input.isTriggered(InputType::next)) {
+			configInput.commitChangedInputInfo();
+			manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<PopUpTextScene>(manager_)));
+			return;
+		}
+	}
+
+	if (selectNum_ == input.inputNameTable.size() + 1) {
+		if (input.isTriggered(InputType::next)) {
+			configInput.resetInputInfo();
+			manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+			return;
+		}
+	}
 	
 	//‚Ç‚ÌƒL[‚ğ•ÏX‚·‚é‚©‚ğ‰¼Œˆ’è
 	if (input.isTriggered(InputType::next)) {

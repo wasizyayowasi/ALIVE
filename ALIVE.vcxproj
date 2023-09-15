@@ -111,12 +111,12 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(dxlib)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(dxlib);$(json)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(dxlib)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(dxlib);$(json)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -128,18 +128,20 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(dxlib)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(dxlib);$(json)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(dxlib)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(dxlib);$(json)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="util\LoadExternalFile.cpp" />
     <ClCompile Include="object\CharacterBase.cpp" />
+    <ClCompile Include="scene\PopUpTextScene.cpp" />
     <ClCompile Include="SCENE\KeyConfigScene.cpp" />
     <ClCompile Include="SCENE\ScenePause.cpp" />
     <ClCompile Include="UTIL\SoundManager.cpp" />
@@ -158,7 +160,9 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util\LoadExternalFile.h" />
     <ClInclude Include="object\CharacterBase.h" />
+    <ClInclude Include="scene\PopUpTextScene.h" />
     <ClInclude Include="SCENE\KeyConfigScene.h" />
     <ClInclude Include="SCENE\ScenePause.h" />
     <ClInclude Include="UTIL\SoundManager.h" />
