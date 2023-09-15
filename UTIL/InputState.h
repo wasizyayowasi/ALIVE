@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <string>
 
 enum class InputType
@@ -62,17 +63,25 @@ public:
 	void savekeyInfo()const;
 
 	void loadKeyInfo();
+
+	void savekeyInfo2()const;
+
+	void loadKeyInfo2(const char* filename);
+
 private:
 
 	using InputMap_t = std::map<InputType, std::vector<InputInfo> >;
-	InputMap_t inputMapTable;
+	InputMap_t inputMapTable_;
 
-	InputMap_t tempMapTable;
+	InputMap_t tempMapTable_;
 
-	InputMap_t defaultMapTable;
+	InputMap_t defaultMapTable_;
 
-	std::map<InputType, std::string> inputNameTable;
+	std::map<InputType, std::string> inputNameTable_;
 
-	std::vector<bool> currentInput;
-	std::vector<bool> lastInput;
+	std::vector<bool> currentInput_;
+	std::vector<bool> lastInput_;
+
+	std::unordered_map<int, int> rewriteKeyInfo_;
+	std::vector<InputInfo> temp2;
 };

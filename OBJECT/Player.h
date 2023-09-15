@@ -110,6 +110,5 @@ private:
 	PlayerInfo playerInfo;
 
 	void(Player::* updateFunc_)(const InputState& input);		//メンバ関数ポインタ
-
 };
 

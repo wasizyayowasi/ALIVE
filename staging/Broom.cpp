@@ -1,6 +1,6 @@
 #include "broom.h"
-#include "../OBJECT/Camera.h"
-#include "../UTIL/game.h"
+#include "../object/Camera.h"
+#include "../util/game.h"
 #include "../staging/Broom.h"
 
 Broom::Broom()

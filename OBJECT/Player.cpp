@@ -1,8 +1,8 @@
 #include "Player.h"
-#include "../UTIL/InputState.h"
-#include "../UTIL/Model.h"
-#include "../UTIL/CheckCollisionModel.h"
-#include "../UTIL/LoadExternalFile.h"
+#include "../util/InputState.h"
+#include "../util/Model.h"
+#include "../util/CheckCollisionModel.h"
+#include "../util/LoadExternalFile.h"
 #include<algorithm>
 #include<string>
 
@@ -63,7 +63,6 @@ Player::Player():updateFunc_(&Player::idleUpdate)
 	//ƒWƒƒƒ“ƒvî•ñ‚Ì‰Šú
 	jump_.isJump = false;
 	jump_.jumpVec = 0.0f;
-
 }
 
 /// <summary>

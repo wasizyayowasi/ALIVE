@@ -1,5 +1,5 @@
 #include "CheckCollisionModel.h"
-#include "../OBJECT/Player.h"
+#include "../object/Player.h"
 #include "Model.h"
 
 namespace {

@@ -2,8 +2,8 @@
 #include "SceneManager.h"
 #include "GameEnd.h"
 
-#include "../OBJECT/Player.h"
-#include "../OBJECT/Camera.h"
+#include "../object/Player.h"
+#include "../object/Camera.h"
 
 #include "../staging/Broom.h"
 #include "../staging/DepthOfField.h"

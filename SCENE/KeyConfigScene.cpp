@@ -2,8 +2,8 @@
 #include "SceneManager.h"
 #include "ScenePause.h"
 #include "PopUpTextScene.h"
-#include"../UTIL/InputState.h"
-#include"../UTIL/game.h"
+#include"../util/InputState.h"
+#include"../util/game.h"
 #include "DxLib.h"
 #include <algorithm>
 
@@ -15,6 +15,7 @@ KeyConfigScene::~KeyConfigScene()
 {
 	//現在のキー入力情報を外部データとして書き出す
 	inputState_.savekeyInfo();
+	inputState_.savekeyInfo2();
 }
 
 void KeyConfigScene::update(const InputState& input)
@@ -32,10 +33,17 @@ void KeyConfigScene::draw()
 	DrawFormatString(50, 16 * selectNum_ + 32, color_, "←");
 
 	int y = 32;
-	for (auto& keyName : inputState_.inputNameTable) {
+	for (auto& keyName : inputState_.inputNameTable_) {
 		DrawFormatString(0, y, 0xffffff, "%s", keyName.second.c_str());
 		y += 16;
 	}
+
+	//y = 0;
+	//for (auto& a : inputState_.inputMapTable_) {
+	//	DrawFormatString(100, y, 0x448844, "%d", static_cast<int>(a.first));
+	//	y += 16;
+	//}
+	
 
 	DrawString(0, y, "変更", 0xffffff);
 	y += 16;
@@ -50,19 +58,19 @@ void KeyConfigScene::selectChangeKeyUpdate(const InputState& input)
 
 	auto& configInput = const_cast<InputState&>(input);
 	
-	const int keyNum = static_cast<int>(input.inputNameTable.size() + 2);
+	const int keyNum = static_cast<int>(input.inputNameTable_.size() + 2);
 
 	//選択操作
 	{
-		if (input.isTriggered(InputType::up)) {
+		if (input.isPressed(InputType::up)) {
 			selectNum_ = (std::max)(selectNum_ - 1, 0);
 		}
-		if (input.isTriggered(InputType::down)) {
+		if (input.isPressed(InputType::down)) {
 			selectNum_ = (std::min)(selectNum_ + 1, keyNum - 1);
 		}
 	}
 
-	if (selectNum_ == input.inputNameTable.size()) {
+	if (selectNum_ == input.inputNameTable_.size()) {
 		if (input.isTriggered(InputType::next)) {
 			configInput.commitChangedInputInfo();
 			manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<PopUpTextScene>(manager_)));
@@ -70,7 +78,7 @@ void KeyConfigScene::selectChangeKeyUpdate(const InputState& input)
 		}
 	}
 
-	if (selectNum_ == input.inputNameTable.size() + 1) {
+	if (selectNum_ == input.inputNameTable_.size() + 1) {
 		if (input.isTriggered(InputType::next)) {
 			configInput.resetInputInfo();
 			manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
@@ -115,7 +123,7 @@ void KeyConfigScene::changeKeyUpdate(const InputState& input)
 		int idx = 0;
 		InputType currentType = InputType::max;
 		//現在の選択inputNameTableを取得する
-		for (const auto& name : inputState_.inputNameTable) {
+		for (const auto& name : inputState_.inputNameTable_) {
 			if (selectNum_ == idx) {
 				currentType = name.first;
 				break;

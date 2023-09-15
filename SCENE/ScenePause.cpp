@@ -2,8 +2,8 @@
 #include "SceneManager.h"
 #include "SceneTitle.h"
 #include "KeyConfigScene.h"
-#include "../UTIL/InputState.h"
-#include "../UTIL/game.h"
+#include "../util/InputState.h"
+#include "../util/game.h"
 #include <algorithm>
 
 ScenePause::ScenePause(SceneManager& manager):SceneBase(manager)

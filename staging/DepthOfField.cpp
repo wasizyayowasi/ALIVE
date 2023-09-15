@@ -1,5 +1,5 @@
 #include "DepthOfField.h"
-#include "../UTIL/game.h"
+#include "../util/game.h"
 
 DepthOfField::DepthOfField()
 {

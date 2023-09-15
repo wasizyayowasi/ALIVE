@@ -30,7 +30,7 @@ void LoadExternalFile::loadInfo(const char* filename)
 	path += ".json";
 
 	ifstream ifs(path.c_str());
-	assert(ifs.good());
+	assert(ifs);
 
 	json json_;
 	ifs >> json_;
