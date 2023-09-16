@@ -91,7 +91,6 @@ void InputState::update()
 	GetHitKeyStateAll(keystate);//全キー情報取得
 
 	int padState = GetJoypadInputState(DX_INPUT_PAD1);//パッド1コンの情報を取得する
-	int mouseState = GetMouseInput();
 
 	for (const auto& keymap : inputMapTable_) {			//マップの全情報をループする
 		for (const auto& input : keymap.second) {		//入力情報配列をループする
@@ -154,7 +153,9 @@ void InputState::resetInputInfo()
 	tempMapTable_ = defaultMapTable_;
 }
 
+//TODO：消す
 //書き出し
+//もう使わないと思う
 void InputState::savekeyInfo() const
 {
 	FILE* fp = nullptr;
@@ -181,7 +182,10 @@ void InputState::savekeyInfo() const
 
 	fclose(fp);
 }
+
+//TODO：消す
 //読み込み
+//もう使わないと思う
 void InputState::loadKeyInfo()
 {
 	int handle = FileRead_open("key.info");
