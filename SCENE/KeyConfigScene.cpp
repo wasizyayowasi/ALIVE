@@ -14,7 +14,7 @@ KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):S
 KeyConfigScene::~KeyConfigScene()
 {
 	//現在のキー入力情報を外部データとして書き出す
-	inputState_.savekeyInfo();
+	//inputState_.savekeyInfo();
 	inputState_.savekeyInfo2();
 }
 
