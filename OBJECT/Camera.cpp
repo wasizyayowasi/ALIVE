@@ -35,7 +35,11 @@ void Camera::trackingCameraUpdate(VECTOR playerPos)
 	cameraPos_.y = ((300.0f * 0.9f) + (playerPos.y * 0.1f));
 	cameraPos_.z = -800.0f;
 
-	SetCameraPositionAndTarget_UpVecY(cameraPos_, playerPos);
+	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
+	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
+	cameraTarget_.z = playerPos.z;
+
+	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
 
 	DrawFormatString(0, 80, 0x448844, "x : %.2f,y : %.2f,z : %.2f", cameraPos_.x, cameraPos_.y, cameraPos_.z);
 
