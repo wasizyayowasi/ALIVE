@@ -87,7 +87,7 @@ void GameMain::normalUpdate(const InputState& input)
 {
 
 	player_->update(input,models_);
-	camera_->fixedPointCamera(player_->getPos());
+	camera_->trackingCameraUpdate(player_->getPos());
 
 	if (input.isTriggered(InputType::pause)) {
 		manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));

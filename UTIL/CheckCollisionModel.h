@@ -26,16 +26,16 @@ private:
 	VECTOR oldPos;
 	VECTOR nowPos;
 	int i, j, k;
-	int kabeNum;
-	int yukaNum;
+	int hitWallNum;
+	int hitFloorNum;
 	bool moveFlag = false;
 	bool hitFlag = false;
 
 	//モデルとの当たり判定用メソッド
 	std::vector<MV1_COLL_RESULT_POLY_DIM> hitDim_;
-	MV1_COLL_RESULT_POLY* kabe[max_hit_coll];
-	MV1_COLL_RESULT_POLY* yuka[max_hit_coll];
-	MV1_COLL_RESULT_POLY* poly;
-	HITRESULT_LINE lineRes;
+	MV1_COLL_RESULT_POLY* wallHitDim_[max_hit_coll];
+	MV1_COLL_RESULT_POLY* floorHitDim_[max_hit_coll];
+	MV1_COLL_RESULT_POLY* hitPoly;
+	HITRESULT_LINE hitLineResult;
 };
 
