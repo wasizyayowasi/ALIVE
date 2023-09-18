@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "../util/InputState.h"
 #include <algorithm>
 
 namespace {
@@ -28,7 +29,7 @@ Camera::~Camera()
 {
 }
 
-void Camera::trackingCameraUpdate(VECTOR playerPos)
+void Camera::trackingCameraUpdate(const InputState& input,VECTOR playerPos)
 {
 	
 	cameraPos_.x = (cameraPos_.x * 0.9f) + (playerPos.x * 0.1f);
@@ -37,7 +38,9 @@ void Camera::trackingCameraUpdate(VECTOR playerPos)
 
 	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
 	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
-	cameraTarget_.z = playerPos.z;
+	cameraTarget_.z = 0;
+
+	//0changeOfFocus(input);
 
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
 
@@ -84,5 +87,21 @@ void Camera::fixedPointCamera(VECTOR playerPos)
 	}*/
 
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, playerPos);
+}
+
+void Camera::changeOfFocus(const InputState& input)
+{
+	if (input.isPressed(InputType::up)) {
+		cameraTarget_.y += 100.0f;
+	}
+	else if (input.isPressed(InputType::left)) {
+		cameraTarget_.x -= 100.0f;
+	} 
+	else if (input.isPressed(InputType::right)) {
+		cameraTarget_.x += 100.0f;
+	}
+	else if (input.isPressed(InputType::down)) {
+		cameraTarget_.y -= 100.0f;
+	}
 }
 

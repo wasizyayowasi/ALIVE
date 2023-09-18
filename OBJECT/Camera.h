@@ -1,6 +1,8 @@
 #pragma once
 #include "DxLib.h"
 
+class InputState;
+
 class Camera
 {
 public:
@@ -8,8 +10,9 @@ public:
 	Camera();
 	virtual ~Camera();
 
-	void trackingCameraUpdate(VECTOR playerPos);
+	void trackingCameraUpdate(const InputState& input,VECTOR playerPos);
 	void fixedPointCamera(VECTOR playerPos);
+	void changeOfFocus(const InputState& input);
 
 private:
 
