@@ -1,11 +1,14 @@
 #include "DxLib.h"
-#include "util/game.h"
+
 #include "Scene/SceneManager.h"
 #include "Scene/SceneTitle.h"
 #include "Scene/GameMain.h"
+
+#include "util/game.h"
 #include "util/InputState.h"
-#include "staging/Broom.h"
 #include "util/LoadExternalFile.h"
+
+#include "staging/Broom.h"
 
 // ƒvƒƒOƒ‰ƒ€‚Í WinMain ‚©‚çn‚Ü‚è‚Ü‚·
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)

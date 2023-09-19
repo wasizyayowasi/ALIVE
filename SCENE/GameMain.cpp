@@ -19,7 +19,7 @@ using namespace std;
 
 namespace {
 	const char* const temp_filepath = "data/model/tempFiled2.mv1";
-	const char* const cube_filename = "DATA/model/cube.mv1";
+	const char* const cube_filename = "data/model/cube.mv1";
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
@@ -38,10 +38,11 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 
 	Set3DSoundOneMetre(10.0f);
 
+	SoundManager::getInstance().set3DSoundListenerInfo(camera_->getPos(), camera_->getTarget());
+
 	SoundManager::getInstance().set3DSoundInfo(VGet(575,120,-60),1000,"cafe");
 
 	SoundManager::getInstance().play("cafe");
-
 
 }
 
@@ -52,11 +53,12 @@ GameMain::~GameMain()
 void GameMain::update(const InputState& input)
 {
 	(this->*updateFunc_)(input);
-	SoundManager::getInstance().set3DSoundListenerInfo(player_->getPos(), VAdd(player_->getPos(), player_->getRot()));
+	
 }
 
 void GameMain::draw()
 {
+
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
 
@@ -67,6 +69,10 @@ void GameMain::draw()
 	player_->draw();
 	//broom_->graphFilterUpdate();
 	//broom_->draw();
+
+	DrawFormatString(0, 16, 0x448844, "%.2f,%.2f,%.2f", camera_->getPos().x, camera_->getPos().y, camera_->getPos().z);
+	DrawFormatString(0, 32, 0x448844, "%.2f,%.2f,%.2f", player_->getPos().x, player_->getPos().y, player_->getPos().z);
+	DrawFormatString(0, 48, 0x448844, "%d", camera_->gettemp());
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	//‰æ–Ê‘S‘Ì‚ğ^‚Á•‚É“h‚è‚Â‚Ô‚·
@@ -87,7 +93,11 @@ void GameMain::normalUpdate(const InputState& input)
 {
 
 	player_->update(input,models_);
-	camera_->trackingCameraUpdate(input,player_->getPos());
+	//camera_->trackingCameraUpdate(input,player_->getPos());
+	//camera_->fixedPointCamera(player_->getPos());
+	camera_->tempcamera(player_->getPos());
+
+	SoundManager::getInstance().set3DSoundListenerInfo(camera_->getPos(), camera_->getTarget());
 
 	if (input.isTriggered(InputType::pause)) {
 		manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));

@@ -109,8 +109,6 @@ void Player::draw()
 			deadPlayer->draw();
 		}
 	}
-	
-	DrawFormatString(0,32, 0x448844, "%d", animNo_);
 
 	for (const auto person : deadPlayer_) {
 		if (person->getEnable()) {

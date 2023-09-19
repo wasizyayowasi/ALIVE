@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="scene\SoundSettingScene.cpp" />
     <ClCompile Include="util\LoadExternalFile.cpp" />
     <ClCompile Include="object\CharacterBase.cpp" />
     <ClCompile Include="scene\PopUpTextScene.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scene\SoundSettingScene.h" />
     <ClInclude Include="util\LoadExternalFile.h" />
     <ClInclude Include="object\CharacterBase.h" />
     <ClInclude Include="scene\PopUpTextScene.h" />

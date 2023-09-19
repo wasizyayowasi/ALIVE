@@ -23,6 +23,13 @@ Camera::Camera()
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, VGet(0, 0, 0));
 	// カメラの視野角を設定(ラジアン)
 	SetupCamera_Perspective(60.0f * DX_PI_F / 180.0f);
+
+	tempRoom[0] = 1000;
+	tempRoom[1] = 1500;
+	tempRoom[2] = 2000;
+
+	temp = tempRoom[0];
+
 }
 
 Camera::~Camera()
@@ -40,7 +47,8 @@ void Camera::trackingCameraUpdate(const InputState& input,VECTOR playerPos)
 	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
 	cameraTarget_.z = 0;
 
-	//0changeOfFocus(input);
+	//changeOfFocus(input);
+	//仮：1800で急激に移動するようにする
 
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
 
@@ -52,14 +60,21 @@ void Camera::fixedPointCamera(VECTOR playerPos)
 {
 	//一定範囲を出たらカメラが次の場所へヌルっと動く
 
+	//プレイヤーがいる部屋の番号を取得
 	int playerRoomNum = (playerPos.x + horizonta_size_of_one_room / 2 ) / (horizonta_size_of_one_room) ;
+	//カメラがいる部屋の番号を取得する
 	int cameraRoomNum = fixedPointCameraDestinationPosX / (horizonta_size_of_one_room);
+	//プレイヤーとカメラがいる部屋の番号が違ったらカメラのX座標変数(仮)をプレイヤーがいる部屋の番号に変える
 	if (playerRoomNum != cameraRoomNum) {
 		fixedPointCameraDestinationPosX = horizonta_size_of_one_room * playerRoomNum;
 	}
 
+	//カメラの目標位置からカメラのポジションを引く
 	float sub = fixedPointCameraDestinationPosX - cameraPos_.x;
+
+	//カメラのポジションと目標位置が同じではなかったら
 	if (cameraPos_.x != fixedPointCameraDestinationPosX) {
+		//カメラのポジションを移動させる
 		if (sub > 0.0f) {
 			cameraPos_.x = (std::min)(cameraPos_.x + 20.0f, fixedPointCameraDestinationPosX);
 		}
@@ -68,25 +83,14 @@ void Camera::fixedPointCamera(VECTOR playerPos)
 		}
 	}
 
-//	DrawFormatString(0, 16, 0xffffff, "player:%d,camera%d", playerRoomNum, cameraRoomNum);
-//	DrawFormatString(0, 32, 0xffffff, "player:%.2f", playerPos.x);
-//	DrawFormatString(0, 48, 0xffffff, "fiexd%.2f", fixedPointCameraDestinationPosX);
-//	DrawFormatString(0, 64, 0xffffff, "sub%.2f", sub);
+	//カメラが見る位置をプレイヤーから少しずらす
+	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
+	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
+	cameraTarget_.z = 0;
 
-	/*if (playerPos.x <= -500) {
-		fixedPointCameraDestinationPosX = -horizonta_size_of_one_room;
-		cameraPos_.x = (std::max)(cameraPos_.x - 20.0f, fixedPointCameraDestinationPosX);
-	}
-	else if (playerPos.x >= 500) {
-		fixedPointCameraDestinationPosX = horizonta_size_of_one_room;
-		cameraPos_.x = (std::min)(cameraPos_.x + 20.0f, fixedPointCameraDestinationPosX);
-	}
-	else {
-		fixedPointCameraDestinationPosX = 0;
-		cameraPos_.x = (std::max)(cameraPos_.x - 20.0f, fixedPointCameraDestinationPosX);
-	}*/
+	DrawFormatString(0, 80, 0x448844, "x : %.2f,y : %.2f,z : %.2f", cameraPos_.x, cameraPos_.y, cameraPos_.z);
 
-	SetCameraPositionAndTarget_UpVecY(cameraPos_, playerPos);
+	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
 }
 
 void Camera::changeOfFocus(const InputState& input)
@@ -104,4 +108,42 @@ void Camera::changeOfFocus(const InputState& input)
 		cameraTarget_.y -= 100.0f;
 	}
 }
+
+void Camera::tempcamera(VECTOR playerPos)
+{
+
+	int roomsize = temp;
+
+	if (playerPos.x > temp && playerPos.x > temp - tempRoom[i]) {
+		cameraPos_.x = (std::min)(cameraPos_.x + 5.0f, temp + 200.0f);
+		if (playerPos.x >= temp + 200.0f) {
+			i++;
+			temp += tempRoom[i];
+		}
+	}
+	else if (playerPos.x < temp - tempRoom[i] && playerPos.x < temp) {
+		cameraPos_.x = (std::max)(cameraPos_.x - 5.0f, temp - 200.0f);
+		if (playerPos.x >= temp - tempRoom[i] - 200.0f) {
+			temp -= tempRoom[i];
+			i--;
+		}
+	}
+	else {
+		cameraPos_.x = (cameraPos_.x * 0.9f) + (playerPos.x * 0.1f);
+	}
+	
+	cameraPos_.y = ((300.0f * 0.9f) + (playerPos.y * 0.1f));
+	cameraPos_.z = -800.0f;
+
+	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
+	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
+	cameraTarget_.z = 0;
+
+	
+
+	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
+
+	DrawFormatString(0, 80, 0x448844, "x : %.2f,y : %.2f,z : %.2f", cameraPos_.x, cameraPos_.y, cameraPos_.z);
+}
+
 

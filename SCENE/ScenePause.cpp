@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "SceneTitle.h"
 #include "KeyConfigScene.h"
+#include "SoundSettingScene.h"
 #include "../util/InputState.h"
 #include "../util/game.h"
 #include <algorithm>
@@ -22,25 +23,29 @@ void ScenePause::update(const InputState& input)
 			selectionNum_ = (std::max)(selectionNum_ - 1, 0);
 		}
 		if (input.isTriggered(InputType::down)) {
-			selectionNum_ = (std::min)(selectionNum_ + 1, 2);
+			selectionNum_ = (std::min)(selectionNum_ + 1, 3);
 		}
 	}
 	
 
 	if (input.isTriggered(InputType::next)) {
 		 switch(selectionNum_) {
-			 //キーコンフィグシーンへの遷移
-			case 0:
-				manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<KeyConfigScene>(manager_,input)));
-				break;
-			//一個前のシーン(メインシーン)へ遷移
-			case 1:
-				manager_.popScene();
-				break;
-			//タイトルシーンへの遷移
-			case 2:
-				manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
-				break;
+		//サウンドセッティングへの遷移
+		 case 0:
+			 manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<SoundSettingScene>(manager_)));
+			 break;
+		//キーコンフィグシーンへの遷移
+		case 1:
+			manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<KeyConfigScene>(manager_,input)));
+			break;
+		//一個前のシーン(メインシーン)へ遷移
+		case 2:
+			manager_.popScene();
+			break;
+		//タイトルシーンへの遷移
+		case 3:
+			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
+			break;
 		}
 	}
 
@@ -59,7 +64,8 @@ void ScenePause::draw()
 
 	DrawString(90, 16 * selectionNum_ + 32, "←", 0xffff00);
 
-	DrawString(0, 32, "操作設定",0x00ff00);
-	DrawString(0, 48, "戻る",0x00ff00);
-	DrawString(0, 64, "タイトルへ",0x00ff00);
+	DrawString(0, 32, "音調整",0x00ff00);
+	DrawString(0, 48, "操作設定",0x00ff00);
+	DrawString(0, 64, "戻る",0x00ff00);
+	DrawString(0, 80, "タイトルへ",0x00ff00);
 }

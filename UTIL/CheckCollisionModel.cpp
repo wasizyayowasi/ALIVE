@@ -81,13 +81,18 @@ void CheckCollisionModel::checkCollisionWall(VECTOR moveVec,float playerHeight)
 
 				hitFlag = true;
 
-				VECTOR slideVec;
-				//プレイヤーのベクトルとポリゴンの法線ベクトルの外積を取得
-				slideVec = VCross(moveVec, hitPoly->Normal);
-				//プレイヤーのベクトルとポリゴンの法線ベクトルの外積とポリゴンの外積の法線ベクトルの外積を取得
-				slideVec = VCross(hitPoly->Normal, slideVec);
-				//更新前のプレイヤーのポジションと上記の外積を取得
-				nowPos = VAdd(oldPos, slideVec);
+				if (hitPoly->HitPosition.y < oldPos.y + 50.0f) {
+					nowPos = VAdd(oldPos, VGet(0, 30.0f, 0));
+				}
+				else {
+					VECTOR slideVec;
+					//プレイヤーのベクトルとポリゴンの法線ベクトルの外積を取得
+					slideVec = VCross(moveVec, hitPoly->Normal);
+					//プレイヤーのベクトルとポリゴンの法線ベクトルの外積とポリゴンの外積の法線ベクトルの外積を取得
+					slideVec = VCross(hitPoly->Normal, slideVec);
+					//更新前のプレイヤーのポジションと上記の外積を取得
+					nowPos = VAdd(oldPos, slideVec);
+				}
 
 				//また当たり判定？
 				for (j = 0; j < hitWallNum; j++) {
