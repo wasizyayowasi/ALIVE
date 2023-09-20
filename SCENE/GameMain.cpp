@@ -15,6 +15,7 @@
 #include "../util/InputState.h"
 #include "../util/model.h"
 
+
 using namespace std;
 
 namespace {
@@ -38,10 +39,11 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 
 	Set3DSoundOneMetre(10.0f);
 
+	//3Dリスナーの位置を設定する
 	SoundManager::getInstance().set3DSoundListenerInfo(camera_->getPos(), camera_->getTarget());
-
+	//3Dサウンドに関連する情報を設定する
 	SoundManager::getInstance().set3DSoundInfo(VGet(575,120,-60),1000,"cafe");
-
+	//仮でcafeという音楽を流している
 	SoundManager::getInstance().play("cafe");
 
 }
@@ -50,12 +52,13 @@ GameMain::~GameMain()
 {
 }
 
+//更新
 void GameMain::update(const InputState& input)
 {
 	(this->*updateFunc_)(input);
-	
 }
 
+//描画
 void GameMain::draw()
 {
 
@@ -70,16 +73,13 @@ void GameMain::draw()
 	//broom_->graphFilterUpdate();
 	//broom_->draw();
 
-	DrawFormatString(0, 16, 0x448844, "%.2f,%.2f,%.2f", camera_->getPos().x, camera_->getPos().y, camera_->getPos().z);
-	DrawFormatString(0, 32, 0x448844, "%.2f,%.2f,%.2f", player_->getPos().x, player_->getPos().y, player_->getPos().z);
-	DrawFormatString(0, 48, 0x448844, "%d", camera_->gettemp());
-
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	//画面全体を真っ黒に塗りつぶす
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, fadeColor_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
+//TODO：別のフェードインが出来次第消去
 void GameMain::fadeInUpdate(const InputState& input)
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
@@ -89,13 +89,12 @@ void GameMain::fadeInUpdate(const InputState& input)
 	}
 }
 
+//更新
 void GameMain::normalUpdate(const InputState& input)
 {
-
 	player_->update(input,models_);
-	//camera_->trackingCameraUpdate(input,player_->getPos());
+	camera_->trackingCameraUpdate(input,player_->getPos());
 	//camera_->fixedPointCamera(player_->getPos());
-	camera_->tempcamera(player_->getPos());
 
 	SoundManager::getInstance().set3DSoundListenerInfo(camera_->getPos(), camera_->getTarget());
 
@@ -104,6 +103,7 @@ void GameMain::normalUpdate(const InputState& input)
 	}
 }
 
+//TODO：別のフェードインが出来次第消去
 void GameMain::fadeOutUpdate(const InputState& input)
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));

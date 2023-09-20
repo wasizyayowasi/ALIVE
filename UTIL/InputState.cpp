@@ -33,6 +33,18 @@ InputState::InputState()
 	//右
 	defaultMapTable_[InputType::right] = { {InputCategory::keybd,KEY_INPUT_D},
 									  {InputCategory::pad,PAD_INPUT_RIGHT} };
+	//上矢印
+	defaultMapTable_[InputType::upArrow] = { {InputCategory::keybd,KEY_INPUT_UP},
+									  {InputCategory::pad,PAD_INPUT_UP} };
+	//下矢印
+	defaultMapTable_[InputType::downArrow] = { {InputCategory::keybd,KEY_INPUT_DOWN},
+										{InputCategory::pad,PAD_INPUT_DOWN} };
+	//左矢印
+	defaultMapTable_[InputType::leftArrow] = { {InputCategory::keybd,KEY_INPUT_LEFT},
+										{InputCategory::pad,PAD_INPUT_LEFT} };
+	//右矢印
+	defaultMapTable_[InputType::rightArrow] = { {InputCategory::keybd,KEY_INPUT_RIGHT},
+									  {InputCategory::pad,PAD_INPUT_RIGHT} };
 	//Space
 	defaultMapTable_[InputType::space] = { {InputCategory::keybd,KEY_INPUT_SPACE},
 									  {InputCategory::pad,PAD_INPUT_1} };
@@ -62,6 +74,10 @@ InputState::InputState()
 	inputNameTable_[InputType::down] = "下";
 	inputNameTable_[InputType::left] = "左";
 	inputNameTable_[InputType::right] = "右";
+	inputNameTable_[InputType::upArrow] = "上矢印";
+	inputNameTable_[InputType::downArrow] = "下矢印";
+	inputNameTable_[InputType::leftArrow] = "左矢印";
+	inputNameTable_[InputType::rightArrow] = "右矢印";
 	inputNameTable_[InputType::space] = "space";
 	inputNameTable_[InputType::death] = "死亡";
 	inputNameTable_[InputType::shift] = "shift";
@@ -215,7 +231,7 @@ void InputState::loadKeyInfo()
 void InputState::savekeyInfo2() const
 {
 	//決め打ちしか出来ないのがネック
-	json keyInfo_[11];
+	json keyInfo_[static_cast<int>(InputType::max)];
 	//配列番号を進めるための変数(出来るなら書きたくない)
 	int i = 0;
 	for (auto& input : inputMapTable_) {
@@ -293,7 +309,7 @@ void InputState::loadKeyInfo2(const char* filename)
 	int keyTypeNum = json_["keyTypeNum"];
 
 	//決め打ちしか出来ないのがネック(知識、理解不足)
-	json inputInfo[11];
+	json inputInfo[static_cast<int>(InputType::max)];
 	//↓嫌だこれ嫌い
 	int i = 0;
 

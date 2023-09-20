@@ -39,12 +39,12 @@ Player::Player():updateFunc_(&Player::idleUpdate)
 		playerInfo.walkSpeed = LoadExternalFile::getInstance().getPlayerInfo().walkSpeed;
 		playerInfo.runningSpeed = LoadExternalFile::getInstance().getPlayerInfo().runningSpeed;
 		playerInfo.rotSpeed = LoadExternalFile::getInstance().getPlayerInfo().rotSpeed;
-		for (int i = 0; i < static_cast<int>(AnimType::num); i++) {
+		for (int i = 0; i < static_cast<int>(AnimType::max); i++) {
 			playerInfo.anim_[i] = LoadExternalFile::getInstance().getPlayerInfo().animNo_[i];
 		}
 	}
 
-	for (int i = 0; i < static_cast<int>(AnimType::num); i++)
+	for (int i = 0; i < static_cast<int>(AnimType::max); i++)
 	{
 		animType_[static_cast<AnimType>(i)] = playerInfo.anim_[i];
 	}

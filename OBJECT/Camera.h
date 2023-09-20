@@ -11,20 +11,17 @@ public:
 	virtual ~Camera();
 
 	void trackingCameraUpdate(const InputState& input,VECTOR playerPos);
-	void fixedPointCamera(VECTOR playerPos);
-	void changeOfFocus(const InputState& input);
+	void fixedPointCamera(VECTOR playerPos);								
+	void changeOfFocus(const InputState& input);							//カメラのターゲットの位置を逸らす
 
 	VECTOR getPos() { return cameraPos_; }
-	int gettemp() { return temp; }
 	VECTOR getTarget() { return cameraTarget_; }
-
-	void tempcamera(VECTOR playerPos);
 
 private:
 
 	int i = 0;
 
-	float temp;
+	float threshold;
 	float tempRoom[3];
 	float fixedPointCameraDestinationPosX = 0.0f;		//定点カメラの移動先で座標Xを保管する変数
 

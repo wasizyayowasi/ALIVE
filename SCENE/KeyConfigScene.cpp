@@ -4,25 +4,32 @@
 #include "PopUpTextScene.h"
 #include"../util/InputState.h"
 #include"../util/game.h"
+#include"../util/DrawFunctions.h"
 #include "DxLib.h"
 #include <algorithm>
 
+//コンストラクタ
 KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):SceneBase(manager),updateFunc_(&KeyConfigScene::selectChangeKeyUpdate), inputState_(input)
 {
+	keyTypeHandle_ = Graph::loadGraph("data/graph/key.png");
 }
 
+//デストラクタ
 KeyConfigScene::~KeyConfigScene()
 {
 	//現在のキー入力情報を外部データとして書き出す
 	//inputState_.savekeyInfo();
 	inputState_.savekeyInfo2();
+	DeleteGraph(keyTypeHandle_);
 }
 
+//メンバ関数ポインタの更新
 void KeyConfigScene::update(const InputState& input)
 {
-	(this->*updateFunc_)(input);
+	(this->*updateFunc_)();
 }
 
+//描画
 void KeyConfigScene::draw()
 {
 	//多分削除する
@@ -38,48 +45,46 @@ void KeyConfigScene::draw()
 		y += 16;
 	}
 
-	//y = 0;
-	//for (auto& a : inputState_.inputMapTable_) {
-	//	DrawFormatString(100, y, 0x448844, "%d", static_cast<int>(a.first));
-	//	y += 16;
-	//}
-	
-
 	DrawString(0, y, "変更", 0xffffff);
 	y += 16;
 	DrawString(0, y, "キャンセル", 0xffffff);
 
+	
+	//----------------以降消去予定
 	DrawString(0, 0, "keyConfig",0xffffff);
 	DrawFormatString(0, 16, 0xffffff, "%d", selectNum_);
 }
 
-void KeyConfigScene::selectChangeKeyUpdate(const InputState& input)
+//変更したいキーを選択する
+void KeyConfigScene::selectChangeKeyUpdate()
 {
-
-	auto& configInput = const_cast<InputState&>(input);
-	
-	const int keyNum = static_cast<int>(input.inputNameTable_.size() + 2);
+	//短縮化
+	auto& configInput = const_cast<InputState&>(inputState_);
+	//現在のキーの数を取得する
+	const int keyNum = static_cast<int>(inputState_.inputNameTable_.size() + 2);
 
 	//選択操作
 	{
-		if (input.isPressed(InputType::up)) {
+		if (inputState_.isPressed(InputType::up)) {
 			selectNum_ = (std::max)(selectNum_ - 1, 0);
 		}
-		if (input.isPressed(InputType::down)) {
+		if (inputState_.isPressed(InputType::down)) {
 			selectNum_ = (std::min)(selectNum_ + 1, keyNum - 1);
 		}
 	}
 
-	if (selectNum_ == input.inputNameTable_.size()) {
-		if (input.isTriggered(InputType::next)) {
-			configInput.commitChangedInputInfo();
-			manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<PopUpTextScene>(manager_)));
+	//キーの変更を保存する
+	if (selectNum_ == inputState_.inputNameTable_.size()) {
+		if (inputState_.isTriggered(InputType::next)) {
+			configInput.commitChangedInputInfo();		//仮のキー情報を実際に参照しているキー情報に代入する
+			manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<PopUpTextScene>(manager_)));		//シーンをポップアップテキストを描画するシーンに変更する
 			return;
 		}
 	}
 
-	if (selectNum_ == input.inputNameTable_.size() + 1) {
-		if (input.isTriggered(InputType::next)) {
+	//仮キー情報を消去してポーズシーンに戻る
+	if (selectNum_ == inputState_.inputNameTable_.size() + 1) {
+		if (inputState_.isTriggered(InputType::next)) {
 			configInput.resetInputInfo();
 			manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 			return;
@@ -87,24 +92,27 @@ void KeyConfigScene::selectChangeKeyUpdate(const InputState& input)
 	}
 	
 	//どのキーを変更するかを仮決定
-	if (input.isTriggered(InputType::next)) {
+	if (inputState_.isTriggered(InputType::next)) {
 		updateFunc_ = &KeyConfigScene::changeKeyUpdate;
 		return;
 	}
 
 	//ひとつ前のシーンに戻る
-	if (input.isTriggered(InputType::prev)) {
+	if (inputState_.isTriggered(InputType::prev)) {
 		manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 		return;
 	}
 
 }
 
-void KeyConfigScene::changeKeyUpdate(const InputState& input)
+//変更したいキーをどのキーに変更するのか
+void KeyConfigScene::changeKeyUpdate()
 {
-	auto& configInput = const_cast<InputState&>(input);
+	//短縮化
+	auto& configInput = const_cast<InputState&>(inputState_);
 
-	if (input.isTriggered(InputType::next)) {
+	//変更途中の場合矢印の色を変える
+	if (inputState_.isTriggered(InputType::next)) {
 		isEditing_ = !isEditing_;
 		if (isEditing_) {
 			color_ = 0x00ff00;
@@ -144,12 +152,21 @@ void KeyConfigScene::changeKeyUpdate(const InputState& input)
 		}
 	}
 	
-
-	if (input.isTriggered(InputType::prev)) {
+	//メンバ関数ポインタを変更するキーを選択する関数に変更する
+	if (inputState_.isTriggered(InputType::prev)) {
 		updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
 		isEditing_ = !isEditing_;
 		color_ = 0xff0000;
 		return;
 	}
 
+}
+
+char KeyConfigScene::getKeyName(int num)
+{
+	switch (num) {
+	
+	}
+
+	return 0;
 }

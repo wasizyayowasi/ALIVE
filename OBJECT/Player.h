@@ -26,7 +26,7 @@ enum class AnimType {
 	idleToSitup,	//idle状態から座る
 	situpToIdle,	//座っている状態からidle
 	sit,			//座っている
-	num
+	max
 };
 
 struct PlayerInfo {
@@ -35,7 +35,7 @@ struct PlayerInfo {
 	float rotSpeed;
 	float walkSpeed;
 	float runningSpeed;
-	int anim_[11];
+	int anim_[static_cast<int>(AnimType::max)];
 };
 
 class Player
@@ -96,9 +96,11 @@ private:
 
 
 	VECTOR checkPoint_ = { 0.0f,0.0f, 0.0f };					//中間ポイント
+
 	VECTOR pos_ = { 0.0f,0.0f,0.0f };							//プレイヤーのポジション
 	VECTOR rot_ = { 0.0f,0.0f,0.0f };							//プレイヤーの回転
 	VECTOR moveVec_ = { 0.0f,0.0f,0.0f };						//プレイヤーの移動ベクトル
+
 	VECTOR deathPos = { 0.0f,0.0f,0.0f };						//死体のポジション
 
 	std::shared_ptr<Model> PModel_;								//モデルクラスのポインタ

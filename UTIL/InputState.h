@@ -14,6 +14,10 @@ enum class InputType
 	down,			///‰º
 	left,			///¶
 	right,			///‰E
+	upArrow,		///ã
+	downArrow,		///‰º
+	leftArrow,		///¶
+	rightArrow,		///‰E
 	space,			///space
 	death,			//€–S“ü—Í
 	shift,			//shift

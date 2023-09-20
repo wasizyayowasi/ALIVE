@@ -4,6 +4,10 @@
 
 namespace {
 	constexpr float horizonta_size_of_one_room = 1000.0f;
+
+	constexpr float camera_sride_speed = 10.0f;
+
+	constexpr float add_focus = 50.0f;
 }
 
 Camera::Camera()
@@ -28,7 +32,7 @@ Camera::Camera()
 	tempRoom[1] = 1500;
 	tempRoom[2] = 2000;
 
-	temp = tempRoom[0];
+	threshold = tempRoom[0];
 
 }
 
@@ -39,20 +43,44 @@ Camera::~Camera()
 void Camera::trackingCameraUpdate(const InputState& input,VECTOR playerPos)
 {
 	
-	cameraPos_.x = (cameraPos_.x * 0.9f) + (playerPos.x * 0.1f);
+	i = (std::max)(i, 0);
+
+	//ある一定のラインに来るとカメラの位置を右方向(xがプラスの方向)に移動させる
+	if (playerPos.x > threshold && playerPos.x > threshold - tempRoom[i]) {
+		cameraPos_.x = (std::min)(cameraPos_.x + camera_sride_speed, threshold + 200.0f);
+		if (playerPos.x >= threshold + 50.0f) {
+			i++;
+			threshold += tempRoom[i];
+		}
+	}
+	//ある一定のラインに来るとカメラの位置を左方向(xがマイナスの方向)に移動させる
+	else if (playerPos.x < threshold && playerPos.x < threshold - tempRoom[i]) {
+		if (playerPos.x < threshold - tempRoom[i] - 50.0f) {
+			threshold -= tempRoom[i];
+			i--;
+		}
+		if (cameraPos_.x > threshold - tempRoom[i] - 200.0f) {
+			cameraPos_.x -= camera_sride_speed;
+		}
+	}
+	//通常時のカメラ移動
+	else {
+		cameraPos_.x = (cameraPos_.x * 0.9f) + (playerPos.x * 0.1f);
+	}
+
+	//ターゲットを逸らす
+	changeOfFocus(input);
+
+	//カメラがプレイヤーを追いかける用にする
 	cameraPos_.y = ((300.0f * 0.9f) + (playerPos.y * 0.1f));
 	cameraPos_.z = -800.0f;
 
+	//プレイヤーがいた位置を見るようにする
 	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
 	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
 	cameraTarget_.z = 0;
 
-	//changeOfFocus(input);
-	//仮：1800で急激に移動するようにする
-
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
-
-	DrawFormatString(0, 80, 0x448844, "x : %.2f,y : %.2f,z : %.2f", cameraPos_.x, cameraPos_.y, cameraPos_.z);
 
 }
 
@@ -95,55 +123,18 @@ void Camera::fixedPointCamera(VECTOR playerPos)
 
 void Camera::changeOfFocus(const InputState& input)
 {
-	if (input.isPressed(InputType::up)) {
-		cameraTarget_.y += 100.0f;
+	if (input.isPressed(InputType::upArrow)) {
+		cameraTarget_.y += add_focus;
 	}
-	else if (input.isPressed(InputType::left)) {
-		cameraTarget_.x -= 100.0f;
+	else if (input.isPressed(InputType::downArrow)) {
+		cameraTarget_.y -= add_focus;
+	}
+	else if (input.isPressed(InputType::leftArrow)) {
+		cameraTarget_.x -= add_focus;
 	} 
-	else if (input.isPressed(InputType::right)) {
-		cameraTarget_.x += 100.0f;
+	else if (input.isPressed(InputType::rightArrow)) {
+		cameraTarget_.x += add_focus;
 	}
-	else if (input.isPressed(InputType::down)) {
-		cameraTarget_.y -= 100.0f;
-	}
-}
-
-void Camera::tempcamera(VECTOR playerPos)
-{
-
-	int roomsize = temp;
-
-	if (playerPos.x > temp && playerPos.x > temp - tempRoom[i]) {
-		cameraPos_.x = (std::min)(cameraPos_.x + 5.0f, temp + 200.0f);
-		if (playerPos.x >= temp + 200.0f) {
-			i++;
-			temp += tempRoom[i];
-		}
-	}
-	else if (playerPos.x < temp - tempRoom[i] && playerPos.x < temp) {
-		cameraPos_.x = (std::max)(cameraPos_.x - 5.0f, temp - 200.0f);
-		if (playerPos.x >= temp - tempRoom[i] - 200.0f) {
-			temp -= tempRoom[i];
-			i--;
-		}
-	}
-	else {
-		cameraPos_.x = (cameraPos_.x * 0.9f) + (playerPos.x * 0.1f);
-	}
-	
-	cameraPos_.y = ((300.0f * 0.9f) + (playerPos.y * 0.1f));
-	cameraPos_.z = -800.0f;
-
-	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
-	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
-	cameraTarget_.z = 0;
-
-	
-
-	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
-
-	DrawFormatString(0, 80, 0x448844, "x : %.2f,y : %.2f,z : %.2f", cameraPos_.x, cameraPos_.y, cameraPos_.z);
 }
 
 
