@@ -3,6 +3,7 @@
 #include "Scene/SceneManager.h"
 #include "Scene/SceneTitle.h"
 #include "Scene/GameMain.h"
+#include "scene/DebugScene.h"
 
 #include "util/game.h"
 #include "util/InputState.h"
@@ -44,7 +45,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	InputState input;
 	SceneManager manager;
 	
-	manager.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager)));
+	//manager.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager)));
+	manager.changeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager)));
 
 	while (ProcessMessage() == 0) {
 

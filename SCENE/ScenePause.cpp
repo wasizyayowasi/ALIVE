@@ -3,6 +3,7 @@
 #include "SceneTitle.h"
 #include "KeyConfigScene.h"
 #include "SoundSettingScene.h"
+#include "DebugScene.h"
 #include "../util/InputState.h"
 #include "../util/game.h"
 #include <algorithm>
@@ -23,7 +24,7 @@ void ScenePause::update(const InputState& input)
 			selectionNum_ = (std::max)(selectionNum_ - 1, 0);
 		}
 		if (input.isTriggered(InputType::down)) {
-			selectionNum_ = (std::min)(selectionNum_ + 1, 3);
+			selectionNum_ = (std::min)(selectionNum_ + 1, 4);
 		}
 	}
 	
@@ -45,6 +46,9 @@ void ScenePause::update(const InputState& input)
 		//タイトルシーンへの遷移
 		case 3:
 			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
+			break;
+		case 4:
+			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager_)));
 			break;
 		}
 	}
@@ -68,4 +72,5 @@ void ScenePause::draw()
 	DrawString(0, 48, "操作設定",0x00ff00);
 	DrawString(0, 64, "戻る",0x00ff00);
 	DrawString(0, 80, "タイトルへ",0x00ff00);
+	DrawString(0, 96, "デバッグシーンへ",0x00ff00);
 }
