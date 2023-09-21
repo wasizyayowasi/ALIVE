@@ -37,51 +37,63 @@ void KeyConfigScene::update(const InputState& input)
 //描画
 void KeyConfigScene::draw()
 {
-	//多分削除する
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	int cslX = 50;
-	int cslY = graph_chip_size * 2 * selectNum_ + 32;
-	if (selectNum_ > 7) {
-		cslX += 450;
-		cslY = graph_chip_size * 2 * (selectNum_ - 8) + 32;
-	}
-	DrawFormatString(cslX, cslY, color_, "←");
-
-	
-	int x = 0;
-	int y = 32;
+	float x = Game::kScreenWidth / 4;
+	float y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
 	int num = 0;
-
+	int i = 0;
 	for (auto& key : inputState_.inputNameTable_) {
 		DrawFormatString(x, y, 0xffffff, "%s", key.second.c_str());
-		y += graph_chip_size * 2;
-		if (y > Game::kScreenHeight) {
-			y = 32;
-			x += 400;
+		y += graph_chip_size + 10.0f;
+		if (i == inputState_.tempMapTable_.size() / 2) {
+			y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
+			x += Game::kScreenWidth / 4 * 1.2f;
 		}
+		i++;
 	}
 
-	y = 32;
-	x = 150;
+	x = Game::kScreenWidth / 4 * 1.5f;
+	y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
+	i = 0;
+	float graphScale = 1.0f;
 	for (auto& key : inputState_.tempMapTable_) {
 		num = getKeyName(key.second.begin()->id);
 		int x2 = num % 9;
 		int y2 = num / 9;
-		Graph::drawRectRotaGraph(x, y, x2 * graph_chip_size, y2 * graph_chip_size, graph_chip_size, graph_chip_size, 1.0f, 0.0f, keyTypeHandle_, true, false);
-		y += graph_chip_size * 2;
-		if (y > Game::kScreenHeight) {
-			y = 32;
-			x += 400;
+
+		if (i == selectNum_) {
+			graphScale = 1.2f;
 		}
+		else {
+			graphScale = 1.0f;
+		}
+
+		Graph::drawRectRotaGraph(x, y, x2 * graph_chip_size, y2 * graph_chip_size, graph_chip_size, graph_chip_size, graphScale, 0.0f, keyTypeHandle_, true, false);
+		y += graph_chip_size + 10;
+		if (i == inputState_.tempMapTable_.size() / 2) {
+			y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
+			x += Game::kScreenWidth / 4 * 1.2f;
+		}
+		i++;
 	}
 	
-
-	DrawString(400, y, "変更", 0xffffff);
+	//TODO:将来的には使わないから消す
+	//一時的に見やすくするため
+	int color = 0xffffff;
+	int color2 = 0xffffff;
+	if (selectNum_ == 15) {
+		color = 0xff0000;
+	}
+	else if(selectNum_ == 16){
+		color2 = 0xff0000;
+	}
+	y += 50;
+	DrawString(Game::kScreenWidth / 2 - 16, y, "変更", color);
 	y += 16;
-	DrawString(400, y, "キャンセル", 0xffffff);
+	DrawString(Game::kScreenWidth / 2 - 32, y, "キャンセル", color2);
 
 	
 	//----------------以降消去予定
@@ -147,52 +159,38 @@ void KeyConfigScene::changeKeyUpdate()
 	//短縮化
 	auto& configInput = const_cast<InputState&>(inputState_);
 
-	//変更途中の場合矢印の色を変える
-	if (inputState_.isTriggered(InputType::next)) {
-		isEditing_ = !isEditing_;
-		if (isEditing_) {
-			color_ = 0x00ff00;
+	//キーボードとパッドの入力を得る
+	char keyState[256];
+	GetHitKeyStateAll(keyState);
+	auto padState = GetJoypadInputState(DX_INPUT_PAD1);
+
+	int idx = 0;
+	InputType currentType = InputType::max;
+	//現在の選択inputNameTableを取得する
+	for (const auto& name : inputState_.inputNameTable_) {
+		if (selectNum_ == idx) {
+			currentType = name.first;
+			break;
 		}
-		else {
-			color_ = 0xff0000;
-		}
+		idx++;
 	}
 
-	//キーボードとパッドの入力を得る
-	if (isEditing_) {
-		char keyState[256];
-		GetHitKeyStateAll(keyState);
-		auto padState = GetJoypadInputState(DX_INPUT_PAD1);
-
-		int idx = 0;
-		InputType currentType = InputType::max;
-		//現在の選択inputNameTableを取得する
-		for (const auto& name : inputState_.inputNameTable_) {
-			if (selectNum_ == idx) {
-				currentType = name.first;
-				break;
-			}
-			idx++;
+	//キーボードの入力を変更する
+	for (int i = 0; i < 256; i++) {
+		if (keyState[i]) {
+			configInput.rewriteInputInfo(currentType, InputCategory::keybd, i);
+			break;
 		}
-
-		//キーボードの入力を変更する
-		for (int i = 0; i < 256; i++) {
-			if (keyState[i]) {
-				configInput.rewriteInputInfo(currentType, InputCategory::keybd, i);
-				break;
-			}
-		}
-		//パッドの入力を変更する
-		if (padState != 0) {
-			configInput.rewriteInputInfo(currentType, InputCategory::pad, padState);
-		}
+	}
+	//パッドの入力を変更する
+	if (padState != 0) {
+		configInput.rewriteInputInfo(currentType, InputCategory::pad, padState);
 	}
 	
 	//メンバ関数ポインタを変更するキーを選択する関数に変更する
 	if (inputState_.isTriggered(InputType::prev)) {
 		updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
 		isEditing_ = !isEditing_;
-		color_ = 0xff0000;
 		return;
 	}
 

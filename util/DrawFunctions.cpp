@@ -14,7 +14,7 @@ namespace Graph {
     }
 
     //“Ç‚İ‚ñ‚¾ƒOƒ‰ƒt‚ğˆø”‚Ì’l‚É‚æ‚Á‚Ä•ªŠ„•`‰æ‚·‚é
-    int Graph::drawRectRotaGraph(int x, int y, int left, int top, int width, int height, int scale, float angle, int handle, bool transFlag, bool tumFlag)
+    int Graph::drawRectRotaGraph(int x, int y, int left, int top, int width, int height, float scale, float angle, int handle, bool transFlag, bool tumFlag)
     {
         return DrawRectRotaGraph(x, y, left, top, width, height, scale, angle, handle, transFlag, tumFlag);
     }
