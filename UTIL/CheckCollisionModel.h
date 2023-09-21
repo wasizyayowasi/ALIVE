@@ -56,6 +56,10 @@ public:
 
 private:
 
+	int objectHeightY = 0;
+
+	bool temp = false;
+
 	VECTOR oldPos;				//現在のプレイヤーの座標
 	VECTOR nowPos;				//プレイヤーの移動量と現在の座標を足して結果
 	int i, j, k;

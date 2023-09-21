@@ -8,10 +8,15 @@
 #include "DxLib.h"
 #include <algorithm>
 
+namespace {
+	//key画像の一枚当たりのサイズ
+	constexpr int graph_chip_size = 59;
+}
+
 //コンストラクタ
 KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):SceneBase(manager),updateFunc_(&KeyConfigScene::selectChangeKeyUpdate), inputState_(input)
 {
-	keyTypeHandle_ = Graph::loadGraph("data/graph/key.png");
+	keyTypeHandle_ = Graph::loadGraph("data/graph/key2.png");
 }
 
 //デストラクタ
@@ -37,22 +42,52 @@ void KeyConfigScene::draw()
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	DrawFormatString(50, 16 * selectNum_ + 32, color_, "←");
+	int cslX = 50;
+	int cslY = graph_chip_size * 2 * selectNum_ + 32;
+	if (selectNum_ > 7) {
+		cslX += 450;
+		cslY = graph_chip_size * 2 * (selectNum_ - 8) + 32;
+	}
+	DrawFormatString(cslX, cslY, color_, "←");
 
+	
+	int x = 0;
 	int y = 32;
-	for (auto& keyName : inputState_.inputNameTable_) {
-		DrawFormatString(0, y, 0xffffff, "%s", keyName.second.c_str());
-		y += 16;
+	int num = 0;
+
+	for (auto& key : inputState_.inputNameTable_) {
+		DrawFormatString(x, y, 0xffffff, "%s", key.second.c_str());
+		y += graph_chip_size * 2;
+		if (y > Game::kScreenHeight) {
+			y = 32;
+			x += 400;
+		}
 	}
 
-	DrawString(0, y, "変更", 0xffffff);
+	y = 32;
+	x = 150;
+	for (auto& key : inputState_.tempMapTable_) {
+		num = getKeyName(key.second.begin()->id);
+		int x2 = num % 9;
+		int y2 = num / 9;
+		Graph::drawRectRotaGraph(x, y, x2 * graph_chip_size, y2 * graph_chip_size, graph_chip_size, graph_chip_size, 1.0f, 0.0f, keyTypeHandle_, true, false);
+		y += graph_chip_size * 2;
+		if (y > Game::kScreenHeight) {
+			y = 32;
+			x += 400;
+		}
+	}
+	
+
+	DrawString(400, y, "変更", 0xffffff);
 	y += 16;
-	DrawString(0, y, "キャンセル", 0xffffff);
+	DrawString(400, y, "キャンセル", 0xffffff);
 
 	
 	//----------------以降消去予定
 	DrawString(0, 0, "keyConfig",0xffffff);
 	DrawFormatString(0, 16, 0xffffff, "%d", selectNum_);
+	DrawFormatString(0, y + 16, 0xffffff, "%d", aiu);
 }
 
 //変更したいキーを選択する
@@ -65,10 +100,10 @@ void KeyConfigScene::selectChangeKeyUpdate()
 
 	//選択操作
 	{
-		if (inputState_.isPressed(InputType::up)) {
+		if (inputState_.isTriggered(InputType::up)) {
 			selectNum_ = (std::max)(selectNum_ - 1, 0);
 		}
-		if (inputState_.isPressed(InputType::down)) {
+		if (inputState_.isTriggered(InputType::down)) {
 			selectNum_ = (std::min)(selectNum_ + 1, keyNum - 1);
 		}
 	}
@@ -100,6 +135,7 @@ void KeyConfigScene::selectChangeKeyUpdate()
 	//ひとつ前のシーンに戻る
 	if (inputState_.isTriggered(InputType::prev)) {
 		manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+		configInput.rollbackChangedInputInfo();
 		return;
 	}
 
@@ -162,11 +198,80 @@ void KeyConfigScene::changeKeyUpdate()
 
 }
 
-char KeyConfigScene::getKeyName(int num)
+int KeyConfigScene::getKeyName(int num)
 {
-	switch (num) {
+	if (num < 12 && num > 0) {
+		return num - 1;
+	}
 	
+	if (num >= 14 && num <= 39) {
+		return num - 2;
 	}
 
-	return 0;
+	if (num >= 42 && num <= 83) {
+		return num - 4;
+	}
+
+	switch (num) {
+	case 87:
+		return 80;
+	case 88:
+		return 81;
+	case 112:
+		return 82;
+	case 121:
+		return 83;
+	case 123:
+		return 84;
+	case 125:
+		return 85;
+	case 144:
+		return 86;
+	case 145:
+		return 87;
+	case 146:
+		return 88;
+	case 148:
+		return 89;
+	case 156:
+		return 90;
+	case 157:
+		return 91;
+	case 181:
+		return 92;
+	case 183:
+		return 93;
+	case 184:
+		return 94;
+	case 197:
+		return 95;
+	case 199:
+		return 96;
+	case 200:
+		return 97;
+	case 201:
+		return 98;
+	case 203:
+		return 99;
+	case 205:
+		return 100;
+	case 207:
+		return 101;
+	case 208:
+		return 102;
+	case 209:
+		return 103;
+	case 210:
+		return 104;
+	case 211:
+		return 105;
+	case 219:
+		return 106;
+	case 220:
+		return 107;
+	case 221:
+		return 108;
+	}
+
+	return num;
 }

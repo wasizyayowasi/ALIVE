@@ -25,9 +25,11 @@ public:
 	void changeKeyUpdate();
 
 	//Œ`‚¾‚¯‚ ‚é¡‚Ì‚Æ‚±‚ë
-	char getKeyName(int num);
+	int getKeyName(int num);
 
 private:
+
+	int aiu = 1;
 
 	int keyTypeHandle_ = -1;	//keyType‚ğ•`‰æ‚·‚é‚½‚ß‚ÌƒOƒ‰ƒt‚ğó‚¯æ‚é‚½‚ß‚Ìhandle
 

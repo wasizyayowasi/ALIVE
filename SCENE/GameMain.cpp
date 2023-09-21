@@ -20,6 +20,7 @@ using namespace std;
 
 namespace {
 	const char* const temp_filepath = "data/model/tempFiled2.mv1";
+	const char* const temp_stairs = "data/model/stairs.mv1";
 	const char* const cube_filename = "data/model/cube.mv1";
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
@@ -70,6 +71,7 @@ void GameMain::draw()
 	}
 
 	player_->draw();
+	DrawLine3D(VSub(player_->getPos(), VGet(0.0f, 0.0f, -200.0f)), VAdd(player_->getPos(), VGet(0.0f, 0.0f, 200.0f)), 0xff0000);
 	//broom_->graphFilterUpdate();
 	//broom_->draw();
 

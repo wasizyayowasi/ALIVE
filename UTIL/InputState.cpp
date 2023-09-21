@@ -101,6 +101,7 @@ bool InputState::isPressed(InputType type) const
 
 void InputState::update()
 {
+
 	lastInput_ = currentInput_;//’¼‘O‚Ì“ü—Íî•ñ‚ğ‹L‰¯‚µ‚Ä‚¨‚­
 
 	char keystate[256];

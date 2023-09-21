@@ -74,9 +74,8 @@ public:
 
 private:
 
-	using InputMap_t = std::map<InputType, std::vector<InputInfo> >;
+	using InputMap_t = std::map<InputType, std::vector<InputInfo>>;
 	InputMap_t inputMapTable_;
-	InputMap_t inputMapTable2_;
 
 	InputMap_t tempMapTable_;
 
