@@ -18,6 +18,7 @@ DebugScene::DebugScene(SceneManager& manager):SceneBase(manager)
 	sceneName_[1] = { {SceneType::title }, { "title" }};
 	sceneName_[2] = { {SceneType::end} ,{"end"} };
 	sceneName_[3] = { {SceneType::pause} ,{"pause"} };
+	sceneName_[4] = { {SceneType::max} ,{"•Â‚¶‚é"} };
 
 }
 
@@ -31,10 +32,14 @@ void DebugScene::update(const InputState& input)
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
 	if (input.isTriggered(InputType::down)) {
-		selectNum_ = (std::min)(selectNum_ + 1,static_cast<int>(scene_.size() - 1));
+		selectNum_ = (std::min)(selectNum_ + 1,static_cast<int>(scene_.size()));
 	}
 
 	if (input.isTriggered(InputType::next)) {
+		if (selectNum_ == static_cast<int>(scene_.size())) {
+			DxLib_End();
+			return;
+		}
 		manager_.changeScene(scene_[selectNum_]);
 	}
 

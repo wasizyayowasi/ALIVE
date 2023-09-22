@@ -47,6 +47,7 @@ void ScenePause::update(const InputState& input)
 		case 3:
 			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
 			break;
+		//デバッグシーンに戻る
 		case 4:
 			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager_)));
 			break;

@@ -11,7 +11,7 @@ namespace {
 	constexpr float gravity = -0.4f;
 
 	//ファイルパス
-	const char* const player_Filename = "DATA/player/player11.mv1";
+	const char* const player_Filename = "DATA/player/player13.mv1";
 	//モデルフレーム名
 	const char* const coll_frame_death = "CollisionDeath";
 	const char* const coll_frame_Sit = "CollisionSit";
@@ -168,6 +168,10 @@ void Player::idleUpdate(const InputState& input)
 			updateFunc_ = &Player::jumpUpdate;
 			return;
 		}
+	}
+
+	if (input.isPressed(InputType::prev)) {
+		updateFunc_ = &Player::climUpdate;
 	}
 
 	//死亡演出中でなければ
@@ -532,4 +536,25 @@ void Player::sitUpdate(const InputState& input)
 		isAnimLoop_ = false;
 		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 	}
+}
+
+void Player::climUpdate(const InputState& input)
+{
+	animNo_ = animType_[AnimType::clim];
+	isAnimLoop_ = false;
+
+	PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
+
+	VECTOR localPosition;
+
+	if (PModel_->isAnimEnd()) {
+		localPosition = VAdd(pos_, PModel_->getAnimFrameLocalPosition(animNo_, "mixamorig:LeftToeBase"));
+		//localPosition = VAdd(localPosition,VAdd(pos_, PModel_->getAnimFrameLocalPosition(animNo_, 68)));
+		//localPosition.x = localPosition.x / 2;
+		//localPosition.y = localPosition.y / 2;
+		//localPosition.z = localPosition.z / 2;
+		pos_ = localPosition;
+		updateFunc_ = &Player::idleUpdate;
+	}
+
 }

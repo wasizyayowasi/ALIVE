@@ -1,4 +1,5 @@
 #include "DxLib.h"
+#include "EffekseerForDXLib.h"
 
 #include "Scene/SceneManager.h"
 #include "Scene/SceneTitle.h"
@@ -26,18 +27,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//3DサウンドにXAudioを使用するか
 	SetEnableXAudioFlag(true);
 
+	SetUseDirect3DVersion(DX_DIRECT3D_9);
+
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
 	{
 		return -1;			// エラーが起きたら直ちに終了
 	}
 
-	// シェーダーモデル２．０が使用できるかどうかをチェック
-	if (GetValidShaderVersion() < 200)
+	// Effekseerを初期化する。
+	//引数には画面に表示する最大パーティクル数を設定する。
+	/*if (Effkseer_Init(8000) == -1)
 	{
-		DrawString(0, 0, "シェーダーモデル２．０が使用できません", GetColor(255, 255, 255));
 		DxLib_End();
-		return 0;
-	}
+		return -1;
+	}*/
+
+	//// ただし、DirectX11を使用する場合は実行する必要はない。
+	//Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+
 
 	//ダブルバッファモード
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -51,6 +58,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	while (ProcessMessage() == 0) {
 
 		LONGLONG time = GetNowHiPerformanceCount();
+
+		//Effekseer_Sync3DSetting();
 
 		//画面のクリア
 		ClearDrawScreen();

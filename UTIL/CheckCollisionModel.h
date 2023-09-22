@@ -54,11 +54,17 @@ public:
 	/// <param name="jumpVec">プレイヤーのジャンプベクトル</param>
 	void checkCollision(Player& player, VECTOR moveVec, std::vector<std::shared_ptr<Model>> model,float playerHeight,bool isJump,float jumpVec);
 
+	/// <summary>
+	/// 衝突したオブジェクトが乗り越えられるか判断する
+	/// </summary>
+	/// <param name="playerHeight">プレイヤーの高さ</param>
+	void checkStepDifference(float playerHeight);
+
 private:
 
-	int objectHeightY = 0;
+	int objectHeightY = 0;		//衝突したオブジェクトの高さを保管する
 
-	bool temp = false;
+	bool isGoUpStep_ = false;	//段差を上ることが出来る
 
 	VECTOR oldPos;				//現在のプレイヤーの座標
 	VECTOR nowPos;				//プレイヤーの移動量と現在の座標を足して結果

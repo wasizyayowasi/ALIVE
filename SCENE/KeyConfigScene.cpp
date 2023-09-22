@@ -44,9 +44,19 @@ void KeyConfigScene::draw()
 	float x = Game::kScreenWidth / 4;
 	float y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
 	int num = 0;
+	int color = 0xffffff;
+	int color2 = 0xffffff;
 	int i = 0;
 	for (auto& key : inputState_.inputNameTable_) {
-		DrawFormatString(x, y, 0xffffff, "%s", key.second.c_str());
+
+		if (i == selectNum_) {
+			color = 0xff0000;
+		}
+		else {
+			color = 0xffffff;
+		}
+
+		DrawFormatString(x, y, color, "%s", key.second.c_str());
 		y += graph_chip_size + 10.0f;
 		if (i == inputState_.tempMapTable_.size() / 2) {
 			y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
@@ -82,8 +92,8 @@ void KeyConfigScene::draw()
 	
 	//TODO:è´óàìIÇ…ÇÕégÇÌÇ»Ç¢Ç©ÇÁè¡Ç∑
 	//àÍéûìIÇ…å©Ç‚Ç∑Ç≠Ç∑ÇÈÇΩÇﬂ
-	int color = 0xffffff;
-	int color2 = 0xffffff;
+	color = 0xffffff;
+	color2 = 0xffffff;
 	if (selectNum_ == 15) {
 		color = 0xff0000;
 	}

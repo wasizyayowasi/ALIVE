@@ -33,6 +33,8 @@ public:
 
 	void setAnimEndFrame(int animNo);
 
+	VECTOR getAnimFrameLocalPosition(int animNo,const char* frameName);
+
 private:
 	struct AnimData {
 		int animNo;

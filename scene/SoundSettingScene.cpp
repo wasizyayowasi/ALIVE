@@ -20,6 +20,7 @@ SoundSettingScene::~SoundSettingScene()
 
 void SoundSettingScene::update(const InputState& input)
 {
+	//仮サウンドの音量調整
 	if (input.isPressed(InputType::down)) {
 		volumeBGM_ = (max)(volumeBGM_ - 1.0f, 0.0f);
 	}
@@ -33,9 +34,11 @@ void SoundSettingScene::update(const InputState& input)
 		volumeSE_ = (min)(volumeSE_ + 1.0f, 255.0f);
 	}
 
+	//音量の変更
 	SoundManager::getInstance().setBGMVolume(volumeBGM_);
 	SoundManager::getInstance().setSEVolume(volumeSE_);
 
+	//シーン切り替え
 	if (input.isTriggered(InputType::prev)) {
 		manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
@@ -49,10 +52,10 @@ void SoundSettingScene::draw()
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	DrawFormatString(0, 16, 0x448844, "%.2f", volumeBGM_);
-	DrawFormatString(0, 32, 0x448844, "%.2f", volumeSE_);
+	DrawFormatString(0, 16, 0x00ff00, "%.2f", volumeBGM_);
+	DrawFormatString(0, 32, 0x00ff00, "%.2f", volumeSE_);
 
-	DrawFormatString(0, 48, 0x448844, "%d", static_cast<int>(volumeBGM_));
-	DrawFormatString(0, 64, 0x448844, "%d", static_cast<int>(volumeSE_));
+	DrawFormatString(0, 48, 0x00ff00, "%d", static_cast<int>(volumeBGM_));
+	DrawFormatString(0, 64, 0x00ff00, "%d", static_cast<int>(volumeSE_));
 
 }

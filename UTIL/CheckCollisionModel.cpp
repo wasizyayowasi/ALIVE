@@ -69,26 +69,6 @@ void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR move
 
 void CheckCollisionModel::checkCollisionWall(VECTOR moveVec,float playerHeight)
 {
-	//オブジェクトの高さを保管する
-	objectHeightY = 0;
-
-	//プレイヤーを基準にしたカプセルと当たったポリゴンの当たり判定を行い
-	//プレイヤーの高さよりもポリゴンの高さが低かったら段差を上る処理を作る
-	if (hitWallNum != 0) {
-		for (int i = 0; i < hitWallNum; i++) {
-			hitPoly = wallHitDim_[i];
-			if (!HitCheck_Capsule_Triangle(VGet(nowPos.x, nowPos.y, nowPos.z), VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2])) continue;
-			for (int i = 0; i < 3; i++) {
-				if (nowPos.y + 60 > hitPoly->Position[i].y) {
-					if (objectHeightY < hitPoly->Position[i].y) {
-						objectHeightY = hitPoly->Position[i].y;
-						temp = true;
-					}
-				}
-			}
-		}
-	}
-
 	//壁の処理
 	if (hitWallNum != 0) {
 		hitFlag = false;
@@ -100,7 +80,7 @@ void CheckCollisionModel::checkCollisionWall(VECTOR moveVec,float playerHeight)
 				if (!HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2])) continue;
 
 				hitFlag = true;
-				if (temp) {
+				if (!isGoUpStep_) {
 					VECTOR slideVec;
 					//プレイヤーのベクトルとポリゴンの法線ベクトルの外積を取得
 					slideVec = VCross(moveVec, hitPoly->Normal);
@@ -137,7 +117,7 @@ void CheckCollisionModel::checkCollisionWall(VECTOR moveVec,float playerHeight)
 
 	// 壁に当たっていたら壁から押し出す処理を行う
 	//当たったポリゴンの法線ベクトルの５倍をプレイヤーのポジションに足している
-	if (hitFlag && !temp) {
+	if (hitFlag && !isGoUpStep_) {
 		for (k = 0; k < 16; k++) {
 			for (i = 0; i < hitWallNum; i++) {
 				hitPoly = wallHitDim_[i];
@@ -173,7 +153,7 @@ void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,boo
 				hitPoly = floorHitDim_[i];
 				hitLineResult = HitCheck_Line_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2]);
 				if (hitLineResult.HitFlag == FALSE)continue;
-				if (hitFlag == 1 && minY < hitLineResult.Position.y)continue;
+				if (hitFlag == true && minY < hitLineResult.Position.y)continue;
 				hitFlag = true;
 				minY = hitLineResult.Position.y;
 			}
@@ -214,9 +194,6 @@ void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,boo
 	}
 
 	player.setJumpInfo(isJump, jumpVec);
-	if (objectHeightY > 0.0f) {
-		nowPos.y = objectHeightY;
-	}
 
 }
 
@@ -224,6 +201,8 @@ void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::ve
 {
 	//プレイヤーから一定範囲の衝突判定をとる
 	checkCollisionPersonalArea(player,moveVec,model);
+	//衝突したオブジェクトが乗り越えることが出来るオブジェクトか判断する
+	checkStepDifference(playerHeight);
 	//取得した衝突結果から壁に当たった場合の処理
 	checkCollisionWall(moveVec,playerHeight);
 	//取得した衝突結果から床に当たった場合の処理
@@ -238,4 +217,46 @@ void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::ve
 	}
 
 	hitDim_.erase(hitDim_.begin(),hitDim_.end());
+}
+
+void CheckCollisionModel::checkStepDifference(float playerHeight)
+{
+	objectHeightY = 0;
+	isGoUpStep_ = false;
+
+	//乗り越えられる段差か判断するため
+	bool overHeight = false;
+
+	//プレイヤーを基準にしたカプセルと当たったポリゴンの当たり判定を行い
+	//プレイヤーの高さよりもポリゴンの高さが低かったら段差を上る処理を作る
+	if (hitWallNum != 0) {
+		for (int i = 0; i < hitWallNum; i++) {
+			hitPoly = wallHitDim_[i];
+			if (!HitCheck_Capsule_Triangle(VGet(nowPos.x, nowPos.y, nowPos.z), VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2])) continue;
+
+			//衝突したポリゴンの一番Y軸の高い頂点を見つけ出し
+			//乗り越えられる段差以上だったらoverHeightをtrueにする
+			for (int i = 0; i < 3; i++) {
+				if (nowPos.y + 60 < hitPoly->Position[i].y) {
+					overHeight = true;
+				}
+			}
+
+			//乗り越えることができる高さで一番高いY軸の値を見つける
+			if (!overHeight) {
+				for (int i = 0; i < 3; i++) {
+					if (objectHeightY < hitPoly->Position[i].y) {
+						objectHeightY = hitPoly->Position[i].y;
+						isGoUpStep_ = true;
+					}
+				}
+			}
+		}
+	}
+
+	//代入
+	if (objectHeightY > 0.0f) {
+		nowPos.y = objectHeightY;
+	}
+
 }

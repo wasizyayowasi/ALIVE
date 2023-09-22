@@ -73,12 +73,12 @@ void Camera::trackingCameraUpdate(const InputState& input,VECTOR playerPos)
 
 	//カメラがプレイヤーを追いかける用にする
 	cameraPos_.y = ((300.0f * 0.9f) + (playerPos.y * 0.1f));
-	cameraPos_.z = -800.0f;
+	cameraPos_.z = playerPos.z - 800.0f;
 
 	//プレイヤーがいた位置を見るようにする
 	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
 	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
-	cameraTarget_.z = 0;
+	cameraTarget_.z = playerPos.z;
 
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
 

@@ -166,6 +166,19 @@ void Model::setAnimEndFrame(int animNo)
 	MV1SetAttachAnimTime(modelHandle_, momentAnimNo, animEndFrame - 1);
 }
 
+VECTOR Model::getAnimFrameLocalPosition(int animNo, const char* frameName)
+{
+
+	int animFrame = MV1SearchFrame(modelHandle_, frameName);
+	MV1SetFrameUserLocalMatrix(modelHandle_, animFrame, MGetIdent());
+
+	MATRIX mtx = MV1GetFrameLocalWorldMatrix(modelHandle_, animFrame);
+	VECTOR localPos = MV1GetAttachAnimFrameLocalPosition(modelHandle_, animNext_.attachNo, animFrame);
+	localPos = VTransform(localPos, mtx);
+
+	return localPos;
+}
+
 void Model::clearAnimData(AnimData& anim)
 {
 	anim.animNo = -1;
