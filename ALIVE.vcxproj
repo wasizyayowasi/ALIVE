@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="object\Enemy.cpp" />
     <ClCompile Include="scene\DebugScene.cpp" />
     <ClCompile Include="util\DrawFunctions.cpp" />
     <ClCompile Include="scene\SoundSettingScene.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="object\Enemy.h" />
     <ClInclude Include="scene\DebugScene.h" />
     <ClInclude Include="util\DrawFunctions.h" />
     <ClInclude Include="scene\SoundSettingScene.h" />

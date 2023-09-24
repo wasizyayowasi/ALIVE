@@ -33,7 +33,7 @@ private:
 
 	int keyTypeHandle_ = -1;	//keyTypeを描画するためのグラフを受け取るためのhandle
 
-	int color_ = 0xff0000;		//カラー
+	int textColor_ = 0xff0000;		//カラー
 	int selectNum_ = 0;			//現在の選択番号
 
 	bool isEditing_ = false;	//編集中フラグ

@@ -44,19 +44,23 @@ void KeyConfigScene::draw()
 	float x = Game::kScreenWidth / 4;
 	float y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
 	int num = 0;
-	int color = 0xffffff;
-	int color2 = 0xffffff;
+	
 	int i = 0;
 	for (auto& key : inputState_.inputNameTable_) {
 
 		if (i == selectNum_) {
-			color = 0xff0000;
+			if (!isEditing_) {
+				textColor_ = 0xff0000;
+			}
+			else {
+				textColor_ = 0x00ff00;
+			}
 		}
 		else {
-			color = 0xffffff;
+			textColor_ = 0xffffff;
 		}
 
-		DrawFormatString(x, y, color, "%s", key.second.c_str());
+		DrawFormatString(x, y, textColor_, "%s", key.second.c_str());
 		y += graph_chip_size + 10.0f;
 		if (i == inputState_.tempMapTable_.size() / 2) {
 			y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
@@ -92,8 +96,8 @@ void KeyConfigScene::draw()
 	
 	//TODO:将来的には使わないから消す
 	//一時的に見やすくするため
-	color = 0xffffff;
-	color2 = 0xffffff;
+	int color = 0xffffff;
+	int color2 = 0xffffff;
 	if (selectNum_ == 15) {
 		color = 0xff0000;
 	}
@@ -150,6 +154,7 @@ void KeyConfigScene::selectChangeKeyUpdate()
 	
 	//どのキーを変更するかを仮決定
 	if (inputState_.isTriggered(InputType::next)) {
+		isEditing_ = !isEditing_;
 		updateFunc_ = &KeyConfigScene::changeKeyUpdate;
 		return;
 	}
@@ -169,10 +174,24 @@ void KeyConfigScene::changeKeyUpdate()
 	//短縮化
 	auto& configInput = const_cast<InputState&>(inputState_);
 
+	//メンバ関数ポインタを変更するキーを選択する関数に変更する
+	if (inputState_.isTriggered(InputType::prev)) {
+		updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
+		isEditing_ = !isEditing_;
+		configInput.undoSelectKey(static_cast<InputType>(selectNum_), InputCategory::keybd);
+		return;
+	}
+
+	if (inputState_.isTriggered(InputType::next)) {
+		updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
+		isEditing_ = !isEditing_;
+		return;
+	}
+
 	//キーボードとパッドの入力を得る
 	char keyState[256];
-	GetHitKeyStateAll(keyState);
 	auto padState = GetJoypadInputState(DX_INPUT_PAD1);
+	GetHitKeyStateAll(keyState);
 
 	int idx = 0;
 	InputType currentType = InputType::max;
@@ -195,13 +214,6 @@ void KeyConfigScene::changeKeyUpdate()
 	//パッドの入力を変更する
 	if (padState != 0) {
 		configInput.rewriteInputInfo(currentType, InputCategory::pad, padState);
-	}
-	
-	//メンバ関数ポインタを変更するキーを選択する関数に変更する
-	if (inputState_.isTriggered(InputType::prev)) {
-		updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
-		isEditing_ = !isEditing_;
-		return;
 	}
 
 }

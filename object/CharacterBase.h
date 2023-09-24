@@ -3,15 +3,18 @@
 #include <memory>
 
 class Model;
+class Enemy;
 
 class CharacterBase
 {
+	friend Enemy;
 public:
-	CharacterBase() {}
+	CharacterBase(const char* fileName);
+	CharacterBase(int modelHandle);
 	virtual ~CharacterBase() {};
 
 	virtual void update();
-	virtual void draw() = 0;
+	virtual void draw();
 
 	const VECTOR getPos() { return pos_; }
 

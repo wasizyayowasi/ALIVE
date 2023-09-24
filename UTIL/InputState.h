@@ -45,24 +45,19 @@ public:
 
 	bool isTriggered(InputType type) const;
 
-
 	bool isPressed(InputType type) const;
-
 
 	void update();
 
-
 	void rewriteInputInfo(InputType type, InputCategory cat, int id);
-
 
 	void commitChangedInputInfo();
 
-
 	void rollbackChangedInputInfo();
-
 
 	void resetInputInfo();
 
+	void undoSelectKey(InputType type, InputCategory cat);
 
 	void savekeyInfo()const;
 
@@ -71,6 +66,8 @@ public:
 	void savekeyInfo2()const;
 
 	void loadKeyInfo2(const char* filename);
+
+	bool lastInput();
 
 private:
 

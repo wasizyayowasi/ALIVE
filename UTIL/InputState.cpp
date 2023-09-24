@@ -96,6 +96,7 @@ bool InputState::isTriggered(InputType type) const
 
 bool InputState::isPressed(InputType type) const
 {
+	
 	return currentInput_[static_cast<int>(type)];
 }
 
@@ -138,10 +139,10 @@ void InputState::rewriteInputInfo(InputType type, InputCategory cat, int id)
 
 	bool isRewrite = false;
 
-	for (auto& InputInfo : tempMapTable_[type]) {
-		if (InputInfo.cat == cat)//カテゴリがヒットしたら
+	for (auto& info : tempMapTable_[type]) {
+		if (info.cat == cat)//カテゴリがヒットしたら
 		{
-			InputInfo.id = id;//IDを上書きする
+			info.id = id;//IDを上書きする
 			isRewrite = true;
 			break;
 		}
@@ -168,6 +169,16 @@ void InputState::resetInputInfo()
 {
 	inputMapTable_ = defaultMapTable_;
 	tempMapTable_ = defaultMapTable_;
+}
+
+void InputState::undoSelectKey(InputType type, InputCategory cat)
+{
+	for (auto& info : tempMapTable_[type]) {
+		if (info.cat == cat) {
+			info.id = inputMapTable_[type].begin()->id;
+			break;
+		}
+	}
 }
 
 //TODO：消す
@@ -352,4 +363,9 @@ void InputState::loadKeyInfo2(const char* filename)
 
 	//一応閉じる
 	ifs.close();
+}
+
+bool InputState::lastInput()
+{
+	return false;
 }
