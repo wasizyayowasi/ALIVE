@@ -10,6 +10,7 @@ class Broom;
 class DepthOfField;
 class Model;
 class CharacterBase;
+class GimmickBase;
 
 class GameMain : public SceneBase
 {
@@ -42,6 +43,7 @@ private:
 	std::shared_ptr<Broom> broom_;				//‚±‚ê‚àÁ‚·‚©‚à‚µ‚ê‚È‚¢
 	std::shared_ptr<DepthOfField> depthOfField_;//‚±‚ê‚àÁ‚·‚©‚à‚µ‚ê‚È‚¢
 	std::shared_ptr<CharacterBase> enemy_;
+	std::shared_ptr<GimmickBase> switch_;
 	
 	std::vector<std::shared_ptr<Model>> models_;//Õ“Ë”»’è‚ğs‚¤—\’è‚Ìƒ‚ƒfƒ‹‚ğ‚Ğ‚Æ‚Ü‚Æ‚ß‚É‚·‚é”z—ñ
 

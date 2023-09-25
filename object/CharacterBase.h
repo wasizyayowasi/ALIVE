@@ -4,6 +4,7 @@
 
 class Model;
 class Enemy;
+class Player;
 
 class CharacterBase
 {

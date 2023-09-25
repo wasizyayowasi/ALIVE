@@ -2,6 +2,9 @@
 #include "SceneManager.h"
 #include "GameEnd.h"
 
+#include "../gimmick/GimmickBase.h"
+#include "../gimmick/Switch.h"
+
 #include "../object/Player.h"
 #include "../object/Camera.h"
 #include "../object/CharacterBase.h"
@@ -35,6 +38,7 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	//depthOfField_ = make_shared<DepthOfField>();
 	models_.push_back(make_shared<Model>(temp_filepath));
 	enemy_ = make_shared<Enemy>();
+	switch_ = make_shared<Switch>();
 
 	models_[0]->setScale(scale);
 	models_[0]->setCollFrame();
@@ -75,6 +79,7 @@ void GameMain::draw()
 
 	player_->draw();
 	enemy_->draw();
+	switch_->draw();
 	//broom_->graphFilterUpdate();
 	//broom_->draw();
 
@@ -99,7 +104,7 @@ void GameMain::normalUpdate(const InputState& input)
 {
 	player_->update(input,models_);
 	camera_->trackingCameraUpdate(input,player_->getPos());
-	enemy_->update();
+	//enemy_->update();
 	//camera_->fixedPointCamera(player_->getPos());
 
 	SoundManager::getInstance().set3DSoundListenerInfo(camera_->getPos(), camera_->getTarget());

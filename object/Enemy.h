@@ -9,7 +9,8 @@ public:
 	Enemy();
 	virtual ~Enemy();
 
-	void update(Player& player);
+	void update() override;
+	void stalkingUpdate();
 
 private:
 
