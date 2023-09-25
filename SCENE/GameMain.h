@@ -9,6 +9,7 @@ class Player;
 class Broom;
 class DepthOfField;
 class Model;
+class CharacterBase;
 
 class GameMain : public SceneBase
 {
@@ -40,6 +41,7 @@ private:
 	std::shared_ptr<Player> player_;			//プレイヤーのシェアードポインタ
 	std::shared_ptr<Broom> broom_;				//これも消すかもしれない
 	std::shared_ptr<DepthOfField> depthOfField_;//これも消すかもしれない
+	std::shared_ptr<CharacterBase> enemy_;
 	
 	std::vector<std::shared_ptr<Model>> models_;//衝突判定を行う予定のモデルをひとまとめにする配列
 

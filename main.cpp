@@ -9,6 +9,7 @@
 #include "util/game.h"
 #include "util/InputState.h"
 #include "util/LoadExternalFile.h"
+#include "util/EffekseerManager.h"
 
 #include "staging/Broom.h"
 
@@ -34,14 +35,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return -1;			// エラーが起きたら直ちに終了
 	}
 
-	// Effekseerを初期化する。
-	//引数には画面に表示する最大パーティクル数を設定する。
-	/*if (Effkseer_Init(8000) == -1)
-	{
-		DxLib_End();
-		return -1;
-	}*/
-
+	EffekseerManager::getInstance();
+	
 	//// ただし、DirectX11を使用する場合は実行する必要はない。
 	//Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 
@@ -51,7 +46,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	InputState input;
 	SceneManager manager;
-	
+
 	//manager.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager)));
 	manager.changeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager)));
 
@@ -59,7 +54,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		LONGLONG time = GetNowHiPerformanceCount();
 
-		//Effekseer_Sync3DSetting();
+		Effekseer_Sync3DSetting();
 
 		//画面のクリア
 		ClearDrawScreen();

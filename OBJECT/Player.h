@@ -27,6 +27,7 @@ enum class AnimType {
 	situpToIdle,	//座っている状態からidle
 	sit,			//座っている
 	clim,			//登る
+	stand,			//立ち上がる
 	max
 };
 
@@ -41,6 +42,7 @@ struct PlayerInfo {
 
 class Player
 {
+	friend CheckCollisionModel;
 public:
 
 	Player();
@@ -76,6 +78,8 @@ private:
 	void sitUpdate(const InputState& input);
 	//オブジェクトを登る
 	void climUpdate(const InputState& input);
+	//立ち上がる
+	void standUpdate(const InputState& input);
 
 private:
 
@@ -94,6 +98,7 @@ private:
 	bool isDead_ = false;					//死んでいるか
 	bool isSitting_ = false;				//座っているか
 	bool isAnimLoop_ = true;				//アニメーションをループさせるか
+	bool isClim_ = false;
 
 	JumpInfo jump_;							//ジャンプ関連の構造体
 
@@ -103,6 +108,7 @@ private:
 	VECTOR pos_ = { 0.0f,0.0f,0.0f };							//プレイヤーのポジション
 	VECTOR rot_ = { 0.0f,0.0f,0.0f };							//プレイヤーの回転
 	VECTOR moveVec_ = { 0.0f,0.0f,0.0f };						//プレイヤーの移動ベクトル
+	VECTOR temp_ = { 0.0f,0.0f,0.0f };						//プレイヤーの移動ベクトル
 
 	VECTOR deathPos = { 0.0f,0.0f,0.0f };						//死体のポジション
 

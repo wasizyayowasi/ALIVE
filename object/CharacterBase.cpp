@@ -2,9 +2,14 @@
 #include "../util/Model.h"
 #include <cassert>
 
+namespace {
+	const VECTOR scale = { 0.5f,0.5f,0.5f };
+}
+
 CharacterBase::CharacterBase(const char* fileName)
 {
 	model_ = std::make_shared<Model>(fileName);
+	model_->setScale(scale);
 }
 
 CharacterBase::CharacterBase(int modelHandle)

@@ -4,6 +4,8 @@
 
 #include "../object/Player.h"
 #include "../object/Camera.h"
+#include "../object/CharacterBase.h"
+#include "../object/Enemy.h"
 
 #include "../staging/Broom.h"
 #include "../staging/DepthOfField.h"
@@ -19,7 +21,7 @@
 using namespace std;
 
 namespace {
-	const char* const temp_filepath = "data/model/tempFiled3.mv1";
+	const char* const temp_filepath = "data/model/tempFiled4.mv1";
 	const char* const temp_stairs = "data/model/stairs.mv1";
 	const char* const cube_filename = "data/model/cube.mv1";
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
@@ -32,6 +34,7 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	//broom_ = make_shared<Broom>();
 	//depthOfField_ = make_shared<DepthOfField>();
 	models_.push_back(make_shared<Model>(temp_filepath));
+	enemy_ = make_shared<Enemy>();
 
 	models_[0]->setScale(scale);
 	models_[0]->setCollFrame();
@@ -71,6 +74,7 @@ void GameMain::draw()
 	}
 
 	player_->draw();
+	enemy_->draw();
 	//broom_->graphFilterUpdate();
 	//broom_->draw();
 
@@ -95,6 +99,7 @@ void GameMain::normalUpdate(const InputState& input)
 {
 	player_->update(input,models_);
 	camera_->trackingCameraUpdate(input,player_->getPos());
+	enemy_->update();
 	//camera_->fixedPointCamera(player_->getPos());
 
 	SoundManager::getInstance().set3DSoundListenerInfo(camera_->getPos(), camera_->getTarget());

@@ -1,4 +1,5 @@
 #include "LoadExternalFile.h"
+#include "util/InputState.h"
 #include "DxLib.h"
 
 #include<iostream>
@@ -58,7 +59,7 @@ void LoadExternalFile::rewriteInfo()
 	   {"rotSpeed",15.0f},
 	   {"walkSpeed",3.0f},
 	   {"runningSpeed",7.0f},
-	   {"animNo", json::array({ 0,1,2,3,4,5,6,7,8,9,10,11 })},
+	   {"animNo", json::array({ 0,1,2,3,4,5,6,7,8,9,10,11,12 })},
 	};
 
 	string filename = json_["name"];
@@ -71,3 +72,4 @@ void LoadExternalFile::rewriteInfo()
 	writeing_file.close();
 
 }
+

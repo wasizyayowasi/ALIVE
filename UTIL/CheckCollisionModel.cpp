@@ -177,6 +177,7 @@ void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,boo
 				}
 				if (hitLineResult.HitFlag == false) continue;
 				if (hitFlag && maxY > hitLineResult.Position.y)continue;
+				if (player.animNo_ == 11) continue;
 				hitFlag = true;
 				maxY = hitLineResult.Position.y;
 			}
@@ -202,7 +203,7 @@ void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::ve
 	//プレイヤーから一定範囲の衝突判定をとる
 	checkCollisionPersonalArea(player,moveVec,model);
 	//衝突したオブジェクトが乗り越えることが出来るオブジェクトか判断する
-	checkStepDifference(playerHeight);
+	checkStepDifference(player,playerHeight);
 	//取得した衝突結果から壁に当たった場合の処理
 	checkCollisionWall(moveVec,playerHeight);
 	//取得した衝突結果から床に当たった場合の処理
@@ -219,7 +220,7 @@ void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::ve
 	hitDim_.erase(hitDim_.begin(),hitDim_.end());
 }
 
-void CheckCollisionModel::checkStepDifference(float playerHeight)
+void CheckCollisionModel::checkStepDifference(Player& player, float playerHeight)
 {
 	objectHeightY = 0;
 	isGoUpStep_ = false;
@@ -239,6 +240,12 @@ void CheckCollisionModel::checkStepDifference(float playerHeight)
 			for (int i = 0; i < 3; i++) {
 				if (nowPos.y + 60 < hitPoly->Position[i].y) {
 					overHeight = true;
+					if (nowPos.y + playerHeight > hitPoly->Position[i].y) {
+						player.isClim_ = overHeight;
+					}
+				}
+				else {
+					player.isClim_ = false;
 				}
 			}
 
@@ -257,6 +264,10 @@ void CheckCollisionModel::checkStepDifference(float playerHeight)
 	//代入
 	if (objectHeightY > 0.0f) {
 		nowPos.y = objectHeightY;
+	}
+
+	if (!overHeight) {
+		player.isClim_ = false;
 	}
 
 }

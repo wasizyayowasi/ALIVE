@@ -7,7 +7,7 @@ struct ReadPlayerInfo {
 	float rotSpeed;
 	float walkSpeed;
 	float runningSpeed;
-	int animNo_[12];
+	int animNo_[13];
 };
 
 class LoadExternalFile

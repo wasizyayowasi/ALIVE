@@ -58,7 +58,7 @@ public:
 	/// 衝突したオブジェクトが乗り越えられるか判断する
 	/// </summary>
 	/// <param name="playerHeight">プレイヤーの高さ</param>
-	void checkStepDifference(float playerHeight);
+	void checkStepDifference(Player& player, float playerHeight);
 
 private:
 

@@ -11,7 +11,7 @@ namespace {
 	constexpr float gravity = -0.4f;
 
 	//ファイルパス
-	const char* const player_Filename = "DATA/player/player13.mv1";
+	const char* const player_Filename = "DATA/player/player14.mv1";
 	//モデルフレーム名
 	const char* const coll_frame_death = "CollisionDeath";
 	const char* const coll_frame_Sit = "CollisionSit";
@@ -105,15 +105,15 @@ void Player::draw()
 {
 	PModel_->draw();
 	for (auto& deadPlayer : deadPlayer_) {
-		if (deadPlayer->getEnable()) {
-			deadPlayer->draw();
-		}
+		deadPlayer->draw();
 	}
 
+	DrawFormatString(0, 16, 0x448844, "X:%.2f,Y:%.2f,Z:%.2f", pos_.x, pos_.y, pos_.z);
+	DrawFormatString(0, 32, 0x448844, "X:%.2f,Y:%.2f,Z:%.2f", temp_.x, temp_.y, temp_.z);
+	DrawSphere3D(pos_, 32, 32, 0x0000ff, 0x0000ff, true);
+
 	for (const auto person : deadPlayer_) {
-		if (person->getEnable()) {
-			DrawSphere3D(person->getPos(), 16, 32, 0xff0000, 0xff0000, true);
-		}
+		DrawSphere3D(person->getPos(), 16, 32, 0xff0000, 0xff0000, true);
 	}
 }
 
@@ -151,6 +151,7 @@ void Player::setJumpInfo(bool isJump, float jumpVec)
 /// <param name="input">外部装置の入力情報を参照する</param>
 void Player::idleUpdate(const InputState& input)
 {
+
 	//メンバ関数ポインタをsitUpdateに変更する
 	if (input.isTriggered(InputType::ctrl)) {
 		updateFunc_ = &Player::sitUpdate;
@@ -160,7 +161,12 @@ void Player::idleUpdate(const InputState& input)
 	//メンバ関数ポインタをrunningJumpUpdate、
 	//jumpUpdateのどちらかに変更する
 	if (input.isPressed(InputType::space)) {
-		if (input.isPressed(InputType::shift)) {
+		
+		if (isClim_) {
+			updateFunc_ = &Player::climUpdate;
+			return;
+		}
+		else if (input.isPressed(InputType::shift)) {
 			updateFunc_ = &Player::runningJumpUpdate;
 			return;
 		}
@@ -168,6 +174,7 @@ void Player::idleUpdate(const InputState& input)
 			updateFunc_ = &Player::jumpUpdate;
 			return;
 		}
+		
 	}
 
 	if (input.isPressed(InputType::prev)) {
@@ -548,13 +555,26 @@ void Player::climUpdate(const InputState& input)
 	VECTOR localPosition;
 
 	if (PModel_->isAnimEnd()) {
-		localPosition = VAdd(pos_, PModel_->getAnimFrameLocalPosition(animNo_, "mixamorig:LeftToeBase"));
-		//localPosition = VAdd(localPosition,VAdd(pos_, PModel_->getAnimFrameLocalPosition(animNo_, 68)));
-		//localPosition.x = localPosition.x / 2;
-		//localPosition.y = localPosition.y / 2;
-		//localPosition.z = localPosition.z / 2;
+		localPosition = PModel_->getAnimFrameLocalPosition(animNo_, "mixamorig:LeftToeBase");
+		localPosition = VAdd(localPosition,PModel_->getAnimFrameLocalPosition(animNo_, "mixamorig:RightToeBase"));
+		localPosition.x = localPosition.x / 2;
+		localPosition.y = localPosition.y / 2;
+		localPosition.z = localPosition.z / 2;
+		temp_ = localPosition;
 		pos_ = localPosition;
-		updateFunc_ = &Player::idleUpdate;
+		PModel_->setPos(pos_);
+		animNo_ = animType_[AnimType::stand];
+		isAnimLoop_ = false;
+		PModel_->setAnimation(animNo_, isAnimLoop_, true);
+		updateFunc_ = &Player::standUpdate;
 	}
 
+}
+
+void Player::standUpdate(const InputState& input)
+{
+	if (PModel_->isAnimEnd()) {
+		updateFunc_ = &Player::idleUpdate;
+		isClim_ = false;
+	}
 }
