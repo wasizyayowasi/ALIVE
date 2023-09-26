@@ -252,48 +252,53 @@ void Player::setSaveData(VECTOR pos,int num, bool isContinue)
 void Player::movingUpdate(const InputState& input)
 {
 
+	bool pressedUp = input.isPressed(InputType::up);
+	bool pressedDown = input.isPressed(InputType::down);
+	bool pressedLeft = input.isPressed(InputType::left);
+	bool pressedRight = input.isPressed(InputType::right);
+
 	isMoving = false;
 	
 	//改善しよう
 	{
 		//HACK：汚い、リファクタリング必須
-		if (input.isPressed(InputType::up)) {
+		if (pressedUp) {
 			movingSpeed_ = playerInfo.walkSpeed;
 			moveVec_.z += movingSpeed_;
 			isMoving = true;
 			targetAngle_ = 180.0f;
 		}
-		if (input.isPressed(InputType::down)) {
+		if (pressedDown) {
 			movingSpeed_ = playerInfo.walkSpeed;
 			moveVec_.z -= movingSpeed_;
 			isMoving = true;
 			targetAngle_ = 0.0f;
 		}
-		if (input.isPressed(InputType::left)) {
+		if (pressedLeft) {
 			movingSpeed_ = playerInfo.walkSpeed;
 			moveVec_.x -= movingSpeed_;
 			isMoving = true;
 			targetAngle_ = 90.0f;
 		}
-		if (input.isPressed(InputType::right)) {
+		if (pressedRight) {
 			movingSpeed_ = playerInfo.walkSpeed;
 			moveVec_.x += movingSpeed_;
 			isMoving = true;
 			targetAngle_ = 270.0f;
 		}
-		if (input.isPressed(InputType::up) && input.isPressed(InputType::right)) {
+		if (pressedUp && pressedRight) {
 			targetAngle_ = 225.0f;
 		}
-		if (input.isPressed(InputType::up) && input.isPressed(InputType::left)) {
+		if (pressedUp && pressedLeft) {
 			targetAngle_ = 135.0f;
 		}
-		if (input.isPressed(InputType::down) && input.isPressed(InputType::left)) {
+		if (pressedDown && pressedLeft) {
 			targetAngle_ = 45.0f;
 		}
-		if (input.isPressed(InputType::down) && input.isPressed(InputType::right)) {
+		if (pressedDown &&pressedRight) {
 			targetAngle_ = 315.0f;
 		}
-		if ((input.isPressed(InputType::up) || input.isPressed(InputType::down) || input.isPressed(InputType::left) || input.isPressed(InputType::right)) && input.isPressed(InputType::shift)) {
+		if ((pressedUp || pressedDown || pressedLeft || pressedRight) && input.isPressed(InputType::shift)) {
 			movingSpeed_ = playerInfo.runningSpeed;
 		}
 
