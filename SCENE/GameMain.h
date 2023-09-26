@@ -11,12 +11,15 @@ class DepthOfField;
 class Model;
 class CharacterBase;
 class GimmickBase;
+class Steelyard;
+
 
 class GameMain : public SceneBase
 {
 public:
 	///コンストラクタ
-	GameMain(SceneManager& manager);
+
+	GameMain(SceneManager& manager,bool continuation);
 	//デストラクタ
 	virtual ~GameMain();
 
@@ -26,6 +29,10 @@ public:
 	void draw();
 
 private:
+
+	int totalDeathNum_ = 0;					//ゲーム開始からの総死亡数
+
+	bool isContinuation_ = false;			//続きからか初めからか
 
 	//消すかもしれない
 	void fadeInUpdate(const InputState& input);
@@ -38,12 +45,15 @@ private:
 	int fadeValue_ = 255;
 	int fadeColor_ = 0x000000;
 
+	VECTOR checkPoint_ = { 0.0f,0.0f, 0.0f };
+
 	std::shared_ptr<Camera> camera_;			//カメラのシェアードポインタ
 	std::shared_ptr<Player> player_;			//プレイヤーのシェアードポインタ
 	std::shared_ptr<Broom> broom_;				//これも消すかもしれない
 	std::shared_ptr<DepthOfField> depthOfField_;//これも消すかもしれない
 	std::shared_ptr<CharacterBase> enemy_;
 	std::shared_ptr<GimmickBase> switch_;
+	std::shared_ptr<Steelyard> steelyard_;
 	
 	std::vector<std::shared_ptr<Model>> models_;//衝突判定を行う予定のモデルをひとまとめにする配列
 

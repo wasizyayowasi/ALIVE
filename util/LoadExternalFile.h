@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "DxLib.h"
 
 struct ReadPlayerInfo {
 	float jumpPower;
@@ -10,29 +11,38 @@ struct ReadPlayerInfo {
 	int animNo_[13];
 };
 
+struct SaveData {
+	VECTOR checkPoint;
+	int totalDeathNum;
+};
+
 class LoadExternalFile
 {
 public:
 
 	~LoadExternalFile();
 
-	static LoadExternalFile& getInstance() {
-		static LoadExternalFile instance;
+	static LoadExternalFile& getInstance(bool continuation) {
+		static LoadExternalFile instance(continuation);
 		return instance;
 	}
 
-	void draw();
-
 	ReadPlayerInfo getPlayerInfo() { return player; }
+	SaveData getSaveData() { return data; }
+
+	void saveDataRewriteInfo(VECTOR pos, int num);
 
 private:
 
-	void loadInfo(const char* filename);
-	void rewriteInfo();
+	void loadPlayerInfo(const char* filename);
+	void loadSaveDataInfo(const char* filename);
 
-	LoadExternalFile();
+	void rewritePlayerInfo();
+
+	LoadExternalFile(bool temp);
 
 	ReadPlayerInfo player;
+	SaveData data;
 
 };
 

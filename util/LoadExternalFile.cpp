@@ -1,6 +1,5 @@
 #include "LoadExternalFile.h"
 #include "util/InputState.h"
-#include "DxLib.h"
 
 #include<iostream>
 #include <nlohmann/json.hpp>
@@ -10,21 +9,41 @@
 using json = nlohmann::json;
 using namespace std;
 
-LoadExternalFile::LoadExternalFile()
+LoadExternalFile::LoadExternalFile(bool continuation)
 {
-	loadInfo("player");
+	loadPlayerInfo("player");
+	if (continuation) {
+		loadSaveDataInfo("saveData");
+	}
 }
 
 LoadExternalFile::~LoadExternalFile()
 {
-	rewriteInfo();
+	rewritePlayerInfo();
 }
 
-void LoadExternalFile::draw()
+void LoadExternalFile::saveDataRewriteInfo(VECTOR pos, int num)
 {
+	json saveData = {
+		{"name","saveData"},
+		{"checkPointX",pos.x},
+		{"checkPointY",pos.y},
+		{"checkPointZ",pos.z},
+		{"totalDeath",num},
+	};
+
+	string filename = saveData["name"];
+	string extension = ".json";
+	filename += extension;
+
+	ofstream writeing_file;
+	writeing_file.open(filename, ios::out);
+	writeing_file << saveData.dump() << std::endl;
+	writeing_file.close();
+
 }
 
-void LoadExternalFile::loadInfo(const char* filename)
+void LoadExternalFile::loadPlayerInfo(const char* filename)
 {
 	string path = "data/jsonFile/";
 	path += filename;
@@ -50,9 +69,28 @@ void LoadExternalFile::loadInfo(const char* filename)
 
 }
 
-void LoadExternalFile::rewriteInfo()
+void LoadExternalFile::loadSaveDataInfo(const char* filename)
 {
-	json json_ = {
+	string path = "data/jsonFile/";
+	path += filename;
+	path += ".json";
+
+	ifstream ifs(path.c_str());
+	assert(ifs);
+
+	json json;
+	ifs >> json;
+
+	data.checkPoint.x = json["checkPointX"];
+	data.checkPoint.y = json["checkPointY"];
+	data.checkPoint.z = json["checkPointZ"];
+	data.totalDeathNum = json["totalDeath"];
+
+}
+
+void LoadExternalFile::rewritePlayerInfo()
+{
+	json player = {
 	   {"name","player"},
 	   {"jumpPower",10.0f},
 	   {"runningJumpPower",8.0f},
@@ -62,13 +100,13 @@ void LoadExternalFile::rewriteInfo()
 	   {"animNo", json::array({ 0,1,2,3,4,5,6,7,8,9,10,11,12 })},
 	};
 
-	string filename = json_["name"];
+	string filename = player["name"];
 	string extension = ".json";
 	filename += extension;
 
 	ofstream writeing_file;
 	writeing_file.open(filename, ios::out);
-	writeing_file << json_.dump() << std::endl;
+	writeing_file << player.dump() << std::endl;
 	writeing_file.close();
 
 }

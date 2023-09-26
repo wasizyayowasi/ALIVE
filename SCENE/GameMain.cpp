@@ -4,6 +4,7 @@
 
 #include "../gimmick/GimmickBase.h"
 #include "../gimmick/Switch.h"
+#include "../gimmick/Steelyard.h"
 
 #include "../object/Player.h"
 #include "../object/Camera.h"
@@ -19,6 +20,7 @@
 #include "../util/SoundManager.h"
 #include "../util/InputState.h"
 #include "../util/model.h"
+#include "../util/LoadExternalFile.h"
 
 
 using namespace std;
@@ -30,8 +32,10 @@ namespace {
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
-GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::fadeInUpdate)
+GameMain::GameMain(SceneManager& manager, bool continuation) : SceneBase(manager),updateFunc_(&GameMain::fadeInUpdate)
 {
+	isContinuation_ = continuation;
+
 	camera_ = make_shared<Camera>();
 	player_ = make_shared<Player>();
 	//broom_ = make_shared<Broom>();
@@ -39,6 +43,7 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	models_.push_back(make_shared<Model>(temp_filepath));
 	enemy_ = make_shared<Enemy>();
 	switch_ = make_shared<Switch>();
+	steelyard_ = make_shared<Steelyard>();
 
 	models_[0]->setScale(scale);
 	models_[0]->setCollFrame();
@@ -46,6 +51,10 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	SetUseLighting(false);
 
 	Set3DSoundOneMetre(10.0f);
+
+	auto data = LoadExternalFile::getInstance(isContinuation_);
+	player_->setSaveData(data.getSaveData().checkPoint,data.getSaveData().totalDeathNum,isContinuation_);
+	player_->init();
 
 	//3Dリスナーの位置を設定する
 	SoundManager::getInstance().set3DSoundListenerInfo(camera_->getPos(), camera_->getTarget());
@@ -58,6 +67,7 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 
 GameMain::~GameMain()
 {
+	LoadExternalFile::getInstance(isContinuation_).saveDataRewriteInfo(checkPoint_, player_->getDeathNum());
 }
 
 //更新
@@ -80,6 +90,7 @@ void GameMain::draw()
 	player_->draw();
 	enemy_->draw();
 	switch_->draw();
+	steelyard_->draw();
 	//broom_->graphFilterUpdate();
 	//broom_->draw();
 
@@ -104,10 +115,15 @@ void GameMain::normalUpdate(const InputState& input)
 {
 	player_->update(input,models_);
 	camera_->trackingCameraUpdate(input,player_->getPos());
+	switch_->update();
 	//enemy_->update();
 	//camera_->fixedPointCamera(player_->getPos());
 
 	SoundManager::getInstance().set3DSoundListenerInfo(camera_->getPos(), camera_->getTarget());
+
+	if (player_->getPos().x > 1900) {
+		checkPoint_ = { 1900,0,0 };
+	}
 
 	if (input.isTriggered(InputType::pause)) {
 		manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));

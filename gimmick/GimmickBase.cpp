@@ -1,5 +1,10 @@
 #include "GimmickBase.h"
 #include "../util/Model.h"
+#include "../object/Player.h"
+
+namespace {
+	constexpr float collition_radius = 200.0f;
+}
 
 GimmickBase::GimmickBase(const char* filename)
 {

@@ -4,6 +4,9 @@
 
 class Model;
 class Switch;
+class Player;
+
+constexpr int max_hit_coll = 2048;
 
 class GimmickBase
 {

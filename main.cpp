@@ -67,8 +67,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		auto fps = GetFPS();
 		auto DC = GetDrawCallCount();
 
-		LoadExternalFile::getInstance().draw();
-
 		DrawFormatString(1180, 0, 0xffff00, "FPS : %2.2f", fps);
 		DrawFormatString(1200, 16, 0xffff00, "DC : %d", DC);
 

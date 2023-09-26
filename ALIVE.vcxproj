@@ -143,8 +143,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="scene\TitlemenuScene.cpp" />
+    <ClCompile Include="util\FontsManager.cpp" />
     <ClCompile Include="gimmick\GimmickBase.cpp" />
     <ClCompile Include="gimmick\Switch.cpp" />
+    <ClCompile Include="gimmick\Steelyard.cpp" />
     <ClCompile Include="util\EffekseerManager.cpp" />
     <ClCompile Include="object\Enemy.cpp" />
     <ClCompile Include="scene\DebugScene.cpp" />
@@ -171,8 +174,11 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scene\TitlemenuScene.h" />
+    <ClInclude Include="util\FontsManager.h" />
     <ClInclude Include="gimmick\GimmickBase.h" />
     <ClInclude Include="gimmick\Switch.h" />
+    <ClInclude Include="gimmick\Steelyard.h" />
     <ClInclude Include="util\EffekseerManager.h" />
     <ClInclude Include="object\Enemy.h" />
     <ClInclude Include="scene\DebugScene.h" />

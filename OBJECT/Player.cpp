@@ -32,15 +32,28 @@ using namespace std;
 
 Player::Player():updateFunc_(&Player::idleUpdate)
 {
+}
+
+/// <summary>
+/// デストラクタ
+/// </summary>
+Player::~Player()
+{
+}
+
+
+void Player::init()
+{
+	auto loadExternalFile = LoadExternalFile::getInstance(isContinue_);
 	//プレイヤー情報の初期化
 	{
-		playerInfo.jumpPower = LoadExternalFile::getInstance().getPlayerInfo().jumpPower;
-		playerInfo.runningJumpPower = LoadExternalFile::getInstance().getPlayerInfo().runningJumpPower;
-		playerInfo.walkSpeed = LoadExternalFile::getInstance().getPlayerInfo().walkSpeed;
-		playerInfo.runningSpeed = LoadExternalFile::getInstance().getPlayerInfo().runningSpeed;
-		playerInfo.rotSpeed = LoadExternalFile::getInstance().getPlayerInfo().rotSpeed;
+		playerInfo.jumpPower = loadExternalFile.getPlayerInfo().jumpPower;
+		playerInfo.runningJumpPower = loadExternalFile.getPlayerInfo().runningJumpPower;
+		playerInfo.walkSpeed = loadExternalFile.getPlayerInfo().walkSpeed;
+		playerInfo.runningSpeed = loadExternalFile.getPlayerInfo().runningSpeed;
+		playerInfo.rotSpeed = loadExternalFile.getPlayerInfo().rotSpeed;
 		for (int i = 0; i < static_cast<int>(AnimType::max); i++) {
-			playerInfo.anim_[i] = LoadExternalFile::getInstance().getPlayerInfo().animNo_[i];
+			playerInfo.anim_[i] = loadExternalFile.getPlayerInfo().animNo_[i];
 		}
 	}
 
@@ -65,12 +78,6 @@ Player::Player():updateFunc_(&Player::idleUpdate)
 	jump_.jumpVec = 0.0f;
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
-Player::~Player()
-{
-}
 
 /// <summary>
 /// プレイヤーの更新を行う
@@ -110,7 +117,8 @@ void Player::draw()
 
 	DrawFormatString(0, 16, 0x448844, "X:%.2f,Y:%.2f,Z:%.2f", pos_.x, pos_.y, pos_.z);
 	DrawFormatString(0, 32, 0x448844, "X:%.2f,Y:%.2f,Z:%.2f", temp_.x, temp_.y, temp_.z);
-	DrawSphere3D(pos_, 32, 32, 0x0000ff, 0x0000ff, true);
+	DrawFormatString(0, 48, 0x448844, "%.2f", tempAngle_);
+	DrawFormatString(0, 64, 0x448844, "%d", deathCount_);
 
 	for (const auto person : deadPlayer_) {
 		DrawSphere3D(person->getPos(), 16, 32, 0xff0000, 0xff0000, true);
@@ -226,6 +234,13 @@ void Player::idleUpdate(const InputState& input)
 		}
 	}
 	
+}
+
+void Player::setSaveData(VECTOR pos,int num, bool isContinue)
+{
+	checkPoint_ = pos;
+	deathCount_ = num;
+	isContinue_ = isContinue;
 }
 
 
@@ -409,7 +424,8 @@ void Player::death(const InputState& input)
 	{
 		if (input.isTriggered(InputType::death)) {
 			deathPos = pos_;				//死んだ場所を残す
-			
+			deathCount_++;
+
 			isAnimLoop_ = false;			
 			isDead_ = true;
 

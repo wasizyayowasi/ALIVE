@@ -8,7 +8,7 @@ namespace {
 Switch::Switch() :GimmickBase("data/model/switch.mv1")
 {
 	model_->setScale(scale);
-	model_->setPos({ 1845,0,0 });
+	model_->setPos({ 2245,0,0 });
 }
 
 Switch::~Switch()
@@ -22,4 +22,5 @@ void Switch::update()
 
 void Switch::draw()
 {
+
 }

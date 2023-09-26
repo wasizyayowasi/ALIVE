@@ -21,17 +21,17 @@ SoundSettingScene::~SoundSettingScene()
 void SoundSettingScene::update(const InputState& input)
 {
 	//仮サウンドの音量調整
-	if (input.isPressed(InputType::down)) {
-		volumeBGM_ = (max)(volumeBGM_ - 1.0f, 0.0f);
+	if (input.isTriggered(InputType::down)) {
+		volumeBGM_ = (max)(volumeBGM_ - 50.0f, 0.0f);
 	}
-	if (input.isPressed(InputType::up)) {
-		volumeBGM_ = (min)(volumeBGM_ + 1.0f, 255.0f);
+	if (input.isTriggered(InputType::up)) {
+		volumeBGM_ = (min)(volumeBGM_ + 50.0f, 250.0f);
 	}
-	if (input.isPressed(InputType::left)) {
-		volumeSE_ = (max)(volumeSE_ - 1.0f, 0.0f);
+	if (input.isTriggered(InputType::left)) {
+		volumeSE_ = (max)(volumeSE_ - 50.0f, 0.0f);
 	}
-	if (input.isPressed(InputType::right)) {
-		volumeSE_ = (min)(volumeSE_ + 1.0f, 255.0f);
+	if (input.isTriggered(InputType::right)) {
+		volumeSE_ = (min)(volumeSE_ + 50.0f, 250.0f);
 	}
 
 	//音量の変更

@@ -4,16 +4,12 @@
 #include "ScenePause.h"
 #include "SceneTitle.h"
 #include "SceneManager.h"
+#include "TitlemenuScene.h"
 #include "../util/InputState.h"
 #include <algorithm>
 
 DebugScene::DebugScene(SceneManager& manager):SceneBase(manager)
 {
-	scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager)));
-	scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager)));
-	scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager)));
-	scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager)));
-
 	sceneName_[0] = { {SceneType::main},{"main"}};
 	sceneName_[1] = { {SceneType::title }, { "title" }};
 	sceneName_[2] = { {SceneType::end} ,{"end"} };
@@ -32,15 +28,27 @@ void DebugScene::update(const InputState& input)
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
 	if (input.isTriggered(InputType::down)) {
-		selectNum_ = (std::min)(selectNum_ + 1,static_cast<int>(scene_.size()));
+		selectNum_ = (std::min)(selectNum_ + 1,4);
 	}
 
 	if (input.isTriggered(InputType::next)) {
-		if (selectNum_ == static_cast<int>(scene_.size())) {
+		switch (selectNum_) {
+		case 0:
+			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_, true)));
+			break;
+		case 1:
+			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
+			break;
+		case 2:
+			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager_)));
+			break;
+		case 3:
+			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+			break;
+		case 4:
 			DxLib_End();
-			return;
+			break;
 		}
-		manager_.changeScene(scene_[selectNum_]);
 	}
 
 }

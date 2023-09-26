@@ -8,6 +8,7 @@
 class InputState;
 class Model;
 class CheckCollisionModel;
+class GimmickBase;
 
 struct JumpInfo {
 	float jumpVec;		//ジャンプベクトル
@@ -43,10 +44,13 @@ struct PlayerInfo {
 class Player
 {
 	friend CheckCollisionModel;
+	friend GimmickBase;
 public:
 
 	Player();
 	virtual ~Player();
+
+	void init();
 
 	void update(const InputState& input, std::vector<std::shared_ptr<Model>> models);
 	void draw();
@@ -57,7 +61,12 @@ public:
 	JumpInfo getJumpInfo() { return jump_; }
 	void setJumpInfo(bool isJump, float jumpVec);
 
+	VECTOR getMoveVec() { return moveVec_; }
+
 	void idleUpdate(const InputState& input);
+
+	void setSaveData(VECTOR pos, int num, bool isContinue);
+	int getDeathNum() {return deathCount_;	}
 
 private:
 	//移動処理
@@ -86,6 +95,7 @@ private:
 	int temp = 0;
 	float tempGravity = 0.0f;
 
+	int deathCount_ = 0;
 	int animNo_ = 0;						//現在のアニメーション番号
 	
 
@@ -99,11 +109,12 @@ private:
 	bool isSitting_ = false;				//座っているか
 	bool isAnimLoop_ = true;				//アニメーションをループさせるか
 	bool isClim_ = false;
+	bool isContinue_ = false;
 
 	JumpInfo jump_;							//ジャンプ関連の構造体
 
 
-	VECTOR checkPoint_ = { 0.0f,0.0f, 0.0f };					//中間ポイント
+	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};					//中間ポイント
 
 	VECTOR pos_ = { 0.0f,0.0f,0.0f };							//プレイヤーのポジション
 	VECTOR rot_ = { 0.0f,0.0f,0.0f };							//プレイヤーの回転
