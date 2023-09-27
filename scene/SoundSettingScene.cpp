@@ -10,11 +10,19 @@ using namespace std;
 
 SoundSettingScene::SoundSettingScene(SceneManager& manager):SceneBase(manager)
 {
+}
+
+SoundSettingScene::~SoundSettingScene()
+{
+}
+
+void SoundSettingScene::init()
+{
 	volumeBGM_ = SoundManager::getInstance().getBGMVolume();
 	volumeSE_ = SoundManager::getInstance().getSEVolume();
 }
 
-SoundSettingScene::~SoundSettingScene()
+void SoundSettingScene::end()
 {
 }
 

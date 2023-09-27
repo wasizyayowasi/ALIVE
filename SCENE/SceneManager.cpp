@@ -8,33 +8,39 @@ void SceneManager::changeScene(std::shared_ptr<SceneBase> scene)
 	//今あるシーンをすべて削除する
 	while (!scenes_.empty())
 	{
-		//末尾のシーンを削除する
+		//先頭のシーンを削除する
+		scenes_.front()->end();
 		scenes_.pop_front();
 	}
 	//先頭に引数で得たシーンを追加する
 	scenes_.push_front(shared_ptr<SceneBase>(scene));
+	scenes_.front()->init();
 }
 
 void SceneManager::pushScene(std::shared_ptr<SceneBase> scene)
 {
 	//先頭に引数で得たシーンを追加する
 	scenes_.push_front(scene);
+	scenes_.front()->init();
 }
 
 void SceneManager::swapScene(std::shared_ptr<SceneBase> scene)
 {
 	//先頭のシーンを削除する
 	while(scenes_.size() > 1) {
+		scenes_.front()->end();
 		scenes_.pop_front();
 	}
 	//先頭に引数で得たシーンを追加する
 	scenes_.push_front(shared_ptr<SceneBase>(scene));
+	scenes_.front()->init();
 }
 
 void SceneManager::popScene()
 {
-	//末尾のシーン以外を削除する
+	//先頭のシーン以外を削除する
 	if (scenes_.size() > 1) {
+		scenes_.front()->end();
 		scenes_.pop_front();
 	}
 }

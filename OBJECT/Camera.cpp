@@ -45,28 +45,7 @@ void Camera::trackingCameraUpdate(const InputState& input,VECTOR playerPos)
 	
 	i = (std::max)(i, 0);
 
-	//ある一定のラインに来るとカメラの位置を右方向(xがプラスの方向)に移動させる
-	if (playerPos.x > threshold && playerPos.x > threshold - tempRoom[i]) {
-		cameraPos_.x = (std::min)(cameraPos_.x + camera_sride_speed, threshold + 200.0f);
-		if (playerPos.x >= threshold + 50.0f) {
-			i++;
-			threshold += tempRoom[i];
-		}
-	}
-	//ある一定のラインに来るとカメラの位置を左方向(xがマイナスの方向)に移動させる
-	else if (playerPos.x < threshold && playerPos.x < threshold - tempRoom[i]) {
-		if (playerPos.x < threshold - tempRoom[i] - 50.0f) {
-			threshold -= tempRoom[i];
-			i--;
-		}
-		if (cameraPos_.x > threshold - tempRoom[i] - 200.0f) {
-			cameraPos_.x -= camera_sride_speed;
-		}
-	}
-	//通常時のカメラ移動
-	else {
-		cameraPos_.x = (cameraPos_.x * 0.9f) + (playerPos.x * 0.1f);
-	}
+	tracking(playerPos);
 
 	//ターゲットを逸らす
 	changeOfFocus(input);
@@ -78,7 +57,7 @@ void Camera::trackingCameraUpdate(const InputState& input,VECTOR playerPos)
 	//プレイヤーがいた位置を見るようにする
 	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
 	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
-	cameraTarget_.z = playerPos.z;
+	cameraTarget_.z = (cameraTarget_.z * 0.95f) + (playerPos.z * 0.05f);
 
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
 
@@ -134,6 +113,40 @@ void Camera::changeOfFocus(const InputState& input)
 	} 
 	else if (input.isPressed(InputType::rightArrow)) {
 		cameraTarget_.x += add_focus;
+	}
+}
+
+void Camera::tracking(VECTOR playerPos)
+{
+
+	bool overRightEndOfTheRoom = playerPos.x > threshold;
+	bool overLeftEndOfTheRoom = playerPos.x > threshold - tempRoom[i];
+
+	bool belowRightEndOfTheRoom = playerPos.x < threshold;
+	bool belowLeftEndOfTheRoom = playerPos.x < threshold - tempRoom[i];
+
+
+	//ある一定のラインに来るとカメラの位置を右方向(xがプラスの方向)に移動させる
+	if (overRightEndOfTheRoom && overLeftEndOfTheRoom) {
+		cameraPos_.x = (std::min)(cameraPos_.x + camera_sride_speed, threshold + 200.0f);
+		if (playerPos.x >= threshold + 50.0f) {
+			i++;
+			threshold += tempRoom[i];
+		}
+	}
+	//ある一定のラインに来るとカメラの位置を左方向(xがマイナスの方向)に移動させる
+	else if (belowRightEndOfTheRoom && belowLeftEndOfTheRoom) {
+		if (playerPos.x < threshold - tempRoom[i] - 50.0f) {
+			threshold -= tempRoom[i];
+			i--;
+		}
+		if (cameraPos_.x > threshold - tempRoom[i] - 200.0f) {
+			cameraPos_.x -= camera_sride_speed;
+		}
+	}
+	//通常時のカメラ移動
+	else {
+		cameraPos_.x = (cameraPos_.x * 0.9f) + (playerPos.x * 0.1f);
 	}
 }
 

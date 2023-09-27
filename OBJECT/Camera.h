@@ -11,8 +11,10 @@ public:
 	virtual ~Camera();
 
 	void trackingCameraUpdate(const InputState& input,VECTOR playerPos);
-	void fixedPointCamera(VECTOR playerPos);								
+	void fixedPointCamera(VECTOR playerPos);
+
 	void changeOfFocus(const InputState& input);							//カメラのターゲットの位置を逸らす
+	void tracking(VECTOR playerPos);
 
 	VECTOR getPos() { return cameraPos_; }
 	VECTOR getTarget() { return cameraTarget_; }

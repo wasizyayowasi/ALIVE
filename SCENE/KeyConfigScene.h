@@ -14,6 +14,11 @@ public:
 	//デストラクタ
 	virtual ~KeyConfigScene();
 
+	//初期化用関数
+	void init();
+	//削除用関数
+	void end();
+
 	//更新
 	void update(const InputState& input);
 	//描画

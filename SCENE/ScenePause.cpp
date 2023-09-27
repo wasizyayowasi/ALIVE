@@ -16,6 +16,19 @@ ScenePause::~ScenePause()
 {
 }
 
+void ScenePause::init()
+{
+	menuName_.push_back("音調整");
+	menuName_.push_back("操作設定");
+	menuName_.push_back("戻る");
+	menuName_.push_back("タイトルへ");
+	menuName_.push_back("デバッグシーンへ");
+}
+
+void ScenePause::end()
+{
+}
+
 void ScenePause::update(const InputState& input)
 {
 	//項目選択
@@ -69,9 +82,9 @@ void ScenePause::draw()
 
 	DrawString(90, 16 * selectionNum_ + 32, "←", 0xffff00);
 
-	DrawString(0, 32, "音調整",0x00ff00);
-	DrawString(0, 48, "操作設定",0x00ff00);
-	DrawString(0, 64, "戻る",0x00ff00);
-	DrawString(0, 80, "タイトルへ",0x00ff00);
-	DrawString(0, 96, "デバッグシーンへ",0x00ff00);
+	int y = 32;
+	for (auto& menu : menuName_) {
+		DrawFormatString(0, y, 0x00ff00, "%s", menu.c_str());
+		y += 16;
+	}
 }

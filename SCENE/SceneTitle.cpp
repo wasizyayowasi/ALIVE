@@ -24,6 +24,10 @@ void SceneTitle::init()
 	manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<TitlemenuScene>(manager_)));
 }
 
+void SceneTitle::end()
+{
+}
+
 void SceneTitle::update(const InputState& input)
 {
 	(this->*updateFunc_)(input);

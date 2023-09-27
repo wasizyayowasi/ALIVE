@@ -35,7 +35,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return -1;			// エラーが起きたら直ちに終了
 	}
 
-	EffekseerManager::getInstance();
+	EffekseerManager::getInstance().init();
 	
 	//// ただし、DirectX11を使用する場合は実行する必要はない。
 	//Effekseer_SetGraphicsDeviceLostCallbackFunctions();
@@ -82,6 +82,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
 	}
+
+	EffekseerManager::getInstance().end();
 
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 

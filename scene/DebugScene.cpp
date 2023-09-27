@@ -10,15 +10,26 @@
 
 DebugScene::DebugScene(SceneManager& manager):SceneBase(manager)
 {
-	sceneName_[0] = { {SceneType::main},{"main"}};
-	sceneName_[1] = { {SceneType::title }, { "title" }};
-	sceneName_[2] = { {SceneType::end} ,{"end"} };
-	sceneName_[3] = { {SceneType::pause} ,{"pause"} };
-	sceneName_[4] = { {SceneType::max} ,{"•Â‚¶‚é"} };
-
+	//scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_, true)));
+	//scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
+	//scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager_)));
+	//scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 }
 
 DebugScene::~DebugScene()
+{
+}
+
+void DebugScene::init()
+{
+	sceneName_[0] = { {SceneType::main},{"main"} };
+	sceneName_[1] = { {SceneType::title }, { "title" } };
+	sceneName_[2] = { {SceneType::end} ,{"end"} };
+	sceneName_[3] = { {SceneType::pause} ,{"pause"} };
+	sceneName_[4] = { {SceneType::max} ,{"•Â‚¶‚é"} };
+}
+
+void DebugScene::end()
 {
 }
 
@@ -32,6 +43,7 @@ void DebugScene::update(const InputState& input)
 	}
 
 	if (input.isTriggered(InputType::next)) {
+		//manager_.changeScene(scene_[selectNum_]);
 		switch (selectNum_) {
 		case 0:
 			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_, true)));

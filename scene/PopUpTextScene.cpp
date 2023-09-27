@@ -16,6 +16,14 @@ void PopUpTextScene::loadText()
 {
 }
 
+void PopUpTextScene::init()
+{
+}
+
+void PopUpTextScene::end()
+{
+}
+
 void PopUpTextScene::update(const InputState& input)
 {
 	if (input.isTriggered(InputType::next)) {

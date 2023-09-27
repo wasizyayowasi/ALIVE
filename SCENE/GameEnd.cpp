@@ -14,6 +14,14 @@ GameEnd::~GameEnd()
 {
 }
 
+void GameEnd::init()
+{
+}
+
+void GameEnd::end()
+{
+}
+
 void GameEnd::update(const InputState& input)
 {
 	(this->*updateFunc_)(input);

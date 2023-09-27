@@ -25,6 +25,9 @@ public:
 	DebugScene(SceneManager& manager);
 	virtual ~DebugScene();
 
+	void init();
+	void end();
+
 	void update(const InputState& input);
 	void draw();
 

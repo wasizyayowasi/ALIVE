@@ -32,10 +32,20 @@ namespace {
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
-GameMain::GameMain(SceneManager& manager, bool continuation) : SceneBase(manager),updateFunc_(&GameMain::fadeInUpdate)
+GameMain::GameMain(SceneManager& manager, bool continuation) :
+SceneBase(manager),
+updateFunc_(&GameMain::fadeInUpdate),
+isContinuation_(continuation)
 {
-	isContinuation_ = continuation;
+}
 
+GameMain::~GameMain()
+{
+	LoadExternalFile::getInstance(isContinuation_).saveDataRewriteInfo(checkPoint_, player_->getDeathNum());
+}
+
+void GameMain::init()
+{
 	camera_ = make_shared<Camera>();
 	player_ = make_shared<Player>();
 	//broom_ = make_shared<Broom>();
@@ -53,21 +63,19 @@ GameMain::GameMain(SceneManager& manager, bool continuation) : SceneBase(manager
 	Set3DSoundOneMetre(10.0f);
 
 	auto data = LoadExternalFile::getInstance(isContinuation_);
-	player_->setSaveData(data.getSaveData().checkPoint,data.getSaveData().totalDeathNum,isContinuation_);
+	player_->setSaveData(data.getSaveData().checkPoint, data.getSaveData().totalDeathNum, isContinuation_);
 	player_->init();
 
 	//3Dリスナーの位置を設定する
 	SoundManager::getInstance().set3DSoundListenerInfo(camera_->getPos(), camera_->getTarget());
 	//3Dサウンドに関連する情報を設定する
-	SoundManager::getInstance().set3DSoundInfo(VGet(575,120,-60),1000,"cafe");
+	SoundManager::getInstance().set3DSoundInfo(VGet(575, 120, -60), 1000, "cafe");
 	//仮でcafeという音楽を流している
 	SoundManager::getInstance().play("cafe");
-
 }
 
-GameMain::~GameMain()
+void GameMain::end()
 {
-	LoadExternalFile::getInstance(isContinuation_).saveDataRewriteInfo(checkPoint_, player_->getDeathNum());
 }
 
 //更新

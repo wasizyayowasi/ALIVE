@@ -16,11 +16,19 @@ namespace {
 //コンストラクタ
 KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):SceneBase(manager),updateFunc_(&KeyConfigScene::selectChangeKeyUpdate), inputState_(input)
 {
-	keyTypeHandle_ = Graph::loadGraph("data/graph/key2.png");
 }
 
 //デストラクタ
 KeyConfigScene::~KeyConfigScene()
+{
+}
+
+void KeyConfigScene::init()
+{
+	keyTypeHandle_ = Graph::loadGraph("data/graph/key2.png");
+}
+
+void KeyConfigScene::end()
 {
 	//現在のキー入力情報を外部データとして書き出す
 	//inputState_.savekeyInfo();

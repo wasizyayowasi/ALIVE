@@ -144,6 +144,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="scene\TitlemenuScene.cpp" />
+    <ClCompile Include="util\UIItemManager.cpp" />
+    <ClCompile Include="util\UIItem.cpp" />
     <ClCompile Include="util\FontsManager.cpp" />
     <ClCompile Include="gimmick\GimmickBase.cpp" />
     <ClCompile Include="gimmick\Switch.cpp" />
@@ -175,6 +177,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scene\TitlemenuScene.h" />
+    <ClInclude Include="util\UIItemManager.h" />
+    <ClInclude Include="util\UIItem.h" />
     <ClInclude Include="util\FontsManager.h" />
     <ClInclude Include="gimmick\GimmickBase.h" />
     <ClInclude Include="gimmick\Switch.h" />

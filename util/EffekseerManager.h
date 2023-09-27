@@ -13,6 +13,9 @@ public:
 		return instance;
 	}
 
+	void init();
+	void end();
+
 	void update(const char* name);
 
 	void draw(const char* name);

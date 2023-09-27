@@ -5,20 +5,42 @@
 #include "../util/game.h"
 #include "../util/FontsManager.h"
 #include "../util/InputState.h"
+#include "../util/UIItemManager.h"
 #include <algorithm>
 
 using namespace std;
 
 TitlemenuScene::TitlemenuScene(SceneManager& manager):SceneBase(manager)
 {
-	menuName_.push_back("New Game");
-	menuName_.push_back("Continue");
-	menuName_.push_back("Setting");
-	menuName_.push_back("end");
+	
 }
 
 TitlemenuScene::~TitlemenuScene()
 {
+}
+
+void TitlemenuScene::init()
+{
+	titleHandle_ = LoadGraph("data/graph/title.png");
+	UI_ = std::make_shared<UIItemManager>();
+
+	menuName_.push_back("New Game");
+	menuName_.push_back("Continue");
+	menuName_.push_back("Setting");
+	menuName_.push_back("end");
+
+	int font = FontsManager::getInstance().getFontHandle("High Tower Text");
+	int y = 120;
+	for (auto& menu : menuName_) {
+		UI_->addMenu(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + y,320, 100, menu.c_str(), font);
+		y += 40;
+	}
+
+}
+
+void TitlemenuScene::end()
+{
+	DeleteGraph(titleHandle_);
 }
 
 void TitlemenuScene::update(const InputState& input)
@@ -38,20 +60,8 @@ void TitlemenuScene::update(const InputState& input)
 
 void TitlemenuScene::draw()
 {
-	int y = 150;
-	int color = 0xffffff;
-	for (int i = 0; i < menuName_.size(); i++) {
-		if (i == selectNum_) {
-			color = 0xff0000;
-		}
-		else {
-			color = 0xffffff;
-		}
-		int width = FontsManager::getInstance().getStringSize(menuName_[i].c_str(), "High Tower Text");
-		int handle = FontsManager::getInstance().getFontHandle("High Tower Text");
-		DrawStringToHandle(Game::kScreenWidth / 2 - width / 2, Game::kScreenHeight / 2 + y, menuName_[i].c_str(), color, handle);
-		y += 40;
-	}
+	UI_->draw(selectNum_);
+	DrawRotaGraph(Game::kScreenWidth / 2, Game::kScreenHeight / 3, 1.0f, 0.0f, titleHandle_, true);
 }
 
 void TitlemenuScene::sceneChange()

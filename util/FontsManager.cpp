@@ -25,10 +25,7 @@ void FontsManager::addFonts(const char* filename, int fontSize)
 	path += filename;
 	path += ".ttf";
 
-	//LPCSTR fontpath = "data/fonts/HTOWERT.TTF";
-
 	AddFontResourceEx(path.c_str(), FR_PRIVATE, NULL);
-	//AddFontResourceEx(fontpath, FR_PRIVATE, NULL);
 
 	fontHandle_[filename] = CreateFontToHandle(filename, fontSize,-1,-1);
 	assert(fontHandle_[filename] != -1);

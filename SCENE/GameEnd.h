@@ -7,6 +7,9 @@ public:
 	GameEnd(SceneManager& manager);
 	virtual ~GameEnd();
 
+	void init();
+	void end();
+
 	void update(const InputState& input);
 	void draw();
 
