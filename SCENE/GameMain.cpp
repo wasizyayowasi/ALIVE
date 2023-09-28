@@ -56,10 +56,7 @@ void GameMain::init()
 	gimmick_.push_back(make_shared<Steelyard>());
 	models_.push_back(make_shared<Model>(temp_filepath));
 
-	models2_["filed"] = make_shared<Model>(temp_filepath);
-
 	for (auto& gimmick : gimmick_) {
-		models2_[gimmick->getClassName()] = gimmick->getModelInfo();
 		models_.push_back(gimmick->getModelInfo());
 	}
 
@@ -134,7 +131,7 @@ void GameMain::normalUpdate(const InputState& input)
 	player_->update(input,models_);
 	camera_->trackingCameraUpdate(input,player_->getPos());
 	for (auto& gimmick : gimmick_) {
-		gimmick->update();
+		gimmick->update(*player_);
 	}
 	//enemy_->update();
 	//camera_->fixedPointCamera(player_->getPos());

@@ -1,21 +1,32 @@
 #pragma once
 #include "GimmickBase.h"
+#include <vector>
+
+class Player;
 
 class Switch : public GimmickBase
 {
 public:
-
+	//コンストラクタ
 	Switch();
+	//デストラクタ
 	virtual ~Switch();
 
-	const char* getClassName() { return "Switch"; }
+	//更新
+	void update(Player& player);
 
-	void update();
-	void draw();
+	VECTOR deadPersonCapsulePosAdjustment(std::shared_ptr<Model> person);
 
 private:
+	//スイッチモデルとプレイヤー、死体との衝突判定を行う
+	void hitColl(Player& player);
+	//スイッチをオンにする
+	void OnAnim();
+	//スイッチをオフにする
+	void OffAnim();
+private:
 
-
+	std::vector<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 
 };
 

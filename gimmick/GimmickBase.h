@@ -21,10 +21,8 @@ public:
 	//デストラクタ
 	virtual ~GimmickBase();
 
-	virtual const char* getClassName() = 0;
-
 	//更新
-	virtual void update();
+	virtual void update(Player& player);
 	//描画
 	void draw();
 

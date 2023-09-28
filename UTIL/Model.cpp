@@ -87,6 +87,7 @@ void Model::setPos(VECTOR pos)
 //äpìxê›íË
 void Model::setRot(VECTOR rot)
 {
+	rot_ = rot;
 	MV1SetRotationXYZ(modelHandle_, rot);
 }
 

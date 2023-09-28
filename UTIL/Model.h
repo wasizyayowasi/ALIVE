@@ -43,6 +43,11 @@ public:
 	/// <returns>ポジションを返す</returns>
 	VECTOR getPos() const { return pos_; }
 	/// <summary>
+	/// 回転値を取得する
+	/// </summary>
+	/// <returns>回転値</returns>
+	VECTOR getRot()const { return rot_; }
+	/// <summary>
 	/// アニメーションの再生時間を取得する
 	/// </summary>
 	/// <returns>一アニメーションの再生時間</returns>
@@ -145,6 +150,7 @@ private:
 	int animChangeFrameTotal_ = 0;
 
 	VECTOR pos_;
+	VECTOR rot_;
 
 };
 

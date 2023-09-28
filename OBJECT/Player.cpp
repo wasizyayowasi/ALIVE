@@ -95,7 +95,7 @@ void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>>
 	(this->*updateFunc_)(input);
 
 	//死体のvector配列を引数のmodels配列に追加する
-	for (auto& deadPerson : deadPlayer_) {
+	for (auto& deadPerson : deadPerson_) {
 		models.push_back(deadPerson);
 	}
 
@@ -109,7 +109,7 @@ void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>>
 void Player::draw()
 {
 	PModel_->draw();
-	for (auto& deadPlayer : deadPlayer_) {
+	for (auto& deadPlayer : deadPerson_) {
 		deadPlayer->draw();
 	}
 
@@ -118,7 +118,7 @@ void Player::draw()
 	DrawFormatString(0, 48, 0x448844, "%.2f", tempAngle_);
 	DrawFormatString(0, 64, 0x448844, "%d", deathCount_);
 
-	for (const auto person : deadPlayer_) {
+	for (const auto person : deadPerson_) {
 		DrawSphere3D(person->getPos(), 16, 32, 0xff0000, 0xff0000, true);
 	}
 }
@@ -463,7 +463,6 @@ void Player::runningJumpUpdate(const InputState& input)
 void Player::deathUpdate(const InputState& input)
 {
 	deathPos = pos_;				//死んだ場所を残す
-	deathCount_++;					//死亡回数をカウントする
 
 	isAnimLoop_ = false;			//アニメーションのループをするか
 
@@ -474,6 +473,7 @@ void Player::deathUpdate(const InputState& input)
 	}
 
 	if (PModel_->isAnimEnd()) {
+		deathCount_++;					//死亡回数をカウントする
 		deathPersonPostProsessing();
 	}
 
@@ -486,7 +486,7 @@ void Player::deathPersonPostProsessing()
 
 	deadPersonGenerater();			//死体を生成する関数
 
-	deadPlayer_.back()->setAnimEndFrame(animNo_);			//死体に指定アニメーションの最終フレームを設定する
+	deadPerson_.back()->setAnimEndFrame(animNo_);			//死体に指定アニメーションの最終フレームを設定する
 
 	setCollitionInfoByDeathPattern();					//現在のアニメーションによって衝突判定用モデルフレームを設定する
 
@@ -499,20 +499,20 @@ void Player::deathPersonPostProsessing()
 void Player::deadPersonGenerater()
 {
 	//死体の生成
-	deadPlayer_.push_back(make_shared<Model>(PModel_->getModelHandle()));
+	deadPerson_.push_back(make_shared<Model>(PModel_->getModelHandle()));
 	//死体のポジション設定
-	deadPlayer_.back()->setPos(deathPos);
+	deadPerson_.back()->setPos(deathPos);
 	//死体のサイズ設定
-	deadPlayer_.back()->setScale(player_scale);
+	deadPerson_.back()->setScale(player_scale);
 	//死体の回転設定
-	deadPlayer_.back()->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
+	deadPerson_.back()->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
 
 	//死体を数える
 	int deathNum = 0;
-	for (const auto person : deadPlayer_) {
+	for (const auto person : deadPerson_) {
 		deathNum++;
-		if (deathNum > 10) {
-			deadPlayer_.erase(deadPlayer_.begin());		//最大数を超えたら一番古い死体を消す
+		if (deathNum > 3) {
+			deadPerson_.erase(deadPerson_.begin());		//最大数を超えたら一番古い死体を消す
 		}
 	}
 }
@@ -584,10 +584,10 @@ void Player::setCollitionInfoByDeathPattern()
 	//アニメーション番号によって衝突判定用のフレームを変更する
 	switch (static_cast<AnimType>(animNo_)) {
 	case AnimType::death:
-		deadPlayer_.back()->setCollFrame(coll_frame_death);
+		deadPerson_.back()->setCollFrame(coll_frame_death);
 		break;
 	case AnimType::sit:
-		deadPlayer_.back()->setCollFrame(coll_frame_Sit);
+		deadPerson_.back()->setCollFrame(coll_frame_Sit);
 		break;
 	}
 }

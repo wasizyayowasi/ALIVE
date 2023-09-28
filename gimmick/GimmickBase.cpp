@@ -23,7 +23,7 @@ GimmickBase::~GimmickBase()
 }
 
 //XV
-void GimmickBase::update()
+void GimmickBase::update(Player& player)
 {
 }
 

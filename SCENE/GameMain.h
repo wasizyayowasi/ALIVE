@@ -60,7 +60,6 @@ private:
 	std::vector<std::shared_ptr<GimmickBase>> gimmick_;
 	
 	std::vector<std::shared_ptr<Model>> models_;//衝突判定を行う予定のモデルをひとまとめにする配列
-	std::unordered_map<const char*, std::shared_ptr<Model>> models2_;
 
 	void (GameMain::* updateFunc_)(const InputState& input);		//メンバ関数ポインタ
 

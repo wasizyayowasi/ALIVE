@@ -11,9 +11,7 @@ public:
 	Steelyard();
 	virtual ~Steelyard();
 
-	const char* getClassName() { return "Steelyard"; }
-
-	void update();
+	void update(Player& player);
 	void draw();
 
 private:
