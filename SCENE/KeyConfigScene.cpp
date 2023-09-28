@@ -10,11 +10,13 @@
 
 namespace {
 	//key画像の一枚当たりのサイズ
-	constexpr int graph_chip_size = 59;
+	constexpr float graph_chip_size = 59.0f;
+	//画像の隙間サイズ
+	constexpr float graph_gap_size = 10.0f;
 }
 
 //コンストラクタ
-KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):SceneBase(manager),updateFunc_(&KeyConfigScene::selectChangeKeyUpdate), inputState_(input)
+KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):SceneBase(manager),updateFunc_(&KeyConfigScene::selectChangeKeyUpdate),drawFunc_(&KeyConfigScene::keyStateDraw), inputState_(input)
 {
 }
 
@@ -49,37 +51,39 @@ void KeyConfigScene::draw()
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
+	(this->*drawFunc_)();
+	
+	//----------------以降消去予定
+	DrawString(0, 0, "keyConfig",0xffffff);
+	DrawFormatString(0, 16, 0xffffff, "%d", selectNum_);
+}
+
+void KeyConfigScene::keyStateDraw()
+{
 	float x = Game::kScreenWidth / 4;
 	float y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
 	int num = 0;
-	
+
 	int i = 0;
 	for (auto& key : inputState_.inputNameTable_) {
 
-		if (i == selectNum_) {
-			if (!isEditing_) {
-				textColor_ = 0xff0000;
-			}
-			else {
-				textColor_ = 0x00ff00;
-			}
-		}
-		else {
-			textColor_ = 0xffffff;
-		}
+		DrawFormatString(x, y - 8, textColor_, "%s", key.second.c_str());
 
-		DrawFormatString(x, y, textColor_, "%s", key.second.c_str());
-		y += graph_chip_size + 10.0f;
+		y += graph_chip_size + graph_gap_size;
+
+		//inputstate.tempmaptableの半分を超えたら折り返す
 		if (i == inputState_.tempMapTable_.size() / 2) {
 			y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
 			x += Game::kScreenWidth / 4 * 1.2f;
 		}
+
 		i++;
 	}
 
 	x = Game::kScreenWidth / 4 * 1.5f;
 	y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
 	i = 0;
+	int alpha = 150;
 	float graphScale = 1.0f;
 	for (auto& key : inputState_.tempMapTable_) {
 		num = getKeyName(key.second.begin()->id);
@@ -88,20 +92,28 @@ void KeyConfigScene::draw()
 
 		if (i == selectNum_) {
 			graphScale = 1.2f;
+			alpha = 0;
 		}
 		else {
 			graphScale = 1.0f;
+			alpha = 150;
 		}
 
 		Graph::drawRectRotaGraph(x, y, x2 * graph_chip_size, y2 * graph_chip_size, graph_chip_size, graph_chip_size, graphScale, 0.0f, keyTypeHandle_, true, false);
+
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+		DrawBox(x - 240, y - graph_chip_size / 2 - graph_gap_size / 2, x - 240 + Game::kScreenWidth / 4, y + graph_chip_size / 2 + graph_gap_size / 2, 0x000000, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 		y += graph_chip_size + 10;
 		if (i == inputState_.tempMapTable_.size() / 2) {
 			y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
 			x += Game::kScreenWidth / 4 * 1.2f;
 		}
+
 		i++;
 	}
-	
+
 	//TODO:将来的には使わないから消す
 	//一時的に見やすくするため
 	int color = 0xffffff;
@@ -109,19 +121,33 @@ void KeyConfigScene::draw()
 	if (selectNum_ == 15) {
 		color = 0xff0000;
 	}
-	else if(selectNum_ == 16){
+	else if (selectNum_ == 16) {
 		color2 = 0xff0000;
 	}
 	y += 50;
 	DrawString(Game::kScreenWidth / 2 - 16, y, "変更", color);
 	y += 16;
 	DrawString(Game::kScreenWidth / 2 - 32, y, "キャンセル", color2);
+}
 
-	
-	//----------------以降消去予定
-	DrawString(0, 0, "keyConfig",0xffffff);
-	DrawFormatString(0, 16, 0xffffff, "%d", selectNum_);
-	DrawFormatString(0, y + 16, 0xffffff, "%d", aiu);
+void KeyConfigScene::changeKeyPopUpText()
+{
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+	DrawBox(Game::kScreenWidth / 6, Game::kScreenHeight / 5, Game::kScreenWidth / 6 * 5, Game::kScreenHeight / 5 * 4, 0x444444, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	//選択したキーの名前を出力
+	DrawFormatString(Game::kScreenWidth / 6 + graph_chip_size / 2, Game::kScreenHeight / 5 - graph_chip_size / 2, 0xffffff, inputState_.inputNameTable_.find(static_cast<InputType>(selectNum_))->second.c_str());
+
+	//選択したキーのidを取得して画像を分割する
+	int num = getKeyName(inputState_.tempMapTable_.find(static_cast<InputType>(selectNum_))->second.begin()->id);
+	int x = num % 9;
+	int y = num / 9;
+	//選択したキーの画像を出力
+	Graph::drawRectRotaGraph(Game::kScreenWidth / 6 + graph_chip_size * 2, Game::kScreenHeight / 5 - graph_chip_size / 2, x * graph_chip_size, y * graph_chip_size, graph_chip_size, graph_chip_size, 1.0f, 0.0f, keyTypeHandle_, true, false);
+
+	DrawString(Game::kScreenWidth / 2, Game::kScreenHeight / 2, "変更したいキーを入力してください", 0xffffff);
+
 }
 
 //変更したいキーを選択する
@@ -131,6 +157,8 @@ void KeyConfigScene::selectChangeKeyUpdate()
 	auto& configInput = const_cast<InputState&>(inputState_);
 	//現在のキーの数を取得する
 	const int keyNum = static_cast<int>(inputState_.inputNameTable_.size() + 2);
+
+	int lastSelectNum = selectNum_;
 
 	//TODO:まとめる
 	//選択操作
@@ -164,6 +192,7 @@ void KeyConfigScene::selectChangeKeyUpdate()
 	//どのキーを変更するかを仮決定
 	if (inputState_.isTriggered(InputType::next)) {
 		isEditing_ = !isEditing_;
+		drawFunc_ = &KeyConfigScene::changeKeyPopUpText;
 		updateFunc_ = &KeyConfigScene::changeKeyUpdate;
 		return;
 	}
@@ -180,6 +209,11 @@ void KeyConfigScene::selectChangeKeyUpdate()
 //変更したいキーをどのキーに変更するのか
 void KeyConfigScene::changeKeyUpdate()
 {
+	//一フレーム前の入力情報が残っていたらリターンする
+	for (const auto& key : inputState_.lastInput_) {
+		if (key == true) return;
+	}
+
 	//短縮化
 	auto& configInput = const_cast<InputState&>(inputState_);
 
@@ -188,12 +222,6 @@ void KeyConfigScene::changeKeyUpdate()
 		updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
 		isEditing_ = !isEditing_;
 		configInput.undoSelectKey(static_cast<InputType>(selectNum_), InputCategory::keybd);
-		return;
-	}
-
-	if (inputState_.isTriggered(InputType::next)) {
-		updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
-		isEditing_ = !isEditing_;
 		return;
 	}
 
@@ -217,12 +245,18 @@ void KeyConfigScene::changeKeyUpdate()
 	for (int i = 0; i < 256; i++) {
 		if (keyState[i]) {
 			configInput.rewriteInputInfo(currentType, InputCategory::keybd, i);
+			isEditing_ = !isEditing_;
+			updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
+			drawFunc_ = &KeyConfigScene::keyStateDraw;
 			break;
 		}
 	}
 	//パッドの入力を変更する
 	if (padState != 0) {
 		configInput.rewriteInputInfo(currentType, InputCategory::pad, padState);
+		isEditing_ = !isEditing_;
+		updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
+		drawFunc_ = &KeyConfigScene::keyStateDraw;
 	}
 
 }

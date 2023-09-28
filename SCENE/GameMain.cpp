@@ -32,8 +32,7 @@ namespace {
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
-GameMain::GameMain(SceneManager& manager, bool continuation) :
-SceneBase(manager),
+GameMain::GameMain(SceneManager& manager, bool continuation) : SceneBase(manager),
 updateFunc_(&GameMain::fadeInUpdate),
 isContinuation_(continuation)
 {
@@ -130,6 +129,7 @@ void GameMain::normalUpdate(const InputState& input)
 {
 	player_->update(input,models_);
 	camera_->trackingCameraUpdate(input,player_->getPos());
+
 	for (auto& gimmick : gimmick_) {
 		gimmick->update(*player_);
 	}
