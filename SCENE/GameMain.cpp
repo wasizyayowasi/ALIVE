@@ -50,10 +50,18 @@ void GameMain::init()
 	player_ = make_shared<Player>();
 	//broom_ = make_shared<Broom>();
 	//depthOfField_ = make_shared<DepthOfField>();
-	models_.push_back(make_shared<Model>(temp_filepath));
 	enemy_ = make_shared<Enemy>();
-	switch_ = make_shared<Switch>();
-	steelyard_ = make_shared<Steelyard>();
+
+	gimmick_.push_back(make_shared<Switch>());
+	gimmick_.push_back(make_shared<Steelyard>());
+	models_.push_back(make_shared<Model>(temp_filepath));
+
+	models2_["filed"] = make_shared<Model>(temp_filepath);
+
+	for (auto& gimmick : gimmick_) {
+		models2_[gimmick->getClassName()] = gimmick->getModelInfo();
+		models_.push_back(gimmick->getModelInfo());
+	}
 
 	models_[0]->setScale(scale);
 	models_[0]->setCollFrame();
@@ -97,8 +105,10 @@ void GameMain::draw()
 
 	player_->draw();
 	enemy_->draw();
-	switch_->draw();
-	steelyard_->draw();
+	for (auto& gimmick : gimmick_) {
+		gimmick->draw();
+	}
+	
 	//broom_->graphFilterUpdate();
 	//broom_->draw();
 
@@ -123,7 +133,9 @@ void GameMain::normalUpdate(const InputState& input)
 {
 	player_->update(input,models_);
 	camera_->trackingCameraUpdate(input,player_->getPos());
-	switch_->update();
+	for (auto& gimmick : gimmick_) {
+		gimmick->update();
+	}
 	//enemy_->update();
 	//camera_->fixedPointCamera(player_->getPos());
 

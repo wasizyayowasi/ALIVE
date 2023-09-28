@@ -88,8 +88,6 @@ void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>>
 {
 	//移動ベクトルのリセット
 	moveVec_ = { 0.0f,0.0f,0.0f };
-	//移動スピードのリセット
-	movingSpeed_ = 0.0f;
 
 	//プレイヤーのアニメーション更新
 	PModel_->update();
@@ -169,7 +167,6 @@ void Player::idleUpdate(const InputState& input)
 	//メンバ関数ポインタをrunningJumpUpdate、
 	//jumpUpdateのどちらかに変更する
 	if (input.isPressed(InputType::space)) {
-		
 		if (isClim_) {
 			updateFunc_ = &Player::climUpdate;
 			return;
@@ -182,43 +179,15 @@ void Player::idleUpdate(const InputState& input)
 			updateFunc_ = &Player::jumpUpdate;
 			return;
 		}
-		
 	}
 
-	if (input.isPressed(InputType::prev)) {
-		updateFunc_ = &Player::climUpdate;
+	if (input.isTriggered(InputType::death)) {
+		updateFunc_ = &Player::deathUpdate;
+		return;
 	}
 
-	//死亡演出中でなければ
-	if (!isDead_) {
-		changeAnimIdle();
-		movingUpdate(input);
-		death(input);
-	}
-	else {
-		if (PModel_->isAnimEnd()) {
-			//チェックポイントにプレイヤーを帰す
-			pos_ = checkPoint_;
-			//死亡演出が終了したことにする
-			isDead_ = false;
-
-			//死体を生成する関数
-			deadPersonGenerater();
-
-			//死体に指定アニメーションの最終フレームを設定する
-			deadPlayer_.back()->setAnimEndFrame(animNo_);
-			
-			//アニメーション番号によって衝突判定用のフレームを変更する
-			switch (static_cast<AnimType>(animNo_)) {
-			case AnimType::death:
-				deadPlayer_.back()->setCollFrame(coll_frame_death);
-				break;
-			case AnimType::sit:
-				deadPlayer_.back()->setCollFrame(coll_frame_Sit);
-				break;
-			}
-		}
-	}
+	changeAnimIdle();
+	movingUpdate(input);
 
 	//TODO：↓なくしたい
 	{
@@ -236,13 +205,18 @@ void Player::idleUpdate(const InputState& input)
 	
 }
 
-void Player::setSaveData(VECTOR pos,int num, bool isContinue)
+/// <summary>
+/// アニメーションをidleに戻す関数
+/// </summary>
+void Player::changeAnimIdle()
 {
-	checkPoint_ = pos;
-	deathCount_ = num;
-	isContinue_ = isContinue;
+	//待機アニメーションに戻す
+	if (!isMoving_) {
+		animNo_ = animType_[AnimType::idle];
+		isAnimLoop_ = true;
+		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
+	}
 }
-
 
 //HACK:↓汚い、気に食わない
 /// <summary>
@@ -251,39 +225,38 @@ void Player::setSaveData(VECTOR pos,int num, bool isContinue)
 /// <param name="input">外部装置の入力情報を参照する</param>
 void Player::movingUpdate(const InputState& input)
 {
-
+	//キーの押下をブール型に格納
 	bool pressedUp = input.isPressed(InputType::up);
 	bool pressedDown = input.isPressed(InputType::down);
 	bool pressedLeft = input.isPressed(InputType::left);
 	bool pressedRight = input.isPressed(InputType::right);
+	bool pressedShift = input.isPressed(InputType::shift);
 
-	isMoving = false;
-	
+	isMoving_ = false;
+	float movingSpeed = 0.0f;
+
+	if (pressedUp || pressedDown || pressedLeft || pressedRight) {
+		movingSpeed = playerSpeed(pressedShift);
+		isMoving_ = true;
+	}
+
 	//改善しよう
 	{
 		//HACK：汚い、リファクタリング必須
 		if (pressedUp) {
-			movingSpeed_ = playerInfo.walkSpeed;
-			moveVec_.z += movingSpeed_;
-			isMoving = true;
+			moveVec_.z += movingSpeed;
 			targetAngle_ = 180.0f;
 		}
 		if (pressedDown) {
-			movingSpeed_ = playerInfo.walkSpeed;
-			moveVec_.z -= movingSpeed_;
-			isMoving = true;
+			moveVec_.z -= movingSpeed;
 			targetAngle_ = 0.0f;
 		}
 		if (pressedLeft) {
-			movingSpeed_ = playerInfo.walkSpeed;
-			moveVec_.x -= movingSpeed_;
-			isMoving = true;
+			moveVec_.x -= movingSpeed;
 			targetAngle_ = 90.0f;
 		}
 		if (pressedRight) {
-			movingSpeed_ = playerInfo.walkSpeed;
-			moveVec_.x += movingSpeed_;
-			isMoving = true;
+			moveVec_.x += movingSpeed;
 			targetAngle_ = 270.0f;
 		}
 		if (pressedUp && pressedRight) {
@@ -295,29 +268,26 @@ void Player::movingUpdate(const InputState& input)
 		if (pressedDown && pressedLeft) {
 			targetAngle_ = 45.0f;
 		}
-		if (pressedDown &&pressedRight) {
+		if (pressedDown && pressedRight) {
 			targetAngle_ = 315.0f;
-		}
-		if ((pressedUp || pressedDown || pressedLeft || pressedRight) && input.isPressed(InputType::shift)) {
-			movingSpeed_ = playerInfo.runningSpeed;
 		}
 
 		//HACK：もっといいアニメーション番号変更があるはず
 		if (animNo_ != animType_[AnimType::runningJump] && animNo_ != animType_[AnimType::jump]) {
-			if (movingSpeed_ != 0.0f) {
-				if (movingSpeed_ > playerInfo.walkSpeed) {
+			if (movingSpeed != 0.0f) {
+				if (movingSpeed > playerInfo.walkSpeed) {
 					animNo_ = animType_[AnimType::run];
 					isAnimLoop_ = true;
 				}
-				else if (movingSpeed_ <= playerInfo.walkSpeed) {
+				else if (movingSpeed <= playerInfo.walkSpeed) {
 					animNo_ = animType_[AnimType::walk];
 					isAnimLoop_ = true;
 				}
 			}
 		}
-		
+
 		//移動ベクトルを用意する
-		moveVec_ = VScale(VNorm(moveVec_),movingSpeed_);
+		moveVec_ = VScale(VNorm(moveVec_), movingSpeed);
 
 		//回転処理
 		rotationUpdate();
@@ -337,6 +307,73 @@ void Player::movingUpdate(const InputState& input)
 	}
 }
 
+//完成品だから今後いじらなくていいと思う
+/// <summary>
+/// プレイヤーの回転処理を行う関数
+/// </summary>
+void Player::rotationUpdate()
+{
+	//目標の角度から現在の角度を引いて差を出している
+	differenceAngle_ = targetAngle_ - tempAngle_;
+
+	//常にプレイヤーモデルを大周りさせたくないので
+	//181度又は-181度以上の場合、逆回りにしてあげる
+	if (differenceAngle_ >= 180.0f) {
+		differenceAngle_ = targetAngle_ - tempAngle_ - 360.0f;
+	}
+	else if (differenceAngle_ <= -180.0f) {
+		differenceAngle_ = targetAngle_ - tempAngle_ + 360.0f;
+	}
+
+	//滑らかに回転させるため
+	//現在の角度に回転スピードを増減させている
+	if (differenceAngle_ < 0.0f) {
+		rot_.y -= playerInfo.rotSpeed;
+		tempAngle_ -= playerInfo.rotSpeed;
+	}
+	else if (differenceAngle_ > 0.0f) {
+		rot_.y += playerInfo.rotSpeed;
+		tempAngle_ += playerInfo.rotSpeed;
+	}
+
+	//360度、一周したら0度に戻すようにしている
+	if (tempAngle_ == 360.0f || tempAngle_ == -360.0f) {
+		tempAngle_ = 0.0f;
+	}
+	if (rot_.y == 360.0f || rot_.y == -360.0f) {
+		rot_.y = 0.0f;
+	}
+
+	//結果をモデルの回転情報として送る
+	PModel_->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
+}
+
+//オブジェクトを登る
+void Player::climUpdate(const InputState& input)
+{
+	animNo_ = animType_[AnimType::clim];
+	isAnimLoop_ = false;
+
+	PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
+
+	VECTOR localPosition;
+
+	if (PModel_->isAnimEnd()) {
+		localPosition = PModel_->getAnimFrameLocalPosition(animNo_, "mixamorig:LeftToeBase");
+		localPosition = VAdd(localPosition, PModel_->getAnimFrameLocalPosition(animNo_, "mixamorig:RightToeBase"));
+		localPosition.x = localPosition.x / 2;
+		localPosition.y = localPosition.y / 2;
+		localPosition.z = localPosition.z / 2;
+		temp_ = localPosition;
+		pos_ = localPosition;
+		PModel_->setPos(pos_);
+		animNo_ = animType_[AnimType::stand];
+		isAnimLoop_ = false;
+		PModel_->setAnimation(animNo_, isAnimLoop_, true);
+		updateFunc_ = &Player::standUpdate;
+	}
+
+}
 
 //HACK:↓汚い、気に食わない
 /// <summary>
@@ -389,7 +426,7 @@ void Player::runningJumpUpdate(const InputState& input)
 	movingUpdate(input);
 
 	//アニメーション変更と脚力をジャンプベクトルに足す
-	if (!jump_.isJump&& animNo_ != animType_[AnimType::runningJump]) {
+	if (!jump_.isJump && animNo_ != animType_[AnimType::runningJump]) {
 		animNo_ = animType_[AnimType::runningJump];
 		jump_.jumpVec += playerInfo.runningJumpPower;
 		isAnimLoop_ = false;
@@ -423,79 +460,37 @@ void Player::runningJumpUpdate(const InputState& input)
 /// プレイヤーの死体に与える情報を作る関数
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
-void Player::death(const InputState& input)
+void Player::deathUpdate(const InputState& input)
 {
-	//死亡
-	{
-		if (input.isTriggered(InputType::death)) {
-			deathPos = pos_;				//死んだ場所を残す
-			deathCount_++;
+	deathPos = pos_;				//死んだ場所を残す
+	deathCount_++;					//死亡回数をカウントする
 
-			isAnimLoop_ = false;			
-			isDead_ = true;
+	isAnimLoop_ = false;			//アニメーションのループをするか
 
-			//座るアニメーション以外だったら死ぬアニメーションに変える
-			if (animNo_ != animType_[AnimType::sit]) {
-				animNo_ = animType_[AnimType::death];
-				PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
-			}
-		}
-	}
-}
-
-/// <summary>
-/// アニメーションをidleに戻す関数
-/// </summary>
-void Player::changeAnimIdle()
-{
-	//待機アニメーションに戻す
-	if (!isMoving) {
-		animNo_ = animType_[AnimType::idle];
-		isAnimLoop_ = true;
+	//座るアニメーション以外だったら死ぬアニメーションに変える
+	if (animNo_ != animType_[AnimType::sit]) {
+		animNo_ = animType_[AnimType::death];
 		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 	}
+
+	if (PModel_->isAnimEnd()) {
+		deathPersonPostProsessing();
+	}
+
 }
 
-//完成品だから今後いじらなくていいと思う
-
-/// <summary>
-/// プレイヤーの回転処理を行う関数
-/// </summary>
-void Player::rotationUpdate()
+//死体の後処理
+void Player::deathPersonPostProsessing()
 {
-	//目標の角度から現在の角度を引いて差を出している
-	differenceAngle_ = targetAngle_ - tempAngle_;
+	pos_ = checkPoint_;				//チェックポイントにプレイヤーを帰す
 
-	//常にプレイヤーモデルを大周りさせたくないので
-	//181度又は-181度以上の場合、逆回りにしてあげる
-	if (differenceAngle_ >= 180.0f) {
-		differenceAngle_ = targetAngle_ - tempAngle_ - 360.0f;
-	}
-	else if (differenceAngle_ <= -180.0f) {
-		differenceAngle_ = targetAngle_ - tempAngle_ + 360.0f;
-	}
+	deadPersonGenerater();			//死体を生成する関数
 
-	//滑らかに回転させるため
-	//現在の角度に回転スピードを増減させている
-	if (differenceAngle_ < 0.0f) {
-		rot_.y -= playerInfo.rotSpeed;
-		tempAngle_ -= playerInfo.rotSpeed;
-	}
-	else if(differenceAngle_ > 0.0f){
-		rot_.y += playerInfo.rotSpeed;
-		tempAngle_ += playerInfo.rotSpeed;
-	}
+	deadPlayer_.back()->setAnimEndFrame(animNo_);			//死体に指定アニメーションの最終フレームを設定する
 
-	//360度、一周したら0度に戻すようにしている
-	if (tempAngle_ == 360.0f || tempAngle_ == -360.0f) {
-		tempAngle_ = 0.0f;
-	}
-	if (rot_.y == 360.0f || rot_.y == -360.0f) {
-		rot_.y = 0.0f;
-	}
+	setCollitionInfoByDeathPattern();					//現在のアニメーションによって衝突判定用モデルフレームを設定する
 
-	//結果をモデルの回転情報として送る
-	PModel_->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
+	updateFunc_ = &Player::idleUpdate;
 }
 
 /// <summary>
@@ -511,7 +506,7 @@ void Player::deadPersonGenerater()
 	deadPlayer_.back()->setScale(player_scale);
 	//死体の回転設定
 	deadPlayer_.back()->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
-	
+
 	//死体を数える
 	int deathNum = 0;
 	for (const auto person : deadPlayer_) {
@@ -552,50 +547,55 @@ void Player::sitUpdate(const InputState& input)
 
 	//死ぬコマンド
 	if (input.isTriggered(InputType::death)) {
-		death(input);
+		deathUpdate(input);
 		isSitting_ = false;
 		updateFunc_ = &Player::idleUpdate;
 		return;
 	}
 
 	//立ち上がるためのコマンド
-	if(input.isTriggered(InputType::ctrl)){
+	if (input.isTriggered(InputType::ctrl)) {
 		animNo_ = animType_[AnimType::situpToIdle];
 		isAnimLoop_ = false;
 		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
 	}
 }
 
-void Player::climUpdate(const InputState& input)
-{
-	animNo_ = animType_[AnimType::clim];
-	isAnimLoop_ = false;
-
-	PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
-
-	VECTOR localPosition;
-
-	if (PModel_->isAnimEnd()) {
-		localPosition = PModel_->getAnimFrameLocalPosition(animNo_, "mixamorig:LeftToeBase");
-		localPosition = VAdd(localPosition,PModel_->getAnimFrameLocalPosition(animNo_, "mixamorig:RightToeBase"));
-		localPosition.x = localPosition.x / 2;
-		localPosition.y = localPosition.y / 2;
-		localPosition.z = localPosition.z / 2;
-		temp_ = localPosition;
-		pos_ = localPosition;
-		PModel_->setPos(pos_);
-		animNo_ = animType_[AnimType::stand];
-		isAnimLoop_ = false;
-		PModel_->setAnimation(animNo_, isAnimLoop_, true);
-		updateFunc_ = &Player::standUpdate;
-	}
-
-}
-
+//立ち上がる処理
 void Player::standUpdate(const InputState& input)
 {
 	if (PModel_->isAnimEnd()) {
 		updateFunc_ = &Player::idleUpdate;
 		isClim_ = false;
 	}
+}
+
+//セーブデータ
+void Player::setSaveData(VECTOR pos,int num, bool isContinue)
+{
+	checkPoint_ = pos;
+	deathCount_ = num;
+	isContinue_ = isContinue;
+}
+
+//死体の衝突判定の設定
+void Player::setCollitionInfoByDeathPattern()
+{
+	//アニメーション番号によって衝突判定用のフレームを変更する
+	switch (static_cast<AnimType>(animNo_)) {
+	case AnimType::death:
+		deadPlayer_.back()->setCollFrame(coll_frame_death);
+		break;
+	case AnimType::sit:
+		deadPlayer_.back()->setCollFrame(coll_frame_Sit);
+		break;
+	}
+}
+
+//プレイヤーの速度設定
+float Player::playerSpeed(bool pressedShift)
+{
+	if (pressedShift) return playerInfo.runningSpeed;
+	
+	return playerInfo.walkSpeed;
 }

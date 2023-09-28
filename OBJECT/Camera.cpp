@@ -40,6 +40,7 @@ Camera::~Camera()
 {
 }
 
+//プレイヤーを追跡するカメラの更新
 void Camera::trackingCameraUpdate(const InputState& input,VECTOR playerPos)
 {
 	
@@ -63,6 +64,7 @@ void Camera::trackingCameraUpdate(const InputState& input,VECTOR playerPos)
 
 }
 
+//定点カメラの更新
 void Camera::fixedPointCamera(VECTOR playerPos)
 {
 	//一定範囲を出たらカメラが次の場所へヌルっと動く
@@ -100,6 +102,7 @@ void Camera::fixedPointCamera(VECTOR playerPos)
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
 }
 
+//カメラの注視点を逸らす
 void Camera::changeOfFocus(const InputState& input)
 {
 	if (input.isPressed(InputType::upArrow)) {
@@ -116,6 +119,7 @@ void Camera::changeOfFocus(const InputState& input)
 	}
 }
 
+//プレイヤーを追跡
 void Camera::tracking(VECTOR playerPos)
 {
 

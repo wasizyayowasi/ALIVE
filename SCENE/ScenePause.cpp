@@ -31,6 +31,7 @@ void ScenePause::end()
 
 void ScenePause::update(const InputState& input)
 {
+	//TODO:‚Ü‚Æ‚ß‚é
 	//€–Ú‘I‘ğ
 	{
 		if (input.isTriggered(InputType::up)) {

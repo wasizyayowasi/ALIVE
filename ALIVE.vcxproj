@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="scene\TitlemenuScene.cpp" />
+    <ClCompile Include="util\Util.cpp" />
     <ClCompile Include="util\UIItemManager.cpp" />
     <ClCompile Include="util\UIItem.cpp" />
     <ClCompile Include="util\FontsManager.cpp" />
@@ -177,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scene\TitlemenuScene.h" />
+    <ClInclude Include="Util.h" />
     <ClInclude Include="util\UIItemManager.h" />
     <ClInclude Include="util\UIItem.h" />
     <ClInclude Include="util\FontsManager.h" />

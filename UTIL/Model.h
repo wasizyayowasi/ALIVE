@@ -46,7 +46,7 @@ public:
 	/// アニメーションの再生時間を取得する
 	/// </summary>
 	/// <returns>一アニメーションの再生時間</returns>
-	int getAnimTotalTime()const { return animNext_.totalTime; }
+	float getAnimTotalTime()const { return animNext_.totalTime; }
 
 	/// <summary>
 	/// ポジションを設定する

@@ -10,10 +10,29 @@ public:
 	Camera();
 	virtual ~Camera();
 
+	/// <summary>
+	/// プレイヤーを追跡するカメラの更新
+	/// </summary>
+	/// <param name="input">入力情報</param>
+	/// <param name="playerPos">プレイヤーのポジション</param>
 	void trackingCameraUpdate(const InputState& input,VECTOR playerPos);
+
+	/// <summary>
+	/// 定点カメラ
+	/// </summary>
+	/// <param name="playerPos">プレイヤーのポジション</param>
 	void fixedPointCamera(VECTOR playerPos);
 
-	void changeOfFocus(const InputState& input);							//カメラのターゲットの位置を逸らす
+	/// <summary>
+	/// カメラの注視点を逸らす
+	/// </summary>
+	/// <param name="input">入力情報</param>
+	void changeOfFocus(const InputState& input);
+
+	/// <summary>
+	/// プレイヤーの追跡
+	/// </summary>
+	/// <param name="playerPos">プレイヤーのポジション</param>
 	void tracking(VECTOR playerPos);
 
 	VECTOR getPos() { return cameraPos_; }

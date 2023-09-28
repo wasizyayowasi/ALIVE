@@ -4,6 +4,7 @@
 
 class Model;
 class Switch;
+class Steelyard;
 class Player;
 
 constexpr int max_hit_coll = 2048;
@@ -11,6 +12,7 @@ constexpr int max_hit_coll = 2048;
 class GimmickBase
 {
 	friend Switch;
+	friend Steelyard;
 public:
 	//ファイルパスでモデルを作成するコンストラクタ
 	GimmickBase(const char* filename);
@@ -19,10 +21,14 @@ public:
 	//デストラクタ
 	virtual ~GimmickBase();
 
+	virtual const char* getClassName() = 0;
+
 	//更新
 	virtual void update();
 	//描画
 	void draw();
+
+	std::shared_ptr<Model> getModelInfo() { return model_; }
 
 private:
 

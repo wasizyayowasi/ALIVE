@@ -132,6 +132,7 @@ void KeyConfigScene::selectChangeKeyUpdate()
 	//Œ»İ‚ÌƒL[‚Ì”‚ğæ“¾‚·‚é
 	const int keyNum = static_cast<int>(inputState_.inputNameTable_.size() + 2);
 
+	//TODO:‚Ü‚Æ‚ß‚é
 	//‘I‘ğ‘€ì
 	{
 		if (inputState_.isTriggered(InputType::up)) {

@@ -8,6 +8,8 @@ public:
 	Switch();
 	virtual ~Switch();
 
+	const char* getClassName() { return "Switch"; }
+
 	void update();
 	void draw();
 

@@ -5,18 +5,11 @@ namespace {
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
-Steelyard::Steelyard()
+Steelyard::Steelyard():GimmickBase("data/model/steelyard.mv1")
 {
-	model_.push_back(std::make_shared<Model>("data/model/steelyard.mv1"));
-	model_.push_back(std::make_shared<Model>(model_.front()->getModelHandle()));
-
-	float x = 0;
-	for (auto& model : model_) {
-		model->setScale(scale);
-		model->setPos({ 1550 + x,60,0 });
-		x += 300;
-	}
-	
+	model_->setScale(scale);
+	model_->setPos({ 1845,0,0 });
+	model_->setCollFrame();
 }
 
 Steelyard::~Steelyard()
@@ -30,7 +23,4 @@ void Steelyard::update()
 
 void Steelyard::draw()
 {
-	for (auto& model : model_) {
-		model->draw();
-	}
 }

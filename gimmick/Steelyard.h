@@ -1,22 +1,22 @@
 #pragma once
-//#include "GimmickBase.h"
+#include "GimmickBase.h"
 #include <memory>
 #include <vector>
 
 class Model;
 
-class Steelyard// : public GimmickBase
+class Steelyard : public GimmickBase
 {
 public:
 	Steelyard();
 	virtual ~Steelyard();
 
+	const char* getClassName() { return "Steelyard"; }
+
 	void update();
 	void draw();
 
 private:
-
-	std::vector<std::shared_ptr<Model>> model_;
 
 };
 

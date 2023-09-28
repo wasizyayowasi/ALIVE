@@ -62,15 +62,17 @@ public:
 
 private:
 
-	int objectHeightY = 0;		//衝突したオブジェクトの高さを保管する
+	float objectHeightY = 0;		//衝突したオブジェクトの高さを保管する
 
 	bool isGoUpStep_ = false;	//段差を上ることが出来る
 
 	VECTOR oldPos;				//現在のプレイヤーの座標
 	VECTOR nowPos;				//プレイヤーの移動量と現在の座標を足して結果
-	int i, j, k;
-	int hitWallNum;				//壁と衝突したポリゴンの数
-	int hitFloorNum;			//床と衝突したポリゴンの数
+	int i = 0;
+	int	j = 0;
+	int	k = 0;
+	int hitWallNum = 0;				//壁と衝突したポリゴンの数
+	int hitFloorNum = 0;			//床と衝突したポリゴンの数
 	bool moveFlag = false;		//現在移動しているかのフラグ
 	bool hitFlag = false;		//衝突したかのフラグ
 

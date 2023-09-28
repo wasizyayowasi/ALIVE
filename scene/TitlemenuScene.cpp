@@ -45,6 +45,7 @@ void TitlemenuScene::end()
 
 void TitlemenuScene::update(const InputState& input)
 {
+	//TODO:‚Ü‚Æ‚ß‚é
 	if (input.isTriggered(InputType::up)) {
 		selectNum_ = (max)(selectNum_ - 1, 0);
 	}

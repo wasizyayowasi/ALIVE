@@ -63,49 +63,73 @@ public:
 
 	VECTOR getMoveVec() { return moveVec_; }
 
-	void idleUpdate(const InputState& input);
-
 	void setSaveData(VECTOR pos, int num, bool isContinue);
 	int getDeathNum() {return deathCount_;	}
 
 private:
-	//移動処理
-	void movingUpdate(const InputState& input);
-	//ジャンプ処理
-	void jumpUpdate(const InputState& input);
-	//走りジャンプ処理
-	void runningJumpUpdate(const InputState& input);
-	//死亡処理
-	void death(const InputState& input);
+	//通常更新
+	void idleUpdate(const InputState& input);
+
 	//待機処理
 	void changeAnimIdle();
+
+	//移動処理
+	void movingUpdate(const InputState& input);
+
 	//回転処理
 	void rotationUpdate();
-	//死人生成
-	void deadPersonGenerater();
-	//座る
-	void sitUpdate(const InputState& input);
+
 	//オブジェクトを登る
 	void climUpdate(const InputState& input);
+
+	//ジャンプ処理
+	void jumpUpdate(const InputState& input);
+
+	//走りジャンプ処理
+	void runningJumpUpdate(const InputState& input);
+
+	//死亡処理
+	void deathUpdate(const InputState& input);
+
+	//死体の後処理
+	void deathPersonPostProsessing();
+
+	//死人生成
+	void deadPersonGenerater();
+
+	//座る
+	void sitUpdate(const InputState& input);
+
 	//立ち上がる
 	void standUpdate(const InputState& input);
 
 private:
 
-	int temp = 0;
+	/// <summary>
+	/// 死亡パターン別、衝突情報の設定
+	/// </summary>
+	void setCollitionInfoByDeathPattern();
+
+	/// <summary>
+	/// プレイヤーの移動速度を設定する
+	/// </summary>
+	/// <returns>float型の移動速度</returns>
+	float playerSpeed(bool pressedShift);
+
+private:
+
+	float temp = 0;
 	float tempGravity = 0.0f;
 
 	int deathCount_ = 0;
 	int animNo_ = 0;						//現在のアニメーション番号
 	
 
-	float movingSpeed_ = 0.0f;				//移動速度
 	float targetAngle_ = 0.0f;				//回転
 	float differenceAngle_ = 0.0f;			//目標の角度と現在の角度の差
 	float tempAngle_ = 0.0f;
 
-	bool isMoving = false;					//移動中か
-	bool isDead_ = false;					//死んでいるか
+	bool isMoving_ = false;					//移動中か
 	bool isSitting_ = false;				//座っているか
 	bool isAnimLoop_ = true;				//アニメーションをループさせるか
 	bool isClim_ = false;

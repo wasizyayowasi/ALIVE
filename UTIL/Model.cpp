@@ -172,7 +172,7 @@ bool Model::isAnimEnd()
 void Model::setAnimEndFrame(int animNo)
 {
 	int momentAnimNo = MV1AttachAnim(modelHandle_, animNo, -1, false);
-	int animEndFrame = MV1GetAttachAnimTotalTime(modelHandle_, momentAnimNo);
+	float animEndFrame = MV1GetAttachAnimTotalTime(modelHandle_, momentAnimNo);
 	MV1SetAttachAnimTime(modelHandle_, momentAnimNo, animEndFrame - 1);
 }
 
