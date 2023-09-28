@@ -53,7 +53,7 @@ void TitlemenuScene::update(const InputState& input)
 		selectNum_ = (min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
 	}
 
-	if (input.isTriggered(InputType::next)) {
+	if (input.isTriggered(InputType::space)) {
 		sceneChange();
 	}
 

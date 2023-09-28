@@ -78,7 +78,7 @@ InputState::InputState()
 	inputNameTable_[InputType::downArrow] = "‰º–îˆó";
 	inputNameTable_[InputType::leftArrow] = "¶–îˆó";
 	inputNameTable_[InputType::rightArrow] = "‰E–îˆó";
-	inputNameTable_[InputType::space] = "space";
+	inputNameTable_[InputType::space] = "Œˆ’è/ƒWƒƒƒ“ƒv";
 	inputNameTable_[InputType::death] = "€–S";
 	inputNameTable_[InputType::shift] = "shift";
 	inputNameTable_[InputType::ctrl] = "ctrl";

@@ -76,10 +76,14 @@ void GameMain::init()
 	SoundManager::getInstance().set3DSoundInfo(VGet(575, 120, -60), 1000, "cafe");
 	//仮でcafeという音楽を流している
 	SoundManager::getInstance().play("cafe");
+
+	makeScreenHandle_ = MakeScreen(Game::kScreenWidth, Game::kScreenHeight, true);
+
 }
 
 void GameMain::end()
 {
+	DeleteGraph(makeScreenHandle_);
 }
 
 //更新
@@ -91,7 +95,6 @@ void GameMain::update(const InputState& input)
 //描画
 void GameMain::draw()
 {
-
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
 
@@ -145,6 +148,9 @@ void GameMain::normalUpdate(const InputState& input)
 	if (input.isTriggered(InputType::pause)) {
 		manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
+
+	
+
 }
 
 //TODO：別のフェードインが出来次第消去

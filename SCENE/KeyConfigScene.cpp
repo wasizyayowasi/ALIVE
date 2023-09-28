@@ -27,6 +27,7 @@ KeyConfigScene::~KeyConfigScene()
 
 void KeyConfigScene::init()
 {
+	makeScreenHandle_ = MakeScreen(Game::kScreenWidth, Game::kScreenHeight, true);
 	keyTypeHandle_ = Graph::loadGraph("data/graph/key2.png");
 }
 
@@ -35,6 +36,7 @@ void KeyConfigScene::end()
 	//現在のキー入力情報を外部データとして書き出す
 	//inputState_.savekeyInfo();
 	inputState_.savekeyInfo2();
+	DeleteGraph(makeScreenHandle_);
 	DeleteGraph(keyTypeHandle_);
 }
 
@@ -51,6 +53,12 @@ void KeyConfigScene::draw()
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
+	//ガウス処理を画像に施すか否か
+	if (drawFunc_ == &KeyConfigScene::changeKeyPopUpText) {
+		GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 16, 50);
+	}
+
+	DrawGraph(0, 0, makeScreenHandle_, true);
 	(this->*drawFunc_)();
 	
 	//----------------以降消去予定
@@ -60,6 +68,9 @@ void KeyConfigScene::draw()
 
 void KeyConfigScene::keyStateDraw()
 {
+	SetDrawScreen(makeScreenHandle_);
+	ClearDrawScreen();
+
 	float x = Game::kScreenWidth / 4;
 	float y = Game::kScreenHeight / 2 - (graph_chip_size * 4 + 30.0f);
 	int num = 0;
@@ -128,6 +139,8 @@ void KeyConfigScene::keyStateDraw()
 	DrawString(Game::kScreenWidth / 2 - 16, y, "変更", color);
 	y += 16;
 	DrawString(Game::kScreenWidth / 2 - 32, y, "キャンセル", color2);
+
+	SetDrawScreen(DX_SCREEN_BACK);
 }
 
 void KeyConfigScene::changeKeyPopUpText()
@@ -173,7 +186,7 @@ void KeyConfigScene::selectChangeKeyUpdate()
 
 	//キーの変更を保存する
 	if (selectNum_ == inputState_.inputNameTable_.size()) {
-		if (inputState_.isTriggered(InputType::next)) {
+		if (inputState_.isTriggered(InputType::space)) {
 			configInput.commitChangedInputInfo();		//仮のキー情報を実際に参照しているキー情報に代入する
 			manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<PopUpTextScene>(manager_)));		//シーンをポップアップテキストを描画するシーンに変更する
 			return;
@@ -182,7 +195,7 @@ void KeyConfigScene::selectChangeKeyUpdate()
 
 	//仮キー情報を消去してポーズシーンに戻る
 	if (selectNum_ == inputState_.inputNameTable_.size() + 1) {
-		if (inputState_.isTriggered(InputType::next)) {
+		if (inputState_.isTriggered(InputType::space)) {
 			configInput.resetInputInfo();
 			manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 			return;
@@ -190,7 +203,7 @@ void KeyConfigScene::selectChangeKeyUpdate()
 	}
 	
 	//どのキーを変更するかを仮決定
-	if (inputState_.isTriggered(InputType::next)) {
+	if (inputState_.isTriggered(InputType::space)) {
 		isEditing_ = !isEditing_;
 		drawFunc_ = &KeyConfigScene::changeKeyPopUpText;
 		updateFunc_ = &KeyConfigScene::changeKeyUpdate;
@@ -220,6 +233,7 @@ void KeyConfigScene::changeKeyUpdate()
 	//メンバ関数ポインタを変更するキーを選択する関数に変更する
 	if (inputState_.isTriggered(InputType::prev)) {
 		updateFunc_ = &KeyConfigScene::selectChangeKeyUpdate;
+		drawFunc_ = &KeyConfigScene::keyStateDraw;
 		isEditing_ = !isEditing_;
 		configInput.undoSelectKey(static_cast<InputType>(selectNum_), InputCategory::keybd);
 		return;

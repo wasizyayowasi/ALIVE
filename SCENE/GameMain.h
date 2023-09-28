@@ -35,6 +35,7 @@ public:
 
 private:
 
+	int makeScreenHandle_ = -1;				//makeScreen用ハンドル
 	int totalDeathNum_ = 0;					//ゲーム開始からの総死亡数
 
 	bool isContinuation_ = false;			//続きからか初めからか
