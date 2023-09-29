@@ -79,9 +79,9 @@ private:
 
 	//モデルとの当たり判定用メソッド
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
-	MV1_COLL_RESULT_POLY* wallHitDim_[max_hit_coll];
-	MV1_COLL_RESULT_POLY* floorHitDim_[max_hit_coll];
-	MV1_COLL_RESULT_POLY* hitPoly;
-	HITRESULT_LINE hitLineResult;
+	MV1_COLL_RESULT_POLY* wallHitDim_[max_hit_coll] = {};
+	MV1_COLL_RESULT_POLY* floorHitDim_[max_hit_coll] = {};
+	MV1_COLL_RESULT_POLY* hitPoly = {};
+	HITRESULT_LINE hitLineResult = {};
 };
 

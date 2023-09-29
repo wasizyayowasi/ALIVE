@@ -26,6 +26,8 @@ void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR move
 		hitDim_.push_back(MV1CollCheck_Sphere(models[i]->getModelHandle(), models[i]->getColFrameIndex(), oldPos, collition_radius + VSize(moveVec)));
 	}*/
 
+//	models
+
 	for (auto& model : models) {
 		MV1RefreshCollInfo(model->getModelHandle(), model->getColFrameIndex());
 		hitDim_.push_back(MV1CollCheck_Sphere(model->getModelHandle(), model->getColFrameIndex(), oldPos, collition_radius + VSize(moveVec)));
