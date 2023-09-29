@@ -43,7 +43,7 @@ void ScenePause::update(const InputState& input)
 	}
 	
 
-	if (input.isTriggered(InputType::next)) {
+	if (input.isTriggered(InputType::space)) {
 		 switch(selectionNum_) {
 		//サウンドセッティングへの遷移
 		 case 0:

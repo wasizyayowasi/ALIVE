@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="object\cube.cpp" />
+    <ClCompile Include="object\CarryObjectBase.cpp" />
     <ClCompile Include="scene\TitlemenuScene.cpp" />
     <ClCompile Include="util\Util.cpp" />
     <ClCompile Include="util\UIItemManager.cpp" />
@@ -177,6 +179,8 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="object\cube.h" />
+    <ClInclude Include="object\CarryObjectBase.h" />
     <ClInclude Include="scene\TitlemenuScene.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="util\UIItemManager.h" />

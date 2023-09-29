@@ -48,7 +48,7 @@ void GameEnd::fadeInUpdate(const InputState& input)
 
 void GameEnd::normalUpdate(const InputState& input)
 {
-	if (input.isTriggered(InputType::next)) {
+	if (input.isTriggered(InputType::space)) {
 		updateFunc_ = &GameEnd::fadeOutUpdate;
 	}
 }

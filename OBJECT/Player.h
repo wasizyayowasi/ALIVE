@@ -1,7 +1,7 @@
 #pragma once
 #include "DxLib.h"
 //#include "CharacterBase.h"
-#include <vector>
+#include <list>
 #include <unordered_map>
 #include <memory>
 
@@ -29,6 +29,8 @@ enum class AnimType {
 	sit,			//座っている
 	clim,			//登る
 	stand,			//立ち上がる
+	carry,			//運ぶ
+	carryWalking,	//運びながら歩く
 	max
 };
 
@@ -52,7 +54,7 @@ public:
 
 	void init();
 
-	void update(const InputState& input, std::vector<std::shared_ptr<Model>> models);
+	void update(const InputState& input, std::list<std::shared_ptr<Model>> models);
 	void draw();
 
 	VECTOR getPos() { return pos_; }
@@ -65,7 +67,7 @@ public:
 
 	void setSaveData(VECTOR pos, int num, bool isContinue);
 	int getDeathNum() {return deathCount_;	}
-	std::vector<std::shared_ptr<Model>> getDeadPerson() { return deadPerson_; }
+	std::list<std::shared_ptr<Model>> getDeadPerson() { return deadPerson_; }
 private:
 	//通常更新
 	void idleUpdate(const InputState& input);
@@ -102,6 +104,9 @@ private:
 
 	//立ち上がる
 	void standUpdate(const InputState& input);
+
+	//持ち運ぶ
+	void carryObject();
 
 private:
 
@@ -149,7 +154,7 @@ private:
 
 	std::shared_ptr<Model> PModel_;								//モデルクラスのポインタ
 	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
-	std::vector<std::shared_ptr<Model>> deadPerson_;			//死体を保存するため
+	std::list<std::shared_ptr<Model>> deadPerson_;			//死体を保存するため
 
 	std::unordered_map<AnimType, int> animType_;				
 

@@ -24,8 +24,14 @@ public:
 	//描画
 	void draw();
 
+	//現在のkey入力情報を描画
 	void keyStateDraw();
+	//keyの名前を描画
+	void keyNameDraw();
+	//keyの画像を描画
+	void keyGraphDraw();
 
+	//変更したいkeyを入力させるためのポップアップ描画
 	void changeKeyPopUpText();
 
 	//どの入力装置のキーを変更するかを選択する
@@ -38,7 +44,9 @@ public:
 
 private:
 
-	int aiu = 1;
+	int fontHandle_ = -1;
+
+	int makeScreenHandle_ = -1;
 
 	int keyTypeHandle_ = -1;	//keyTypeを描画するためのグラフを受け取るためのhandle
 

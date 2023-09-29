@@ -7,22 +7,21 @@
 
 enum class InputType
 {
-	next,			/// 次へ行くボタン
-	prev,			/// 前に戻るボタン
-	pause,			/// ポーズボタン
-	up,				///上
-	down,			///下
-	left,			///左
-	right,			///右
-	upArrow,		///上
-	downArrow,		///下
-	leftArrow,		///左
-	rightArrow,		///右
-	space,			///space
+	pause,			// ポーズボタン
+	up,				//上
+	down,			//下
+	left,			//左
+	right,			//右
+	upArrow,		//上
+	downArrow,		//下
+	leftArrow,		//左
+	rightArrow,		//右
+	space,			//space
 	death,			//死亡入力
 	shift,			//shift
-	ctrl,			///ctrl
-	max,			///最大入力インデックス
+	ctrl,			//ctrl
+	carry,			//運ぶ
+	max,			//最大入力インデックス
 };
 
 enum class InputCategory {

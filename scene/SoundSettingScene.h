@@ -18,8 +18,12 @@ public:
 
 private:
 
-	float volumeBGM_ = 0.0f;
-	float volumeSE_ = 0.0f;
+	int barGraph_ = -1;
+	int afterProcessingBarGraph_ = -1;
+	int pictogramGraph_ = -1;
+
+	int volumeBGM_ = 0;
+	int volumeSE_ = 0;
 
 };
 

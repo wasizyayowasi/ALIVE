@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include <memory>
 #include <vector>
+#include <list>
 #include <deque>
 
 class Player;
@@ -24,7 +25,7 @@ public:
 	/// <param name="player">プレイヤーを参照</param>
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="models">プレイヤーと衝突判定を行うモデル</param>
-	void checkCollisionPersonalArea(Player& player,VECTOR moveVec, std::vector<std::shared_ptr<Model>> models);
+	void checkCollisionPersonalArea(Player& player,VECTOR moveVec, std::list<std::shared_ptr<Model>> models);
 
 	/// <summary>
 	/// 衝突したモデルのポリゴンが壁かを判断する
@@ -52,7 +53,7 @@ public:
 	/// <param name="playerHeight">プレイヤーの高さ</param>
 	/// <param name="isJump">プレイヤーのジャンプフラグ</param>
 	/// <param name="jumpVec">プレイヤーのジャンプベクトル</param>
-	void checkCollision(Player& player, VECTOR moveVec, std::vector<std::shared_ptr<Model>> model,float playerHeight,bool isJump,float jumpVec);
+	void checkCollision(Player& player, VECTOR moveVec, std::list<std::shared_ptr<Model>> model,float playerHeight,bool isJump,float jumpVec);
 
 	/// <summary>
 	/// 衝突したオブジェクトが乗り越えられるか判断する
@@ -77,7 +78,7 @@ private:
 	bool hitFlag = false;		//衝突したかのフラグ
 
 	//モデルとの当たり判定用メソッド
-	std::vector<MV1_COLL_RESULT_POLY_DIM> hitDim_;
+	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 	MV1_COLL_RESULT_POLY* wallHitDim_[max_hit_coll];
 	MV1_COLL_RESULT_POLY* floorHitDim_[max_hit_coll];
 	MV1_COLL_RESULT_POLY* hitPoly;

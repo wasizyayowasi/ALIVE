@@ -14,16 +14,21 @@ CheckCollisionModel::~CheckCollisionModel()
 {
 }
 
-void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR moveVec, std::vector<std::shared_ptr<Model>> models)
+void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR moveVec, std::list<std::shared_ptr<Model>> models)
 {
 	//更新前のポジションを取得する
 	oldPos = player.getPos();
 	//更新後のポジションを取得する
 	nowPos = VAdd(player.getPos(), moveVec);
 	//モデルと球の当たり判定
-	for (int i = 0; i < models.size();i++) {
+	/*for (int i = 0; i < models.size();i++) {
 		MV1RefreshCollInfo(models[i]->getModelHandle(), models[i]->getColFrameIndex());
 		hitDim_.push_back(MV1CollCheck_Sphere(models[i]->getModelHandle(), models[i]->getColFrameIndex(), oldPos, collition_radius + VSize(moveVec)));
+	}*/
+
+	for (auto& model : models) {
+		MV1RefreshCollInfo(model->getModelHandle(), model->getColFrameIndex());
+		hitDim_.push_back(MV1CollCheck_Sphere(model->getModelHandle(), model->getColFrameIndex(), oldPos, collition_radius + VSize(moveVec)));
 	}
 	
 
@@ -198,7 +203,7 @@ void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,boo
 
 }
 
-void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::vector<std::shared_ptr<Model>> model, float playerHeight, bool isJump, float jumpVec)
+void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::list<std::shared_ptr<Model>> model, float playerHeight, bool isJump, float jumpVec)
 {
 	//プレイヤーから一定範囲の衝突判定をとる
 	checkCollisionPersonalArea(player,moveVec,model);
@@ -217,7 +222,7 @@ void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::ve
 		MV1CollResultPolyDimTerminate(hit);
 	}
 
-	hitDim_.erase(hitDim_.begin(),hitDim_.end());
+	hitDim_.clear();
 }
 
 void CheckCollisionModel::checkStepDifference(Player& player, float playerHeight)

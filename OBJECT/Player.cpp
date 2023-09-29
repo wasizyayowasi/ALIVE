@@ -32,6 +32,9 @@ using namespace std;
 
 Player::Player():updateFunc_(&Player::idleUpdate)
 {
+	//ジャンプ情報の初期
+	jump_.isJump = false;
+	jump_.jumpVec = 0.0f;
 }
 
 /// <summary>
@@ -72,10 +75,6 @@ void Player::init()
 	checkCollisionModel_ = make_shared<CheckCollisionModel>();
 	//コリジョンフレームの設定
 	PModel_->setCollFrame("Character");
-
-	//ジャンプ情報の初期
-	jump_.isJump = false;
-	jump_.jumpVec = 0.0f;
 }
 
 
@@ -84,7 +83,7 @@ void Player::init()
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
 /// <param name="models">衝突判定を行うモデルのvector型の配列</param>
-void Player::update(const InputState& input, std::vector<std::shared_ptr<Model>> models)
+void Player::update(const InputState& input, std::list<std::shared_ptr<Model>> models)
 {
 	//移動ベクトルのリセット
 	moveVec_ = { 0.0f,0.0f,0.0f };
@@ -198,7 +197,7 @@ void Player::idleUpdate(const InputState& input)
 		if (pos_.y <= -400.0f) {
 			pos_ = checkPoint_;
 		}
-		if (input.isTriggered(InputType::next)) {
+		if (input.isTriggered(InputType::space)) {
 			pos_ = checkPoint_;
 		}
 	}
