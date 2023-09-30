@@ -198,7 +198,7 @@ void Player::idleUpdate(const InputState& input)
 		if (pos_.y <= -400.0f) {
 			pos_ = checkPoint_;
 		}
-		if (input.isTriggered(InputType::space)) {
+		if (input.isTriggered(InputType::next)) {
 			pos_ = checkPoint_;
 		}
 	}

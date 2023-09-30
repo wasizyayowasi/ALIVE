@@ -38,7 +38,8 @@ public:
 
 private:
 
-	int makeScreenHandle_ = -1;	//makeScreenした画像を受け取る変数
+	int aiu = 1;
+
 	int keyTypeHandle_ = -1;	//keyTypeを描画するためのグラフを受け取るためのhandle
 
 	int textColor_ = 0xffffff;		//カラー

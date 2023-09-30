@@ -43,7 +43,7 @@ void DebugScene::update(const InputState& input)
 		selectNum_ = (std::min)(selectNum_ + 1,4);
 	}
 
-	if (input.isTriggered(InputType::space)) {
+	if (input.isTriggered(InputType::next)) {
 		//manager_.changeScene(scene_[selectNum_]);
 		switch (selectNum_) {
 		case 0:
