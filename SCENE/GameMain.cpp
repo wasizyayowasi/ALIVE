@@ -7,6 +7,7 @@
 #include "../gimmick/Steelyard.h"
 
 #include "../object/Player.h"
+#include "../object/cube.h"
 #include "../object/Camera.h"
 #include "../object/CharacterBase.h"
 #include "../object/Enemy.h"
@@ -45,22 +46,26 @@ GameMain::~GameMain()
 
 void GameMain::init()
 {
+	makeScreenHandle_ = MakeScreen(Game::kScreenWidth, Game::kScreenHeight, true);
+
 	camera_ = make_shared<Camera>();
 	player_ = make_shared<Player>();
 	//broom_ = make_shared<Broom>();
 	//depthOfField_ = make_shared<DepthOfField>();
 	enemy_ = make_shared<Enemy>();
+	box_ = make_shared<cube>();
 
 	gimmick_.push_back(make_shared<Switch>());
 	gimmick_.push_back(make_shared<Steelyard>());
+
 	models_.push_back(make_shared<Model>(temp_filepath));
 
 	for (auto& gimmick : gimmick_) {
 		models_.push_back(gimmick->getModelInfo());
 	}
 
-	models_[0]->setScale(scale);
-	models_[0]->setCollFrame();
+	models_.front()->setScale(scale);
+	models_.front()->setCollFrame();
 
 	SetUseLighting(false);
 
@@ -80,6 +85,7 @@ void GameMain::init()
 
 void GameMain::end()
 {
+	DeleteGraph(makeScreenHandle_);
 }
 
 //XV
@@ -91,6 +97,11 @@ void GameMain::update(const InputState& input)
 //•`‰æ
 void GameMain::draw()
 {
+	SetDrawScreen(makeScreenHandle_);
+	ClearDrawScreen();
+
+	camera_->init();
+	camera_->trackingCameraUpdate(player_->getPos());
 
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
@@ -101,12 +112,17 @@ void GameMain::draw()
 
 	player_->draw();
 	enemy_->draw();
+	box_->draw();
 	for (auto& gimmick : gimmick_) {
 		gimmick->draw();
 	}
 	
 	//broom_->graphFilterUpdate();
 	//broom_->draw();
+
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	DrawGraph(0, 0, makeScreenHandle_, true);
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	//‰æ–Ê‘S‘Ì‚ð^‚Á•‚É“h‚è‚Â‚Ô‚·
@@ -128,7 +144,9 @@ void GameMain::fadeInUpdate(const InputState& input)
 void GameMain::normalUpdate(const InputState& input)
 {
 	player_->update(input,models_);
-	camera_->trackingCameraUpdate(input,player_->getPos());
+	camera_->changeOfFocus(input);
+
+	box_->collInfo(*player_);
 
 	for (auto& gimmick : gimmick_) {
 		gimmick->update(*player_);
@@ -143,6 +161,7 @@ void GameMain::normalUpdate(const InputState& input)
 	}
 
 	if (input.isTriggered(InputType::pause)) {
+		//GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 32, 20000);
 		manager_.pushScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
 }

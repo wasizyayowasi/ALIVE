@@ -10,12 +10,15 @@ public:
 	Camera();
 	virtual ~Camera();
 
+	//初期化用
+	void init();
+
 	/// <summary>
 	/// プレイヤーを追跡するカメラの更新
 	/// </summary>
 	/// <param name="input">入力情報</param>
 	/// <param name="playerPos">プレイヤーのポジション</param>
-	void trackingCameraUpdate(const InputState& input,VECTOR playerPos);
+	void trackingCameraUpdate(VECTOR playerPos);
 
 	/// <summary>
 	/// 定点カメラ

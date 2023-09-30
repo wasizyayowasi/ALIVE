@@ -2,7 +2,7 @@
 #include "SceneBase.h"
 #include "DxLib.h"
 #include <memory>
-#include <vector>
+#include <list>
 #include <unordered_map>
 
 class Camera;
@@ -11,6 +11,7 @@ class Broom;
 class DepthOfField;
 class Model;
 class CharacterBase;
+class CarryObjectBase;
 class GimmickBase;
 class Steelyard;
 
@@ -35,6 +36,7 @@ public:
 
 private:
 
+	int makeScreenHandle_ = -1;
 	int totalDeathNum_ = 0;					//ゲーム開始からの総死亡数
 
 	bool isContinuation_ = false;			//続きからか初めからか
@@ -57,9 +59,10 @@ private:
 	std::shared_ptr<Broom> broom_;				//これも消すかもしれない
 	std::shared_ptr<DepthOfField> depthOfField_;//これも消すかもしれない
 	std::shared_ptr<CharacterBase> enemy_;
-	std::vector<std::shared_ptr<GimmickBase>> gimmick_;
+	std::shared_ptr<CarryObjectBase> box_;
+	std::list<std::shared_ptr<GimmickBase>> gimmick_;
 	
-	std::vector<std::shared_ptr<Model>> models_;//衝突判定を行う予定のモデルをひとまとめにする配列
+	std::list<std::shared_ptr<Model>> models_;//衝突判定を行う予定のモデルをひとまとめにする配列
 
 	void (GameMain::* updateFunc_)(const InputState& input);		//メンバ関数ポインタ
 

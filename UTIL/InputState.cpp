@@ -12,12 +12,6 @@ using namespace std;
 
 InputState::InputState()
 {
-	//次へ
-	defaultMapTable_[InputType::next] = { {InputCategory::keybd,KEY_INPUT_RETURN},
-										{InputCategory::pad,PAD_INPUT_1}};
-	//戻る
-	defaultMapTable_[InputType::prev] = { {InputCategory::keybd,KEY_INPUT_BACK},
-										  {InputCategory::pad,PAD_INPUT_2} };
 	//ポーズ
 	defaultMapTable_[InputType::pause] = { {InputCategory::keybd,KEY_INPUT_TAB},
 										 {InputCategory::pad,PAD_INPUT_8} };
@@ -57,6 +51,9 @@ InputState::InputState()
 	//ctrl
 	defaultMapTable_[InputType::ctrl] = { {InputCategory::keybd,KEY_INPUT_LCONTROL},
 									  {InputCategory::pad,PAD_INPUT_4} };
+	//ctrl
+	defaultMapTable_[InputType::carry] = { {InputCategory::keybd,KEY_INPUT_F},
+									  {InputCategory::pad,PAD_INPUT_4} };
 
 	inputMapTable_ = defaultMapTable_;
 
@@ -67,21 +64,20 @@ InputState::InputState()
 	tempMapTable_ = inputMapTable_;
 
 	//入力タイプの名前のテーブルを作る
-	inputNameTable_[InputType::next] = "決定";
-	inputNameTable_[InputType::prev] = "戻る";
 	inputNameTable_[InputType::pause] = "ポーズ";
-	inputNameTable_[InputType::up] = "上";
-	inputNameTable_[InputType::down] = "下";
-	inputNameTable_[InputType::left] = "左";
-	inputNameTable_[InputType::right] = "右";
-	inputNameTable_[InputType::upArrow] = "上矢印";
-	inputNameTable_[InputType::downArrow] = "下矢印";
-	inputNameTable_[InputType::leftArrow] = "左矢印";
-	inputNameTable_[InputType::rightArrow] = "右矢印";
-	inputNameTable_[InputType::space] = "space";
+	inputNameTable_[InputType::up] = "上へ移動";
+	inputNameTable_[InputType::down] = "下へ移動";
+	inputNameTable_[InputType::left] = "左へ移動";
+	inputNameTable_[InputType::right] = "右へ移動";
+	inputNameTable_[InputType::upArrow] = "上を見る";
+	inputNameTable_[InputType::downArrow] = "下を見る";
+	inputNameTable_[InputType::leftArrow] = "左を見る";
+	inputNameTable_[InputType::rightArrow] = "右を見る";
+	inputNameTable_[InputType::space] = "決定/ジャンプ";
 	inputNameTable_[InputType::death] = "死亡";
-	inputNameTable_[InputType::shift] = "shift";
-	inputNameTable_[InputType::ctrl] = "ctrl";
+	inputNameTable_[InputType::shift] = "走る";
+	inputNameTable_[InputType::ctrl] = "座る";
+	inputNameTable_[InputType::carry] = "運ぶ";
 
 
 	currentInput_.resize(static_cast<int>(InputType::max));

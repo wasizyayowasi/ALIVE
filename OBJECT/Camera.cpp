@@ -12,6 +12,19 @@ namespace {
 
 Camera::Camera()
 {
+	tempRoom[0] = 1000;
+	tempRoom[1] = 1500;
+	tempRoom[2] = 2000;
+
+	threshold = tempRoom[0];
+}
+
+Camera::~Camera()
+{
+}
+
+void Camera::init()
+{
 	/////////////// 3D関連の設定 /////////////
 	// Zバッファを使用する
 	SetUseZBuffer3D(true);
@@ -27,29 +40,15 @@ Camera::Camera()
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, VGet(0, 0, 0));
 	// カメラの視野角を設定(ラジアン)
 	SetupCamera_Perspective(60.0f * DX_PI_F / 180.0f);
-
-	tempRoom[0] = 1000;
-	tempRoom[1] = 1500;
-	tempRoom[2] = 2000;
-
-	threshold = tempRoom[0];
-
-}
-
-Camera::~Camera()
-{
 }
 
 //プレイヤーを追跡するカメラの更新
-void Camera::trackingCameraUpdate(const InputState& input,VECTOR playerPos)
+void Camera::trackingCameraUpdate(VECTOR playerPos)
 {
 	
 	i = (std::max)(i, 0);
 
 	tracking(playerPos);
-
-	//ターゲットを逸らす
-	changeOfFocus(input);
 
 	//カメラがプレイヤーを追いかける用にする
 	cameraPos_.y = ((300.0f * 0.9f) + (playerPos.y * 0.1f));
