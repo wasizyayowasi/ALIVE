@@ -1,0 +1,122 @@
+#include "ObjectManager.h"
+#include "object/ObjectBase.h"
+
+#include "object/Player.h"
+#include "object/tempEnemy.h"
+#include "object/OrnamentBase.h"
+#include "object/CarryObjectBase.h"
+#include "gimmick/Switch.h"
+#include "gimmick/steelyard.h"
+
+ObjectManager::ObjectManager()
+{
+}
+
+ObjectManager::~ObjectManager()
+{
+}
+
+void ObjectManager::objectGenerator(ObjectBaseType baseType, ObjectType objType, const char* const filename)
+{
+	//objectBaseTypeを元にインスタンス化するクラスを決める
+	switch (baseType) {
+
+	//自我を持ったenemy以外のキャラクターを生成
+	case ObjectBaseType::characterBase:
+		characterGenerator(objType, filename);
+		break;
+
+	//enemyを生成
+	case ObjectBaseType::enemyBase:
+		enemyGenerator(objType, filename);
+		break;
+
+	//置物を生成
+	case ObjectBaseType::ornamentBase:
+		ornamentGenerator(objType, filename);
+		break;
+	
+	//運べる置物生成
+	case ObjectBaseType::carryBase:
+		carryObjectGenerator(objType, filename);
+		break;
+
+	//ギミックを生成
+	case ObjectBaseType::gimmickBase:
+		gimmickObjectGenerator(objType, filename);
+		break;
+	}
+}
+
+//更新
+void ObjectManager::update()
+{
+	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
+	std::erase_if(objects_, [](const auto& obj) {return !obj.second.front()->isEnabled(); });
+
+	//更新
+	for (auto& obj : objects_) {
+		obj.second.front()->update();
+	}
+}
+
+//描画
+void ObjectManager::draw()
+{
+	for (auto& obj : objects_) {
+		obj.second.front()->draw();
+	}
+}
+
+//キャラクター生成機
+void ObjectManager::characterGenerator(ObjectType objType, const char* const filename)
+{
+	switch (objType)
+	{
+	case ObjectType::player:
+		//objects_[objType].push_front(std::make_shared<Player>(filename));
+		break;
+	}
+	
+}
+
+//敵生成機
+void ObjectManager::enemyGenerator(ObjectType objType, const char* const filename)
+{
+	switch (objType) {
+	case ObjectType::enemy:
+		objects_[objType].push_front(std::make_shared<tempEnemy>(filename));
+		break;
+	}
+}
+
+//置物生成機
+void ObjectManager::ornamentGenerator(ObjectType objType, const char* const filename)
+{
+	switch (objType) {
+	case ObjectType::field:
+		objects_[objType].push_front(std::make_shared<OrnamentBase>(filename));
+		break;
+	}
+}
+
+//運べる置物生成機
+void ObjectManager::carryObjectGenerator(ObjectType objType, const char* const filename)
+{
+	switch (objType) {
+	case ObjectType::carry:
+		objects_[objType].push_front(std::make_shared <CarryObjectBase>(filename));
+		break;
+	}
+}
+
+void ObjectManager::gimmickObjectGenerator(ObjectType objType, const char* const filename)
+{
+	switch (objType) {
+	case ObjectType::gimmickSwitch:
+		objects_[objType].push_front(std::make_shared<Switch>(filename));
+		break;
+	case ObjectType::gimmickSteelyard:
+		objects_[objType].push_front(std::make_shared<Steelyard>(filename));
+	}
+}

@@ -6,7 +6,15 @@ namespace {
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
-Switch::Switch() :GimmickBase("data/model/switch.mv1")
+Switch::Switch(const char* const filename) :GimmickBase(filename)
+{
+	model_->setScale(scale);
+	model_->setPos({ 2245,0,0 });
+	model_->setCollFrame();
+	model_->setAnimation(0, true, false);
+}
+
+Switch::Switch(int handle) :GimmickBase(handle)
 {
 	model_->setScale(scale);
 	model_->setPos({ 2245,0,0 });

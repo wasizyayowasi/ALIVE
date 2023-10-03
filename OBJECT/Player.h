@@ -1,6 +1,6 @@
 #pragma once
 #include "DxLib.h"
-//#include "CharacterBase.h"
+#include "CharacterBase.h"
 #include <list>
 #include <unordered_map>
 #include <memory>
@@ -43,13 +43,14 @@ struct PlayerInfo {
 	int anim_[static_cast<int>(AnimType::max)];
 };
 
-class Player
+class Player:public CharacterBase
 {
 	friend CheckCollisionModel;
 	friend GimmickBase;
 public:
 
-	Player();
+	Player(const char* const filename);
+	Player(int handle);
 	virtual ~Player();
 
 	void init();
@@ -127,8 +128,6 @@ private:
 	float tempGravity = 0.0f;
 
 	int deathCount_ = 0;
-	int animNo_ = 0;						//現在のアニメーション番号
-	
 
 	float targetAngle_ = 0.0f;				//回転
 	float differenceAngle_ = 0.0f;			//目標の角度と現在の角度の差
@@ -136,25 +135,23 @@ private:
 
 	bool isMoving_ = false;					//移動中か
 	bool isSitting_ = false;				//座っているか
-	bool isAnimLoop_ = true;				//アニメーションをループさせるか
 	bool isClim_ = false;
 	bool isContinue_ = false;
 
-	JumpInfo jump_;							//ジャンプ関連の構造体
+	JumpInfo jump_;												//ジャンプ関連の構造体
 
 
-	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};					//中間ポイント
+	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};						//中間ポイント
 
-	VECTOR pos_ = { 0.0f,0.0f,0.0f };							//プレイヤーのポジション
-	VECTOR rot_ = { 0.0f,0.0f,0.0f };							//プレイヤーの回転
 	VECTOR moveVec_ = { 0.0f,0.0f,0.0f };						//プレイヤーの移動ベクトル
-	VECTOR temp_ = { 0.0f,0.0f,0.0f };						//プレイヤーの移動ベクトル
+	VECTOR temp_ = { 0.0f,0.0f,0.0f };							//プレイヤーの移動ベクトル
 
 	VECTOR deathPos = { 0.0f,0.0f,0.0f };						//死体のポジション
 
 	std::shared_ptr<Model> PModel_;								//モデルクラスのポインタ
 	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
-	std::list<std::shared_ptr<Model>> deadPerson_;			//死体を保存するため
+
+	std::list<std::shared_ptr<Model>> deadPerson_;				//死体を保存するため
 
 	std::unordered_map<AnimType, int> animType_;				
 

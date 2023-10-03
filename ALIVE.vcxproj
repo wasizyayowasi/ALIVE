@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(dxlib);$(json);$(Dxlib)</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -129,7 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(dxlib);$(json);$(Dxlib)</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -143,9 +143,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="util\ObjectManager.cpp" />
+    <ClCompile Include="object\ObjectBase.cpp" />
     <ClCompile Include="object\cube.cpp" />
     <ClCompile Include="object\CarryObjectBase.cpp" />
+    <ClCompile Include="object\OrnamentBase.cpp" />
     <ClCompile Include="scene\TitlemenuScene.cpp" />
+    <ClCompile Include="object\tempEnemy.cpp" />
     <ClCompile Include="util\Util.cpp" />
     <ClCompile Include="util\UIItemManager.cpp" />
     <ClCompile Include="util\UIItem.cpp" />
@@ -154,7 +158,7 @@
     <ClCompile Include="gimmick\Switch.cpp" />
     <ClCompile Include="gimmick\Steelyard.cpp" />
     <ClCompile Include="util\EffekseerManager.cpp" />
-    <ClCompile Include="object\Enemy.cpp" />
+    <ClCompile Include="object\EnemyBase.cpp" />
     <ClCompile Include="scene\DebugScene.cpp" />
     <ClCompile Include="util\DrawFunctions.cpp" />
     <ClCompile Include="scene\SoundSettingScene.cpp" />
@@ -179,10 +183,15 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util\ObjectManager.h" />
+    <ClInclude Include="util\ObjectType.h" />
+    <ClInclude Include="object\ObjectBase.h" />
     <ClInclude Include="object\cube.h" />
     <ClInclude Include="object\CarryObjectBase.h" />
+    <ClInclude Include="object\OrnamentBase.h" />
     <ClInclude Include="scene\TitlemenuScene.h" />
-    <ClInclude Include="Util.h" />
+    <ClInclude Include="object\tempEnemy.h" />
+    <ClInclude Include="util\Util.h" />
     <ClInclude Include="util\UIItemManager.h" />
     <ClInclude Include="util\UIItem.h" />
     <ClInclude Include="util\FontsManager.h" />
@@ -190,7 +199,7 @@
     <ClInclude Include="gimmick\Switch.h" />
     <ClInclude Include="gimmick\Steelyard.h" />
     <ClInclude Include="util\EffekseerManager.h" />
-    <ClInclude Include="object\Enemy.h" />
+    <ClInclude Include="object\EnemyBase.h" />
     <ClInclude Include="scene\DebugScene.h" />
     <ClInclude Include="util\DrawFunctions.h" />
     <ClInclude Include="scene\SoundSettingScene.h" />

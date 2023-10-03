@@ -6,15 +6,13 @@ namespace {
 	constexpr float collition_radius = 200.0f;
 }
 //ファイルパスでモデルを作成するコンストラクタ
-GimmickBase::GimmickBase(const char* filename)
+GimmickBase::GimmickBase(const char* filename):OrnamentBase(filename)
 {
-	model_ = std::make_shared<Model>(filename);
 }
 
 //作成済みのモデルをコピーするコンストラクタ
-GimmickBase::GimmickBase(int handle)
+GimmickBase::GimmickBase(int handle): OrnamentBase(handle)
 {
-	model_ = std::make_shared<Model>(handle);
 }
 
 //デストラクタ
@@ -23,7 +21,7 @@ GimmickBase::~GimmickBase()
 }
 
 //更新
-void GimmickBase::update(Player& player)
+void GimmickBase::update()
 {
 }
 

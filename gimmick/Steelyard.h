@@ -8,10 +8,11 @@ class Model;
 class Steelyard : public GimmickBase
 {
 public:
-	Steelyard();
+	Steelyard(const char* const filename);
+	Steelyard(int handle);
 	virtual ~Steelyard();
 
-	void update(Player& player);
+	void update();
 	void draw();
 
 private:

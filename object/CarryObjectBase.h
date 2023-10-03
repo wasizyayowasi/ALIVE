@@ -1,11 +1,7 @@
 #pragma once
-#include "DxLib.h"
-#include <memory>
+#include "OrnamentBase.h"
 
-class Model;
-class Player;
-
-class CarryObjectBase
+class CarryObjectBase:public OrnamentBase
 {
 public:
 
@@ -16,15 +12,13 @@ public:
 	virtual void update();
 	virtual void draw();
 
-	virtual bool collInfo(Player& player);
+	virtual bool collInfo();
 
 protected:
 
 	VECTOR pos_;
 
 	MV1_COLL_RESULT_POLY_DIM hitDim_;
-
-	std::shared_ptr<Model> object_;
 
 };
 

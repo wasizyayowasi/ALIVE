@@ -1,18 +1,10 @@
 #pragma once
-#include "DxLib.h"
-#include <memory>
-
-class Model;
-class Switch;
-class Steelyard;
-class Player;
+#include "../object/OrnamentBase.h"
 
 constexpr int max_hit_coll = 2048;
 
-class GimmickBase
+class GimmickBase : public OrnamentBase
 {
-	friend Switch;
-	friend Steelyard;
 public:
 	//ファイルパスでモデルを作成するコンストラクタ
 	GimmickBase(const char* filename);
@@ -22,17 +14,13 @@ public:
 	virtual ~GimmickBase();
 
 	//更新
-	virtual void update(Player& player);
+	virtual void update();
 	//描画
 	void draw();
 
 	std::shared_ptr<Model> getModelInfo() { return model_; }
 
 private:
-
-	VECTOR pos_;		//ポジション
-
-	std::shared_ptr<Model> model_;		//3Dモデル
 
 };
 

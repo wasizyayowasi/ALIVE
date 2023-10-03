@@ -3,6 +3,7 @@
 #include "../util/Model.h"
 #include "../util/CheckCollisionModel.h"
 #include "../util/LoadExternalFile.h"
+#include "../util/SoundManager.h"
 #include<algorithm>
 #include<string>
 
@@ -30,11 +31,15 @@ namespace {
 
 using namespace std;
 
-Player::Player():updateFunc_(&Player::idleUpdate)
+Player::Player(const char* const filename):CharacterBase(filename),updateFunc_(&Player::idleUpdate)
 {
 	//ジャンプ情報の初期
 	jump_.isJump = false;
 	jump_.jumpVec = 0.0f;
+}
+
+Player::Player(int handle) :CharacterBase(handle), updateFunc_(&Player::idleUpdate)
+{
 }
 
 /// <summary>
@@ -47,6 +52,7 @@ Player::~Player()
 
 void Player::init()
 {
+
 	auto loadExternalFile = LoadExternalFile::getInstance(isContinue_);
 	//プレイヤー情報の初期化
 	{

@@ -10,7 +10,6 @@
 #include "../object/cube.h"
 #include "../object/Camera.h"
 #include "../object/CharacterBase.h"
-#include "../object/Enemy.h"
 
 #include "../staging/Broom.h"
 #include "../staging/DepthOfField.h"
@@ -23,13 +22,19 @@
 #include "../util/model.h"
 #include "../util/LoadExternalFile.h"
 
+#include "../util/ObjectManager.h"
+#include "../util/ObjectType.h"
 
 using namespace std;
 
 namespace {
-	const char* const temp_filepath = "data/model/tempFiled4.mv1";
+	const char* const player_Filename = "data/player/player14.mv1";
+
+	const char* const temp_fieldpath = "data/model/tempFiled4.mv1";
 	const char* const temp_stairs = "data/model/stairs.mv1";
-	const char* const cube_filename = "data/model/cube.mv1";
+	const char* const cube_filename = "data/model/box.mv1";
+	const char* const switch_filename = "data/model/switch.mv1";
+	const char* const steelyard_filename = "data/model/steelyard.mv1";
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
@@ -48,21 +53,21 @@ void GameMain::init()
 {
 	makeScreenHandle_ = MakeScreen(Game::kScreenWidth, Game::kScreenHeight, true);
 
+	objManager_ = make_shared<ObjectManager>();
+
+	objManager_->objectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy, player_Filename);
+	objManager_->objectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, temp_fieldpath);
+	objManager_->objectGenerator(ObjectBaseType::carryBase, ObjectType::carry, cube_filename);
+	objManager_->objectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
+	objManager_->objectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, steelyard_filename);
+	//objManager_->objectGenerator(ObjectBaseType::characterBase, ObjectTyep::player, player_Filename);
+
 	camera_ = make_shared<Camera>();
-	player_ = make_shared<Player>();
+	player_ = make_shared<Player>(player_Filename);
 	//broom_ = make_shared<Broom>();
 	//depthOfField_ = make_shared<DepthOfField>();
-	enemy_ = make_shared<Enemy>();
-	box_ = make_shared<cube>();
 
-	gimmick_.push_back(make_shared<Switch>());
-	gimmick_.push_back(make_shared<Steelyard>());
-
-	models_.push_back(make_shared<Model>(temp_filepath));
-
-	for (auto& gimmick : gimmick_) {
-		models_.push_back(gimmick->getModelInfo());
-	}
+	models_.push_back(make_shared<Model>(temp_fieldpath));
 
 	models_.front()->setScale(scale);
 	models_.front()->setCollFrame();
@@ -107,16 +112,13 @@ void GameMain::draw()
 	DrawString(0, 0, "GameMain", 0xffffff);
 
 	for (auto& model : models_) {
-		model->draw();
+		//model->draw();
 	}
 
 	player_->draw();
-	enemy_->draw();
-	box_->draw();
-	for (auto& gimmick : gimmick_) {
-		gimmick->draw();
-	}
 	
+	objManager_->draw();
+
 	//broom_->graphFilterUpdate();
 	//broom_->draw();
 
@@ -146,12 +148,8 @@ void GameMain::normalUpdate(const InputState& input)
 	player_->update(input,models_);
 	camera_->changeOfFocus(input);
 
-	box_->collInfo(*player_);
+	objManager_->update();
 
-	for (auto& gimmick : gimmick_) {
-		gimmick->update(*player_);
-	}
-	//enemy_->update();
 	//camera_->fixedPointCamera(player_->getPos());
 
 	SoundManager::getInstance().set3DSoundListenerInfo(camera_->getPos(), camera_->getTarget());

@@ -7,7 +7,8 @@ class cube : public CarryObjectBase
 {
 public:
 
-	cube();
+	cube(const char* const filename);
+	cube(int handle);
 	virtual ~cube();
 
 private:
