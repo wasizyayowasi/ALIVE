@@ -1,5 +1,6 @@
 #pragma once
 #include "ObjectType.h"
+#include "DxLib.h"
 #include <memory>
 #include <list>
 #include <unordered_map>
@@ -19,6 +20,7 @@ public:
 	}
 
 	void objectGenerator(ObjectBaseType baseType,ObjectType objType,const char* const filename);
+	void deadPersonGenerator(ObjectType objType,int handle,VECTOR pos,VECTOR rot,int animNo);
 
 	void update();
 	void draw();

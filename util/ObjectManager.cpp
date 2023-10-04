@@ -47,6 +47,17 @@ void ObjectManager::objectGenerator(ObjectBaseType baseType, ObjectType objType,
 		gimmickObjectGenerator(objType, filename);
 		break;
 	}
+
+}
+
+void ObjectManager::deadPersonGenerator(ObjectType objType, int handle, VECTOR pos, VECTOR rot, int animNo)
+{
+	objects_[objType].push_back(std::make_shared<DeadPerson>(handle, pos, rot, animNo));
+
+	if(objects_[objType].size() < 4) return;
+
+	objects_[objType].remove(objects_[objType].front());
+
 }
 
 //更新
@@ -60,15 +71,19 @@ void ObjectManager::update()
 
 	//更新
 	for (auto& obj : objects_) {
-		obj.second.front()->update();
+		for (auto& objSecond : obj.second) {
+			objSecond->update();
+		}
 	}
 }
 
 //描画
 void ObjectManager::draw()
 {
-	for (auto& obj : objects_) {
-		obj.second.front()->draw();
+	for (auto& objs : objects_) {
+		for (auto& obj : objs.second) {
+			obj->draw();
+		}
 	}
 }
 
@@ -93,7 +108,7 @@ void ObjectManager::characterGenerator(ObjectType objType, const char* const fil
 		//objects_[objType].push_front(std::make_shared<Player>(filename));
 		break;
 	case ObjectType::deadPerson:
-		objects_[objType].push_front(std::make_shared<DeadPerson>(filename));
+		//objects_[objType].push_front(std::make_shared<DeadPerson>(filename,10));
 		break;
 	}
 	

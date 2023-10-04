@@ -1,5 +1,6 @@
 #pragma once
 #include "EnemyBase.h"
+
 class tempEnemy : public EnemyBase
 {
 public:

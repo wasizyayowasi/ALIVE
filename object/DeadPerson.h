@@ -7,8 +7,8 @@ class DeadPerson : public CharacterBase
 {
 public:
 
-	DeadPerson(const char* const filename);
-	DeadPerson(int handle);
+	DeadPerson(const char* const filename,VECTOR pos,VECTOR rot,int animNo);
+	DeadPerson(int handle, VECTOR pos, VECTOR rot, int animNo);
 	virtual ~DeadPerson();
 
 	void update();

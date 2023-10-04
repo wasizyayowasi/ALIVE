@@ -284,5 +284,8 @@
     <ClInclude Include="object\DeadPerson.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="util\ObjAnimType.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
