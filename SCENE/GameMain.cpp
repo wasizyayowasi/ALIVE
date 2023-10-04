@@ -61,6 +61,7 @@ void GameMain::init()
 	objManager.objectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
 	objManager.objectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
 	objManager.objectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, steelyard_filename);
+	objManager.objectGenerator(ObjectBaseType::characterBase, ObjectType::deadPerson, player_Filename);
 
 	camera_ = make_shared<Camera>();
 	player_ = make_shared<Player>(player_Filename);

@@ -1,6 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include "CharacterBase.h"
+#include "util/ObjAnimType.h"
 #include <list>
 #include <unordered_map>
 #include <memory>
@@ -13,25 +14,6 @@ class GimmickBase;
 struct JumpInfo {
 	float jumpVec;		//ジャンプベクトル
 	bool isJump;		//ジャンプ中かどうか
-};
-
-enum class AnimType {
-	idle,			//待機状態
-	run,			//走る
-	stairs,			//階段を上る
-	radder,			//上る
-	jump,			//ジャンプ
-	runningJump,	//走りジャンプ
-	death,			//走りジャンプ
-	walk,			//歩く
-	idleToSitup,	//idle状態から座る
-	situpToIdle,	//座っている状態からidle
-	sit,			//座っている
-	clim,			//登る
-	stand,			//立ち上がる
-	carry,			//運ぶ
-	carryWalking,	//運びながら歩く
-	max
 };
 
 struct PlayerInfo {

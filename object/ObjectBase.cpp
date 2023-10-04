@@ -1,5 +1,6 @@
 #include "ObjectBase.h"
 #include "../util/Model.h"
+#include "../util/InputState.h"
 
 ObjectBase::ObjectBase(const char* const filename)
 {

@@ -4,6 +4,7 @@
 #include "../util/CheckCollisionModel.h"
 #include "../util/LoadExternalFile.h"
 #include "../util/SoundManager.h"
+#include "../util/ObjectManager.h"
 #include<algorithm>
 #include<string>
 
@@ -115,7 +116,7 @@ void Player::draw()
 {
 	PModel_->draw();
 	for (auto& deadPlayer : deadPerson_) {
-		deadPlayer->draw();
+		//deadPlayer->draw();
 	}
 
 	DrawFormatString(0, 16, 0x448844, "X:%.2f,Y:%.2f,Z:%.2f", pos_.x, pos_.y, pos_.z);
@@ -171,7 +172,7 @@ void Player::idleUpdate(const InputState& input)
 
 	//メンバ関数ポインタをrunningJumpUpdate、
 	//jumpUpdateのどちらかに変更する
-	if (input.isPressed(InputType::space)) {
+	if (input.isTriggered(InputType::space)) {
 		if (isClim_) {
 			updateFunc_ = &Player::climUpdate;
 			return;
@@ -496,10 +497,6 @@ void Player::deathPersonPostProsessing()
 
 	deadPersonGenerater();			//死体を生成する関数
 
-	deadPerson_.back()->setAnimEndFrame(animNo_);			//死体に指定アニメーションの最終フレームを設定する
-
-	setCollitionInfoByDeathPattern();					//現在のアニメーションによって衝突判定用モデルフレームを設定する
-
 	updateFunc_ = &Player::idleUpdate;
 }
 
@@ -508,23 +505,11 @@ void Player::deathPersonPostProsessing()
 /// </summary>
 void Player::deadPersonGenerater()
 {
-	//死体の生成
-	deadPerson_.push_back(make_shared<Model>(PModel_->getModelHandle()));
-	//死体のポジション設定
-	deadPerson_.back()->setPos(deathPos);
-	//死体のサイズ設定
-	deadPerson_.back()->setScale(player_scale);
-	//死体の回転設定
-	deadPerson_.back()->setRot({ rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z });
+	auto& objManager = ObjectManager::getInstance();
 
-	//死体を数える
-	int deathNum = 0;
-	for (const auto person : deadPerson_) {
-		deathNum++;
-		if (deathNum > 3) {
-			deadPerson_.erase(deadPerson_.begin());		//最大数を超えたら一番古い死体を消す
-		}
-	}
+	VECTOR rot = { rot_.x,rot_.y * DX_PI_F / 180.0f,rot_.z };
+
+	objManager.deadPersonGenerator(ObjectType::deadPerson, PModel_->getModelHandle(), deathPos, rot, animNo_);
 }
 
 /// <summary>
