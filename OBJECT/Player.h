@@ -55,7 +55,7 @@ public:
 
 	void init();
 
-	void update(const InputState& input, std::list<std::shared_ptr<Model>> models);
+	void update(const InputState& input);
 	void draw();
 
 	VECTOR getPos() { return pos_; }

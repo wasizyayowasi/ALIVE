@@ -5,18 +5,32 @@
 #include <unordered_map>
 
 class ObjectBase;
+class Model;
 
 class ObjectManager
 {
 public:
 
-	ObjectManager();
 	virtual ~ObjectManager();
+
+	static ObjectManager& getInstance() {
+		static ObjectManager instance;
+		return instance;
+	}
 
 	void objectGenerator(ObjectBaseType baseType,ObjectType objType,const char* const filename);
 
 	void update();
 	void draw();
+
+	std::list<std::shared_ptr<Model>> getCheckCollModel();
+
+private:
+
+	ObjectManager();
+
+	ObjectManager(const ObjectManager&) = delete;
+	void operator = (const ObjectManager) = delete;
 
 private:
 	//キャラクター生成機
@@ -32,6 +46,7 @@ private:
 private:
 
 	std::unordered_map<ObjectType, std::list<std::shared_ptr<ObjectBase>>> objects_;
+	std::list<std::shared_ptr<Model>> checkCollList_;
 
 };
 

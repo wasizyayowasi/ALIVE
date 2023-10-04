@@ -53,24 +53,19 @@ void GameMain::init()
 {
 	makeScreenHandle_ = MakeScreen(Game::kScreenWidth, Game::kScreenHeight, true);
 
-	objManager_ = make_shared<ObjectManager>();
-
-	objManager_->objectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy, player_Filename);
-	objManager_->objectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, temp_fieldpath);
-	objManager_->objectGenerator(ObjectBaseType::carryBase, ObjectType::carry, cube_filename);
-	objManager_->objectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
-	objManager_->objectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, steelyard_filename);
-	//objManager_->objectGenerator(ObjectBaseType::characterBase, ObjectTyep::player, player_Filename);
+	auto& objManager = ObjectManager::getInstance();
+	
+	objManager.objectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy, player_Filename);
+	objManager.objectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, temp_fieldpath);
+	objManager.objectGenerator(ObjectBaseType::carryBase, ObjectType::carry, cube_filename);
+	objManager.objectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
+	objManager.objectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
+	objManager.objectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, steelyard_filename);
 
 	camera_ = make_shared<Camera>();
 	player_ = make_shared<Player>(player_Filename);
 	//broom_ = make_shared<Broom>();
 	//depthOfField_ = make_shared<DepthOfField>();
-
-	models_.push_back(make_shared<Model>(temp_fieldpath));
-
-	models_.front()->setScale(scale);
-	models_.front()->setCollFrame();
 
 	SetUseLighting(false);
 
@@ -111,13 +106,9 @@ void GameMain::draw()
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
 
-	for (auto& model : models_) {
-		//model->draw();
-	}
-
 	player_->draw();
 	
-	objManager_->draw();
+	ObjectManager::getInstance().draw();
 
 	//broom_->graphFilterUpdate();
 	//broom_->draw();
@@ -145,10 +136,12 @@ void GameMain::fadeInUpdate(const InputState& input)
 //XV
 void GameMain::normalUpdate(const InputState& input)
 {
-	player_->update(input,models_);
-	camera_->changeOfFocus(input);
+	auto& objManager = ObjectManager::getInstance();
 
-	objManager_->update();
+	objManager.update();
+
+	player_->update(input);
+	camera_->changeOfFocus(input);
 
 	//camera_->fixedPointCamera(player_->getPos());
 
