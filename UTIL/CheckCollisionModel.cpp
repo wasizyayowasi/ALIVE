@@ -1,5 +1,6 @@
 #include "CheckCollisionModel.h"
 #include "../object/Player.h"
+#include "../util/ObjectManager.h"
 #include "Model.h"
 
 namespace {
@@ -14,21 +15,15 @@ CheckCollisionModel::~CheckCollisionModel()
 {
 }
 
-void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR moveVec, std::list<std::shared_ptr<Model>> models)
+void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR moveVec)
 {
 	//更新前のポジションを取得する
 	oldPos = player.getPos();
 	//更新後のポジションを取得する
 	nowPos = VAdd(player.getPos(), moveVec);
 	//モデルと球の当たり判定
-	/*for (int i = 0; i < models.size();i++) {
-		MV1RefreshCollInfo(models[i]->getModelHandle(), models[i]->getColFrameIndex());
-		hitDim_.push_back(MV1CollCheck_Sphere(models[i]->getModelHandle(), models[i]->getColFrameIndex(), oldPos, collition_radius + VSize(moveVec)));
-	}*/
-
-//	models
-
-	for (auto& model : models) {
+	
+	for (auto& model : ObjectManager::getInstance().getCheckCollModel()) {
 		MV1RefreshCollInfo(model->getModelHandle(), model->getColFrameIndex());
 		hitDim_.push_back(MV1CollCheck_Sphere(model->getModelHandle(), model->getColFrameIndex(), oldPos, collition_radius + VSize(moveVec)));
 	}
@@ -205,10 +200,10 @@ void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,boo
 
 }
 
-void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, std::list<std::shared_ptr<Model>> model, float playerHeight, bool isJump, float jumpVec)
+void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, float playerHeight, bool isJump, float jumpVec)
 {
 	//プレイヤーから一定範囲の衝突判定をとる
-	checkCollisionPersonalArea(player,moveVec,model);
+	checkCollisionPersonalArea(player,moveVec);
 	//衝突したオブジェクトが乗り越えることが出来るオブジェクトか判断する
 	checkStepDifference(player,playerHeight);
 	//取得した衝突結果から壁に当たった場合の処理

@@ -2,6 +2,7 @@
 #include "object/ObjectBase.h"
 
 #include "object/Player.h"
+#include "../object/DeadPerson.h"
 #include "object/tempEnemy.h"
 #include "object/OrnamentBase.h"
 #include "object/CarryObjectBase.h"
@@ -51,6 +52,9 @@ void ObjectManager::objectGenerator(ObjectBaseType baseType, ObjectType objType,
 //更新
 void ObjectManager::update()
 {
+	//衝突判定を行うのモデルリストを削除する
+	checkCollList_.erase(checkCollList_.begin(), checkCollList_.end());
+
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
 	std::erase_if(objects_, [](const auto& obj) {return !obj.second.front()->isEnabled(); });
 
@@ -68,6 +72,18 @@ void ObjectManager::draw()
 	}
 }
 
+std::list<std::shared_ptr<Model>> ObjectManager::getCheckCollModel()
+{
+	for (auto& obj : objects_) {
+		if (obj.first == ObjectType::player || obj.first == ObjectType::enemy) continue;
+		for (auto& model : obj.second) {
+			checkCollList_.push_back(model->getModelPointer());
+		}
+	}
+
+	return checkCollList_;
+}
+
 //キャラクター生成機
 void ObjectManager::characterGenerator(ObjectType objType, const char* const filename)
 {
@@ -75,6 +91,9 @@ void ObjectManager::characterGenerator(ObjectType objType, const char* const fil
 	{
 	case ObjectType::player:
 		//objects_[objType].push_front(std::make_shared<Player>(filename));
+		break;
+	case ObjectType::deadPerson:
+		objects_[objType].push_front(std::make_shared<DeadPerson>(filename));
 		break;
 	}
 	

@@ -25,7 +25,7 @@ public:
 	/// <param name="player">プレイヤーを参照</param>
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="models">プレイヤーと衝突判定を行うモデル</param>
-	void checkCollisionPersonalArea(Player& player,VECTOR moveVec, std::list<std::shared_ptr<Model>> models);
+	void checkCollisionPersonalArea(Player& player,VECTOR moveVec);
 
 	/// <summary>
 	/// 衝突したモデルのポリゴンが壁かを判断する
@@ -53,7 +53,7 @@ public:
 	/// <param name="playerHeight">プレイヤーの高さ</param>
 	/// <param name="isJump">プレイヤーのジャンプフラグ</param>
 	/// <param name="jumpVec">プレイヤーのジャンプベクトル</param>
-	void checkCollision(Player& player, VECTOR moveVec, std::list<std::shared_ptr<Model>> model,float playerHeight,bool isJump,float jumpVec);
+	void checkCollision(Player& player, VECTOR moveVec,float playerHeight,bool isJump,float jumpVec);
 
 	/// <summary>
 	/// 衝突したオブジェクトが乗り越えられるか判断する

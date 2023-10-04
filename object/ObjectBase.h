@@ -22,6 +22,9 @@ public:
 	//現在有効か無効化を取得する
 	bool isEnabled() { return isEnable_; };
 
+	//モデルのスマートポインタを取得する
+	std::shared_ptr<Model> getModelPointer() { return model_; }
+
 protected:
 
 	bool isEnable_ = false;						//有効か無効か

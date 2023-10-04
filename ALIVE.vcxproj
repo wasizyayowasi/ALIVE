@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="object\DeadPerson.cpp" />
     <ClCompile Include="util\ObjectManager.cpp" />
     <ClCompile Include="object\ObjectBase.cpp" />
     <ClCompile Include="object\cube.cpp" />
@@ -183,6 +184,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="object\DeadPerson.h" />
     <ClInclude Include="util\ObjectManager.h" />
     <ClInclude Include="util\ObjectType.h" />
     <ClInclude Include="object\ObjectBase.h" />

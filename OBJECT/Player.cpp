@@ -89,7 +89,7 @@ void Player::init()
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
 /// <param name="models">衝突判定を行うモデルのvector型の配列</param>
-void Player::update(const InputState& input, std::list<std::shared_ptr<Model>> models)
+void Player::update(const InputState& input)
 {
 	//移動ベクトルのリセット
 	moveVec_ = { 0.0f,0.0f,0.0f };
@@ -101,11 +101,11 @@ void Player::update(const InputState& input, std::list<std::shared_ptr<Model>> m
 
 	//死体のvector配列を引数のmodels配列に追加する
 	for (auto& deadPerson : deadPerson_) {
-		models.push_back(deadPerson);
+		//models.push_back(deadPerson);
 	}
 
 	//プレイヤーとその他オブジェクトとの衝突判定
-	checkCollisionModel_->checkCollision(*this,moveVec_, models, player_hegiht, jump_.isJump, jump_.jumpVec);
+	checkCollisionModel_->checkCollision(*this,moveVec_,player_hegiht, jump_.isJump, jump_.jumpVec);
 }
 
 /// <summary>
@@ -291,14 +291,19 @@ void Player::movingUpdate(const InputState& input)
 			}
 		}
 
-		//移動ベクトルを用意する
-		moveVec_ = VScale(VNorm(moveVec_), movingSpeed);
-
 		//回転処理
 		rotationUpdate();
 
+		if (VSize(moveVec_) == 0.0f) {
+			isMoving_ = false;
+			return;
+		}
+		//移動ベクトルを用意する
+		moveVec_ = VScale(VNorm(moveVec_), movingSpeed);
+
 		//アニメーションの変更
 		PModel_->changeAnimation(animNo_, isAnimLoop_, false, 20);
+
 
 		//デバッグ用
 		/*{

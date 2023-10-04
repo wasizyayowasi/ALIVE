@@ -10,6 +10,7 @@ enum class ObjectBaseType {
 
 enum class ObjectType{
 	player,
+	deadPerson,
 	enemy,
 	field,
 	carry,
