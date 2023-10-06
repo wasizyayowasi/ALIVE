@@ -1,4 +1,5 @@
 #include "ObjectBase.h"
+#include "Player.h"
 #include "../util/Model.h"
 #include "../util/InputState.h"
 
@@ -21,7 +22,7 @@ ObjectBase::~ObjectBase()
 {
 }
 
-void ObjectBase::update()
+void ObjectBase::update(Player& player)
 {
 	model_->update();
 }

@@ -14,7 +14,7 @@ CarryObjectBase::~CarryObjectBase()
 {
 }
 
-void CarryObjectBase::update()
+void CarryObjectBase::update(Player& player)
 {
 	
 }

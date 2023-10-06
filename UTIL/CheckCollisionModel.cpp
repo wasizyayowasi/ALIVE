@@ -18,9 +18,9 @@ CheckCollisionModel::~CheckCollisionModel()
 void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR moveVec)
 {
 	//更新前のポジションを取得する
-	oldPos = player.getPos();
+	oldPos = player.getStatus().pos;
 	//更新後のポジションを取得する
-	nowPos = VAdd(player.getPos(), moveVec);
+	nowPos = VAdd(player.getStatus().pos, moveVec);
 	//モデルと球の当たり判定
 	
 	for (auto& model : ObjectManager::getInstance().getCheckCollModel()) {
@@ -142,8 +142,8 @@ void CheckCollisionModel::checkCollisionWall(VECTOR moveVec,float playerHeight)
 void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,bool jumpFlag, float playerHeight)
 {
 
-	float jumpVec = player.getJumpInfo().jumpVec;
-	bool isJump = player.getJumpInfo().isJump;
+	float jumpVec = player.getStatus().jump.jumpVec;
+	bool isJump = player.getStatus().jump.isJump;
 
 	//床との当たり判定
 	if (hitFloorNum != 0) {
@@ -179,7 +179,7 @@ void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,boo
 				}
 				if (hitLineResult.HitFlag == false) continue;
 				if (hitFlag && maxY > hitLineResult.Position.y)continue;
-				if (player.animNo_ == 11) continue;
+				if (player.getStatus().animNo == 11) continue;
 				hitFlag = true;
 				maxY = hitLineResult.Position.y;
 			}
@@ -243,11 +243,11 @@ void CheckCollisionModel::checkStepDifference(Player& player, float playerHeight
 				if (nowPos.y + 60 < hitPoly->Position[i].y) {
 					overHeight = true;
 					if (nowPos.y + playerHeight > hitPoly->Position[i].y) {
-						player.isClim_ = overHeight;
+						player.setClim(overHeight);
 					}
 				}
 				else {
-					player.isClim_ = false;
+					player.setClim(false);
 				}
 			}
 
@@ -269,7 +269,7 @@ void CheckCollisionModel::checkStepDifference(Player& player, float playerHeight
 	}
 
 	if (!overHeight) {
-		player.isClim_ = false;
+		player.setClim(false);
 	}
 
 }

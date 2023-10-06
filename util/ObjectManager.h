@@ -7,6 +7,7 @@
 
 class ObjectBase;
 class Model;
+class Player;
 
 class ObjectManager
 {
@@ -22,7 +23,7 @@ public:
 	void objectGenerator(ObjectBaseType baseType,ObjectType objType,const char* const filename);
 	void deadPersonGenerator(ObjectType objType,int handle,VECTOR pos,VECTOR rot,int animNo);
 
-	void update();
+	void update(Player& player);
 	void draw();
 
 	std::list<std::shared_ptr<Model>> getCheckCollModel();

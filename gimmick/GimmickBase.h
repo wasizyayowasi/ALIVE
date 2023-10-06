@@ -14,7 +14,7 @@ public:
 	virtual ~GimmickBase();
 
 	//XV
-	virtual void update();
+	virtual void update(Player& player)override;
 	//•`‰æ
 	void draw();
 

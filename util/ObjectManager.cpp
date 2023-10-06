@@ -61,7 +61,7 @@ void ObjectManager::deadPersonGenerator(ObjectType objType, int handle, VECTOR p
 }
 
 //更新
-void ObjectManager::update()
+void ObjectManager::update(Player& player)
 {
 	//衝突判定を行うのモデルリストを削除する
 	checkCollList_.erase(checkCollList_.begin(), checkCollList_.end());
@@ -70,9 +70,9 @@ void ObjectManager::update()
 	std::erase_if(objects_, [](const auto& obj) {return !obj.second.front()->isEnabled(); });
 
 	//更新
-	for (auto& obj : objects_) {
-		for (auto& objSecond : obj.second) {
-			objSecond->update();
+	for (auto obj : objects_) {
+		for (auto objSecond : obj.second) {
+			objSecond->update(player);
 		}
 	}
 }

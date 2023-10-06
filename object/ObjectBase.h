@@ -3,6 +3,7 @@
 #include <memory>
 
 class Model;
+class Player;
 
 class ObjectBase
 {
@@ -15,7 +16,7 @@ public:
 	virtual ~ObjectBase();
 
 	//XV
-	virtual void update();
+	virtual void update(Player& player);
 	//•`‰æ
 	virtual void draw();
 

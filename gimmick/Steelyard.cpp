@@ -20,7 +20,7 @@ Steelyard::~Steelyard()
 {
 }
 
-void Steelyard::update()
+void Steelyard::update(Player& player)
 {
 }
 

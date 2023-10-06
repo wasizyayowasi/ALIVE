@@ -25,10 +25,17 @@ struct PlayerInfo {
 	int anim_[static_cast<int>(AnimType::max)];
 };
 
-class Player:public CharacterBase
+struct PlayerStatus {
+	JumpInfo jump;
+	VECTOR pos;
+	VECTOR rot;
+	VECTOR moveVec;
+	int animNo;
+	bool isAnimLoop;
+};
+
+class Player
 {
-	friend CheckCollisionModel;
-	friend GimmickBase;
 public:
 
 	Player(const char* const filename);
@@ -37,20 +44,40 @@ public:
 
 	void init();
 
+	/// <summary>
+	/// プレイヤーの更新を行う
+	/// </summary>
+	/// <param name="input">外部装置の入力情報を参照する</param>
+	/// <param name="models">衝突判定を行うモデルのvector型の配列</param>
 	void update(const InputState& input);
+
+	/// <summary>
+	/// プレイヤー関連の描画
+	/// </summary>
 	void draw();
 
-	VECTOR getPos() { return pos_; }
 	VECTOR getRot();
+
+	/// <summary>
+	/// 外部からのポジションを受け取る
+	/// </summary>
+	/// <param name="pos">ポジション情報</param>
 	void setPos(VECTOR pos);
-	JumpInfo getJumpInfo() { return jump_; }
+
+	/// <summary>
+	/// 外部からのジャンプ情報を受け取る
+	/// </summary>
+	/// <param name="isJump">ジャンプフラグ</param>
+	/// <param name="jumpVec">ジャンプベクトル</param>
 	void setJumpInfo(bool isJump, float jumpVec);
 
-	VECTOR getMoveVec() { return moveVec_; }
+	void setClim(bool isClim) { isClim_ = isClim; }
 
 	void setSaveData(VECTOR pos, int num, bool isContinue);
 	int getDeathNum() {return deathCount_;	}
-	std::list<std::shared_ptr<Model>> getDeadPerson() { return deadPerson_; }
+
+	PlayerStatus getStatus() { return status_; }
+
 private:
 	//通常更新
 	void idleUpdate(const InputState& input);
@@ -85,6 +112,9 @@ private:
 	//座る
 	void sitUpdate(const InputState& input);
 
+	//座っている途中
+	void idleToSitup(const InputState& input);
+
 	//立ち上がる
 	void standUpdate(const InputState& input);
 
@@ -92,12 +122,6 @@ private:
 	void carryObject();
 
 private:
-
-	/// <summary>
-	/// 死亡パターン別、衝突情報の設定
-	/// </summary>
-	void setCollitionInfoByDeathPattern();
-
 	/// <summary>
 	/// プレイヤーの移動速度を設定する
 	/// </summary>
@@ -120,12 +144,11 @@ private:
 	bool isClim_ = false;
 	bool isContinue_ = false;
 
-	JumpInfo jump_;												//ジャンプ関連の構造体
-
+	PlayerInfo playerInfo_ = {};
+	PlayerStatus status_ = {};
 
 	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};						//中間ポイント
 
-	VECTOR moveVec_ = { 0.0f,0.0f,0.0f };						//プレイヤーの移動ベクトル
 	VECTOR temp_ = { 0.0f,0.0f,0.0f };							//プレイヤーの移動ベクトル
 
 	VECTOR deathPos = { 0.0f,0.0f,0.0f };						//死体のポジション
@@ -133,11 +156,8 @@ private:
 	std::shared_ptr<Model> PModel_;								//モデルクラスのポインタ
 	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
 
-	std::list<std::shared_ptr<Model>> deadPerson_;				//死体を保存するため
-
 	std::unordered_map<AnimType, int> animType_;				
 
-	PlayerInfo playerInfo;
 
 	void(Player::* updateFunc_)(const InputState& input);		//メンバ関数ポインタ
 };

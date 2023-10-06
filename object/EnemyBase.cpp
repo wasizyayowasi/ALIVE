@@ -16,7 +16,7 @@ void EnemyBase::stalkingUpdate()
 	//model_->setPos(pos_);
 }
 
-void EnemyBase::update()
+void EnemyBase::update(Player& player)
 {
 	//stalkingUpdate();
 }

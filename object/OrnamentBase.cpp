@@ -15,7 +15,7 @@ OrnamentBase::~OrnamentBase()
 {
 }
 
-void OrnamentBase::update()
+void OrnamentBase::update(Player& player)
 {
 }
 

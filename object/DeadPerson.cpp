@@ -1,4 +1,5 @@
 #include "DeadPerson.h"
+#include "Player.h"
 #include "../util/Model.h"
 #include "../util/ObjAnimType.h"
 
@@ -49,12 +50,21 @@ DeadPerson::~DeadPerson()
 {
 }
 
-void DeadPerson::update()
+void DeadPerson::update(Player& player)
 {
+
 }
 
 void DeadPerson::draw()
 {
 	model_->draw();
+}
+
+void DeadPerson::hitColl(Player& player)
+{
+	hitDim_ = MV1CollCheck_Capsule(model_->getModelHandle(), model_->getColFrameIndex(), VAdd(player.getStatus().pos, VGet(0.0f, 10.0f, 0.0f)), VAdd(player.getStatus().pos, VGet(0.0f, 150.0f, 0.0f)), 20.0f);
+
+	if (hitDim_.HitNum < 1) return;
+
 }
 

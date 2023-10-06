@@ -45,28 +45,16 @@ void Switch::update(Player& player)
 
 }
 
-VECTOR Switch::deadPersonCapsulePosAdjustment(std::shared_ptr<Model> person)
-{
-	VECTOR rot = person->getRot();
-	rot = VNorm(rot);
-	rot = VScale(VNorm(rot),-100.0f);
-	rot.y = 20.0f;
-
-	return rot;
-
-}
-
 //衝突判定
 void Switch::hitColl(Player& player)
 {
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
-	hitDim_.push_back(MV1CollCheck_Capsule(model_->getModelHandle(), model_->getColFrameIndex(), VAdd(player.getPos(), VGet(0.0f, 10.0f, 0.0f)), VAdd(player.getPos(), VGet(0.0f, 150.0f, 0.0f)), 20.0f));
+	hitDim_.push_back(MV1CollCheck_Capsule(model_->getModelHandle(), model_->getColFrameIndex(), VAdd(player.getStatus().pos, VGet(0.0f, 10.0f, 0.0f)), VAdd(player.getStatus().pos, VGet(0.0f, 150.0f, 0.0f)), 20.0f));
 
 	//死体の位置情報を元にしたカプセルとスイッチモデルの判定
-	for (auto& person : player.getDeadPerson()) {
-		VECTOR rot = deadPersonCapsulePosAdjustment(person);
-		hitDim_.push_back(MV1CollCheck_Capsule(model_->getModelHandle(), model_->getColFrameIndex(), VAdd(person->getPos(), VGet(0.0f, 0.0f, 0.0f)), VAdd(person->getPos(), rot), 20.0f));
-	}
+	/*for (auto& person : player.getDeadPerson()) {
+		hitDim_.push_back(MV1CollCheck_Capsule(model_->getModelHandle(), model_->getColFrameIndex(), VAdd(person->getPos(), VGet(0.0f, 0.0f, 0.0f)), person->getPos(), 20.0f));
+	}*/
 
 	int hitNum = 0;
 	//当たっている数を数える
