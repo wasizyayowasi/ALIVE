@@ -9,7 +9,7 @@ public:
 	CarryObjectBase(int handle);
 	virtual ~CarryObjectBase();
 
-	virtual void update();
+	virtual void update(Player& player)override;
 	virtual void draw();
 
 	virtual bool collInfo();

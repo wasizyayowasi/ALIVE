@@ -19,7 +19,7 @@ tempEnemy::~tempEnemy()
 {
 }
 
-void tempEnemy::update()
+void tempEnemy::update(Player& player)
 {
 	pos_.x += 1.0f;
 	model_->setPos(pos_);

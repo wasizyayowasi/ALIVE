@@ -102,7 +102,7 @@ void GameMain::draw()
 	ClearDrawScreen();
 
 	camera_->init();
-	camera_->trackingCameraUpdate(player_->getPos());
+	camera_->trackingCameraUpdate(player_->getStatus().pos);
 
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
@@ -139,7 +139,7 @@ void GameMain::normalUpdate(const InputState& input)
 {
 	auto& objManager = ObjectManager::getInstance();
 
-	objManager.update();
+	objManager.update(*player_);
 
 	player_->update(input);
 	camera_->changeOfFocus(input);
@@ -148,7 +148,7 @@ void GameMain::normalUpdate(const InputState& input)
 
 	SoundManager::getInstance().set3DSoundListenerInfo(camera_->getPos(), camera_->getTarget());
 
-	if (player_->getPos().x > 1900) {
+	if (player_->getStatus().pos.x > 1900) {
 		checkPoint_ = { 1900,0,0 };
 	}
 

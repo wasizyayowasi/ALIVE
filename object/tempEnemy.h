@@ -8,7 +8,7 @@ public:
 	tempEnemy(int handle);
 	virtual ~tempEnemy();
 
-	void update();
+	void update(Player& player) override;
 	void draw();
 private:
 

@@ -14,9 +14,7 @@ public:
 	virtual ~Switch();
 
 	//更新
-	void update(Player& player);
-
-	VECTOR deadPersonCapsulePosAdjustment(std::shared_ptr<Model> person);
+	void update(Player& player)override;
 
 private:
 	//スイッチモデルとプレイヤー、死体との衝突判定を行う
