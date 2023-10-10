@@ -6,7 +6,7 @@
 ObjectBase::ObjectBase(const char* const filename)
 {
 	model_ = std::make_shared<Model>(filename);
-	model_->setCollFrame();
+	model_->SetCollFrame();
 	isEnable_ = true;
 
 }
@@ -22,12 +22,12 @@ ObjectBase::~ObjectBase()
 {
 }
 
-void ObjectBase::update(Player& player)
+void ObjectBase::Update(Player& player)
 {
-	model_->update();
+	model_->Update();
 }
 
-void ObjectBase::draw()
+void ObjectBase::Draw()
 {
-	model_->draw();
+	model_->Draw();
 }

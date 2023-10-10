@@ -10,6 +10,16 @@ class Model;
 
 constexpr int max_hit_coll = 2048;
 
+struct CollModelState {
+	MV1_COLL_RESULT_POLY_DIM hitDim;
+	std::shared_ptr<Model> model;
+};
+
+struct CollResultPoly {
+	MV1_COLL_RESULT_POLY* hitDim;
+	std::shared_ptr<Model> model;
+};
+
 class CheckCollisionModel
 {
 public:
@@ -25,14 +35,19 @@ public:
 	/// <param name="player">プレイヤーを参照</param>
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="models">プレイヤーと衝突判定を行うモデル</param>
-	void checkCollisionPersonalArea(Player& player,VECTOR moveVec);
+	void CheckCollisionPersonalArea(Player& player,VECTOR moveVec);
 
 	/// <summary>
-	/// 衝突したモデルのポリゴンが壁かを判断する
+	/// 衝突した壁と床のポリゴン数を数える
+	/// </summary>
+	void CheckWallAndFloor();
+
+	/// <summary>
+	/// 衝突したモデルのポリゴンが壁かを判断し、移動ベクトルを補正する
 	/// </summary>
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="playerHeight">プレイヤーの高さ</param>
-	void checkCollisionWall(VECTOR moveVec, float playerHeight);
+	void CheckCollisionWall(VECTOR moveVec, float playerHeight);
 
 	/// <summary>
 	/// 衝突したモデルのポリゴンが床かを判断する
@@ -41,7 +56,7 @@ public:
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="jumpFlag">プレイヤーのジャンプフラグ</param>
 	/// <param name="playerHeight">プレイヤーの高さ</param>
-	void checkCollisionFloor(Player& player, VECTOR moveVec,bool jumpFlag,float playerHeight);
+	void CheckCollisionFloor(Player& player, VECTOR moveVec,bool jumpFlag,float playerHeight);
 
 	/// <summary>
 	/// checkCollisionPersonalArea、checkCollisionWall、checkCollisionFloorを呼び出す。
@@ -53,13 +68,16 @@ public:
 	/// <param name="playerHeight">プレイヤーの高さ</param>
 	/// <param name="isJump">プレイヤーのジャンプフラグ</param>
 	/// <param name="jumpVec">プレイヤーのジャンプベクトル</param>
-	void checkCollision(Player& player, VECTOR moveVec,float playerHeight,bool isJump,float jumpVec);
+	void CheckCollision(Player& player, VECTOR moveVec,float playerHeight,bool isJump,float jumpVec);
 
 	/// <summary>
 	/// 衝突したオブジェクトが乗り越えられるか判断する
 	/// </summary>
 	/// <param name="playerHeight">プレイヤーの高さ</param>
-	void checkStepDifference(Player& player, float playerHeight);
+	void CheckStepDifference(Player& player, float playerHeight);
+
+
+	void CheckCollSpecificModel(Player& player);
 
 private:
 
@@ -69,19 +87,16 @@ private:
 
 	VECTOR oldPos;				//現在のプレイヤーの座標
 	VECTOR nowPos;				//プレイヤーの移動量と現在の座標を足して結果
-	int i = 0;
-	int	j = 0;
-	int	k = 0;
-	int hitWallNum = 0;				//壁と衝突したポリゴンの数
-	int hitFloorNum = 0;			//床と衝突したポリゴンの数
+	int hitWallNum = 0;			//壁と衝突したポリゴンの数
+	int hitFloorNum = 0;		//床と衝突したポリゴンの数
 	bool moveFlag = false;		//現在移動しているかのフラグ
 	bool hitFlag = false;		//衝突したかのフラグ
 
 	//モデルとの当たり判定用メソッド
-	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
-	MV1_COLL_RESULT_POLY* wallHitDim_[max_hit_coll] = {};
-	MV1_COLL_RESULT_POLY* floorHitDim_[max_hit_coll] = {};
-	MV1_COLL_RESULT_POLY* hitPoly = {};
+	std::list<CollModelState> hitDim_;
+	CollResultPoly wallHitDim_[max_hit_coll] = {};
+	CollResultPoly floorHitDim_[max_hit_coll] = {};
+	//MV1_COLL_RESULT_POLY* hitPoly = {};
 	HITRESULT_LINE hitLineResult = {};
 };
 

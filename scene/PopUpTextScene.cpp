@@ -16,26 +16,26 @@ void PopUpTextScene::loadText()
 {
 }
 
-void PopUpTextScene::init()
+void PopUpTextScene::Init()
 {
 }
 
-void PopUpTextScene::end()
+void PopUpTextScene::End()
 {
 }
 
-void PopUpTextScene::update(const InputState& input)
+void PopUpTextScene::Update(const InputState& input)
 {
-	if (input.isTriggered(InputType::space)) {
-		manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+	if (input.IsTriggered(InputType::space)) {
+		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
 }
 
-void PopUpTextScene::draw()
+void PopUpTextScene::Draw()
 {
 	//ëΩï™çÌèúÇ∑ÇÈ
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
-	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, 0x000000, true);
+	DrawBox(0, 0, Game::screen_width, Game::screen_height, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	DrawFormatString(0, 0, 0xffffff, "ïœçXÇµÇ‹ÇµÇΩ");

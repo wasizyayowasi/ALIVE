@@ -42,31 +42,31 @@ class InputState
 public:
 	InputState();
 
-	bool isTriggered(InputType type) const;
+	bool IsTriggered(InputType type) const;
 
-	bool isPressed(InputType type) const;
+	bool IsPressed(InputType type) const;
 
-	void update();
+	void Update();
 
-	void rewriteInputInfo(InputType type, InputCategory cat, int id);
+	void RewriteInputInfo(InputType type, InputCategory cat, int id);
 
-	void commitChangedInputInfo();
+	void CommitChangedInputInfo();
 
-	void rollbackChangedInputInfo();
+	void RollbackChangedInputInfo();
 
-	void resetInputInfo();
+	void ResetInputInfo();
 
-	void undoSelectKey(InputType type, InputCategory cat);
+	void UndoSelectKey(InputType type, InputCategory cat);
 
-	void savekeyInfo()const;
+	void SavekeyInfo()const;
 
-	void loadKeyInfo();
+	void LoadKeyInfo();
 
-	void savekeyInfo2()const;
+	void SavekeyInfo2()const;
 
-	void loadKeyInfo2(const char* filename);
+	void LoadKeyInfo2(const char* filename);
 
-	bool lastInput();
+	bool LastInput();
 
 private:
 

@@ -7,9 +7,9 @@ namespace {
 
 Steelyard::Steelyard(const char* const filename):GimmickBase(filename)
 {
-	model_->setScale(scale);
-	model_->setPos({ 1845,0,0 });
-	model_->setCollFrame();
+	model_->SetScale(scale);
+	model_->SetPos({ 1845,0,0 });
+	model_->SetCollFrame();
 }
 
 Steelyard::Steelyard(int handle):GimmickBase(handle)
@@ -20,11 +20,11 @@ Steelyard::~Steelyard()
 {
 }
 
-void Steelyard::update(Player& player)
+void Steelyard::Update(Player& player)
 {
 }
 
-void Steelyard::draw()
+void Steelyard::Draw()
 {
-	model_->draw();
+	model_->Draw();
 }

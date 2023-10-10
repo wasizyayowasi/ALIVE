@@ -10,13 +10,13 @@ EnemyBase::EnemyBase(int handle) : CharacterBase(handle)
 {
 }
 
-void EnemyBase::stalkingUpdate()
+void EnemyBase::StalkingUpdate()
 {
 	//pos_ = VAdd(pos_, VScale(VNorm(player->getPos()), 3.0f));
 	//model_->setPos(pos_);
 }
 
-void EnemyBase::update(Player& player)
+void EnemyBase::Update(Player& player)
 {
 	//stalkingUpdate();
 }

@@ -4,12 +4,12 @@
 //ゲーム全般の設定
 namespace Game {
 	//windowモード
-	constexpr bool kWindowMode = true;
+	constexpr bool window_mode = true;
 	//window名
-	const char* const kTitleText = "ALIVE";
+	const char* const title_text = "ALIVE";
 	//windowサイズ
-	constexpr int kScreenWidth = 1280;
-	constexpr int kScreenHeight = 880;
+	constexpr int screen_width = 1280;
+	constexpr int screen_height = 880;
 	//カラーモード
-	constexpr int kScreenDepth = 32;     //32 or 16
+	constexpr int screen_depth = 32;     //32 or 16
 }

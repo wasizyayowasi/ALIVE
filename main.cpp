@@ -17,13 +17,13 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	//windowモードの設定
-	ChangeWindowMode(Game::kWindowMode);
+	ChangeWindowMode(Game::window_mode);
 
 	//window名設定
-	SetMainWindowText(Game::kTitleText);
+	SetMainWindowText(Game::title_text);
 
 	//画面サイズの設定
-	SetGraphMode(Game::kScreenWidth,Game::kScreenHeight, Game::kScreenDepth);
+	SetGraphMode(Game::screen_width,Game::screen_height, Game::screen_depth);
 
 	//3DサウンドにXAudioを使用するか
 	SetEnableXAudioFlag(true);
@@ -35,7 +35,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return -1;			// エラーが起きたら直ちに終了
 	}
 
-	EffekseerManager::getInstance().init();
+	EffekseerManager::getInstance().Init();
 	
 	//// ただし、DirectX11を使用する場合は実行する必要はない。
 	//Effekseer_SetGraphicsDeviceLostCallbackFunctions();
@@ -48,7 +48,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SceneManager manager;
 
 	//manager.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager)));
-	manager.changeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager)));
+	manager.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager)));
 
 	while (ProcessMessage() == 0) {
 
@@ -59,10 +59,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//画面のクリア
 		ClearDrawScreen();
 
-		input.update();
+		input.Update();
 
-		manager.update(input);
-		manager.draw();
+		manager.Update(input);
+		manager.Draw();
 
 		auto fps = GetFPS();
 		auto DC = GetDrawCallCount();
@@ -81,9 +81,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		}
 
+		if (manager.End()) {
+			break;
+		}
+
 	}
 
-	EffekseerManager::getInstance().end();
+	EffekseerManager::getInstance().End();
 
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 

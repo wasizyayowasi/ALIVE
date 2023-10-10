@@ -10,7 +10,7 @@ EffekseerManager::~EffekseerManager()
 {
 }
 
-void EffekseerManager::init()
+void EffekseerManager::Init()
 {
     //loadEffekseerFile();
 
@@ -19,7 +19,7 @@ void EffekseerManager::init()
     assert(Effkseer_Init(8000) != -1);
 }
 
-void EffekseerManager::end()
+void EffekseerManager::End()
 {
     for (auto& effect : nameAndHandleTable_) {
         DeleteEffekseerEffect(effect.second);
@@ -28,7 +28,7 @@ void EffekseerManager::end()
     Effkseer_End();
 }
 
-void EffekseerManager::update(const char* name)
+void EffekseerManager::Update(const char* name)
 {
 
     Effekseer_Sync3DSetting();
@@ -40,7 +40,7 @@ void EffekseerManager::update(const char* name)
     UpdateEffekseer3D();
 }
 
-void EffekseerManager::draw(const char* name)
+void EffekseerManager::Draw(const char* name)
 {
     for (int i = 0; i < nameAndHandleTable_.size(); i++) {
         DrawEffekseer3D_Begin();
@@ -48,7 +48,7 @@ void EffekseerManager::draw(const char* name)
     }
 }
 
-int EffekseerManager::loadEffekseerFile(const char* fileName)
+int EffekseerManager::LoadEffekseerFile(const char* fileName)
 {
     std::string path = "data/Effekseer/";
     path += fileName;

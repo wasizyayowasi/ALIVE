@@ -11,12 +11,12 @@ using namespace std;
 
 SoundManager::SoundManager() {
     //loadSoundConfig();
-    load3DSoundBGMFile("cafe");
-    setSEVolume(volumeSE_);
-    setBGMVolume(volumeBGM_);
+    Load3DSoundBGMFile("cafe");
+    SetSEVolume(volumeSE_);
+    SetBGMVolume(volumeBGM_);
 }
 
-int SoundManager::load2DSoundSEFile(const char* fileName)
+int SoundManager::Load2DSoundSEFile(const char* fileName)
 {
     //ファイルパスの生成
     string path = "data/sound/SE/";
@@ -38,7 +38,7 @@ int SoundManager::load2DSoundSEFile(const char* fileName)
 /// </summary>
 /// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
 /// <returns>ロードしたサウンド</returns>
-int SoundManager::load2DSoundBGMFile(const char* fileName)
+int SoundManager::Load2DSoundBGMFile(const char* fileName)
 {
     //ファイルパスの生成
     string path = "data/sound/BGM/";
@@ -55,7 +55,7 @@ int SoundManager::load2DSoundBGMFile(const char* fileName)
     return handle;
 }
 
-int SoundManager::load3DSoundSEFile(const char* fileName)
+int SoundManager::Load3DSoundSEFile(const char* fileName)
 {
     //ファイルパスの生成
     string path = "data/sound/SE/";
@@ -74,7 +74,7 @@ int SoundManager::load3DSoundSEFile(const char* fileName)
     return handle;
 }
 
-int SoundManager::load3DSoundBGMFile(const char* fileName)
+int SoundManager::Load3DSoundBGMFile(const char* fileName)
 {
     //ファイルパスの生成
     string path = "data/sound/BGM/";
@@ -93,7 +93,7 @@ int SoundManager::load3DSoundBGMFile(const char* fileName)
     return handle;
 }
 
-void SoundManager::loadSoundConfig()
+void SoundManager::LoadSoundConfig()
 {
     SoundConfigInfo conf = {};
     FILE* fp = nullptr;
@@ -110,19 +110,19 @@ SoundManager::~SoundManager()
 {
 }
 
-void SoundManager::play(const char* name)
+void SoundManager::Play(const char* name)
 {
     assert(nameAndHandleTable_[name] != -1);
     PlaySoundMem(nameAndHandleTable_[name], DX_PLAYTYPE_BACK);
 }
 
-void SoundManager::playMusic(const char* path)
+void SoundManager::PlayBGM(const char* path)
 {
     PlayMusic(path, DX_PLAYTYPE_LOOP);
     SetVolumeMusic(volumeBGM_);
 }
 
-void SoundManager::setSEVolume(unsigned int volume)
+void SoundManager::SetSEVolume(unsigned int volume)
 {
     for (auto& record : nameAndHandleTable_) {
         ChangeVolumeSoundMem(volume, record.second);
@@ -130,41 +130,41 @@ void SoundManager::setSEVolume(unsigned int volume)
     volumeSE_ = volume;
 }
 
-int SoundManager::getSEVolume() const
+int SoundManager::GetSEVolume() const
 {
     return volumeSE_;
 }
 
-void SoundManager::setBGMVolume(unsigned int volume)
+void SoundManager::SetBGMVolume(unsigned int volume)
 {
     SetVolumeMusic(volume);
     volumeBGM_ = volume;
 }
 
-void SoundManager::setBGMRate(float rate)
+void SoundManager::SetBGMRate(float rate)
 {
     assert(0.0f <= rate && rate <= 1.0f);
     SetVolumeMusic(static_cast<int>(static_cast<float>(volumeBGM_ * rate)));
 }
 
-int SoundManager::getBGMVolume() const
+int SoundManager::GetBGMVolume() const
 {
     return volumeBGM_;
 }
 
-void SoundManager::stopSE(const char* name)
+void SoundManager::StopSE(const char* name)
 {
     if (name != nullptr) {
         StopSoundMem(nameAndHandleTable_[name]);
     }
 }
 
-void SoundManager::stopBGM()
+void SoundManager::StopBGM()
 {
     StopMusic();
 }
 
-void SoundManager::saveSoundConfig()
+void SoundManager::SaveSoundConfig()
 {
     SoundConfigInfo conf = {};
     std::copy_n(std::begin(sound_file_signature), sizeof(char) * 4, std::begin(conf.signature));
@@ -181,7 +181,7 @@ void SoundManager::saveSoundConfig()
 }
 
 
-void SoundManager::set3DSoundInfo(VECTOR pos, float audioRange, const char* name)
+void SoundManager::Set3DSoundInfo(VECTOR pos, float audioRange, const char* name)
 {
     assert(nameAndHandleTable_[name] != -1);
     //サウンドのポジションを決める
@@ -190,7 +190,7 @@ void SoundManager::set3DSoundInfo(VECTOR pos, float audioRange, const char* name
     Set3DRadiusSoundMem(audioRange, nameAndHandleTable_[name]);
 }
 
-void SoundManager::set3DSoundListenerInfo(VECTOR pos, VECTOR rot)
+void SoundManager::Set3DSoundListenerInfo(VECTOR pos, VECTOR rot)
 {
     //リスナーの位置と向きを設定
     Set3DSoundListenerPosAndFrontPos_UpVecY(pos, rot);

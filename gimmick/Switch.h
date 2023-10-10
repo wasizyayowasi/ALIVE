@@ -14,11 +14,11 @@ public:
 	virtual ~Switch();
 
 	//更新
-	void update(Player& player)override;
+	void Update(Player& player)override;
 
 private:
 	//スイッチモデルとプレイヤー、死体との衝突判定を行う
-	void hitColl(Player& player);
+	void HitColl(Player& player);
 	//スイッチをオンにする
 	void OnAnim();
 	//スイッチをオフにする

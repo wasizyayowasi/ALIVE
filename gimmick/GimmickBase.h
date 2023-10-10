@@ -14,11 +14,11 @@ public:
 	virtual ~GimmickBase();
 
 	//XV
-	virtual void update(Player& player)override;
+	virtual void Update(Player& player)override;
 	//•`‰æ
-	void draw();
+	void Draw();
 
-	std::shared_ptr<Model> getModelInfo() { return model_; }
+	std::shared_ptr<Model> GetModelInfo() { return model_; }
 
 private:
 

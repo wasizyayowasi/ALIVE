@@ -11,8 +11,8 @@ public:
 	//デストラクタ
 	virtual ~EnemyBase() {};
 
-	void update(Player& player) override;
-	void stalkingUpdate();
+	void Update(Player& player) override;
+	void StalkingUpdate();
 
 private:
 

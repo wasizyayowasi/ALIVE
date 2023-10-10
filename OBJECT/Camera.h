@@ -18,28 +18,28 @@ public:
 	/// </summary>
 	/// <param name="input">入力情報</param>
 	/// <param name="playerPos">プレイヤーのポジション</param>
-	void trackingCameraUpdate(VECTOR playerPos);
+	void TrackingCameraUpdate(VECTOR playerPos);
 
 	/// <summary>
 	/// 定点カメラ
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
-	void fixedPointCamera(VECTOR playerPos);
+	void FixedPointCamera(VECTOR playerPos);
 
 	/// <summary>
 	/// カメラの注視点を逸らす
 	/// </summary>
 	/// <param name="input">入力情報</param>
-	void changeOfFocus(const InputState& input);
+	void ChangeOfFocus(const InputState& input);
 
 	/// <summary>
 	/// プレイヤーの追跡
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
-	void tracking(VECTOR playerPos);
+	void Tracking(VECTOR playerPos);
 
-	VECTOR getPos() { return cameraPos_; }
-	VECTOR getTarget() { return cameraTarget_; }
+	VECTOR GetPos() { return cameraPos_; }
+	VECTOR GetTarget() { return cameraTarget_; }
 
 private:
 

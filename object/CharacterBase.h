@@ -14,9 +14,9 @@ public:
 	virtual ~CharacterBase() {};
 
 	//XV
-	virtual void update(Player& player) override;
+	virtual void Update(Player& player) override;
 	//•`‰æ
-	virtual void draw();
+	virtual void Draw();
 
 protected:
 

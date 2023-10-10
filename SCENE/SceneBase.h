@@ -9,11 +9,11 @@ public:
 	SceneBase(SceneManager& manager) : manager_(manager){}
 	virtual ~SceneBase() {};
 	
-	virtual void init() = 0;
-	virtual void end() = 0;
+	virtual void Init() = 0;
+	virtual void End() = 0;
 
-	virtual void update(const InputState& input) = 0;
-	virtual void draw() = 0;
+	virtual void Update(const InputState& input) = 0;
+	virtual void Draw() = 0;
 protected:
 	SceneManager& manager_;
 };

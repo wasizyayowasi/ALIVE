@@ -11,8 +11,8 @@ Model::Model(const char* fileName)
 	modelHandle_ = MV1LoadModel(fileName);
 	assert(modelHandle_ != -1);
 
-	clearAnimData(animPrev_);
-	clearAnimData(animNext_);
+	ClearAnimData(animPrev_);
+	ClearAnimData(animNext_);
 }
 
 //duplicate死体モデルのコンストラクタ
@@ -21,8 +21,8 @@ Model::Model(int orgModel)
 	modelHandle_ = MV1DuplicateModel(orgModel);
 	assert(modelHandle_ != -1);
 
-	clearAnimData(animPrev_);
-	clearAnimData(animNext_);
+	ClearAnimData(animPrev_);
+	ClearAnimData(animNext_);
 }
 
 //デストラクタ
@@ -32,7 +32,7 @@ Model::~Model()
 }
 
 //collisionフレームをcollisionとして使う
-void Model::setUseCollision(bool isUse, bool isNeedUpdate)
+void Model::SetUseCollision(bool isUse, bool isNeedUpdate)
 {
 	assert(isUse | !isNeedUpdate);
 
@@ -54,17 +54,17 @@ void Model::setUseCollision(bool isUse, bool isNeedUpdate)
 }
 
 //更新
-void Model::update()
+void Model::Update()
 {
-	updateAnim(animPrev_);
-	updateAnim(animNext_);
+	UpdateAnim(animPrev_);
+	UpdateAnim(animNext_);
 
 	animChangeFrame_++;
 	if (animChangeFrame_ > animChangeFrameTotal_) {
 		animChangeFrame_ = animChangeFrameTotal_;
 	}
 
-	updateAnimBlendRate();
+	UpdateAnimBlendRate();
 
 	if (isUpdateCollsion_ && isUpdateCollsion_) {
 		MV1RefreshCollInfo(modelHandle_, colFrameIndex_);
@@ -72,33 +72,33 @@ void Model::update()
 }
 
 //描画
-void Model::draw()
+void Model::Draw()
 {
 	MV1DrawModel(modelHandle_);
 }
 
 //ポジション設定
-void Model::setPos(VECTOR pos)
+void Model::SetPos(VECTOR pos)
 {
 	pos_ = pos;
 	MV1SetPosition(modelHandle_, pos);
 }
 
 //角度設定
-void Model::setRot(VECTOR rot)
+void Model::SetRot(VECTOR rot)
 {
 	rot_ = rot;
 	MV1SetRotationXYZ(modelHandle_, rot);
 }
 
 //拡縮率設定
-void Model::setScale(VECTOR scale)
+void Model::SetScale(VECTOR scale)
 {
 	MV1SetScale(modelHandle_,scale);
 }
 
 //collisionフレーム設定
-void Model::setCollFrame(const char* collFrameName)
+void Model::SetCollFrame(const char* collFrameName)
 {
 	colFrameIndex_ = MV1SearchFrame(modelHandle_, collFrameName);
 	if (colFrameIndex_ < 0) {
@@ -108,7 +108,7 @@ void Model::setCollFrame(const char* collFrameName)
 }
 
 //アニメーション設定
-void Model::setAnimation(int animNo, bool isLoop, bool IsForceChange)
+void Model::SetAnimation(int animNo, bool isLoop, bool IsForceChange)
 {
 	if (!IsForceChange) {
 		if (animNext_.animNo == animNo)return;
@@ -116,11 +116,11 @@ void Model::setAnimation(int animNo, bool isLoop, bool IsForceChange)
 
 	if (animPrev_.attachNo != -1) {
 		MV1DetachAnim(modelHandle_, animPrev_.attachNo);
-		clearAnimData(animPrev_);
+		ClearAnimData(animPrev_);
 	}
 	if (animNext_.attachNo != -1) {
 		MV1DetachAnim(modelHandle_, animNext_.attachNo);
-		clearAnimData(animNext_);
+		ClearAnimData(animNext_);
 	}
 
 	animNext_.animNo = animNo;
@@ -133,7 +133,7 @@ void Model::setAnimation(int animNo, bool isLoop, bool IsForceChange)
 }
 
 //アニメーション変更
-void Model::changeAnimation(int animNo, bool isLoop, bool isForceChange, int changeFrame)
+void Model::ChangeAnimation(int animNo, bool isLoop, bool isForceChange, int changeFrame)
 {
 	if (!isForceChange)
 	{
@@ -143,7 +143,7 @@ void Model::changeAnimation(int animNo, bool isLoop, bool isForceChange, int cha
 	if (animPrev_.attachNo != -1)
 	{
 		MV1DetachAnim(modelHandle_, animPrev_.attachNo);
-		clearAnimData(animPrev_);
+		ClearAnimData(animPrev_);
 	}
 	animPrev_ = animNext_;
 
@@ -155,11 +155,11 @@ void Model::changeAnimation(int animNo, bool isLoop, bool isForceChange, int cha
 	animChangeFrameTotal_ = changeFrame;
 	animChangeFrame_ = 0;
 
-	updateAnimBlendRate();
+	UpdateAnimBlendRate();
 }
 
 //アニメーションの終わりを取得
-bool Model::isAnimEnd()
+bool Model::IsAnimEnd()
 {
 	if (animNext_.isLoop) return false;
 
@@ -170,7 +170,7 @@ bool Model::isAnimEnd()
 }
 
 //アニメーションの終わりを設定
-void Model::setAnimEndFrame(int animNo)
+void Model::SetAnimEndFrame(int animNo)
 {
 	int momentAnimNo = MV1AttachAnim(modelHandle_, animNo, -1, false);
 	float animEndFrame = MV1GetAttachAnimTotalTime(modelHandle_, momentAnimNo);
@@ -178,7 +178,7 @@ void Model::setAnimEndFrame(int animNo)
 }
 
 //特定フレームの座標を取得
-VECTOR Model::getAnimFrameLocalPosition(int animNo, const char* frameName)
+VECTOR Model::GetAnimFrameLocalPosition(int animNo, const char* frameName)
 {
 	int animFrame = MV1SearchFrame(modelHandle_, frameName);
 	VECTOR localPos = MV1GetFramePosition(modelHandle_, animFrame);
@@ -187,7 +187,7 @@ VECTOR Model::getAnimFrameLocalPosition(int animNo, const char* frameName)
 }
 
 //アニメーション情報の初期化
-void Model::clearAnimData(AnimData& anim)
+void Model::ClearAnimData(AnimData& anim)
 {
 	anim.animNo = -1;
 	anim.attachNo = -1;
@@ -196,7 +196,7 @@ void Model::clearAnimData(AnimData& anim)
 }
 
 //アニメーションの更新
-void Model::updateAnim(AnimData anim, float dt)
+void Model::UpdateAnim(AnimData anim, float dt)
 {
 	if (anim.attachNo == -1) return;
 
@@ -217,7 +217,7 @@ void Model::updateAnim(AnimData anim, float dt)
 }
 
 //アニメーションのブレンド
-void Model::updateAnimBlendRate()
+void Model::UpdateAnimBlendRate()
 {
 	float rate = static_cast<float> (animChangeFrame_) / static_cast<float>(animChangeFrameTotal_);
 	if (rate > 1.0f)	rate = 1.0f;

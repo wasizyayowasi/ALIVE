@@ -10,10 +10,10 @@ CharacterBase::CharacterBase(int handle) :ObjectBase(handle)
 {
 }
 
-void CharacterBase::update(Player& player)
+void CharacterBase::Update(Player& player)
 {
 }
 
-void CharacterBase::draw()
+void CharacterBase::Draw()
 {
 }

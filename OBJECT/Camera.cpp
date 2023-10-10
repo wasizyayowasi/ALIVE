@@ -43,12 +43,12 @@ void Camera::init()
 }
 
 //プレイヤーを追跡するカメラの更新
-void Camera::trackingCameraUpdate(VECTOR playerPos)
+void Camera::TrackingCameraUpdate(VECTOR playerPos)
 {
 	
 	i = (std::max)(i, 0);
 
-	tracking(playerPos);
+	Tracking(playerPos);
 
 	//カメラがプレイヤーを追いかける用にする
 	cameraPos_.y = ((300.0f * 0.9f) + (playerPos.y * 0.1f));
@@ -64,7 +64,7 @@ void Camera::trackingCameraUpdate(VECTOR playerPos)
 }
 
 //定点カメラの更新
-void Camera::fixedPointCamera(VECTOR playerPos)
+void Camera::FixedPointCamera(VECTOR playerPos)
 {
 	//一定範囲を出たらカメラが次の場所へヌルっと動く
 
@@ -102,24 +102,24 @@ void Camera::fixedPointCamera(VECTOR playerPos)
 }
 
 //カメラの注視点を逸らす
-void Camera::changeOfFocus(const InputState& input)
+void Camera::ChangeOfFocus(const InputState& input)
 {
-	if (input.isPressed(InputType::upArrow)) {
+	if (input.IsPressed(InputType::upArrow)) {
 		cameraTarget_.y += add_focus;
 	}
-	else if (input.isPressed(InputType::downArrow)) {
+	else if (input.IsPressed(InputType::downArrow)) {
 		cameraTarget_.y -= add_focus;
 	}
-	else if (input.isPressed(InputType::leftArrow)) {
+	else if (input.IsPressed(InputType::leftArrow)) {
 		cameraTarget_.x -= add_focus;
 	} 
-	else if (input.isPressed(InputType::rightArrow)) {
+	else if (input.IsPressed(InputType::rightArrow)) {
 		cameraTarget_.x += add_focus;
 	}
 }
 
 //プレイヤーを追跡
-void Camera::tracking(VECTOR playerPos)
+void Camera::Tracking(VECTOR playerPos)
 {
 
 	bool overRightEndOfTheRoom = playerPos.x > threshold;

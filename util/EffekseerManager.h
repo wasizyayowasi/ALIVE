@@ -13,12 +13,12 @@ public:
 		return instance;
 	}
 
-	void init();
-	void end();
+	void Init();
+	void End();
 
-	void update(const char* name);
+	void Update(const char* name);
 
-	void draw(const char* name);
+	void Draw(const char* name);
 
 private:
 
@@ -26,7 +26,7 @@ private:
 
 	std::unordered_map<std::string, int> nameAndHandleTable_;
 
-	int  loadEffekseerFile(const char* fileName);
+	int  LoadEffekseerFile(const char* fileName);
 
 	EffekseerManager();
 

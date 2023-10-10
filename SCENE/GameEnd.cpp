@@ -14,26 +14,26 @@ GameEnd::~GameEnd()
 {
 }
 
-void GameEnd::init()
+void GameEnd::Init()
 {
 }
 
-void GameEnd::end()
+void GameEnd::End()
 {
 }
 
-void GameEnd::update(const InputState& input)
+void GameEnd::Update(const InputState& input)
 {
 	(this->*updateFunc_)(input);
 }
 
-void GameEnd::draw()
+void GameEnd::Draw()
 {
 	DrawString(0, 0, "GameEnd", 0xffffff);
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	//‰æ–Ê‘S‘Ì‚ğ^‚Á•‚É“h‚è‚Â‚Ô‚·
-	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, fadeColor_, true);
+	DrawBox(0, 0, Game::screen_width, Game::screen_height, fadeColor_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
@@ -48,7 +48,7 @@ void GameEnd::fadeInUpdate(const InputState& input)
 
 void GameEnd::normalUpdate(const InputState& input)
 {
-	if (input.isTriggered(InputType::space)) {
+	if (input.IsTriggered(InputType::space)) {
 		updateFunc_ = &GameEnd::fadeOutUpdate;
 	}
 }
@@ -57,7 +57,7 @@ void GameEnd::fadeOutUpdate(const InputState& input)
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) {
-		manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
+		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
 		return;
 	}
 }

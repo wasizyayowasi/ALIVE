@@ -14,17 +14,17 @@ CarryObjectBase::~CarryObjectBase()
 {
 }
 
-void CarryObjectBase::update(Player& player)
+void CarryObjectBase::Update(Player& player)
 {
 	
 }
 
-void CarryObjectBase::draw()
+void CarryObjectBase::Draw()
 {
-	model_->draw();
+	model_->Draw();
 }
 
-bool CarryObjectBase::collInfo()
+bool CarryObjectBase::CollInfo()
 {
 	// hitDim_ = MV1CollCheck_Capsule(object_->getModelHandle(), object_->getColFrameIndex(), VAdd(player.getPos(), VGet(0.0f, 10.0f, 0.0f)), VAdd(player.getPos(), VGet(0.0f, 150.0f, 0.0f)), 20.0f);
 

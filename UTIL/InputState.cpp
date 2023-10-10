@@ -58,7 +58,7 @@ InputState::InputState()
 	inputMapTable_ = defaultMapTable_;
 
 	//loadKeyInfo();
-	loadKeyInfo2("keyInfo");
+	LoadKeyInfo2("keyInfo");
 
 	//一時マップテーブルにコピー
 	tempMapTable_ = inputMapTable_;
@@ -85,18 +85,18 @@ InputState::InputState()
 
 }
 
-bool InputState::isTriggered(InputType type) const
+bool InputState::IsTriggered(InputType type) const
 {
-	return isPressed(type) && !lastInput_[static_cast<int>(type)];
+	return IsPressed(type) && !lastInput_[static_cast<int>(type)];
 }
 
-bool InputState::isPressed(InputType type) const
+bool InputState::IsPressed(InputType type) const
 {
 	
 	return currentInput_[static_cast<int>(type)];
 }
 
-void InputState::update()
+void InputState::Update()
 {
 
 	lastInput_ = currentInput_;//直前の入力情報を記憶しておく
@@ -126,7 +126,7 @@ void InputState::update()
 	}
 }
 
-void InputState::rewriteInputInfo(InputType type, InputCategory cat, int id)
+void InputState::RewriteInputInfo(InputType type, InputCategory cat, int id)
 {
 	//入力種別(割り当て先)がなければ、無効なので無視します。
 	if (tempMapTable_.count(type) == 0) {
@@ -149,25 +149,25 @@ void InputState::rewriteInputInfo(InputType type, InputCategory cat, int id)
 }
 
 //変更を許諾する
-void InputState::commitChangedInputInfo()
+void InputState::CommitChangedInputInfo()
 {
 	inputMapTable_ = tempMapTable_;
 }
 
 //前の状態に戻す
-void InputState::rollbackChangedInputInfo()
+void InputState::RollbackChangedInputInfo()
 {
 	tempMapTable_ = inputMapTable_;
 }
 
 //リセット
-void InputState::resetInputInfo()
+void InputState::ResetInputInfo()
 {
 	inputMapTable_ = defaultMapTable_;
 	tempMapTable_ = defaultMapTable_;
 }
 
-void InputState::undoSelectKey(InputType type, InputCategory cat)
+void InputState::UndoSelectKey(InputType type, InputCategory cat)
 {
 	for (auto& info : tempMapTable_[type]) {
 		if (info.cat == cat) {
@@ -180,7 +180,7 @@ void InputState::undoSelectKey(InputType type, InputCategory cat)
 //TODO：消す
 //書き出し
 //もう使わないと思う
-void InputState::savekeyInfo() const
+void InputState::SavekeyInfo() const
 {
 	FILE* fp = nullptr;
 
@@ -210,7 +210,7 @@ void InputState::savekeyInfo() const
 //TODO：消す
 //読み込み
 //もう使わないと思う
-void InputState::loadKeyInfo()
+void InputState::LoadKeyInfo()
 {
 	int handle = FileRead_open("key.info");
 	assert(handle != -1);
@@ -236,7 +236,7 @@ void InputState::loadKeyInfo()
 	FileRead_close(handle);
 }
 
-void InputState::savekeyInfo2() const
+void InputState::SavekeyInfo2() const
 {
 	//決め打ちしか出来ないのがネック
 	json keyInfo_[static_cast<int>(InputType::max)];
@@ -290,7 +290,7 @@ void InputState::savekeyInfo2() const
 
 }
 
-void InputState::loadKeyInfo2(const char* filename)
+void InputState::LoadKeyInfo2(const char* filename)
 {
 
 	//初期化した中身を消す
@@ -361,7 +361,7 @@ void InputState::loadKeyInfo2(const char* filename)
 	ifs.close();
 }
 
-bool InputState::lastInput()
+bool InputState::LastInput()
 {
 	return false;
 }
