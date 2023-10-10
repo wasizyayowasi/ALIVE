@@ -32,7 +32,7 @@ namespace {
 
 	const char* const temp_fieldpath = "data/model/tempFiled4.mv1";
 	const char* const temp_stairs = "data/model/stairs.mv1";
-	const char* const cube_filename = "data/model/box.mv1";
+	const char* const cube_filename = "data/model/bigPillar.mv1";
 	const char* const switch_filename = "data/model/switch.mv1";
 	const char* const steelyard_filename = "data/model/steelyard.mv1";
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
