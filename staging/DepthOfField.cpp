@@ -6,8 +6,8 @@ DepthOfField::DepthOfField()
 
 	
 
-	textureWidth = Game::kScreenWidth;
-	textureHeight = Game::kScreenHeight;
+	textureWidth = Game::screen_width;
+	textureHeight = Game::screen_height;
 
 	normalTexture = MakeScreen(textureWidth, textureHeight, true);
 	weakVertigoTexture = MakeScreen(textureWidth, textureHeight, true);
@@ -46,10 +46,10 @@ void DepthOfField::depthOfFieldInit()
 	drawScreen(normalTexture, false);
 
 	//通常描画の結果に暈しを加えた画像を保存
-	GraphFilterRectBlt(normalTexture, weakVertigoTexture, 0, 0, Game::kScreenWidth, Game::kScreenHeight, 0, 0, DX_GRAPH_FILTER_GAUSS, 16, 200);
+	GraphFilterRectBlt(normalTexture, weakVertigoTexture, 0, 0, Game::screen_width, Game::screen_height, 0, 0, DX_GRAPH_FILTER_GAUSS, 16, 200);
 
 	//暈しを加えた場増にさらに暈しを加えて帆zん
-	GraphFilterRectBlt(weakVertigoTexture, strongVertigoTexture, 0, 0, Game::kScreenWidth, Game::kScreenHeight, 0, 0, DX_GRAPH_FILTER_GAUSS, 16, 200);
+	GraphFilterRectBlt(weakVertigoTexture, strongVertigoTexture, 0, 0, Game::screen_width, Game::screen_height, 0, 0, DX_GRAPH_FILTER_GAUSS, 16, 200);
 
 	//深度値描画用テクスチャに深度値を描画
 	drawScreen(depthTexture,false);
@@ -78,17 +78,17 @@ void DepthOfField::draw()
 
 	//画面全体に描画する頂点の準備
 	vertex_[0].pos = VGet(0.0f,0.0f,0.0f);
-	vertex_[1].pos = VGet(Game::kScreenWidth,0.0f,0.0f);
-	vertex_[2].pos = VGet(0.0f,Game::kScreenHeight,0.0f);
-	vertex_[3].pos = VGet(Game::kScreenWidth,Game::kScreenHeight,0.0f);
+	vertex_[1].pos = VGet(Game::screen_width,0.0f,0.0f);
+	vertex_[2].pos = VGet(0.0f,Game::screen_height,0.0f);
+	vertex_[3].pos = VGet(Game::screen_width,Game::screen_height,0.0f);
 
 	vertex_[0].rhw = 1.0f;
 	vertex_[1].rhw = 1.0f;
 	vertex_[2].rhw = 1.0f;
 	vertex_[3].rhw = 1.0f;
 
-	rightU_ = Game::kScreenWidth / textureWidth;
-	bottomV_ = Game::kScreenHeight / textureWidth;
+	rightU_ = Game::screen_width / textureWidth;
+	bottomV_ = Game::screen_height / textureWidth;
 
 	vertex_[0].u = 0.0f;
 	vertex_[1].u = rightU_;

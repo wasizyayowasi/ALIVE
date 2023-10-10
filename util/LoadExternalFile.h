@@ -22,22 +22,22 @@ public:
 
 	~LoadExternalFile();
 
-	static LoadExternalFile& getInstance(bool continuation) {
+	static LoadExternalFile& GetInstance(bool continuation) {
 		static LoadExternalFile instance(continuation);
 		return instance;
 	}
 
-	ReadPlayerInfo getPlayerInfo() { return player; }
-	SaveData getSaveData() { return data; }
+	ReadPlayerInfo GetPlayerInfo() { return player; }
+	SaveData GetSaveData() { return data; }
 
-	void saveDataRewriteInfo(VECTOR pos, int num);
+	void SaveDataRewriteInfo(VECTOR pos, int num);
 
 private:
 
-	void loadPlayerInfo(const char* filename);
-	void loadSaveDataInfo(const char* filename);
+	void LoadPlayerInfo(const char* filename);
+	void LoadSaveDataInfo(const char* filename);
 
-	void rewritePlayerInfo();
+	void RewritePlayerInfo();
 
 	LoadExternalFile(bool temp);
 

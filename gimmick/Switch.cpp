@@ -8,18 +8,18 @@ namespace {
 
 Switch::Switch(const char* const filename) :GimmickBase(filename)
 {
-	model_->setScale(scale);
-	model_->setPos({ 2245,0,0 });
-	model_->setCollFrame();
-	model_->setAnimation(0, true, false);
+	model_->SetScale(scale);
+	model_->SetPos({ 2245,0,0 });
+	model_->SetCollFrame();
+	model_->SetAnimation(0, true, false);
 }
 
 Switch::Switch(int handle) :GimmickBase(handle)
 {
-	model_->setScale(scale);
-	model_->setPos({ 2245,0,0 });
-	model_->setCollFrame();
-	model_->setAnimation(0, true, false);
+	model_->SetScale(scale);
+	model_->SetPos({ 2245,0,0 });
+	model_->SetCollFrame();
+	model_->SetAnimation(0, true, false);
 }
 
 Switch::~Switch()
@@ -27,13 +27,13 @@ Switch::~Switch()
 }
 
 //更新
-void Switch::update(Player& player)
+void Switch::Update(Player& player)
 {
 	//アニメーションの更新
-	model_->update();
+	model_->Update();
 
 	//衝突判定
-	hitColl(player);
+	HitColl(player);
 
 	//衝突結果の削除
 	for (auto& result : hitDim_) {
@@ -46,10 +46,10 @@ void Switch::update(Player& player)
 }
 
 //衝突判定
-void Switch::hitColl(Player& player)
+void Switch::HitColl(Player& player)
 {
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
-	hitDim_.push_back(MV1CollCheck_Capsule(model_->getModelHandle(), model_->getColFrameIndex(), VAdd(player.getStatus().pos, VGet(0.0f, 10.0f, 0.0f)), VAdd(player.getStatus().pos, VGet(0.0f, 150.0f, 0.0f)), 20.0f));
+	hitDim_.push_back(MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), VAdd(player.GetStatus().pos, VGet(0.0f, 10.0f, 0.0f)), VAdd(player.GetStatus().pos, VGet(0.0f, 150.0f, 0.0f)), 20.0f));
 
 	//死体の位置情報を元にしたカプセルとスイッチモデルの判定
 	/*for (auto& person : player.getDeadPerson()) {
@@ -77,11 +77,11 @@ void Switch::hitColl(Player& player)
 //スイッチオンアニメーション
 void Switch::OnAnim()
 {
-	model_->setAnimation(1, false, false);
+	model_->SetAnimation(1, false, false);
 }
 
 //スイッチオフアニメーション
 void Switch::OffAnim()
 {
-	model_->setAnimation(2, false, false);
+	model_->SetAnimation(2, false, false);
 }

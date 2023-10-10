@@ -20,14 +20,14 @@ public:
 	virtual ~GameMain();
 
 	//初期化用関数
-	void init();
+	void Init();
 	//削除用関数
-	void end();
+	void End();
 
 	//更新
-	void update(const InputState& input);
+	void Update(const InputState& input);
 	//描画
-	void draw();
+	void Draw();
 
 private:
 

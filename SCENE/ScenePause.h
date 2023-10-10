@@ -14,14 +14,14 @@ public:
 	virtual ~ScenePause();
 
 	//初期化用
-	void init();
+	void Init();
 	//削除用
-	void end();
+	void End();
 
 	//更新
-	void update(const InputState& input);
+	void Update(const InputState& input);
 	//描画
-	void draw();
+	void Draw();
 
 private:
 

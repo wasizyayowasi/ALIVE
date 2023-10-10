@@ -11,18 +11,18 @@ using namespace std;
 
 LoadExternalFile::LoadExternalFile(bool continuation)
 {
-	loadPlayerInfo("player");
+	LoadPlayerInfo("player");
 	if (continuation) {
-		loadSaveDataInfo("saveData");
+		LoadSaveDataInfo("saveData");
 	}
 }
 
 LoadExternalFile::~LoadExternalFile()
 {
-	rewritePlayerInfo();
+	RewritePlayerInfo();
 }
 
-void LoadExternalFile::saveDataRewriteInfo(VECTOR pos, int num)
+void LoadExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 {
 	json saveData = {
 		{"name","saveData"},
@@ -43,7 +43,7 @@ void LoadExternalFile::saveDataRewriteInfo(VECTOR pos, int num)
 
 }
 
-void LoadExternalFile::loadPlayerInfo(const char* filename)
+void LoadExternalFile::LoadPlayerInfo(const char* filename)
 {
 	string path = "data/jsonFile/";
 	path += filename;
@@ -69,7 +69,7 @@ void LoadExternalFile::loadPlayerInfo(const char* filename)
 
 }
 
-void LoadExternalFile::loadSaveDataInfo(const char* filename)
+void LoadExternalFile::LoadSaveDataInfo(const char* filename)
 {
 	string path = "data/jsonFile/";
 	path += filename;
@@ -88,7 +88,7 @@ void LoadExternalFile::loadSaveDataInfo(const char* filename)
 
 }
 
-void LoadExternalFile::rewritePlayerInfo()
+void LoadExternalFile::RewritePlayerInfo()
 {
 	json player = {
 	   {"name","player"},

@@ -16,15 +16,15 @@ public:
 	virtual ~ObjectBase();
 
 	//更新
-	virtual void update(Player& player);
+	virtual void Update(Player& player);
 	//描画
-	virtual void draw();
+	virtual void Draw();
 
 	//現在有効か無効化を取得する
-	bool isEnabled() { return isEnable_; };
+	bool IsEnabled() { return isEnable_; };
 
 	//モデルのスマートポインタを取得する
-	std::shared_ptr<Model> getModelPointer() { return model_; }
+	std::shared_ptr<Model> GetModelPointer() { return model_; }
 
 protected:
 

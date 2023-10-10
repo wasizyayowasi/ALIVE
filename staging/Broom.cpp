@@ -10,11 +10,11 @@ Broom::Broom()
 
 	gaussRation_ = 900;
 	reductionScale_ = 8;
-	reductionScreenWidth_ = Game::kScreenWidth / reductionScale_;
-	reductionScreenHeight_ = Game::kScreenHeight / reductionScale_;
+	reductionScreenWidth_ = Game::screen_width / reductionScale_;
+	reductionScreenHeight_ = Game::screen_height / reductionScale_;
 
-	normalScreen_ = MakeScreen(Game::kScreenWidth,Game::kScreenHeight,true);
-	highBrightScreen_ = MakeScreen(Game::kScreenWidth, Game::kScreenHeight, true);
+	normalScreen_ = MakeScreen(Game::screen_width,Game::screen_height,true);
+	highBrightScreen_ = MakeScreen(Game::screen_width, Game::screen_height, true);
 	reductioScaleScreen_ = MakeScreen(reductionScreenWidth_,reductionScreenHeight_, true);
 	gaussScreen_ = MakeScreen(reductionScreenWidth_, reductionScreenHeight_, true);
 	
@@ -36,7 +36,7 @@ void Broom::writingScreenUpdate(VECTOR playerPos)
 	//画面のクリア
 	ClearDrawScreen();
 
-	camera_->fixedPointCamera(playerPos);
+	camera_->FixedPointCamera(playerPos);
 }
 
 void Broom::graphFilterUpdate()
@@ -71,8 +71,8 @@ void Broom::draw()
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 255);
 
 	//高輝度部分を縮小してぼかした画像を画面全体に2回描画する(2回描画するのはより明るくするため)
-	DrawExtendGraph(0, 0, Game::kScreenWidth, Game::kScreenHeight, gaussScreen_, false);
-	DrawExtendGraph(0, 0, Game::kScreenWidth, Game::kScreenHeight, gaussScreen_, false);
+	DrawExtendGraph(0, 0, Game::screen_width, Game::screen_height, gaussScreen_, false);
+	DrawExtendGraph(0, 0, Game::screen_width, Game::screen_height, gaussScreen_, false);
 
 	//描画ブレンドモードをブレンドなしに戻す
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 255);

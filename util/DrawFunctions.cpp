@@ -5,7 +5,7 @@
 namespace Graph {
 
     //グラフを読み込む関数
-    int Graph::loadGraph(const char* path)
+    int Graph::LoadGraph(const char* path)
     {
         int handle = LoadGraph(path);
         assert(handle != -1);
@@ -14,7 +14,7 @@ namespace Graph {
     }
 
     //読み込んだグラフを引数の値によって分割描画する
-    int Graph::drawRectRotaGraph(float x, float y, int left, int top, int width, int height, float scale, float angle, int handle, bool transFlag, bool tumFlag)
+    int Graph::DrawRectRotaGraph(float x, float y, int left, int top, int width, int height, float scale, float angle, int handle, bool transFlag, bool tumFlag)
     {
         return DrawRectRotaGraphF(x, y, left, top, width, height, scale, angle, handle, transFlag, tumFlag);
     }

@@ -2,14 +2,14 @@
 #include "DxLib.h"
 #include <cassert>
 
-int FontsManager::getFontHandle(const char* filename)
+int FontsManager::GetFontHandle(const char* filename)
 {
 	return fontHandle_[filename];
 }
 
 FontsManager::FontsManager()
 {
-	addFonts("High Tower Text",32);
+	AddFonts("High Tower Text",32);
 }
 
 FontsManager::~FontsManager()
@@ -19,7 +19,7 @@ FontsManager::~FontsManager()
 	}
 }
 
-void FontsManager::addFonts(const char* filename, int fontSize)
+void FontsManager::AddFonts(const char* filename, int fontSize)
 {
 	std::string path = "data/fonts/";
 	path += filename;
@@ -32,7 +32,7 @@ void FontsManager::addFonts(const char* filename, int fontSize)
 
 }
 
-int FontsManager::getStringSize(const char* string, const char* filename)
+int FontsManager::GetStringSize(const char* string, const char* filename)
 {
 	titleWidth_ = GetDrawStringWidthToHandle(string, strlen(string), fontHandle_[filename]);
 	return titleWidth_;

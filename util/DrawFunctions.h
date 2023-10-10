@@ -6,7 +6,7 @@ namespace Graph {
 	///グラフの読み込み
 	///</summary>
 	/// <param name="path">読み込みたいグラフのファイルパス</param>
-	int loadGraph(const char* path);
+	int LoadGraph(const char* path);
 
     /// <summary>
 	/// 読み込んだグラフを引数の値によって分割描画する
@@ -19,7 +19,7 @@ namespace Graph {
 	/// <param name="handle">読み込んだ画像</param>
 	/// <param name="transFlag">透過するか</param>
 	/// <param name="tumFlag">反転させるか</param>
-	int drawRectRotaGraph(float x, float y, int left, int top, int width, int height, float scale, float angle, int handle, bool transFlag, bool tumFlag);
+	int DrawRectRotaGraph(float x, float y, int left, int top, int width, int height, float scale, float angle, int handle, bool transFlag, bool tumFlag);
 
 }
 

@@ -17,40 +17,40 @@ ObjectManager::~ObjectManager()
 {
 }
 
-void ObjectManager::objectGenerator(ObjectBaseType baseType, ObjectType objType, const char* const filename)
+void ObjectManager::ObjectGenerator(ObjectBaseType baseType, ObjectType objType, const char* const filename)
 {
 	//objectBaseTypeを元にインスタンス化するクラスを決める
 	switch (baseType) {
 
 	//自我を持ったenemy以外のキャラクターを生成
 	case ObjectBaseType::characterBase:
-		characterGenerator(objType, filename);
+		CharacterGenerator(objType, filename);
 		break;
 
 	//enemyを生成
 	case ObjectBaseType::enemyBase:
-		enemyGenerator(objType, filename);
+		EnemyGenerator(objType, filename);
 		break;
 
 	//置物を生成
 	case ObjectBaseType::ornamentBase:
-		ornamentGenerator(objType, filename);
+		OrnamentGenerator(objType, filename);
 		break;
 	
 	//運べる置物生成
 	case ObjectBaseType::carryBase:
-		carryObjectGenerator(objType, filename);
+		CarryObjectGenerator(objType, filename);
 		break;
 
 	//ギミックを生成
 	case ObjectBaseType::gimmickBase:
-		gimmickObjectGenerator(objType, filename);
+		GimmickObjectGenerator(objType, filename);
 		break;
 	}
 
 }
 
-void ObjectManager::deadPersonGenerator(ObjectType objType, int handle, VECTOR pos, VECTOR rot, int animNo)
+void ObjectManager::DeadPersonGenerator(ObjectType objType, int handle, VECTOR pos, VECTOR rot, int animNo)
 {
 	objects_[objType].push_back(std::make_shared<DeadPerson>(handle, pos, rot, animNo));
 
@@ -61,46 +61,70 @@ void ObjectManager::deadPersonGenerator(ObjectType objType, int handle, VECTOR p
 }
 
 //更新
-void ObjectManager::update(Player& player)
+void ObjectManager::Update(Player& player)
 {
-	//衝突判定を行うのモデルリストを削除する
-	checkCollList_.erase(checkCollList_.begin(), checkCollList_.end());
-
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
-	std::erase_if(objects_, [](const auto& obj) {return !obj.second.front()->isEnabled(); });
+	std::erase_if(objects_, [](const auto& obj) {return !obj.second.front()->IsEnabled(); });
 
 	//更新
 	for (auto obj : objects_) {
 		for (auto objSecond : obj.second) {
-			objSecond->update(player);
+			objSecond->Update(player);
 		}
 	}
 }
 
 //描画
-void ObjectManager::draw()
+void ObjectManager::Draw()
 {
 	for (auto& objs : objects_) {
 		for (auto& obj : objs.second) {
-			obj->draw();
+			obj->Draw();
 		}
 	}
 }
 
-std::list<std::shared_ptr<Model>> ObjectManager::getCheckCollModel()
+std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
 {
+
+	std::list<std::shared_ptr<Model>> checkCollList;
+
 	for (auto& obj : objects_) {
 		if (obj.first == ObjectType::player || obj.first == ObjectType::enemy) continue;
 		for (auto& model : obj.second) {
-			checkCollList_.push_back(model->getModelPointer());
+			checkCollList.push_back(model->GetModelPointer());
 		}
 	}
 
-	return checkCollList_;
+	return checkCollList;
+}
+
+std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(ObjectType type)
+{
+
+	std::list<std::shared_ptr<Model>> specificList;
+
+	//引数で指定されたオブジェクトのモデルポインタを上記で宣言した
+	//配列に代入する
+	for (auto& obj : objects_) {
+		//引数と違うタイプだった場合continue
+		if (obj.first != type) {
+			continue;
+		}
+		//指定されたタイプだった場合
+		//そのオブジェクトのリストからモデルポインタを取得し
+		//specificListに代入する
+		for (auto& objSecond : obj.second) {
+			specificList.push_back(objSecond->GetModelPointer());
+		}
+	}
+
+	//リストを返す
+	return specificList;
 }
 
 //キャラクター生成機
-void ObjectManager::characterGenerator(ObjectType objType, const char* const filename)
+void ObjectManager::CharacterGenerator(ObjectType objType, const char* const filename)
 {
 	switch (objType)
 	{
@@ -115,7 +139,7 @@ void ObjectManager::characterGenerator(ObjectType objType, const char* const fil
 }
 
 //敵生成機
-void ObjectManager::enemyGenerator(ObjectType objType, const char* const filename)
+void ObjectManager::EnemyGenerator(ObjectType objType, const char* const filename)
 {
 	switch (objType) {
 	case ObjectType::enemy:
@@ -125,7 +149,7 @@ void ObjectManager::enemyGenerator(ObjectType objType, const char* const filenam
 }
 
 //置物生成機
-void ObjectManager::ornamentGenerator(ObjectType objType, const char* const filename)
+void ObjectManager::OrnamentGenerator(ObjectType objType, const char* const filename)
 {
 	switch (objType) {
 	case ObjectType::field:
@@ -135,7 +159,7 @@ void ObjectManager::ornamentGenerator(ObjectType objType, const char* const file
 }
 
 //運べる置物生成機
-void ObjectManager::carryObjectGenerator(ObjectType objType, const char* const filename)
+void ObjectManager::CarryObjectGenerator(ObjectType objType, const char* const filename)
 {
 	switch (objType) {
 	case ObjectType::carry:
@@ -144,7 +168,7 @@ void ObjectManager::carryObjectGenerator(ObjectType objType, const char* const f
 	}
 }
 
-void ObjectManager::gimmickObjectGenerator(ObjectType objType, const char* const filename)
+void ObjectManager::GimmickObjectGenerator(ObjectType objType, const char* const filename)
 {
 	switch (objType) {
 	case ObjectType::gimmickSwitch:

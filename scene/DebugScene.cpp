@@ -20,7 +20,7 @@ DebugScene::~DebugScene()
 {
 }
 
-void DebugScene::init()
+void DebugScene::Init()
 {
 	sceneName_[0] = { {SceneType::main},{"main"} };
 	sceneName_[1] = { {SceneType::title }, { "title" } };
@@ -29,44 +29,44 @@ void DebugScene::init()
 	sceneName_[4] = { {SceneType::max} ,{"•Â‚¶‚é"} };
 }
 
-void DebugScene::end()
+void DebugScene::End()
 {
 }
 
-void DebugScene::update(const InputState& input)
+void DebugScene::Update(const InputState& input)
 {
 	//TODO:‚Ü‚Æ‚ß‚é
-	if (input.isTriggered(InputType::up)) {
+	if (input.IsTriggered(InputType::up)) {
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
-	if (input.isTriggered(InputType::down)) {
+	if (input.IsTriggered(InputType::down)) {
 		selectNum_ = (std::min)(selectNum_ + 1,4);
 	}
 
-	if (input.isTriggered(InputType::space)) {
+	if (input.IsTriggered(InputType::space)) {
 		//manager_.changeScene(scene_[selectNum_]);
 		switch (selectNum_) {
 		case 0:
-			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_, true)));
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_, true)));
 			break;
 		case 1:
-			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
 			break;
 		case 2:
-			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager_)));
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager_)));
 			break;
 		case 3:
-			manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 			break;
 		case 4:
-			DxLib_End();
+			manager_.SetEndFlag(true);
 			break;
 		}
 	}
 
 }
 
-void DebugScene::draw()
+void DebugScene::Draw()
 {
 
 	int y = 150;

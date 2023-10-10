@@ -15,17 +15,25 @@ CheckCollisionModel::~CheckCollisionModel()
 {
 }
 
-void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR moveVec)
+void CheckCollisionModel::CheckCollisionPersonalArea(Player& player, VECTOR moveVec)
 {
 	//更新前のポジションを取得する
-	oldPos = player.getStatus().pos;
+	oldPos = player.GetStatus().pos;
 	//更新後のポジションを取得する
-	nowPos = VAdd(player.getStatus().pos, moveVec);
+	nowPos = VAdd(player.GetStatus().pos, moveVec);
 	//モデルと球の当たり判定
 	
-	for (auto& model : ObjectManager::getInstance().getCheckCollModel()) {
-		MV1RefreshCollInfo(model->getModelHandle(), model->getColFrameIndex());
-		hitDim_.push_back(MV1CollCheck_Sphere(model->getModelHandle(), model->getColFrameIndex(), oldPos, collition_radius + VSize(moveVec)));
+	for (auto& model : ObjectManager::GetInstance().GetAllCheckCollModel()) {
+		if (static_cast<AnimType>(player.GetStatus().animNo) == AnimType::carryWalking) {
+			if (player.GetTempCustodyPointer() == model) {
+				continue;
+			}
+		}
+		MV1RefreshCollInfo(model->GetModelHandle(), model->GetColFrameIndex());
+		CollModelState state;
+		state.hitDim = MV1CollCheck_Sphere(model->GetModelHandle(), model->GetColFrameIndex(), oldPos, collition_radius + VSize(moveVec));
+		state.model = model;
+		hitDim_.push_back(state);
 	}
 	
 
@@ -37,21 +45,28 @@ void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR move
 		moveFlag = false;
 	}
 
+	CheckWallAndFloor();
+	
+}
+
+void CheckCollisionModel::CheckWallAndFloor()
+{
 	hitWallNum = 0;
 	hitFloorNum = 0;
 
 	//前にとったモデルと球の当たり判定処理
+	int i = 0;
 	for (auto& result : hitDim_) {
-		for (i = 0; i < result.HitNum; i++) {
+		for (i = 0; i < result.hitDim.HitNum; i++) {
 			//モデルの法線ベクトル
-			if (result.Dim[i].Normal.y < 0.000001f && result.Dim[i].Normal.y > -0.000001f) {
-				if (result.Dim[i].Position[0].y > oldPos.y + 1.0f ||
-					result.Dim[i].Position[1].y > oldPos.y + 1.0f ||
-					result.Dim[i].Position[2].y > oldPos.y + 1.0f)
+			if (result.hitDim.Dim[i].Normal.y < 0.000001f && result.hitDim.Dim[i].Normal.y > -0.000001f) {
+				if (result.hitDim.Dim[i].Position[0].y > oldPos.y + 1.0f ||
+					result.hitDim.Dim[i].Position[1].y > oldPos.y + 1.0f ||
+					result.hitDim.Dim[i].Position[2].y > oldPos.y + 1.0f)
 				{
 					//壁ポリゴン情報の取得？
 					if (hitWallNum < max_hit_coll) {
-						wallHitDim_[hitWallNum] = &result.Dim[i];
+						wallHitDim_[hitWallNum].hitDim = &result.hitDim.Dim[i];
 						hitWallNum++;
 					}
 
@@ -60,41 +75,45 @@ void CheckCollisionModel::checkCollisionPersonalArea(Player& player, VECTOR move
 			else {
 				//床ポリゴン情報の取得？
 				if (hitFloorNum < max_hit_coll) {
-					floorHitDim_[hitFloorNum] = &result.Dim[i];
+					floorHitDim_[hitFloorNum].hitDim = &result.hitDim.Dim[i];
 					hitFloorNum++;
 				}
 			}
 		}
 	}
-	
 }
 
-void CheckCollisionModel::checkCollisionWall(VECTOR moveVec,float playerHeight)
+void CheckCollisionModel::CheckCollisionWall(VECTOR moveVec,float playerHeight)
 {
 	//壁の処理
 	if (hitWallNum != 0) {
 		hitFlag = false;
 		//動いていたら
 		if (moveFlag) {
+			int i = 0,j = 0;
 			for (i = 0; i < hitWallNum; i++) {
-				hitPoly = wallHitDim_[i];
+				auto hitPoly = wallHitDim_[i];
 				//プレイヤーを元にしたカプセルと壁ポリゴンの判定　　当たっていなかったらcontinue
-				if (!HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2])) continue;
+				if (!HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2])){
+					continue;
+				}
 
 				hitFlag = true;
 				if (!isGoUpStep_) {
 					VECTOR slideVec;
 					//プレイヤーのベクトルとポリゴンの法線ベクトルの外積を取得
-					slideVec = VCross(moveVec, hitPoly->Normal);
+					slideVec = VCross(moveVec, hitPoly.hitDim->Normal);
 					//プレイヤーのベクトルとポリゴンの法線ベクトルの外積とポリゴンの外積の法線ベクトルの外積を取得
-					slideVec = VCross(hitPoly->Normal, slideVec);
+					slideVec = VCross(hitPoly.hitDim->Normal, slideVec);
 					//更新前のプレイヤーのポジションと上記の外積を取得
 					nowPos = VAdd(oldPos, slideVec);
 
 					//また当たり判定？
 					for (j = 0; j < hitWallNum; j++) {
 						hitPoly = wallHitDim_[j];
-						if (HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2])) break;
+						if (HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2])) {
+							break;
+						}
 					}
 				}
 
@@ -107,10 +126,11 @@ void CheckCollisionModel::checkCollisionWall(VECTOR moveVec,float playerHeight)
 		}
 	}
 	else {
+		int i = 0;
 		//一つも壁とのhit情報がなかった場合
 		for (i = 0; i < hitWallNum; i++) {
-			hitPoly = wallHitDim_[i];
-			if (HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2])) {
+			auto hitPoly = wallHitDim_[i];
+			if (HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2])) {
 				hitFlag = false;
 				break;
 			}
@@ -120,30 +140,32 @@ void CheckCollisionModel::checkCollisionWall(VECTOR moveVec,float playerHeight)
 	// 壁に当たっていたら壁から押し出す処理を行う
 	//当たったポリゴンの法線ベクトルの５倍をプレイヤーのポジションに足している
 	if (hitFlag && !isGoUpStep_) {
+		int i, j, k;
 		for (k = 0; k < 16; k++) {
 			for (i = 0; i < hitWallNum; i++) {
-				hitPoly = wallHitDim_[i];
-				if (!HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2])) continue;
-				nowPos = VAdd(nowPos, VScale(hitPoly->Normal, 5.0f));
-				for (int j = 0; j < hitWallNum; j++) {
+				auto hitPoly = wallHitDim_[i];
+				if (!HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2])) {
+					continue;
+				}
+				nowPos = VAdd(nowPos, VScale(hitPoly.hitDim->Normal, 5.0f));
+				for (j = 0; j < hitWallNum; j++) {
 					hitPoly = wallHitDim_[j];
-					if (HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2])) break;
+					if (HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2])) {
+						break;
+					}
 				}
 				if (j == hitWallNum)break;
 			}
 			if (i != hitWallNum)break;
 		}
 	}
-
-	
-
 }
 
-void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,bool jumpFlag, float playerHeight)
+void CheckCollisionModel::CheckCollisionFloor(Player& player, VECTOR moveVec,bool jumpFlag, float playerHeight)
 {
 
-	float jumpVec = player.getStatus().jump.jumpVec;
-	bool isJump = player.getStatus().jump.isJump;
+	float jumpVec = player.GetStatus().jump.jumpVec;
+	bool isJump = player.GetStatus().jump.isJump;
 
 	//床との当たり判定
 	if (hitFloorNum != 0) {
@@ -151,9 +173,9 @@ void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,boo
 		if (isJump && jumpVec > 0.0f) {
 			float minY = 0.0f;
 			hitFlag = false;
-			for (i = 0; i < hitFloorNum; i++) {
-				hitPoly = floorHitDim_[i];
-				hitLineResult = HitCheck_Line_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2]);
+			for (int i = 0; i < hitFloorNum; i++) {
+				auto hitPoly = floorHitDim_[i];
+				hitLineResult = HitCheck_Line_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
 				if (hitLineResult.HitFlag == FALSE)continue;
 				if (hitFlag == true && minY < hitLineResult.Position.y)continue;
 				hitFlag = true;
@@ -169,17 +191,23 @@ void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,boo
 		else {
 			float maxY = 0.0f;
 			hitFlag = false;
-			for (i = 0; i < hitFloorNum; i++) {
-				hitPoly = floorHitDim_[i];
+			for (int i = 0; i < hitFloorNum; i++) {
+				auto hitPoly = floorHitDim_[i];
 				if (isJump) {
-					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerHeight, 0)), VAdd(nowPos, VGet(0.0f, -10.0f, 0.0f)), hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2]);
+					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerHeight, 0)), VAdd(nowPos, VGet(0.0f, -10.0f, 0.0f)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
 				}
 				else {
-					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerHeight, 0)), VAdd(nowPos, VGet(0.0f, -playerHeight, 0.0f)), hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2]);
+					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerHeight, 0)), VAdd(nowPos, VGet(0.0f, -playerHeight, 0.0f)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
 				}
-				if (hitLineResult.HitFlag == false) continue;
-				if (hitFlag && maxY > hitLineResult.Position.y)continue;
-				if (player.getStatus().animNo == 11) continue;
+				if (hitLineResult.HitFlag == false) {
+					continue;
+				}
+				if (hitFlag && maxY > hitLineResult.Position.y) {
+					continue;
+				}
+				if (player.GetStatus().animNo == 11) {
+					continue;
+				}
 				hitFlag = true;
 				maxY = hitLineResult.Position.y;
 			}
@@ -196,33 +224,35 @@ void CheckCollisionModel::checkCollisionFloor(Player& player, VECTOR moveVec,boo
 		}
 	}
 
-	player.setJumpInfo(isJump, jumpVec);
+	player.SetJumpInfo(isJump, jumpVec);
 
 }
 
-void CheckCollisionModel::checkCollision(Player& player, VECTOR moveVec, float playerHeight, bool isJump, float jumpVec)
+void CheckCollisionModel::CheckCollision(Player& player, VECTOR moveVec, float playerHeight, bool isJump, float jumpVec)
 {
 	//プレイヤーから一定範囲の衝突判定をとる
-	checkCollisionPersonalArea(player,moveVec);
+	CheckCollisionPersonalArea(player,moveVec);
+
+	CheckCollSpecificModel(player);
 	//衝突したオブジェクトが乗り越えることが出来るオブジェクトか判断する
-	checkStepDifference(player,playerHeight);
+	CheckStepDifference(player,playerHeight);
 	//取得した衝突結果から壁に当たった場合の処理
-	checkCollisionWall(moveVec,playerHeight);
+	CheckCollisionWall(moveVec,playerHeight);
 	//取得した衝突結果から床に当たった場合の処理
-	checkCollisionFloor(player, moveVec,isJump,playerHeight);
+	CheckCollisionFloor(player, moveVec,isJump,playerHeight);
 
 	//ポジションのセット
-	player.setPos(nowPos);
+	player.SetPos(nowPos);
 
 	//衝突判定の消去
 	for (auto& hit : hitDim_) {
-		MV1CollResultPolyDimTerminate(hit);
+		MV1CollResultPolyDimTerminate(hit.hitDim);
 	}
 
 	hitDim_.clear();
 }
 
-void CheckCollisionModel::checkStepDifference(Player& player, float playerHeight)
+void CheckCollisionModel::CheckStepDifference(Player& player, float playerHeight)
 {
 	objectHeightY = 0;
 	isGoUpStep_ = false;
@@ -234,28 +264,30 @@ void CheckCollisionModel::checkStepDifference(Player& player, float playerHeight
 	//プレイヤーの高さよりもポリゴンの高さが低かったら段差を上る処理を作る
 	if (hitWallNum != 0) {
 		for (int i = 0; i < hitWallNum; i++) {
-			hitPoly = wallHitDim_[i];
-			if (!HitCheck_Capsule_Triangle(VGet(nowPos.x, nowPos.y, nowPos.z), VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly->Position[0], hitPoly->Position[1], hitPoly->Position[2])) continue;
+			auto hitPoly = wallHitDim_[i];
+			if (!HitCheck_Capsule_Triangle(VGet(nowPos.x, nowPos.y, nowPos.z), VAdd(nowPos, VGet(0.0f, playerHeight, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2])) {
+				continue;
+			}
 
 			//衝突したポリゴンの一番Y軸の高い頂点を見つけ出し
 			//乗り越えられる段差以上だったらoverHeightをtrueにする
 			for (int i = 0; i < 3; i++) {
-				if (nowPos.y + 60 < hitPoly->Position[i].y) {
+				if (nowPos.y + 60 < hitPoly.hitDim->Position[i].y) {
 					overHeight = true;
-					if (nowPos.y + playerHeight > hitPoly->Position[i].y) {
-						player.setClim(overHeight);
+					if (nowPos.y + playerHeight > hitPoly.hitDim->Position[i].y) {
+						player.SetClim(overHeight);
 					}
 				}
 				else {
-					player.setClim(false);
+					player.SetClim(false);
 				}
 			}
 
 			//乗り越えることができる高さで一番高いY軸の値を見つける
 			if (!overHeight) {
 				for (int i = 0; i < 3; i++) {
-					if (objectHeightY < hitPoly->Position[i].y) {
-						objectHeightY = hitPoly->Position[i].y;
+					if (objectHeightY < hitPoly.hitDim->Position[i].y) {
+						objectHeightY = hitPoly.hitDim->Position[i].y;
 						isGoUpStep_ = true;
 					}
 				}
@@ -269,7 +301,25 @@ void CheckCollisionModel::checkStepDifference(Player& player, float playerHeight
 	}
 
 	if (!overHeight) {
-		player.setClim(false);
+		player.SetClim(false);
 	}
 
+}
+
+void CheckCollisionModel::CheckCollSpecificModel(Player& player)
+{
+	for (auto& obj : ObjectManager::GetInstance().GetSpecificModel(ObjectType::deadPerson)) {
+		for (auto& hit : hitDim_)
+		{
+			if (hit.model != obj) {
+				continue;
+			}
+
+			auto result = MV1CollCheck_Capsule(hit.model->GetModelHandle(), hit.model->GetColFrameIndex(), player.GetStatus().pos, VAdd(player.GetStatus().pos, VGet(0, player.GetStatus().height, 0)),20);
+			if (result.HitNum > 0) {
+				player.SetCarryInfo(true,hit.model);
+			}
+
+		}
+	}
 }

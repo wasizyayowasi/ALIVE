@@ -19,7 +19,7 @@ TitlemenuScene::~TitlemenuScene()
 {
 }
 
-void TitlemenuScene::init()
+void TitlemenuScene::Init()
 {
 	titleHandle_ = LoadGraph("data/graph/title.png");
 	UI_ = std::make_shared<UIItemManager>();
@@ -29,53 +29,53 @@ void TitlemenuScene::init()
 	menuName_.push_back("Setting");
 	menuName_.push_back("end");
 
-	int font = FontsManager::getInstance().getFontHandle("High Tower Text");
+	int font = FontsManager::getInstance().GetFontHandle("High Tower Text");
 	int y = 120;
 	for (auto& menu : menuName_) {
-		UI_->addMenu(Game::kScreenWidth / 2, Game::kScreenHeight / 2 + y,320, 100, menu.c_str(), font);
+		UI_->addMenu(Game::screen_width / 2, Game::screen_height / 2 + y,320, 100, menu.c_str(), font);
 		y += 40;
 	}
 
 }
 
-void TitlemenuScene::end()
+void TitlemenuScene::End()
 {
 	DeleteGraph(titleHandle_);
 }
 
-void TitlemenuScene::update(const InputState& input)
+void TitlemenuScene::Update(const InputState& input)
 {
 	//TODO:‚Ü‚Æ‚ß‚é
-	if (input.isTriggered(InputType::up)) {
+	if (input.IsTriggered(InputType::up)) {
 		selectNum_ = (max)(selectNum_ - 1, 0);
 	}
-	if (input.isTriggered(InputType::down)) {
+	if (input.IsTriggered(InputType::down)) {
 		selectNum_ = (min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
 	}
 
-	if (input.isTriggered(InputType::space)) {
-		sceneChange();
+	if (input.IsTriggered(InputType::space)) {
+		SceneChange();
 	}
 
 }
 
-void TitlemenuScene::draw()
+void TitlemenuScene::Draw()
 {
 	UI_->draw(selectNum_);
-	DrawRotaGraph(Game::kScreenWidth / 2, Game::kScreenHeight / 3, 1.0f, 0.0f, titleHandle_, true);
+	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3, 1.0f, 0.0f, titleHandle_, true);
 }
 
-void TitlemenuScene::sceneChange()
+void TitlemenuScene::SceneChange()
 {
 	switch (selectNum_) {
 	case 0:
-		manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_,false)));
+		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_,false)));
 		break;
 	case 1:
-		manager_.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_,true)));
+		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_,true)));
 		break;
 	case 2:
-		manager_.swapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 		break;
 	case 3:
 		DxLib_End();

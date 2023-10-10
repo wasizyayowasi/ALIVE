@@ -11,14 +11,19 @@ public:
 	DeadPerson(int handle, VECTOR pos, VECTOR rot, int animNo);
 	virtual ~DeadPerson();
 
-	void update(Player& player)override;
-	void draw();
+	void Update(Player& player)override;
+	void Draw();
+
+	void NormalUpdate(Player& player);
+	void DuringTransportUpdate(Player& player);
 
 private:
 
-	void hitColl(Player& player);
+	void HitColl(Player& player);
 
 	MV1_COLL_RESULT_POLY_DIM hitDim_;
+
+	void(DeadPerson::* updateFunc_)(Player& player);
 
 };
 

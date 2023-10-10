@@ -7,8 +7,8 @@ public:
 	OrnamentBase(int handle);
 	virtual ~OrnamentBase();
 
-	virtual void update(Player& player)override;
-	virtual void draw();
+	virtual void Update(Player& player)override;
+	virtual void Draw();
 
 private:
 

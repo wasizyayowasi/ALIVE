@@ -15,32 +15,32 @@ public:
 	virtual ~KeyConfigScene();
 
 	//初期化用関数
-	void init();
+	void Init();
 	//削除用関数
-	void end();
+	void End();
 
 	//更新
-	void update(const InputState& input);
+	void Update(const InputState& input);
 	//描画
-	void draw();
+	void Draw();
 
 	//現在のkey入力情報を描画
-	void keyStateDraw();
+	void KeyStateDraw();
 	//keyの名前を描画
-	void keyNameDraw();
+	void KeyNameDraw();
 	//keyの画像を描画
-	void keyGraphDraw();
+	void KeyGraphDraw();
 
 	//変更したいkeyを入力させるためのポップアップ描画
-	void changeKeyPopUpText();
+	void ChangeKeyPopUpText();
 
 	//どの入力装置のキーを変更するかを選択する
-	void selectChangeKeyUpdate();
+	void SelectChangeKeyUpdate();
 	//変更するキーをどのキーに変更するのかを決定する
-	void changeKeyUpdate();
+	void ChangeKeyUpdate();
 
 	//形だけある今のところ
-	int getKeyName(int num);
+	int GetKeyName(int num);
 
 private:
 

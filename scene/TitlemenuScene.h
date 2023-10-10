@@ -13,13 +13,13 @@ public:
 	TitlemenuScene(SceneManager& manager);
 	virtual ~TitlemenuScene();
 
-	void init();
-	void end();
+	void Init();
+	void End();
 
-	void update(const InputState& input);
-	void draw();
+	void Update(const InputState& input);
+	void Draw();
 
-	void sceneChange();
+	void SceneChange();
 
 private:
 

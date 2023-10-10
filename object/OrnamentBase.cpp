@@ -3,23 +3,23 @@
 
 OrnamentBase::OrnamentBase(const char* const filename):ObjectBase(filename)
 {
-	model_->setScale(scale_);
+	model_->SetScale(scale_);
 }
 
 OrnamentBase::OrnamentBase(int handle) : ObjectBase(handle)
 {
-	model_->setScale(scale_);
+	model_->SetScale(scale_);
 }
 
 OrnamentBase::~OrnamentBase()
 {
 }
 
-void OrnamentBase::update(Player& player)
+void OrnamentBase::Update(Player& player)
 {
 }
 
-void OrnamentBase::draw()
+void OrnamentBase::Draw()
 {
-	model_->draw();
+	model_->Draw();
 }

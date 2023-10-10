@@ -37,7 +37,7 @@ void UIItem::createUIGraph(int fontHandle)
 
 	SetDrawScreen(makeScreenHandle_);
 
-	int strWidth = FontsManager::getInstance().getStringSize(UIString, "High Tower Text");
+	int strWidth = FontsManager::getInstance().GetStringSize(UIString, "High Tower Text");
 	DrawStringToHandle(makeScreenWidth_ / 2 - strWidth / 2, makeScreenHeight_ / 2, UIString, 0xffffff, fontHandle);
 
 	SetDrawScreen(DX_SCREEN_BACK);

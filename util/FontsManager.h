@@ -18,7 +18,7 @@ public:
 	/// </summary>
 	/// <param name="filename">ファイルの名前</param>
 	/// <param name="fontSize">フォントのサイズ指定</param>
-	void addFonts(const char* filename,int fontSize);
+	void AddFonts(const char* filename,int fontSize);
 
 	/// <summary>
 	/// フォントを適用したテキストの横幅を取得する
@@ -26,14 +26,14 @@ public:
 	/// <param name="string">フォントを適用する文字列</param>
 	/// <param name="filename">フォントの名前</param>
 	/// <returns>フォントを敵将下テキストの横幅</returns>
-	int getStringSize(const char* string, const char* filename);
+	int GetStringSize(const char* string, const char* filename);
 
 	/// <summary>
 	/// フォントを取得する
 	/// </summary>
 	/// <param name="filename">フォントの名前</param>
 	/// <returns>作成したフォント</returns>
-	int getFontHandle(const char* filename);
+	int GetFontHandle(const char* filename);
 
 private:
 

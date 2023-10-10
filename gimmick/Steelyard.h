@@ -12,8 +12,8 @@ public:
 	Steelyard(int handle);
 	virtual ~Steelyard();
 
-	void update(Player& player)override;
-	void draw();
+	void Update(Player& player)override;
+	void Draw();
 
 private:
 

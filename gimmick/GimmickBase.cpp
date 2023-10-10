@@ -21,12 +21,12 @@ GimmickBase::~GimmickBase()
 }
 
 //XV
-void GimmickBase::update(Player& player)
+void GimmickBase::Update(Player& player)
 {
 }
 
 //•`‰æ
-void GimmickBase::draw()
+void GimmickBase::Draw()
 {
-	model_->draw();
+	model_->Draw();
 }
