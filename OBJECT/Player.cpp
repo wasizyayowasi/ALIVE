@@ -32,7 +32,7 @@ namespace {
 
 using namespace std;
 
-Player::Player(const char* const filename):updateFunc_(&Player::IdleUpdate)
+Player::Player(const char* const filename):updateFunc_(&Player::IdleUpdate),carryUpdateFunc_(&Player::CarryObjectUpdate)
 {
 
 	//ƒWƒƒƒ“ƒvî•ñ‚Ì‰Šú
@@ -169,27 +169,18 @@ void Player::IdleUpdate(const InputState& input)
 		return;
 	}
 
+	if (input.IsTriggered(InputType::carry) && status_.isCanBeCarried) {
+		(this->*carryUpdateFunc_)();
+	}
+
+	if (isTransit_) {
+		temporaryCustodyPointer_->SetRot(VGet(status_.rot.x, status_.rot.y * DX_PI_F / 180.0f, status_.rot.z));
+		temporaryCustodyPointer_->SetPos(FramPosition("mixamorig:LeftHand", "mixamorig:RightHand"));
+	}
+
 	ChangeAnimIdle();
 	MovingUpdate(input);
 
-	
-	CarryObjectUpdate(input);
-	
-
-	//TODOF«‚È‚­‚µ‚½‚¢
-	{
-		if (status_.jump.isJump && status_.jump.jumpVec == 0.0f) {
-			status_.pos.y += gravity * 20;
-		}
-
-		if (status_.pos.y <= -400.0f) {
-			status_.pos = checkPoint_;
-		}
-		if (input.IsTriggered(InputType::space)) {
-			status_.pos = checkPoint_;
-		}
-	}
-	
 }
 
 /// <summary>
@@ -546,6 +537,7 @@ void Player::IdleToSitup(const InputState& input)
 
 }
 
+
 //—§‚¿ã‚ª‚éˆ—
 void Player::StandUpdate(const InputState& input)
 {
@@ -556,7 +548,7 @@ void Player::StandUpdate(const InputState& input)
 }
 
 void Player::SetCarryInfo(bool isCarry, shared_ptr<Model>model) {
-	status_.isCarry = isCarry;
+	status_.isCanBeCarried = isCarry;
 	temporaryCustodyPointer_ = model;
 }
 
@@ -568,24 +560,34 @@ void Player::SetSaveData(VECTOR pos,int num, bool isContinue)
 	isContinue_ = isContinue;
 }
 
-void Player::CarryObjectUpdate(const InputState& input) {
+void Player::CarryObjectUpdate()
+{
+	
+	if (!status_.isCanBeCarried) return;
 
-	if (input.IsPressed(InputType::carry) && status_.isCarry) {
-		if (status_.animNo != animType_[AnimType::carryWalking]) {
-			status_.animNo = animType_[AnimType::carryWalking];
-		}
-		temporaryCustodyPointer_->SetRot(VGet(status_.rot.x, status_.rot.y * DX_PI_F / 180.0f, status_.rot.z));
-		temporaryCustodyPointer_->SetPos(FramPosition("mixamorig:LeftHand", "mixamorig:RightHand"));
+	if (status_.animNo != animType_[AnimType::carryWalking]) {
+		status_.animNo = animType_[AnimType::carryWalking];
 	}
-	else {
-		bool isCarryWalking = status_.animNo == animType_[AnimType::carryWalking];
-		bool isCarry = status_.animNo == animType_[AnimType::carry];
-		if ((isCarryWalking || isCarry) && status_.isCarry) {
-			status_.isCarry = false;
-			temporaryCustodyPointer_->SetPos(FramPosition("mixamorig:LeftToeBase", "mixamorig:RightToeBase"));
-			temporaryCustodyPointer_.reset();
-		}
+	
+	isTransit_ = true;
+
+	carryUpdateFunc_ = &Player::DropOffObjectUpdate;
+
+}
+
+void Player::DropOffObjectUpdate()
+{
+	bool isCarryWalking = status_.animNo == animType_[AnimType::carryWalking];
+	bool isCarry = status_.animNo == animType_[AnimType::carry];
+	if ((isCarryWalking || isCarry) && status_.isCanBeCarried) {
+		status_.isCanBeCarried = false;
+		temporaryCustodyPointer_->SetPos(FramPosition("mixamorig:LeftToeBase", "mixamorig:RightToeBase"));
+		temporaryCustodyPointer_.reset();
 	}
+
+	isTransit_ = false;
+
+	carryUpdateFunc_ = &Player::CarryObjectUpdate;
 
 }
 

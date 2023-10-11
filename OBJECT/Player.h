@@ -33,7 +33,7 @@ struct PlayerStatus {
 	int animNo;
 	float height;
 	bool isAnimLoop;
-	bool isCarry;
+	bool isCanBeCarried;
 };
 
 class Player
@@ -124,7 +124,10 @@ private:
 	void StandUpdate(const InputState& input);
 
 	//持ち運ぶ
-	void CarryObjectUpdate(const InputState& input);
+	void CarryObjectUpdate();
+
+	//荷物を下ろす
+	void DropOffObjectUpdate();
 
 private:
 	/// <summary>
@@ -151,6 +154,7 @@ private:
 	bool isSitting_ = false;				//座っているか
 	bool isClim_ = false;
 	bool isContinue_ = false;				//これだめだと思う
+	bool isTransit_ = false;
 
 	PlayerInfo playerInfo_ = {};
 	PlayerStatus status_ = {};
@@ -166,5 +170,6 @@ private:
 	std::unordered_map<AnimType, int> animType_;				
 
 	void(Player::* updateFunc_)(const InputState& input);		//メンバ関数ポインタ
+	void(Player::* carryUpdateFunc_)();		//メンバ関数ポインタ
 };
 

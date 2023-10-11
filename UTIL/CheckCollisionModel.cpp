@@ -315,7 +315,7 @@ void CheckCollisionModel::CheckCollSpecificModel(Player& player)
 				continue;
 			}
 
-			auto result = MV1CollCheck_Capsule(hit.model->GetModelHandle(), hit.model->GetColFrameIndex(), player.GetStatus().pos, VAdd(player.GetStatus().pos, VGet(0, player.GetStatus().height, 0)),20);
+			auto result = MV1CollCheck_Capsule(hit.model->GetModelHandle(), hit.model->GetColFrameIndex(), player.GetStatus().pos, VAdd(player.GetStatus().pos, VGet(0, player.GetStatus().height, 0)),30);
 			if (result.HitNum > 0) {
 				player.SetCarryInfo(true,hit.model);
 			}
