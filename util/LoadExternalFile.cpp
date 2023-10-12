@@ -22,6 +22,7 @@ LoadExternalFile::~LoadExternalFile()
 	RewritePlayerInfo();
 }
 
+//セーブデータの書き出し
 void LoadExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 {
 	json saveData = {
@@ -44,7 +45,8 @@ void LoadExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 
 }
 
-void LoadExternalFile::LoadPlayerInfo(const char* filename)
+//プレイヤーのステータス情報を読み込む
+void LoadExternalFile::LoadPlayerInfo(const char* const filename)
 {
 	string path = "data/jsonFile/";
 	path += filename;
@@ -70,7 +72,8 @@ void LoadExternalFile::LoadPlayerInfo(const char* filename)
 
 }
 
-void LoadExternalFile::LoadSaveDataInfo(const char* filename)
+//セーブデータを読み込む
+void LoadExternalFile::LoadSaveDataInfo(const char* const filename)
 {
 	string path = "data/jsonFile/";
 	path += filename;
@@ -89,6 +92,13 @@ void LoadExternalFile::LoadSaveDataInfo(const char* filename)
 
 }
 
+//オブジェクトのポジションを読み込む
+void LoadExternalFile::LoadObjectPosition(const char* const filename)
+{
+
+}
+
+//プレイヤーのステータスを書き出す
 void LoadExternalFile::RewritePlayerInfo()
 {
 	json player = {

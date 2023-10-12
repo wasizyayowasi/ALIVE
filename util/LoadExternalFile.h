@@ -35,9 +35,14 @@ public:
 
 private:
 
-	void LoadPlayerInfo(const char* filename);
-	void LoadSaveDataInfo(const char* filename);
+	//プレイヤーのステータスに関する情報を読み込む
+	void LoadPlayerInfo(const char* const filename);
+	//セーブデータを読み込む
+	void LoadSaveDataInfo(const char* const filename);
+	//オブジェクトの配置情報を読み込む
+	void LoadObjectPosition(const char* const filename);
 
+	//プレイヤーのステータス情報を書き出す
 	void RewritePlayerInfo();
 
 	LoadExternalFile(bool temp);
