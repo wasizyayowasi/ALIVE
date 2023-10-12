@@ -15,6 +15,7 @@ enum class AnimType {
 	clim,			//“o‚é
 	stand,			//—§‚¿ã‚ª‚é
 	carryWalking,	//‰^‚Ñ‚È‚ª‚ç•à‚­
+	carryRunning,	//‰^‚Ñ‚È‚ª‚ç¬‘–‚è
 	carry,			//‰^‚Ô
 	max
 };

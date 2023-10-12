@@ -35,6 +35,7 @@ void LoadExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 	string filename = saveData["name"];
 	string extension = ".json";
 	filename += extension;
+	filename = "data/jsonFile/" + filename;
 
 	ofstream writeing_file;
 	writeing_file.open(filename, ios::out);
@@ -97,12 +98,13 @@ void LoadExternalFile::RewritePlayerInfo()
 	   {"rotSpeed",15.0f},
 	   {"walkSpeed",3.0f},
 	   {"runningSpeed",7.0f},
-	   {"animNo", json::array({ 0,1,2,3,4,5,6,7,8,9,10,11,12 })},
+	   {"animNo", json::array({ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15})},
 	};
 
 	string filename = player["name"];
 	string extension = ".json";
 	filename += extension;
+	filename = "data/jsonFile/" + filename;
 
 	ofstream writeing_file;
 	writeing_file.open(filename, ios::out);

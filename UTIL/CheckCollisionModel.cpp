@@ -24,8 +24,8 @@ void CheckCollisionModel::CheckCollisionPersonalArea(Player& player, VECTOR move
 	//ƒ‚ƒfƒ‹‚Æ‹…‚Ì“–‚½‚è”»’è
 	
 	for (auto& model : ObjectManager::GetInstance().GetAllCheckCollModel()) {
-		if (static_cast<AnimType>(player.GetStatus().animNo) == AnimType::carryWalking) {
-			if (player.GetTempCustodyPointer() == model) {
+		if (player.GetStatus().isTransit) {
+			if (player.GetDeadPersonModelPointer() == model) {
 				continue;
 			}
 		}
@@ -308,6 +308,7 @@ void CheckCollisionModel::CheckStepDifference(Player& player, float playerHeight
 
 void CheckCollisionModel::CheckCollSpecificModel(Player& player)
 {
+	
 	for (auto& obj : ObjectManager::GetInstance().GetSpecificModel(ObjectType::deadPerson)) {
 		for (auto& hit : hitDim_)
 		{
@@ -317,6 +318,9 @@ void CheckCollisionModel::CheckCollSpecificModel(Player& player)
 
 			auto result = MV1CollCheck_Capsule(hit.model->GetModelHandle(), hit.model->GetColFrameIndex(), player.GetStatus().pos, VAdd(player.GetStatus().pos, VGet(0, player.GetStatus().height, 0)),30);
 			if (result.HitNum > 0) {
+				if (player.GetStatus().isTransit) {
+					break;
+				}
 				player.SetCarryInfo(true,hit.model);
 			}
 

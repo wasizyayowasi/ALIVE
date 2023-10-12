@@ -33,7 +33,7 @@ struct PlayerStatus {
 	int animNo;
 	float height;
 	bool isAnimLoop;
-	bool isCanBeCarried;
+	bool isTransit;
 };
 
 class Player
@@ -81,7 +81,7 @@ public:
 
 	PlayerStatus GetStatus() { return status_; }
 
-	std::shared_ptr<Model> GetTempCustodyPointer() {return temporaryCustodyPointer_;}
+	std::shared_ptr<Model> GetDeadPersonModelPointer() {return deadPersonModelPointer_;}
 		
 private:
 	//通常更新
@@ -92,6 +92,9 @@ private:
 
 	//移動処理
 	void MovingUpdate(const InputState& input);
+
+	//移動
+	float Move(const InputState& input);
 
 	//回転処理
 	void RotationUpdate();
@@ -136,8 +139,22 @@ private:
 	/// <returns>float型の移動速度</returns>
 	float PlayerSpeed(bool pressedShift);
 
+	/// <summary>
+	/// ジャンプの設定を行う
+	/// </summary>
+	/// <param name="jumpPower">ジャンプ力</param>
+	void PlayerJump(float jumpPower);
 
+	/// <summary>
+	/// 指定した2フレームの中心座標を算出する
+	/// </summary>
 	VECTOR FramPosition(const char* const LeftFramename, const char* const RightFramename);
+
+	/// <summary>
+	/// アニメーションの変更を行う
+	/// </summary>
+	/// <param name="type">アニメーションのタイプ</param>
+	void ChangeAnimNo(AnimType type,bool isAnimLoop,int changeTime);
 
 private:
 
@@ -154,7 +171,7 @@ private:
 	bool isSitting_ = false;				//座っているか
 	bool isClim_ = false;
 	bool isContinue_ = false;				//これだめだと思う
-	bool isTransit_ = false;
+	bool isCanBeCarried_ = false;
 
 	PlayerInfo playerInfo_ = {};
 	PlayerStatus status_ = {};
@@ -163,7 +180,7 @@ private:
 
 	VECTOR deathPos = { 0.0f,0.0f,0.0f };						//死体のポジション
 
-	std::shared_ptr<Model> temporaryCustodyPointer_;
+	std::shared_ptr<Model> deadPersonModelPointer_;				//持ち運ぶ死体のモデルポインタ
 	std::shared_ptr<Model> PModel_;								//モデルクラスのポインタ
 	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
 

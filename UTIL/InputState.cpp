@@ -278,6 +278,7 @@ void InputState::SavekeyInfo2() const
 	string filename = keySize["name"];
 	string extension = ".json";
 	filename += extension;
+	filename = "data/jsonFile/" + filename;
 
 	//èoóÕ
 	ofstream writeingFile;

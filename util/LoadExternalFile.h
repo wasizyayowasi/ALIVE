@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "DxLib.h"
+#include "ObjAnimType.h"
 
 struct ReadPlayerInfo {
 	float jumpPower;
@@ -8,7 +9,7 @@ struct ReadPlayerInfo {
 	float rotSpeed;
 	float walkSpeed;
 	float runningSpeed;
-	int animNo_[15];
+	int animNo_[static_cast<int>(AnimType::max)];
 };
 
 struct SaveData {

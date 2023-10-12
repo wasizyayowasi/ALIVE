@@ -7,7 +7,7 @@ namespace Graph {
     //ƒOƒ‰ƒt‚ğ“Ç‚İ‚ŞŠÖ”
     int Graph::LoadGraph(const char* path)
     {
-        int handle = LoadGraph(path);
+        int handle = DxLib::LoadGraph(path);
         assert(handle != -1);
 
         return handle;

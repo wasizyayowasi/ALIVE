@@ -13,7 +13,7 @@ namespace {
 	constexpr float gravity = -0.4f;
 
 	//ファイルパス
-	const char* const player_Filename = "DATA/player/player15.mv1";
+	const char* const player_Filename = "DATA/player/player16.mv1";
 	//モデルフレーム名
 	const char* const coll_frame_death = "CollisionDeath";
 	const char* const coll_frame_Sit = "CollisionSit";
@@ -141,45 +141,59 @@ void Player::SetJumpInfo(bool isJump, float jumpVec)
 void Player::IdleUpdate(const InputState& input)
 {
 
+	//メンバ関数ポインタをrunningJumpUpdate、
+	//jumpUpdateのどちらかに変更する
+	if (input.IsTriggered(InputType::space)) {
+		
+		if (isClim_) {
+			//アニメーションの変更
+			ChangeAnimNo(AnimType::clim, false, 20);
+			updateFunc_ = &Player::ClimUpdate;
+			return;
+		}
+		else if (input.IsPressed(InputType::shift)) {
+			PlayerJump(playerInfo_.runningJumpPower);
+			ChangeAnimNo(AnimType::runningJump, false, 20);
+			updateFunc_ = &Player::RunningJumpUpdate;
+			return;
+		}
+		else {
+			PlayerJump(playerInfo_.jumpPower);
+			ChangeAnimNo(AnimType::jump, false, 20);
+			updateFunc_ = &Player::JumpUpdate;
+			return;
+		}
+	}
+
+	if (input.IsTriggered(InputType::carry)) {
+		(this->*carryUpdateFunc_)();
+	}
+
+	if (status_.isTransit) {
+		deadPersonModelPointer_->SetRot(VGet(status_.rot.x, status_.rot.y * DX_PI_F / 180.0f, status_.rot.z));
+		deadPersonModelPointer_->SetPos(FramPosition("mixamorig:LeftHand", "mixamorig:RightHand"));
+	}
+	else {
+		isCanBeCarried_ = false;
+	}
+
+	ChangeAnimIdle();
+	MovingUpdate(input);
+
+	if (status_.isTransit) {
+		return;
+	}
+
 	//メンバ関数ポインタをsitUpdateに変更する
 	if (input.IsTriggered(InputType::ctrl)) {
 		updateFunc_ = &Player::IdleToSitup;
 		return;
 	}
 
-	//メンバ関数ポインタをrunningJumpUpdate、
-	//jumpUpdateのどちらかに変更する
-	if (input.IsTriggered(InputType::space)) {
-		if (isClim_) {
-			updateFunc_ = &Player::ClimUpdate;
-			return;
-		}
-		else if (input.IsPressed(InputType::shift)) {
-			updateFunc_ = &Player::RunningJumpUpdate;
-			return;
-		}
-		else {
-			updateFunc_ = &Player::JumpUpdate;
-			return;
-		}
-	}
-
 	if (input.IsTriggered(InputType::death)) {
 		updateFunc_ = &Player::DeathUpdate;
 		return;
 	}
-
-	if (input.IsTriggered(InputType::carry) && status_.isCanBeCarried) {
-		(this->*carryUpdateFunc_)();
-	}
-
-	if (isTransit_) {
-		temporaryCustodyPointer_->SetRot(VGet(status_.rot.x, status_.rot.y * DX_PI_F / 180.0f, status_.rot.z));
-		temporaryCustodyPointer_->SetPos(FramPosition("mixamorig:LeftHand", "mixamorig:RightHand"));
-	}
-
-	ChangeAnimIdle();
-	MovingUpdate(input);
 
 }
 
@@ -191,14 +205,12 @@ void Player::ChangeAnimIdle()
 	//待機アニメーションに戻す
 	if (!isMoving_) {
 
-		if (status_.animNo == animType_[AnimType::carryWalking]) {
-			status_.animNo == animType_[AnimType::carry];
+		if (status_.isTransit) {
+			ChangeAnimNo(AnimType::carry, true, 20);
 		}
 		else {
-			status_.animNo = animType_[AnimType::idle];
+			ChangeAnimNo(AnimType::idle, true, 20);
 		}
-		status_.isAnimLoop = true;
-		PModel_->ChangeAnimation(status_.animNo, status_.isAnimLoop, false, 20);
 	}
 }
 
@@ -209,6 +221,42 @@ void Player::ChangeAnimIdle()
 /// <param name="input">外部装置の入力情報を参照する</param>
 void Player::MovingUpdate(const InputState& input)
 {
+	
+	float movingSpeed = Move(input);
+
+	//HACK：もっといいアニメーション番号変更があるはず
+	if (movingSpeed != 0.0f) {
+		if (movingSpeed > playerInfo_.walkSpeed) {
+			//アニメーションの変更
+			if (status_.isTransit) {
+				ChangeAnimNo(AnimType::carryRunning, true, 20);
+			}
+			else {
+				ChangeAnimNo(AnimType::run, true, 20);
+			}
+		}
+		else if (movingSpeed <= playerInfo_.walkSpeed) {
+			//アニメーションの変更
+			if (status_.isTransit) {
+				ChangeAnimNo(AnimType::carryWalking, true, 20);
+			}
+			else {
+				ChangeAnimNo(AnimType::walk, true, 20);
+			}
+		}
+	}
+
+	if (VSize(status_.moveVec) == 0.0f) {
+		isMoving_ = false;
+		return;
+	}
+
+	//移動ベクトルを用意する
+	status_.moveVec = VScale(VNorm(status_.moveVec), movingSpeed);
+
+}
+
+float Player::Move(const InputState& input) {
 	//キーの押下をブール型に格納
 	bool pressedUp = input.IsPressed(InputType::up);
 	bool pressedDown = input.IsPressed(InputType::down);
@@ -224,76 +272,41 @@ void Player::MovingUpdate(const InputState& input)
 		isMoving_ = true;
 	}
 
-	//改善しよう
-	{
-		//HACK：汚い、リファクタリング必須
-		if (pressedUp) {
-			status_.moveVec.z += movingSpeed;
-			targetAngle_ = 180.0f;
-		}
-		if (pressedDown) {
-			status_.moveVec.z -= movingSpeed;
-			targetAngle_ = 0.0f;
-		}
-		if (pressedLeft) {
-			status_.moveVec.x -= movingSpeed;
-			targetAngle_ = 90.0f;
-		}
-		if (pressedRight) {
-			status_.moveVec.x += movingSpeed;
-			targetAngle_ = 270.0f;
-		}
-		if (pressedUp && pressedRight) {
-			targetAngle_ = 225.0f;
-		}
-		if (pressedUp && pressedLeft) {
-			targetAngle_ = 135.0f;
-		}
-		if (pressedDown && pressedLeft) {
-			targetAngle_ = 45.0f;
-		}
-		if (pressedDown && pressedRight) {
-			targetAngle_ = 315.0f;
-		}
-
-		//HACK：もっといいアニメーション番号変更があるはず
-		if (status_.animNo != animType_[AnimType::runningJump] && status_.animNo != animType_[AnimType::jump] && status_.animNo != animType_[AnimType::carryWalking]) {
-			if (movingSpeed != 0.0f) {
-				if (movingSpeed > playerInfo_.walkSpeed) {
-					status_.animNo = animType_[AnimType::run];
-					status_.isAnimLoop = true;
-				}
-				else if (movingSpeed <= playerInfo_.walkSpeed) {
-					status_.animNo = animType_[AnimType::walk];
-					status_.isAnimLoop = true;
-				}
-			}
-		}
-
-		//回転処理
-		RotationUpdate();
-
-		if (VSize(status_.moveVec) == 0.0f) {
-			isMoving_ = false;
-			return;
-		}
-		//移動ベクトルを用意する
-		status_.moveVec = VScale(VNorm(status_.moveVec), movingSpeed);
-
-		//アニメーションの変更
-		PModel_->ChangeAnimation(status_.animNo, status_.isAnimLoop, false, 20);
-
-
-		//デバッグ用
-		/*{
-			if (input.isPressed(InputType::next)) {
-				pos_.y += movingSpeed_;
-			}
-			if (input.isPressed(InputType::prev)) {
-				pos_.y -= movingSpeed_;
-			}
-		}*/
+	//HACK：汚い、リファクタリング必須
+	if (pressedUp) {
+		status_.moveVec.z += movingSpeed;
+		targetAngle_ = 180.0f;
 	}
+	if (pressedDown) {
+		status_.moveVec.z -= movingSpeed;
+		targetAngle_ = 0.0f;
+	}
+	if (pressedLeft) {
+		status_.moveVec.x -= movingSpeed;
+		targetAngle_ = 90.0f;
+	}
+	if (pressedRight) {
+		status_.moveVec.x += movingSpeed;
+		targetAngle_ = 270.0f;
+	}
+	if (pressedUp && pressedRight) {
+		targetAngle_ = 225.0f;
+	}
+	if (pressedUp && pressedLeft) {
+		targetAngle_ = 135.0f;
+	}
+	if (pressedDown && pressedLeft) {
+		targetAngle_ = 45.0f;
+	}
+	if (pressedDown && pressedRight) {
+		targetAngle_ = 315.0f;
+	}
+
+	//回転処理
+	RotationUpdate();
+
+	return movingSpeed;
+
 }
 
 //完成品だから今後いじらなくていいと思う
@@ -340,13 +353,6 @@ void Player::RotationUpdate()
 //オブジェクトを登る
 void Player::ClimUpdate(const InputState& input)
 {
-	status_.animNo = animType_[AnimType::clim];
-	status_.isAnimLoop = false;
-
-	PModel_->ChangeAnimation(status_.animNo, status_.isAnimLoop, false, 20);
-
-	VECTOR localPosition;
-
 	if (PModel_->IsAnimEnd()) {
 		status_.pos = FramPosition("mixamorig:LeftToeBase", "mixamorig:RightToeBase");
 		PModel_->SetPos(status_.pos);
@@ -356,7 +362,6 @@ void Player::ClimUpdate(const InputState& input)
 		PModel_->SetAnimation(status_.animNo, status_.isAnimLoop, true);
 		updateFunc_ = &Player::StandUpdate;
 	}
-
 }
 
 //HACK:↓汚い、気に食わない
@@ -367,17 +372,15 @@ void Player::ClimUpdate(const InputState& input)
 void Player::JumpUpdate(const InputState& input)
 {
 	//プレイヤー移動関数
-	MovingUpdate(input);
+	Move(input);
 
 	//ジャンプ処理
 	{
-		//アニメーション変更と脚力をジャンプベクトルに足す
-		if (!status_.jump.isJump && status_.animNo != animType_[AnimType::jump]) {
-			status_.animNo = animType_[AnimType::jump];
-			status_.jump.jumpVec += playerInfo_.jumpPower;
-			status_.jump.isJump = true;
-			status_.isAnimLoop = false;
-			PModel_->ChangeAnimation(status_.animNo, status_.isAnimLoop, false, 20);
+		//ジャンプベクトルが0でジャンプ中ではなかったら
+		//idle状態のアップデートに変更する、アニメーションも変更する
+		if (!status_.jump.isJump) {
+			updateFunc_ = &Player::IdleUpdate;
+			return;
 		}
 
 		//空中にいるとき
@@ -386,15 +389,6 @@ void Player::JumpUpdate(const InputState& input)
 			status_.jump.jumpVec += gravity;
 			status_.pos.y += status_.jump.jumpVec;
 		}
-
-		//ジャンプベクトルが0でジャンプ中ではなかったら
-		//idle状態のアップデートに変更する、アニメーションも変更する
-		if (status_.jump.jumpVec == 0.0f && !status_.jump.isJump) {
-			updateFunc_ = &Player::IdleUpdate;
-			status_.animNo = animType_[AnimType::idle];
-			return;
-		}
-
 	}
 }
 
@@ -407,16 +401,7 @@ void Player::JumpUpdate(const InputState& input)
 void Player::RunningJumpUpdate(const InputState& input)
 {
 	//プレイヤー移動関数
-	MovingUpdate(input);
-
-	//アニメーション変更と脚力をジャンプベクトルに足す
-	if (!status_.jump.isJump && status_.animNo != animType_[AnimType::runningJump]) {
-		status_.animNo = animType_[AnimType::runningJump];
-		status_.jump.jumpVec += playerInfo_.runningJumpPower;
-		status_.isAnimLoop = false;
-		status_.jump.isJump = true;
-		PModel_->ChangeAnimation(status_.animNo, status_.isAnimLoop, false, 20);
-	}
+	Move(input);
 
 	//HACK：変数が仮のまま　+　どうするか悩んでいる
 	//アニメーションの総時間によって、重力を変更する
@@ -434,8 +419,6 @@ void Player::RunningJumpUpdate(const InputState& input)
 	//idle状態のアップデートに変更する、アニメーションも変更する
 	if (status_.jump.jumpVec == 0.0f && !status_.jump.isJump) {
 		updateFunc_ = &Player::IdleUpdate;
-		status_.animNo = animType_[AnimType::run];
-		status_.isAnimLoop = true;
 		return;
 	}
 }
@@ -448,12 +431,10 @@ void Player::DeathUpdate(const InputState& input)
 {
 	deathPos = status_.pos;				//死んだ場所を残す
 
-	status_.isAnimLoop = false;			//アニメーションのループをするか
-
 	//座るアニメーション以外だったら死ぬアニメーションに変える
 	if (status_.animNo != animType_[AnimType::sit]) {
-		status_.animNo = animType_[AnimType::death];
-		PModel_->ChangeAnimation(status_.animNo, status_.isAnimLoop, false, 20);
+		//アニメーションの変更
+		ChangeAnimNo(AnimType::death, false, 20);
 	}
 
 	if (PModel_->IsAnimEnd()) {
@@ -493,9 +474,8 @@ void Player::SitUpdate(const InputState& input)
 {
 	//立ち上がるためのコマンド
 	if (input.IsTriggered(InputType::ctrl)) {
-		status_.animNo = animType_[AnimType::situpToIdle];
-		status_.isAnimLoop = false;
-		PModel_->ChangeAnimation(status_.animNo, status_.isAnimLoop, false, 20);
+		//アニメーションの変更
+		ChangeAnimNo(AnimType::situpToIdle, false, 20);
 	}
 	
 	//立つ家庭のアニメーションが終わったらidleupdateに変更する
@@ -522,16 +502,13 @@ void Player::IdleToSitup(const InputState& input)
 	//アニメーションを座る過程のアニメーションに変更
 	//座っているフラグを立て、アニメーションループ変数を折る
 	if (!isSitting_) {
-		status_.animNo = animType_[AnimType::idleToSitup];
 		isSitting_ = true;
-		status_.isAnimLoop = false;
-		PModel_->ChangeAnimation(status_.animNo, status_.isAnimLoop, false, 20);
+		ChangeAnimNo(AnimType::idleToSitup, false, 20);
 	}
 
 	//座る過程のアニメーションが終わったら三角座りにする
 	if (status_.animNo == animType_[AnimType::idleToSitup] && PModel_->IsAnimEnd()) {
-		status_.animNo = animType_[AnimType::sit];
-		PModel_->ChangeAnimation(status_.animNo, status_.isAnimLoop, false, 20);
+		ChangeAnimNo(AnimType::sit, false, 20);
 		updateFunc_ = &Player::SitUpdate;
 	}
 
@@ -548,8 +525,8 @@ void Player::StandUpdate(const InputState& input)
 }
 
 void Player::SetCarryInfo(bool isCarry, shared_ptr<Model>model) {
-	status_.isCanBeCarried = isCarry;
-	temporaryCustodyPointer_ = model;
+	isCanBeCarried_ = isCarry;
+	deadPersonModelPointer_ = model;
 }
 
 //セーブデータ
@@ -563,32 +540,37 @@ void Player::SetSaveData(VECTOR pos,int num, bool isContinue)
 void Player::CarryObjectUpdate()
 {
 	
-	if (!status_.isCanBeCarried) return;
+	if (!isCanBeCarried_) return;
 
-	if (status_.animNo != animType_[AnimType::carryWalking]) {
-		status_.animNo = animType_[AnimType::carryWalking];
-	}
-	
-	isTransit_ = true;
+	status_.isTransit = true;
 
 	carryUpdateFunc_ = &Player::DropOffObjectUpdate;
 
 }
 
+//運んでいたオブジェクトを下ろす処理
 void Player::DropOffObjectUpdate()
 {
 	bool isCarryWalking = status_.animNo == animType_[AnimType::carryWalking];
 	bool isCarry = status_.animNo == animType_[AnimType::carry];
-	if ((isCarryWalking || isCarry) && status_.isCanBeCarried) {
-		status_.isCanBeCarried = false;
-		temporaryCustodyPointer_->SetPos(FramPosition("mixamorig:LeftToeBase", "mixamorig:RightToeBase"));
-		temporaryCustodyPointer_.reset();
+	if ((isCarryWalking || isCarry) && isCanBeCarried_) {
+		isCanBeCarried_ = false;
+		deadPersonModelPointer_->SetPos(FramPosition("mixamorig:LeftToeBase", "mixamorig:RightToeBase"));
+		deadPersonModelPointer_.reset();
 	}
 
-	isTransit_ = false;
+	status_.isTransit = false;
+	isCanBeCarried_ = false;
 
 	carryUpdateFunc_ = &Player::CarryObjectUpdate;
 
+}
+
+void Player::ChangeAnimNo(AnimType type, bool isAnimLoop, int changeTime)
+{
+	status_.animNo = animType_[type];
+	status_.isAnimLoop = isAnimLoop;
+	PModel_->ChangeAnimation(status_.animNo, status_.isAnimLoop, false, changeTime);
 }
 
 //プレイヤーの速度設定
@@ -599,15 +581,23 @@ float Player::PlayerSpeed(bool pressedShift)
 	return playerInfo_.walkSpeed;
 }
 
+//ジャンプの設定
+void Player::PlayerJump(float jumpPower) {
+	status_.jump.jumpVec += jumpPower;
+	status_.pos.y += status_.jump.jumpVec;
+	status_.jump.isJump = true;
+}
 
+//二つのフレーム座標の中心を取得する
 VECTOR Player::FramPosition(const char* const LeftFramename, const char* const RightFramename)
 {
 
 	VECTOR framePosition;
 
-	//指定フレームの座標を取得し、二つの座標を足し、2で割り中心を取得する
+	//指定フレームの座標を取得する。
 	framePosition = PModel_->GetAnimFrameLocalPosition(status_.animNo, LeftFramename);
 	framePosition = VAdd(framePosition, PModel_->GetAnimFrameLocalPosition(status_.animNo, RightFramename));
+	//二つの座標を足し、2で割り中心を取得する
 	framePosition.x = framePosition.x / 2;
 	framePosition.y = framePosition.y / 2;
 	framePosition.z = framePosition.z / 2;
