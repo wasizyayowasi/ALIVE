@@ -429,6 +429,8 @@ void Player::DeathUpdate(const InputState& input)
 {
 	deathPos = status_.pos;				//死んだ場所を残す
 
+	deathCount_++;
+
 	//座るアニメーション以外だったら死ぬアニメーションに変える
 	if (status_.animNo != animType_[AnimType::sit]) {
 		//アニメーションの変更
