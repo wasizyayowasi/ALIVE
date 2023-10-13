@@ -61,6 +61,11 @@ public:
 	VECTOR GetRot();
 
 	/// <summary>
+	/// 死んだ回数を取得する
+	/// </summary>
+	int getDeathCount() { return deathCount_; }
+
+	/// <summary>
 	/// 外部からのポジションを受け取る
 	/// </summary>
 	/// <param name="pos">ポジション情報</param>
@@ -73,14 +78,27 @@ public:
 	/// <param name="jumpVec">ジャンプベクトル</param>
 	void SetJumpInfo(bool isJump, float jumpVec);
 
+	/// <summary>
+	/// 登れるかの情報を受け取る
+	/// </summary>
+	/// <returns>登れるかのフラグ</returns>
 	void SetClim(bool isClim) { isClim_ = isClim; }
+
+	/// <summary>
+	/// 持ち運ぶ事が出来るフラグと持ち運ぶモデルのポインタを受け取る
+	/// </summary>
 	void SetCarryInfo(bool isCarry, std::shared_ptr<Model> model);
 
-	void SetSaveData(VECTOR pos, int num, bool isContinue);
-	int GetDeathNum() {return deathCount_;	}
+	void SetSaveData(VECTOR pos, bool isContinue);
 
+	/// <summary>
+	/// プレイヤーのステータスを取得する
+	/// </summary>
 	PlayerStatus GetStatus() { return status_; }
 
+	/// <summary>
+	/// 持ち運ぶ死体のポインターを取得する
+	/// </summary>
 	std::shared_ptr<Model> GetDeadPersonModelPointer() {return deadPersonModelPointer_;}
 		
 private:
@@ -156,12 +174,18 @@ private:
 	/// <param name="type">アニメーションのタイプ</param>
 	void ChangeAnimNo(AnimType type,bool isAnimLoop,int changeTime);
 
+	/// <summary>
+	/// 度数法から弧度法に変換して返す
+	/// </summary>
+	/// <param name="rot">角度</param>
+	VECTOR DegreesToRadians(VECTOR rot);
+
 private:
+
+	int deathCount_ = 0;					//死んだ回数を記録する
 
 	float temp = 0;
 	float tempGravity = 0.0f;
-
-	int deathCount_ = 0;
 
 	float targetAngle_ = 0.0f;				//回転
 	float differenceAngle_ = 0.0f;			//目標の角度と現在の角度の差

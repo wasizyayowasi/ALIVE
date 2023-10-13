@@ -109,13 +109,11 @@ void Player::Draw()
 	PModel_->Draw();
 
 	DrawFormatString(0, 48, 0x448844, "%.2f", tempAngle_);
-	DrawFormatString(0, 64, 0x448844, "%d", deathCount_);
-
 }
 
 VECTOR Player::GetRot()
 {
-	return { status_.rot.x, status_.rot.y * DX_PI_F / 180.0f, status_.rot.z};
+	return DegreesToRadians(status_.rot);
 }
 
 
@@ -170,7 +168,7 @@ void Player::IdleUpdate(const InputState& input)
 	}
 
 	if (status_.isTransit) {
-		deadPersonModelPointer_->SetRot(VGet(status_.rot.x, status_.rot.y * DX_PI_F / 180.0f, status_.rot.z));
+		deadPersonModelPointer_->SetRot(DegreesToRadians(status_.rot));
 		deadPersonModelPointer_->SetPos(FramPosition("mixamorig:LeftHand", "mixamorig:RightHand"));
 	}
 	else {
@@ -347,7 +345,7 @@ void Player::RotationUpdate()
 	}
 
 	//結果をモデルの回転情報として送る
-	PModel_->SetRot({ status_.rot.x,status_.rot.y * DX_PI_F / 180.0f,status_.rot.z });
+	PModel_->SetRot(DegreesToRadians(status_.rot));
 }
 
 //オブジェクトを登る
@@ -438,7 +436,6 @@ void Player::DeathUpdate(const InputState& input)
 	}
 
 	if (PModel_->IsAnimEnd()) {
-		deathCount_++;					//死亡回数をカウントする
 		DeathPersonPostProsessing();
 	}
 
@@ -461,7 +458,7 @@ void Player::DeadPersonGenerater()
 {
 	auto& objManager = ObjectManager::GetInstance();
 
-	VECTOR rot = { status_.rot.x,status_.rot.y * DX_PI_F / 180.0f,status_.rot.z };
+	VECTOR rot = DegreesToRadians(status_.rot);
 
 	objManager.DeadPersonGenerator(ObjectType::deadPerson, PModel_->GetModelHandle(), deathPos, rot, status_.animNo);
 }
@@ -530,10 +527,9 @@ void Player::SetCarryInfo(bool isCarry, shared_ptr<Model>model) {
 }
 
 //セーブデータ
-void Player::SetSaveData(VECTOR pos,int num, bool isContinue)
+void Player::SetSaveData(VECTOR pos,bool isContinue)
 {
 	checkPoint_ = pos;
-	deathCount_ = num;
 	isContinue_ = isContinue;
 }
 
@@ -564,6 +560,18 @@ void Player::DropOffObjectUpdate()
 
 	carryUpdateFunc_ = &Player::CarryObjectUpdate;
 
+}
+
+//度数法から弧度法に変換した角度を返す
+VECTOR Player::DegreesToRadians(VECTOR rot)
+{
+	VECTOR storageRot;
+
+	storageRot.x = rot.x * DX_PI_F / 180.0f;
+	storageRot.y = rot.y * DX_PI_F / 180.0f;
+	storageRot.z = rot.z * DX_PI_F / 180.0f;
+
+	return storageRot;
 }
 
 void Player::ChangeAnimNo(AnimType type, bool isAnimLoop, int changeTime)

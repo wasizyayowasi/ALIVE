@@ -29,6 +29,9 @@ public:
 	//描画
 	void Draw();
 
+	//オブジェクトの生成
+	void ObjectGenerater();
+
 private:
 
 	int makeScreenHandle_ = -1;

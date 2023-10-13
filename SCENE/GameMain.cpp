@@ -47,34 +47,40 @@ isContinuation_(continuation)
 
 GameMain::~GameMain()
 {
-	LoadExternalFile::GetInstance(isContinuation_).SaveDataRewriteInfo(checkPoint_, player_->GetDeathNum());
+	//ゲームメインが終わるときにプレイ中に死んだ回数と
+	//saveDataに記録されている死亡回数を足す
+	totalDeathNum_ += player_->getDeathCount();
+	LoadExternalFile::GetInstance(isContinuation_).SaveDataRewriteInfo(checkPoint_, totalDeathNum_);
 }
 
 void GameMain::Init()
 {
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
 
-	auto& objManager = ObjectManager::GetInstance();
-	
-	objManager.ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy, player_Filename);
-	objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, temp_fieldpath);
-	objManager.ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry, box_filename);
-	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
-	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
-	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, steelyard_filename);
-	objManager.ObjectGenerator(ObjectBaseType::characterBase, ObjectType::deadPerson, player_Filename);
+	//オブジェクトを生成
+	ObjectGenerater();
 
+	//カメラのインスタンス化
 	camera_ = make_shared<Camera>();
+	//プレイヤーのインスタンス化
 	player_ = make_shared<Player>(player_Filename);
 	//broom_ = make_shared<Broom>();
 	//depthOfField_ = make_shared<DepthOfField>();
 
+	//仮でライト処理を消している
 	SetUseLighting(false);
 
+	//1mの範囲を設定する
 	Set3DSoundOneMetre(10.0f);
 
+	//セーブデータの内容を読み取る
 	auto data = LoadExternalFile::GetInstance(isContinuation_);
-	player_->SetSaveData(data.GetSaveData().checkPoint, data.GetSaveData().totalDeathNum, isContinuation_);
+	//死亡回数
+	totalDeathNum_ = data.GetSaveData().totalDeathNum;
+	//
+	player_->SetSaveData(data.GetSaveData().checkPoint,isContinuation_);
+
+	//プレイヤーの初期化
 	player_->Init();
 
 	//3Dリスナーの位置を設定する
@@ -123,6 +129,20 @@ void GameMain::Draw()
 	//画面全体を真っ黒に塗りつぶす
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, fadeColor_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+//オブジェクトの生成
+void GameMain::ObjectGenerater()
+{
+	auto& objManager = ObjectManager::GetInstance();
+
+	objManager.ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy, player_Filename);
+	objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, temp_fieldpath);
+	objManager.ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry, box_filename);
+	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
+	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
+	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, steelyard_filename);
+	objManager.ObjectGenerator(ObjectBaseType::characterBase, ObjectType::deadPerson, player_Filename);
 }
 
 //TODO：別のフェードインが出来次第消去
