@@ -9,42 +9,58 @@
 #include "gimmick/Switch.h"
 #include "gimmick/steelyard.h"
 
+namespace {
+	const char* const player_Filename = "data/player/player14.mv1";
+
+	const char* const temp_fieldpath = "data/model/tempFiled4.mv1";
+	const char* const temp_stairs = "data/model/stairs.mv1";
+	const char* const box_filename = "data/model/box.mv1";
+	const char* const bigPillar_filename = "data/level0_model/bigPillar.mv1";
+	const char* const switch_filename = "data/model/switch.mv1";
+	const char* const steelyard_filename = "data/model/steelyard.mv1";
+}
+
 ObjectManager::ObjectManager()
 {
+	playerHandle_ = MV1LoadModel(player_Filename);
+	fieldHandle_ = MV1LoadModel(temp_fieldpath);
+	boxHandle_ = MV1LoadModel(box_filename);
+	switchHandle_ = MV1LoadModel(switch_filename);
+	steelyardHandle_ = MV1LoadModel(steelyard_filename);
 }
 
 ObjectManager::~ObjectManager()
 {
 }
 
-void ObjectManager::ObjectGenerator(ObjectBaseType baseType, ObjectType objType, const char* const filename)
+void ObjectManager::ObjectGenerator(ObjectBaseType baseType, ObjectType objType)
 {
 	//objectBaseTypeを元にインスタンス化するクラスを決める
 	switch (baseType) {
 
 	//自我を持ったenemy以外のキャラクターを生成
 	case ObjectBaseType::characterBase:
-		CharacterGenerator(objType, filename);
+		CharacterGenerator(objType);
 		break;
 
 	//enemyを生成
 	case ObjectBaseType::enemyBase:
-		EnemyGenerator(objType, filename);
+		EnemyGenerator(objType);
 		break;
 
 	//置物を生成
 	case ObjectBaseType::ornamentBase:
-		OrnamentGenerator(objType, filename);
+		OrnamentGenerator(objType);
 		break;
 	
 	//運べる置物生成
 	case ObjectBaseType::carryBase:
-		CarryObjectGenerator(objType, filename);
+		CarryObjectGenerator(objType);
 		break;
 
 	//ギミックを生成
 	case ObjectBaseType::gimmickBase:
-		GimmickObjectGenerator(objType, filename);
+		GimmickObjectGenerator(objType);
 		break;
 	}
 
@@ -124,7 +140,7 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(ObjectType typ
 }
 
 //キャラクター生成機
-void ObjectManager::CharacterGenerator(ObjectType objType, const char* const filename)
+void ObjectManager::CharacterGenerator(ObjectType objType)
 {
 	switch (objType)
 	{
@@ -139,42 +155,42 @@ void ObjectManager::CharacterGenerator(ObjectType objType, const char* const fil
 }
 
 //敵生成機
-void ObjectManager::EnemyGenerator(ObjectType objType, const char* const filename)
+void ObjectManager::EnemyGenerator(ObjectType objType)
 {
 	switch (objType) {
 	case ObjectType::enemy:
-		objects_[objType].push_front(std::make_shared<tempEnemy>(filename));
+		objects_[objType].push_front(std::make_shared<tempEnemy>(playerHandle_));
 		break;
 	}
 }
 
 //置物生成機
-void ObjectManager::OrnamentGenerator(ObjectType objType, const char* const filename)
+void ObjectManager::OrnamentGenerator(ObjectType objType)
 {
 	switch (objType) {
 	case ObjectType::field:
-		objects_[objType].push_front(std::make_shared<OrnamentBase>(filename));
+		objects_[objType].push_front(std::make_shared<OrnamentBase>(fieldHandle_));
 		break;
 	}
 }
 
 //運べる置物生成機
-void ObjectManager::CarryObjectGenerator(ObjectType objType, const char* const filename)
+void ObjectManager::CarryObjectGenerator(ObjectType objType)
 {
 	switch (objType) {
 	case ObjectType::carry:
-		objects_[objType].push_front(std::make_shared <CarryObjectBase>(filename));
+		objects_[objType].push_front(std::make_shared <CarryObjectBase>(boxHandle_));
 		break;
 	}
 }
 
-void ObjectManager::GimmickObjectGenerator(ObjectType objType, const char* const filename)
+void ObjectManager::GimmickObjectGenerator(ObjectType objType)
 {
 	switch (objType) {
 	case ObjectType::gimmickSwitch:
-		objects_[objType].push_front(std::make_shared<Switch>(filename));
+		objects_[objType].push_front(std::make_shared<Switch>(switchHandle_));
 		break;
 	case ObjectType::gimmickSteelyard:
-		objects_[objType].push_front(std::make_shared<Steelyard>(filename));
+		objects_[objType].push_front(std::make_shared<Steelyard>(steelyardHandle_));
 	}
 }

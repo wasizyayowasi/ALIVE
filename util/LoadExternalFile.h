@@ -1,5 +1,7 @@
 #pragma once
-#include <vector>
+#include <unordered_map>
+#include <list>
+#include <string>
 #include "DxLib.h"
 #include "ObjAnimType.h"
 
@@ -15,6 +17,13 @@ struct ReadPlayerInfo {
 struct SaveData {
 	VECTOR checkPoint;
 	int totalDeathNum;
+};
+
+struct LoadObjectInfo {
+	std::string name;	//オブジェクトの名前
+	VECTOR pos;			//ポジション
+	VECTOR rot;			//回転率
+	VECTOR scale;		//拡縮率
 };
 
 class LoadExternalFile
@@ -40,15 +49,22 @@ private:
 	//セーブデータを読み込む
 	void LoadSaveDataInfo(const char* const filename);
 	//オブジェクトの配置情報を読み込む
-	void LoadObjectPosition(const char* const filename);
+	void LoadObjectData(const char* const filename);
 
 	//プレイヤーのステータス情報を書き出す
 	void RewritePlayerInfo();
 
 	LoadExternalFile(bool temp);
 
+	//度数法から弧度法
+	VECTOR DegreesToRadians(VECTOR rot);
+
+private:
+
 	ReadPlayerInfo player;
 	SaveData data;
+
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadObjInfo_;
 
 };
 

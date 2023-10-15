@@ -136,13 +136,13 @@ void GameMain::ObjectGenerater()
 {
 	auto& objManager = ObjectManager::GetInstance();
 
-	objManager.ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy, player_Filename);
-	objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, temp_fieldpath);
-	objManager.ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry, box_filename);
-	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
-	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, switch_filename);
-	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, steelyard_filename);
-	objManager.ObjectGenerator(ObjectBaseType::characterBase, ObjectType::deadPerson, player_Filename);
+	objManager.ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy);
+	objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field);
+	objManager.ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry);
+	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch);
+	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch);
+	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard);
+	objManager.ObjectGenerator(ObjectBaseType::characterBase, ObjectType::deadPerson);
 }
 
 //TODO：別のフェードインが出来次第消去

@@ -14,7 +14,7 @@ ObjectBase::ObjectBase(const char* const filename)
 ObjectBase::ObjectBase(int handle)
 {
 	model_ = std::make_shared<Model>(handle);
-	
+	model_->SetCollFrame();
 	isEnable_ = true;
 }
 
