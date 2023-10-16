@@ -14,7 +14,7 @@ DeadPerson::DeadPerson(const char* const filename, LoadObjectInfo objInfo, int a
 {
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
-	model_->SetScale(scale_);
+	model_->SetScale(objInfo.scale);
 	model_->SetAnimEndFrame(animNo);
 
 	switch (static_cast<AnimType>(animNo)) {
@@ -32,7 +32,7 @@ DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : Characte
 {
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
-	model_->SetScale(scale_);
+	model_->SetScale(objInfo.scale);
 	model_->SetAnimEndFrame(animNo);
 
 	switch (static_cast<AnimType>(animNo)) {

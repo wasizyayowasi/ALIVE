@@ -9,16 +9,17 @@ namespace {
 
 tempEnemy::tempEnemy(const char* const filename, LoadObjectInfo objInfo):EnemyBase(filename,objInfo)
 {
-	model_->SetScale(scale_);
-	model_->SetPos(pos_);
-	model_->SetRot(rot_);
+	model_->SetScale(objInfo.scale);
+	model_->SetPos(objInfo.pos);
+	model_->SetRot(objInfo.rot);
 }
 
 tempEnemy::tempEnemy(int handle, LoadObjectInfo objInfo) : EnemyBase(handle,objInfo)
 {
-	model_->SetScale(scale_);
-	model_->SetPos(pos_);
-	model_->SetRot(rot_);
+	model_->SetScale(objInfo.scale);
+	model_->SetPos(objInfo.pos);
+	model_->SetRot(objInfo.rot);
+	scale_ = objInfo.scale;
 }
 
 tempEnemy::~tempEnemy()
