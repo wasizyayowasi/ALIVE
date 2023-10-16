@@ -1,5 +1,6 @@
 #pragma once
 #include "DxLib.h"
+#include "../util/ObjectData.h"
 #include <memory>
 
 class Model;
@@ -9,9 +10,9 @@ class ObjectBase
 {
 public:
 	//ファイルパスでモデルクラスをインスタンス化するコンストラクタ
-	ObjectBase(const char* const filename);
+	ObjectBase(const char* const filename, LoadObjectInfo objInfo);
 	//作成済みモデルでモデルクラスをインスタンス化するコンストラクタ
-	ObjectBase(int handle);
+	ObjectBase(int handle, LoadObjectInfo objInfo);
 	//デストラクタ
 	virtual ~ObjectBase();
 

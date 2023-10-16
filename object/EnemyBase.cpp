@@ -2,11 +2,11 @@
 #include "Player.h"
 #include "../util/Model.h"
 
-EnemyBase::EnemyBase(const char* fileName):CharacterBase(fileName)
+EnemyBase::EnemyBase(const char* fileName, LoadObjectInfo objInfo):CharacterBase(fileName,objInfo)
 {
 }
 
-EnemyBase::EnemyBase(int handle) : CharacterBase(handle)
+EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,objInfo)
 {
 }
 

@@ -19,3 +19,12 @@ enum class AnimType {
 	carry,			//‰^‚Ô
 	max
 };
+
+struct PlayerInfo {
+	float jumpPower;
+	float runningJumpPower;
+	float rotSpeed;
+	float walkSpeed;
+	float runningSpeed;
+	int animNo_[static_cast<int>(AnimType::max)];
+};

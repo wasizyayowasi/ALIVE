@@ -1,6 +1,6 @@
 #include "LoadExternalFile.h"
 #include "util/InputState.h"
-#include "util/ObjectType.h"
+#include "util/ObjectData.h"
 
 #include<iostream>
 #include <nlohmann/json.hpp>
@@ -13,7 +13,7 @@ using namespace std;
 LoadExternalFile::LoadExternalFile(bool continuation)
 {
 	LoadPlayerInfo("player");
-	LoadObjectData("data/objData/Data.pos");
+	LoadObjectData("data/objData/temp.pos");
 	if (continuation) {
 		LoadSaveDataInfo("saveData");
 	}

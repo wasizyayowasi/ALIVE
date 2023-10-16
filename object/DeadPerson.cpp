@@ -1,7 +1,7 @@
 #include "DeadPerson.h"
 #include "Player.h"
 #include "../util/Model.h"
-#include "../util/ObjAnimType.h"
+#include "../util/PlayerData.h"
 
 namespace {
 	//ƒ‚ƒfƒ‹ƒtƒŒ[ƒ€–¼
@@ -10,10 +10,10 @@ namespace {
 	const char* const coll_frame_Stand = "CollisionStand";
 }
 
-DeadPerson::DeadPerson(const char* const filename,VECTOR pos, VECTOR rot, int animNo) : CharacterBase(filename)
+DeadPerson::DeadPerson(const char* const filename, LoadObjectInfo objInfo, int animNo) : CharacterBase(filename,objInfo)
 {
-	model_->SetPos(pos);
-	model_->SetRot(rot);
+	model_->SetPos(objInfo.pos);
+	model_->SetRot(objInfo.rot);
 	model_->SetScale(scale_);
 	model_->SetAnimEndFrame(animNo);
 
@@ -28,10 +28,10 @@ DeadPerson::DeadPerson(const char* const filename,VECTOR pos, VECTOR rot, int an
 
 }
 
-DeadPerson::DeadPerson(int handle, VECTOR pos, VECTOR rot, int animNo) : CharacterBase(handle),updateFunc_(&DeadPerson::NormalUpdate)
+DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : CharacterBase(handle,objInfo),updateFunc_(&DeadPerson::NormalUpdate)
 {
-	model_->SetPos(pos);
-	model_->SetRot(rot);
+	model_->SetPos(objInfo.pos);
+	model_->SetRot(objInfo.rot);
 	model_->SetScale(scale_);
 	model_->SetAnimEndFrame(animNo);
 

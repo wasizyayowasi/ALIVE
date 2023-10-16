@@ -23,7 +23,7 @@
 #include "../util/LoadExternalFile.h"
 
 #include "../util/ObjectManager.h"
-#include "../util/ObjectType.h"
+#include "../util/ObjectData.h"
 
 using namespace std;
 
@@ -136,13 +136,31 @@ void GameMain::ObjectGenerater()
 {
 	auto& objManager = ObjectManager::GetInstance();
 
-	objManager.ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy);
-	objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field);
-	objManager.ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry);
-	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch);
-	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch);
-	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard);
-	objManager.ObjectGenerator(ObjectBaseType::characterBase, ObjectType::deadPerson);
+//	objManager.ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy);
+//	objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field);
+//	objManager.ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry);
+//	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch);
+//	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch);
+//	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard);
+//	objManager.ObjectGenerator(ObjectBaseType::characterBase, ObjectType::deadPerson);
+
+	
+
+	for (auto& objInfo : LoadExternalFile::GetInstance(true).GetLoadObjectInfo()) {
+		if (objInfo.first == "sofa") {
+			for (auto& objSecond : objInfo.second) {
+				objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::tempsofa, objSecond);
+			}
+			
+		}
+		else if(objInfo.first == "bed") {
+			for (auto& objSecond : objInfo.second) {
+				objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::tempbed, objSecond);
+			}
+		}
+	}
+	
+
 }
 
 //TODO：別のフェードインが出来次第消去

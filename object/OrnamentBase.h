@@ -3,8 +3,8 @@
 class OrnamentBase : public ObjectBase
 {
 public:
-	OrnamentBase(const char* const filename);
-	OrnamentBase(int handle);
+	OrnamentBase(const char* const filename, LoadObjectInfo objInfo);
+	OrnamentBase(int handle, LoadObjectInfo objInfo);
 	virtual ~OrnamentBase();
 
 	virtual void Update(Player& player)override;

@@ -2,11 +2,11 @@
 #include "../util/Model.h"
 #include <cassert>
 
-CharacterBase::CharacterBase(const char* fileName):ObjectBase(fileName)
+CharacterBase::CharacterBase(const char* fileName, LoadObjectInfo objInfo):ObjectBase(fileName,objInfo)
 {
 }
 
-CharacterBase::CharacterBase(int handle) :ObjectBase(handle)
+CharacterBase::CharacterBase(int handle, LoadObjectInfo objInfo) :ObjectBase(handle,objInfo)
 {
 }
 

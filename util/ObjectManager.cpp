@@ -18,6 +18,9 @@ namespace {
 	const char* const bigPillar_filename = "data/level0_model/bigPillar.mv1";
 	const char* const switch_filename = "data/model/switch.mv1";
 	const char* const steelyard_filename = "data/model/steelyard.mv1";
+
+	const char* const temp_sofa_filename = "data/tempmodel/Sofa.mv1";
+	const char* const temp_bed_filename = "data/tempmodel/BedSingle.mv1";
 }
 
 ObjectManager::ObjectManager()
@@ -27,48 +30,55 @@ ObjectManager::ObjectManager()
 	boxHandle_ = MV1LoadModel(box_filename);
 	switchHandle_ = MV1LoadModel(switch_filename);
 	steelyardHandle_ = MV1LoadModel(steelyard_filename);
+
+	tempSofaHandle_ = MV1LoadModel(temp_sofa_filename);
+	tempBedHandle_ = MV1LoadModel(temp_bed_filename);
+
 }
 
 ObjectManager::~ObjectManager()
 {
 }
 
-void ObjectManager::ObjectGenerator(ObjectBaseType baseType, ObjectType objType)
+void ObjectManager::ObjectGenerator(ObjectBaseType baseType, ObjectType objType, LoadObjectInfo objInfo)
 {
 	//objectBaseTypeを元にインスタンス化するクラスを決める
 	switch (baseType) {
 
 	//自我を持ったenemy以外のキャラクターを生成
 	case ObjectBaseType::characterBase:
-		CharacterGenerator(objType);
+		CharacterGenerator(objType, objInfo);
 		break;
 
 	//enemyを生成
 	case ObjectBaseType::enemyBase:
-		EnemyGenerator(objType);
+		EnemyGenerator(objType, objInfo);
 		break;
 
 	//置物を生成
 	case ObjectBaseType::ornamentBase:
-		OrnamentGenerator(objType);
+		OrnamentGenerator(objType, objInfo);
 		break;
 	
 	//運べる置物生成
 	case ObjectBaseType::carryBase:
-		CarryObjectGenerator(objType);
+		CarryObjectGenerator(objType, objInfo);
 		break;
 
 	//ギミックを生成
 	case ObjectBaseType::gimmickBase:
-		GimmickObjectGenerator(objType);
+		GimmickObjectGenerator(objType, objInfo);
+		break;
+	case ObjectBaseType::temp:
+		OrnamentGenerator(objType, objInfo);
 		break;
 	}
 
 }
 
-void ObjectManager::DeadPersonGenerator(ObjectType objType, int handle, VECTOR pos, VECTOR rot, int animNo)
+void ObjectManager::DeadPersonGenerator(ObjectType objType, int handle, LoadObjectInfo objInfo, int animNo)
 {
-	objects_[objType].push_back(std::make_shared<DeadPerson>(handle, pos, rot, animNo));
+	objects_[objType].push_back(std::make_shared<DeadPerson>(handle, objInfo, animNo));
 
 	if(objects_[objType].size() < 4) return;
 
@@ -140,7 +150,7 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(ObjectType typ
 }
 
 //キャラクター生成機
-void ObjectManager::CharacterGenerator(ObjectType objType)
+void ObjectManager::CharacterGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
 	switch (objType)
 	{
@@ -155,42 +165,48 @@ void ObjectManager::CharacterGenerator(ObjectType objType)
 }
 
 //敵生成機
-void ObjectManager::EnemyGenerator(ObjectType objType)
+void ObjectManager::EnemyGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
 	switch (objType) {
 	case ObjectType::enemy:
-		objects_[objType].push_front(std::make_shared<tempEnemy>(playerHandle_));
+		objects_[objType].push_front(std::make_shared<tempEnemy>(playerHandle_,objInfo));
 		break;
 	}
 }
 
 //置物生成機
-void ObjectManager::OrnamentGenerator(ObjectType objType)
+void ObjectManager::OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
 	switch (objType) {
 	case ObjectType::field:
-		objects_[objType].push_front(std::make_shared<OrnamentBase>(fieldHandle_));
+		objects_[objType].push_front(std::make_shared<OrnamentBase>(fieldHandle_, objInfo));
+		break;
+	case ObjectType::tempsofa:
+		objects_[objType].push_front(std::make_shared<OrnamentBase>(tempSofaHandle_, objInfo));
+		break;
+	case ObjectType::tempbed:
+		objects_[objType].push_front(std::make_shared<OrnamentBase>(tempBedHandle_, objInfo));
 		break;
 	}
 }
 
 //運べる置物生成機
-void ObjectManager::CarryObjectGenerator(ObjectType objType)
+void ObjectManager::CarryObjectGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
 	switch (objType) {
 	case ObjectType::carry:
-		objects_[objType].push_front(std::make_shared <CarryObjectBase>(boxHandle_));
+		objects_[objType].push_front(std::make_shared <CarryObjectBase>(boxHandle_, objInfo));
 		break;
 	}
 }
 
-void ObjectManager::GimmickObjectGenerator(ObjectType objType)
+void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
 	switch (objType) {
 	case ObjectType::gimmickSwitch:
-		objects_[objType].push_front(std::make_shared<Switch>(switchHandle_));
+		objects_[objType].push_front(std::make_shared<Switch>(switchHandle_, objInfo));
 		break;
 	case ObjectType::gimmickSteelyard:
-		objects_[objType].push_front(std::make_shared<Steelyard>(steelyardHandle_));
+		objects_[objType].push_front(std::make_shared<Steelyard>(steelyardHandle_, objInfo));
 	}
 }

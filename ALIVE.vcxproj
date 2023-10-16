@@ -184,10 +184,10 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="util\ObjAnimType.h" />
+    <ClInclude Include="util\PlayerData.h" />
     <ClInclude Include="object\DeadPerson.h" />
     <ClInclude Include="util\ObjectManager.h" />
-    <ClInclude Include="util\ObjectType.h" />
+    <ClInclude Include="util\ObjectData.h" />
     <ClInclude Include="object\ObjectBase.h" />
     <ClInclude Include="object\cube.h" />
     <ClInclude Include="object\CarryObjectBase.h" />

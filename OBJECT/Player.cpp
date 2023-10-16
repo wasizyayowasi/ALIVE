@@ -66,13 +66,13 @@ void Player::Init()
 		playerInfo_.runningSpeed = loadExternalFile.GetPlayerInfo().runningSpeed;
 		playerInfo_.rotSpeed = loadExternalFile.GetPlayerInfo().rotSpeed;
 		for (int i = 0; i < static_cast<int>(AnimType::max); i++) {
-			playerInfo_.anim_[i] = loadExternalFile.GetPlayerInfo().animNo_[i];
+			playerInfo_.animNo_[i] = loadExternalFile.GetPlayerInfo().animNo_[i];
 		}
 	}
 
 	for (int i = 0; i < static_cast<int>(AnimType::max); i++)
 	{
-		animType_[static_cast<AnimType>(i)] = playerInfo_.anim_[i];
+		animType_[static_cast<AnimType>(i)] = playerInfo_.animNo_[i];
 	}
 
 	//プレイヤーモデルの生成
@@ -138,7 +138,6 @@ void Player::SetJumpInfo(bool isJump, float jumpVec)
 /// <param name="input">外部装置の入力情報を参照する</param>
 void Player::IdleUpdate(const InputState& input)
 {
-
 	//メンバ関数ポインタをrunningJumpUpdate、
 	//jumpUpdateのどちらかに変更する
 	if (input.IsTriggered(InputType::space)) {
@@ -460,9 +459,12 @@ void Player::DeadPersonGenerater()
 {
 	auto& objManager = ObjectManager::GetInstance();
 
-	VECTOR rot = DegreesToRadians(status_.rot);
+	LoadObjectInfo info;
+	info.rot = DegreesToRadians(status_.rot);
+	info.pos = deathPos;
+	info.scale = player_scale;
 
-	objManager.DeadPersonGenerator(ObjectType::deadPerson, PModel_->GetModelHandle(), deathPos, rot, status_.animNo);
+	objManager.DeadPersonGenerator(ObjectType::deadPerson, PModel_->GetModelHandle(),info, status_.animNo);
 }
 
 /// <summary>

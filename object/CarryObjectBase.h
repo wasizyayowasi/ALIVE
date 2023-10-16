@@ -5,8 +5,8 @@ class CarryObjectBase:public OrnamentBase
 {
 public:
 
-	CarryObjectBase(const char* filename);
-	CarryObjectBase(int handle);
+	CarryObjectBase(const char* filename, LoadObjectInfo objInfo);
+	CarryObjectBase(int handle, LoadObjectInfo objInfo);
 	virtual ~CarryObjectBase();
 
 	virtual void Update(Player& player)override;

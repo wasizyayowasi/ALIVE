@@ -7,8 +7,8 @@ class DeadPerson : public CharacterBase
 {
 public:
 
-	DeadPerson(const char* const filename,VECTOR pos,VECTOR rot,int animNo);
-	DeadPerson(int handle, VECTOR pos, VECTOR rot, int animNo);
+	DeadPerson(const char* const filename, LoadObjectInfo objInfo,int animNo);
+	DeadPerson(int handle, LoadObjectInfo objInfo, int animNo);
 	virtual ~DeadPerson();
 
 	void Update(Player& player)override;

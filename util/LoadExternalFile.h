@@ -3,27 +3,12 @@
 #include <list>
 #include <string>
 #include "DxLib.h"
-#include "ObjAnimType.h"
-
-struct ReadPlayerInfo {
-	float jumpPower;
-	float runningJumpPower;
-	float rotSpeed;
-	float walkSpeed;
-	float runningSpeed;
-	int animNo_[static_cast<int>(AnimType::max)];
-};
+#include "PlayerData.h"
+#include "ObjectData.h"
 
 struct SaveData {
 	VECTOR checkPoint;
 	int totalDeathNum;
-};
-
-struct LoadObjectInfo {
-	std::string name;	//オブジェクトの名前
-	VECTOR pos;			//ポジション
-	VECTOR rot;			//回転率
-	VECTOR scale;		//拡縮率
 };
 
 class LoadExternalFile
@@ -37,9 +22,29 @@ public:
 		return instance;
 	}
 
-	ReadPlayerInfo GetPlayerInfo() { return player; }
-	SaveData GetSaveData() { return data; }
+	/// <summary>
+	/// プレイヤーに関する情報を取得する
+	/// </summary>
+	/// <returns>playerData</returns>
+	PlayerInfo GetPlayerInfo() { return player; }
 
+	/// <summary>
+	/// savedataを取得する
+	/// </summary>
+	/// <returns>saveData</returns>
+	SaveData GetSaveData() { return data; }
+	
+	/// <summary>
+	/// オブジェクトの配置、回転率、拡縮率を取得する
+	/// </summary>
+	/// <returns>オブジェクトの配置データなどをすべてまとめた変数</returns>
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadObjectInfo() { return loadObjInfo_; }
+
+	/// <summary>
+	/// セーブデータの書き出し
+	/// </summary>
+	/// <param name="pos">ポジション</param>
+	/// <param name="num">死亡回数</param>
 	void SaveDataRewriteInfo(VECTOR pos, int num);
 
 private:
@@ -61,7 +66,7 @@ private:
 
 private:
 
-	ReadPlayerInfo player;
+	PlayerInfo player;
 	SaveData data;
 
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadObjInfo_;

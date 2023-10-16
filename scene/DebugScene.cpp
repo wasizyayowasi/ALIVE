@@ -10,10 +10,6 @@
 
 DebugScene::DebugScene(SceneManager& manager):SceneBase(manager)
 {
-	//scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_, true)));
-	//scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
-	//scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager_)));
-	//scene_.push_back(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 }
 
 DebugScene::~DebugScene()
@@ -22,11 +18,11 @@ DebugScene::~DebugScene()
 
 void DebugScene::Init()
 {
-	sceneName_[0] = { {SceneType::main},{"main"} };
-	sceneName_[1] = { {SceneType::title }, { "title" } };
-	sceneName_[2] = { {SceneType::end} ,{"end"} };
-	sceneName_[3] = { {SceneType::pause} ,{"pause"} };
-	sceneName_[4] = { {SceneType::max} ,{"•Â‚¶‚é"} };
+	sceneName_.push_back("main");
+	sceneName_.push_back("title");
+	sceneName_.push_back("end");
+	sceneName_.push_back("pause");
+	sceneName_.push_back("exit");
 }
 
 void DebugScene::End()
@@ -44,10 +40,9 @@ void DebugScene::Update(const InputState& input)
 	}
 
 	if (input.IsTriggered(InputType::space)) {
-		//manager_.changeScene(scene_[selectNum_]);
 		switch (selectNum_) {
 		case 0:
-			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_, true)));
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_, false)));
 			break;
 		case 1:
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
@@ -71,7 +66,7 @@ void DebugScene::Draw()
 
 	int y = 150;
 	for (auto& scene : sceneName_) {
-		DrawFormatString(0, y, 0xffffff, "%s", scene.second.sceneNameText.c_str());
+		DrawFormatString(0, y, 0xffffff, "%s", scene.c_str());
 		y += 32;
 	}
 

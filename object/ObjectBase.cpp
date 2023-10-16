@@ -3,7 +3,7 @@
 #include "../util/Model.h"
 #include "../util/InputState.h"
 
-ObjectBase::ObjectBase(const char* const filename)
+ObjectBase::ObjectBase(const char* const filename, LoadObjectInfo objInfo)
 {
 	model_ = std::make_shared<Model>(filename);
 	model_->SetCollFrame();
@@ -11,7 +11,7 @@ ObjectBase::ObjectBase(const char* const filename)
 
 }
 
-ObjectBase::ObjectBase(int handle)
+ObjectBase::ObjectBase(int handle, LoadObjectInfo objInfo)
 {
 	model_ = std::make_shared<Model>(handle);
 	model_->SetCollFrame();

@@ -2,11 +2,11 @@
 #include "Player.h"
 #include "../util/Model.h"
 
-CarryObjectBase::CarryObjectBase(const char* filename):OrnamentBase(filename)
+CarryObjectBase::CarryObjectBase(const char* filename, LoadObjectInfo objInfo):OrnamentBase(filename,objInfo)
 {
 }
 
-CarryObjectBase::CarryObjectBase(int handle) : OrnamentBase(handle)
+CarryObjectBase::CarryObjectBase(int handle, LoadObjectInfo objInfo) : OrnamentBase(handle,objInfo)
 {
 }
 

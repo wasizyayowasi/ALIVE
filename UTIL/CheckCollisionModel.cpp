@@ -308,19 +308,27 @@ void CheckCollisionModel::CheckStepDifference(Player& player, float playerHeight
 
 void CheckCollisionModel::CheckCollSpecificModel(Player& player)
 {
-	
+
+	//プレイヤーが現状別の死体を持ち運んでいたら取得しない
+	if (player.GetStatus().isTransit) {
+		return;
+	}
+
+	//持ち運ぶ死体を取得する
 	for (auto& obj : ObjectManager::GetInstance().GetSpecificModel(ObjectType::deadPerson)) {
 		for (auto& hit : hitDim_)
 		{
+			//衝突結果が死体以外だったらcontinue
 			if (hit.model != obj) {
 				continue;
 			}
 
+			//死体のモデルとプレイヤーの座標を基準に作成されたカプセルとの衝突判定
 			auto result = MV1CollCheck_Capsule(hit.model->GetModelHandle(), hit.model->GetColFrameIndex(), player.GetStatus().pos, VAdd(player.GetStatus().pos, VGet(0, player.GetStatus().height, 0)),30);
+
+			//上記の衝突判定の結果が1つでもあればプレイヤーに
+			//その死体のポインターと持ち運べるフラグを送る
 			if (result.HitNum > 0) {
-				if (player.GetStatus().isTransit) {
-					break;
-				}
 				player.SetCarryInfo(true,hit.model);
 			}
 

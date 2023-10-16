@@ -5,14 +5,14 @@ namespace {
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
-Steelyard::Steelyard(const char* const filename):GimmickBase(filename)
+Steelyard::Steelyard(const char* const filename, LoadObjectInfo objInfo):GimmickBase(filename,objInfo)
 {
 	model_->SetScale(scale);
 	model_->SetPos({ 1845,0,0 });
 	model_->SetCollFrame();
 }
 
-Steelyard::Steelyard(int handle):GimmickBase(handle)
+Steelyard::Steelyard(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInfo)
 {
 }
 

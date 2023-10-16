@@ -8,8 +8,8 @@ class Switch : public GimmickBase
 {
 public:
 	//コンストラクタ
-	Switch(const char* const filename);
-	Switch(int handle);
+	Switch(const char* const filename, LoadObjectInfo objInfo);
+	Switch(int handle, LoadObjectInfo objInfo);
 	//デストラクタ
 	virtual ~Switch();
 

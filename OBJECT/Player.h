@@ -1,7 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include "CharacterBase.h"
-#include "util/ObjAnimType.h"
+#include "util/PlayerData.h"
 #include <list>
 #include <unordered_map>
 #include <memory>
@@ -14,15 +14,6 @@ class GimmickBase;
 struct JumpInfo {
 	float jumpVec;		//ジャンプベクトル
 	bool isJump;		//ジャンプ中かどうか
-};
-
-struct PlayerInfo {
-	float jumpPower;
-	float runningJumpPower;
-	float rotSpeed;
-	float walkSpeed;
-	float runningSpeed;
-	int anim_[static_cast<int>(AnimType::max)];
 };
 
 struct PlayerStatus {
