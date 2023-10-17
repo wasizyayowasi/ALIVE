@@ -55,7 +55,7 @@ void SceneTitle::fadeInUpdate(const InputState& input)
 }
 
 void SceneTitle::normalUpdate(const InputState& input)
-{
+{		
 	updateFunc_ = &SceneTitle::fadeOutUpdate;
 }
 
@@ -63,7 +63,7 @@ void SceneTitle::fadeOutUpdate(const InputState& input)
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) {
-		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_, isContinue_)));
+		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 		return;
 	}
 }

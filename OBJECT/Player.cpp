@@ -57,7 +57,7 @@ Player::~Player()
 void Player::Init()
 {
 
-	auto loadExternalFile = LoadExternalFile::GetInstance(isContinue_);
+	auto loadExternalFile = LoadExternalFile::GetInstance();
 	//プレイヤー情報の初期化
 	{
 		playerInfo_.jumpPower = loadExternalFile.GetPlayerInfo().jumpPower;
@@ -107,8 +107,6 @@ void Player::Update(const InputState& input)
 void Player::Draw()
 {
 	PModel_->Draw();
-
-	DrawFormatString(0, 48, 0x448844, "%.2f", tempAngle_);
 }
 
 VECTOR Player::GetRot()
@@ -177,6 +175,8 @@ void Player::IdleUpdate(const InputState& input)
 	ChangeAnimIdle();
 	MovingUpdate(input);
 
+	//持ち運び中だったら
+	//以降の処理を行わない
 	if (status_.isTransit) {
 		return;
 	}
@@ -187,7 +187,9 @@ void Player::IdleUpdate(const InputState& input)
 		return;
 	}
 
+	//メンバ関数ポインタをDeathUpdateに変更する
 	if (input.IsTriggered(InputType::death)) {
+		deathCount_++;
 		updateFunc_ = &Player::DeathUpdate;
 		return;
 	}
@@ -428,8 +430,6 @@ void Player::DeathUpdate(const InputState& input)
 {
 	deathPos = status_.pos;				//死んだ場所を残す
 
-	deathCount_++;
-
 	//座るアニメーション以外だったら死ぬアニメーションに変える
 	if (status_.animNo != animType_[AnimType::sit]) {
 		//アニメーションの変更
@@ -531,10 +531,9 @@ void Player::SetCarryInfo(bool isCarry, shared_ptr<Model>model) {
 }
 
 //セーブデータ
-void Player::SetSaveData(VECTOR pos,bool isContinue)
+void Player::SetSaveData(VECTOR pos)
 {
 	checkPoint_ = pos;
-	isContinue_ = isContinue;
 }
 
 void Player::CarryObjectUpdate()

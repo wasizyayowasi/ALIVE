@@ -80,7 +80,7 @@ public:
 	/// </summary>
 	void SetCarryInfo(bool isCarry, std::shared_ptr<Model> model);
 
-	void SetSaveData(VECTOR pos, bool isContinue);
+	void SetSaveData(VECTOR pos);
 
 	/// <summary>
 	/// プレイヤーのステータスを取得する
@@ -185,7 +185,6 @@ private:
 	bool isMoving_ = false;					//移動中か
 	bool isSitting_ = false;				//座っているか
 	bool isClim_ = false;
-	bool isContinue_ = false;				//これだめだと思う
 	bool isCanBeCarried_ = false;
 
 	PlayerInfo playerInfo_ = {};

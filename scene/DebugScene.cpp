@@ -42,7 +42,7 @@ void DebugScene::Update(const InputState& input)
 	if (input.IsTriggered(InputType::space)) {
 		switch (selectNum_) {
 		case 0:
-			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_, false)));
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 			break;
 		case 1:
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));

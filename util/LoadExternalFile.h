@@ -17,8 +17,8 @@ public:
 
 	~LoadExternalFile();
 
-	static LoadExternalFile& GetInstance(bool continuation) {
-		static LoadExternalFile instance(continuation);
+	static LoadExternalFile& GetInstance() {
+		static LoadExternalFile instance;
 		return instance;
 	}
 
@@ -47,6 +47,9 @@ public:
 	/// <param name="num">死亡回数</param>
 	void SaveDataRewriteInfo(VECTOR pos, int num);
 
+	//セーブデータを使用するか
+	void LoadSaveFile(bool isContinue);
+
 private:
 
 	//プレイヤーのステータスに関する情報を読み込む
@@ -59,7 +62,7 @@ private:
 	//プレイヤーのステータス情報を書き出す
 	void RewritePlayerInfo();
 
-	LoadExternalFile(bool temp);
+	LoadExternalFile();
 
 	//度数法から弧度法
 	VECTOR DegreesToRadians(VECTOR rot);

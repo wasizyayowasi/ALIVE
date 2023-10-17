@@ -6,6 +6,7 @@
 #include "../util/FontsManager.h"
 #include "../util/InputState.h"
 #include "../util/UIItemManager.h"
+#include "../util/LoadExternalFile.h"
 #include <algorithm>
 
 using namespace std;
@@ -69,10 +70,12 @@ void TitlemenuScene::SceneChange()
 {
 	switch (selectNum_) {
 	case 0:
-		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_,false)));
+		LoadExternalFile::GetInstance().LoadSaveFile(false);
+		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 		break;
 	case 1:
-		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_,true)));
+		LoadExternalFile::GetInstance().LoadSaveFile(true);
+		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 		break;
 	case 2:
 		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));

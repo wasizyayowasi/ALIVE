@@ -23,6 +23,5 @@ void OrnamentBase::Update(Player& player)
 
 void OrnamentBase::Draw()
 {
-	DrawSphere3D(model_->GetPos(), 50, 32, 0xff0000, 0xff0000, true);
 	model_->Draw();
 }

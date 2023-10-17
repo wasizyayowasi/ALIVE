@@ -24,8 +24,6 @@ private:
 	void normalUpdate(const InputState& input);
 	void fadeOutUpdate(const InputState& input);
 
-	bool isContinue_ = false;
-
 	static constexpr int fadeInterval_ = 60;
 	int fadeTimer_ = fadeInterval_;
 	int fadeValue_ = 255;

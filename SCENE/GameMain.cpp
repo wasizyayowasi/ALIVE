@@ -29,19 +29,10 @@ using namespace std;
 
 namespace {
 	const char* const player_Filename = "data/player/player14.mv1";
-
-	const char* const temp_fieldpath = "data/model/tempFiled4.mv1";
-	const char* const temp_stairs = "data/model/stairs.mv1";
-	const char* const box_filename = "data/model/box.mv1";
-	const char* const bigPillar_filename = "data/level0_model/bigPillar.mv1";
-	const char* const switch_filename = "data/model/switch.mv1";
-	const char* const steelyard_filename = "data/model/steelyard.mv1";
-	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
-GameMain::GameMain(SceneManager& manager, bool continuation) : SceneBase(manager),
-updateFunc_(&GameMain::fadeInUpdate),
-isContinuation_(continuation)
+GameMain::GameMain(SceneManager& manager) : SceneBase(manager),
+updateFunc_(&GameMain::fadeInUpdate)
 {
 }
 
@@ -50,7 +41,7 @@ GameMain::~GameMain()
 	//ゲームメインが終わるときにプレイ中に死んだ回数と
 	//saveDataに記録されている死亡回数を足す
 	totalDeathNum_ += player_->getDeathCount();
-	LoadExternalFile::GetInstance(isContinuation_).SaveDataRewriteInfo(checkPoint_, totalDeathNum_);
+	LoadExternalFile::GetInstance().SaveDataRewriteInfo(checkPoint_, totalDeathNum_);
 }
 
 void GameMain::Init()
@@ -74,11 +65,11 @@ void GameMain::Init()
 	Set3DSoundOneMetre(10.0f);
 
 	//セーブデータの内容を読み取る
-	auto data = LoadExternalFile::GetInstance(isContinuation_);
+	auto data = LoadExternalFile::GetInstance();
 	//死亡回数
 	totalDeathNum_ = data.GetSaveData().totalDeathNum;
 	//
-	player_->SetSaveData(data.GetSaveData().checkPoint,isContinuation_);
+	player_->SetSaveData(data.GetSaveData().checkPoint);
 
 	//プレイヤーの初期化
 	player_->Init();
@@ -113,6 +104,7 @@ void GameMain::Draw()
 
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
+	DrawFormatString(0, 16, 0x448844, "%d", totalDeathNum_);
 
 	player_->Draw();
 	
@@ -142,11 +134,36 @@ void GameMain::ObjectGenerater()
 //	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch);
 //	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch);
 //	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard);
-//	objManager.ObjectGenerator(ObjectBaseType::characterBase, ObjectType::deadPerson);
 
-	
+	for (auto& objInfo : LoadExternalFile::GetInstance().GetLoadObjectInfo()) {
+		if (objInfo.first == "field") {
+			for (auto& objSecond : objInfo.second) {
+				objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, objSecond);
+			}
+		}
+		else if (objInfo.first == "switch") {
+			for (auto& objSecond : objInfo.second) {
+				objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, objSecond);
+			}
+		}
+		else if (objInfo.first == "steelyard") {
+			for (auto& objSecond : objInfo.second) {
+				objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, objSecond);
+			}
+		}
+		else if (objInfo.first == "box") {
+			for (auto& objSecond : objInfo.second) {
+				objManager.ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry, objSecond);
+			}
+		}
+		else if (objInfo.first == "player") {
+			for (auto& objSecond : objInfo.second) {
+				objManager.ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
+			}
+		}
+	}
 
-	for (auto& objInfo : LoadExternalFile::GetInstance(true).GetLoadObjectInfo()) {
+	/*for (auto& objInfo : LoadExternalFile::GetInstance(true).GetLoadObjectInfo()) {
 		if (objInfo.first == "sofa") {
 			for (auto& objSecond : objInfo.second) {
 				objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::tempsofa, objSecond);
@@ -158,7 +175,7 @@ void GameMain::ObjectGenerater()
 				objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::tempbed, objSecond);
 			}
 		}
-	}
+	}*/
 	
 
 }

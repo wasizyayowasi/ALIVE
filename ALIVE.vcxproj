@@ -184,6 +184,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util\StatePattern.h" />
     <ClInclude Include="util\PlayerData.h" />
     <ClInclude Include="object\DeadPerson.h" />
     <ClInclude Include="util\ObjectManager.h" />

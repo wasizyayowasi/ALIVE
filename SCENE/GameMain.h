@@ -15,7 +15,7 @@ class GameMain : public SceneBase
 {
 public:
 	///コンストラクタ
-	GameMain(SceneManager& manager,bool continuation);
+	GameMain(SceneManager& manager);
 	//デストラクタ
 	virtual ~GameMain();
 
@@ -36,8 +36,6 @@ private:
 
 	int makeScreenHandle_ = -1;
 	int totalDeathNum_ = 0;					//ゲーム開始からの総死亡数
-
-	bool isContinuation_ = false;			//続きからか初めからか
 
 	//消すかもしれない
 	void fadeInUpdate(const InputState& input);

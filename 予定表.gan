@@ -107,12 +107,12 @@
                 </task>
             </task>
         </task>
-        <task id="0" name="プロトタイプ" color="#ffff00" meeting="false" start="2023-10-13" duration="15" complete="3" thirdDate="2023-10-13" thirdDate-constraint="0" expand="false">
-            <task id="13" name="Enemy" color="#ff00ff" meeting="false" start="2023-10-21" duration="7" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="false">
-                <task id="26" name="追跡" color="#ff00ff" meeting="false" start="2023-10-21" duration="7" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
-                <task id="29" name="移動" color="#ff00ff" meeting="false" start="2023-10-22" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
+        <task id="0" name="プロトタイプ" color="#ffff00" meeting="false" start="2023-10-13" duration="15" complete="34" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
+            <task id="13" name="Enemy" color="#ff00ff" meeting="false" start="2023-10-21" duration="7" complete="39" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true">
+                <task id="26" name="追跡" color="#ff00ff" meeting="false" start="2023-10-21" duration="7" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
+                <task id="29" name="移動" color="#ff00ff" meeting="false" start="2023-10-22" duration="1" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
                 <task id="28" name="ルート巡回" color="#ff00ff" meeting="false" start="2023-10-23" duration="3" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
-                <task id="27" name="索敵" color="#ff00ff" meeting="false" start="2023-10-25" duration="2" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
+                <task id="27" name="索敵" color="#ff00ff" meeting="false" start="2023-10-25" duration="2" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
                 <task id="31" name="捕獲" color="#ff00ff" meeting="false" start="2023-10-24" duration="3" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
                 <task id="30" name="アニメーション" color="#ff00ff" meeting="false" start="2023-10-21" duration="7" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
             </task>

@@ -10,13 +10,11 @@
 using json = nlohmann::json;
 using namespace std;
 
-LoadExternalFile::LoadExternalFile(bool continuation)
+LoadExternalFile::LoadExternalFile()
 {
 	LoadPlayerInfo("player");
-	LoadObjectData("data/objData/temp.pos");
-	if (continuation) {
-		LoadSaveDataInfo("saveData");
-	}
+//	LoadObjectData("data/objData/temp.pos");
+	LoadObjectData("data/objData/data.pos");
 }
 
 VECTOR LoadExternalFile::DegreesToRadians(VECTOR rot)
@@ -54,6 +52,13 @@ void LoadExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 	writeing_file << saveData.dump() << std::endl;
 	writeing_file.close();
 
+}
+
+void LoadExternalFile::LoadSaveFile(bool isContinue)
+{
+	if (isContinue) {
+		LoadSaveDataInfo("saveData");
+	}
 }
 
 //プレイヤーのステータス情報を読み込む
