@@ -22,6 +22,7 @@ EnemyBase::EnemyBase(const char* fileName, LoadObjectInfo objInfo):CharacterBase
 
 EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,objInfo)
 {
+	model_->SetAnimation(0, true, false);
 }
 
 void EnemyBase::Update(Player& player)
@@ -44,14 +45,17 @@ void EnemyBase::TrackingUpdate(VECTOR playerPos)
 
 	//プレイヤーと敵の座標差を見て、
 	if (distance_ < range_to_stop_tracking) {
+		model_->ChangeAnimation(0, true, false, 20);
 		return;
 	}
 	//敵の視野角よりも外側にいるまたは
 	//敵からプレイヤーの距離が指定範囲より大きかったらreturn
 	if (innerProduct > viewing_angle || distance_ > visible_range) {
+		model_->ChangeAnimation(0, true, false, 20);
 		return;
 	}
 
+	model_->ChangeAnimation(7, true, false, 20);
 
 	//プレイヤーと自分の差を算出し、正規化し、スピードを掛ける
 	VECTOR moveVec = VScale(VNorm(VSub(playerPos, pos_)), 3.0f);
