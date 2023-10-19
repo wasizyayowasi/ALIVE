@@ -31,6 +31,18 @@ LoadExternalFile::~LoadExternalFile()
 	RewritePlayerInfo();
 }
 
+std::list<LoadObjectInfo> LoadExternalFile::GetSpecifiedInfo(const char* const name)
+{
+
+	for (auto& obj : loadObjInfo_) {
+		if (obj.first == name) {
+			return loadObjInfo_[name];
+		}
+	}
+
+	return std::list<LoadObjectInfo>();
+}
+
 //セーブデータの書き出し
 void LoadExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 {

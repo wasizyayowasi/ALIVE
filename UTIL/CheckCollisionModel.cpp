@@ -137,6 +137,8 @@ void CheckCollisionModel::CheckCollisionWall(VECTOR moveVec,float playerHeight)
 		}
 	}
 
+
+	//TODO：以下の処理を別の関数にする
 	// 壁に当たっていたら壁から押し出す処理を行う
 	//当たったポリゴンの法線ベクトルの５倍をプレイヤーのポジションに足している
 	if (hitFlag && !isGoUpStep_) {

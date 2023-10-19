@@ -41,6 +41,13 @@ public:
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadObjectInfo() { return loadObjInfo_; }
 
 	/// <summary>
+	/// 指定した名前のオブジェクト配置データを返す
+	/// </summary>
+	/// <param name="name">取得したいオブジェクトの名前</param>
+	/// <returns>オブジェクトのデータ</returns>
+	std::list<LoadObjectInfo> GetSpecifiedInfo(const char* const name);
+
+	/// <summary>
 	/// セーブデータの書き出し
 	/// </summary>
 	/// <param name="pos">ポジション</param>

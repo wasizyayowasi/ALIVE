@@ -28,7 +28,7 @@
 using namespace std;
 
 namespace {
-	const char* const player_Filename = "data/player/player14.mv1";
+	const char* const player_Filename = "data/player/player16.mv1";
 }
 
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),
@@ -51,10 +51,6 @@ void GameMain::Init()
 	//オブジェクトを生成
 	ObjectGenerater();
 
-	//カメラのインスタンス化
-	camera_ = make_shared<Camera>();
-	//プレイヤーのインスタンス化
-	player_ = make_shared<Player>(player_Filename);
 	//broom_ = make_shared<Broom>();
 	//depthOfField_ = make_shared<DepthOfField>();
 
@@ -70,9 +66,6 @@ void GameMain::Init()
 	totalDeathNum_ = data.GetSaveData().totalDeathNum;
 	//
 	player_->SetSaveData(data.GetSaveData().checkPoint);
-
-	//プレイヤーの初期化
-	player_->Init();
 
 	//3Dリスナーの位置を設定する
 	SoundManager::GetInstance().Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
@@ -126,16 +119,18 @@ void GameMain::Draw()
 //オブジェクトの生成
 void GameMain::ObjectGenerater()
 {
+	//短縮化
 	auto& objManager = ObjectManager::GetInstance();
+	auto& loadData = LoadExternalFile::GetInstance();
 
-//	objManager.ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy);
-//	objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field);
-//	objManager.ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry);
-//	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch);
-//	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch);
-//	objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard);
+	//カメラのインスタンス化
+	camera_ = make_shared<Camera>();
+	//プレイヤーのインスタンス化
+	player_ = make_shared<Player>(player_Filename);
+	//プレイヤーの初期化
+	player_->Init(loadData.GetSpecifiedInfo("player").front());
 
-	for (auto& objInfo : LoadExternalFile::GetInstance().GetLoadObjectInfo()) {
+	for (auto& objInfo : loadData.GetLoadObjectInfo()) {
 		if (objInfo.first == "field") {
 			for (auto& objSecond : objInfo.second) {
 				objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, objSecond);
@@ -162,22 +157,6 @@ void GameMain::ObjectGenerater()
 			}
 		}
 	}
-
-	/*for (auto& objInfo : LoadExternalFile::GetInstance(true).GetLoadObjectInfo()) {
-		if (objInfo.first == "sofa") {
-			for (auto& objSecond : objInfo.second) {
-				objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::tempsofa, objSecond);
-			}
-			
-		}
-		else if(objInfo.first == "bed") {
-			for (auto& objSecond : objInfo.second) {
-				objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::tempbed, objSecond);
-			}
-		}
-	}*/
-	
-
 }
 
 //TODO：別のフェードインが出来次第消去

@@ -10,7 +10,7 @@
 #include "gimmick/steelyard.h"
 
 namespace {
-	const char* const player_Filename = "data/player/player14.mv1";
+	const char* const player_Filename = "data/player/player16.mv1";
 
 	const char* const temp_fieldpath = "data/model/tempFiled4.mv1";
 	const char* const temp_stairs = "data/model/stairs.mv1";
@@ -18,9 +18,6 @@ namespace {
 	const char* const bigPillar_filename = "data/level0_model/bigPillar.mv1";
 	const char* const switch_filename = "data/model/switch.mv1";
 	const char* const steelyard_filename = "data/model/steelyard.mv1";
-
-	const char* const temp_sofa_filename = "data/tempmodel/Sofa.mv1";
-	const char* const temp_bed_filename = "data/tempmodel/BedSingle.mv1";
 }
 
 ObjectManager::ObjectManager()
@@ -31,13 +28,15 @@ ObjectManager::ObjectManager()
 	switchHandle_ = MV1LoadModel(switch_filename);
 	steelyardHandle_ = MV1LoadModel(steelyard_filename);
 
-	tempSofaHandle_ = MV1LoadModel(temp_sofa_filename);
-	tempBedHandle_ = MV1LoadModel(temp_bed_filename);
-
 }
 
 ObjectManager::~ObjectManager()
 {
+	MV1DeleteModel(playerHandle_);
+	MV1DeleteModel(fieldHandle_);
+	MV1DeleteModel(boxHandle_);
+	MV1DeleteModel(switchHandle_);
+	MV1DeleteModel(steelyardHandle_);
 }
 
 void ObjectManager::ObjectGenerator(ObjectBaseType baseType, ObjectType objType, LoadObjectInfo objInfo)

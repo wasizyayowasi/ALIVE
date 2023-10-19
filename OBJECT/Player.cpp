@@ -20,7 +20,7 @@ namespace {
 	const char* const coll_frame_Stand = "CollisionStand";
 
 	//プレイヤーサイズ
-	const VECTOR player_scale = { 0.5f,0.5f ,0.5f };
+	const VECTOR player_scale = { 1.0f,1.0f ,1.0f };
 
 	//初期プレイヤーの回転角度
 	const VECTOR start_player_rot = { 0.0f,0.0f ,0.0f };
@@ -54,7 +54,7 @@ Player::~Player()
 }
 
 
-void Player::Init()
+void Player::Init(LoadObjectInfo info)
 {
 
 	auto loadExternalFile = LoadExternalFile::GetInstance();
@@ -80,7 +80,11 @@ void Player::Init()
 	//アニメーションの設定
 	PModel_->SetAnimation(animType_[AnimType::idle], true, false);
 	//プレイヤーの大きさの調整
-	PModel_->SetScale(player_scale);
+	PModel_->SetScale(info.scale);
+	//ポジションの設定
+	PModel_->SetPos(info.pos);
+	//回転率の設定
+	PModel_->SetPos(info.rot);
 	//マップやブロックなどの当たり判定の生成
 	checkCollisionModel_ = make_shared<CheckCollisionModel>();
 	//コリジョンフレームの設定

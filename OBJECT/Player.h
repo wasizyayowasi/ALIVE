@@ -2,6 +2,7 @@
 #include "DxLib.h"
 #include "CharacterBase.h"
 #include "util/PlayerData.h"
+#include "util/ObjectData.h"
 #include <list>
 #include <unordered_map>
 #include <memory>
@@ -35,7 +36,7 @@ public:
 	Player(int handle);
 	virtual ~Player();
 
-	void Init();
+	void Init(LoadObjectInfo info);
 
 	/// <summary>
 	/// プレイヤーの更新を行う
