@@ -37,6 +37,8 @@ private:
 	int makeScreenHandle_ = -1;
 	int totalDeathNum_ = 0;					//ゲーム開始からの総死亡数
 
+	bool isFilterOn_ = false;				//フィルターを使用するか
+
 	//消すかもしれない
 	void fadeInUpdate(const InputState& input);
 	void normalUpdate(const InputState& input);

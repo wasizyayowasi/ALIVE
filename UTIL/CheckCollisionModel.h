@@ -35,7 +35,7 @@ public:
 	/// <param name="player">プレイヤーを参照</param>
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="models">プレイヤーと衝突判定を行うモデル</param>
-	void CheckCollisionPersonalArea(Player& player,VECTOR moveVec);
+	void CheckCollisionPersonalArea(Player& player);
 
 	/// <summary>
 	/// 衝突した壁と床のポリゴン数を数える
@@ -47,7 +47,7 @@ public:
 	/// </summary>
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="playerHeight">プレイヤーの高さ</param>
-	void CheckCollisionWall(VECTOR moveVec, float playerHeight);
+	void CheckCollisionWall(Player& player);
 
 	/// <summary>
 	/// 衝突したモデルのポリゴンが床かを判断する
@@ -56,25 +56,19 @@ public:
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="jumpFlag">プレイヤーのジャンプフラグ</param>
 	/// <param name="playerHeight">プレイヤーの高さ</param>
-	void CheckCollisionFloor(Player& player, VECTOR moveVec,bool jumpFlag,float playerHeight);
+	void CheckCollisionFloor(Player& player);
 
 	/// <summary>
 	/// checkCollisionPersonalArea、checkCollisionWall、checkCollisionFloorを呼び出す。
 	/// 最後、上記の関数で取得した値を消去する
 	/// </summary>
 	/// <param name="player">プレイヤーを参照する</param>
-	/// <param name="moveVec">プレイヤーの移動量</param>
-	/// <param name="model">衝突判定を行うモデル</param>
-	/// <param name="playerHeight">プレイヤーの高さ</param>
-	/// <param name="isJump">プレイヤーのジャンプフラグ</param>
-	/// <param name="jumpVec">プレイヤーのジャンプベクトル</param>
-	void CheckCollision(Player& player, VECTOR moveVec,float playerHeight,bool isJump,float jumpVec);
+	void CheckCollision(Player& player);
 
 	/// <summary>
 	/// 衝突したオブジェクトが乗り越えられるか判断する
 	/// </summary>
-	/// <param name="playerHeight">プレイヤーの高さ</param>
-	void CheckStepDifference(Player& player, float playerHeight);
+	void CheckStepDifference(Player& player);
 
 
 	void CheckCollSpecificModel(Player& player);

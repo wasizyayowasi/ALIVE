@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 
+class UIItemManager;
+
 class ScenePause : public SceneBase
 {
 public:
@@ -25,10 +27,9 @@ public:
 
 private:
 
-	int selectionNum_ = 0;		//選択番号
+	int selectNum_ = 0;		//選択番号
 
-	bool isDecision_ = false;
-
+	std::shared_ptr<UIItemManager> UI_;		//UIマネージャのスマートポインタ
 	std::vector<std::string> menuName_;		//ポーズメニューの名前用
 };
 

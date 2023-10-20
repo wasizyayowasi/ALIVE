@@ -20,17 +20,22 @@ TitlemenuScene::~TitlemenuScene()
 {
 }
 
+//初期化
 void TitlemenuScene::Init()
 {
+	//タイトル画像の読み込み
 	titleHandle_ = LoadGraph("data/graph/title.png");
+	//インスタンス化
 	UI_ = std::make_shared<UIItemManager>();
 
+	//UI文字列の作成
 	menuName_.push_back("New Game");
 	menuName_.push_back("Continue");
 	menuName_.push_back("Setting");
 	menuName_.push_back("end");
 
-	int font = FontsManager::getInstance().GetFontHandle("High Tower Text");
+	//UI画像の作成
+	int font = FontsManager::getInstance().GetFontHandle("High Tower Text32");
 	int y = 120;
 	for (auto& menu : menuName_) {
 		UI_->addMenu(Game::screen_width / 2, Game::screen_height / 2 + y,320, 100, menu.c_str(), font);
@@ -44,9 +49,10 @@ void TitlemenuScene::End()
 	DeleteGraph(titleHandle_);
 }
 
+//更新
 void TitlemenuScene::Update(const InputState& input)
 {
-	//TODO:まとめる
+	//選択
 	if (input.IsTriggered(InputType::up)) {
 		selectNum_ = (max)(selectNum_ - 1, 0);
 	}
@@ -54,18 +60,23 @@ void TitlemenuScene::Update(const InputState& input)
 		selectNum_ = (min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
 	}
 
+	//決定
 	if (input.IsTriggered(InputType::space)) {
 		SceneChange();
 	}
 
 }
 
+//描画
 void TitlemenuScene::Draw()
 {
+	//UIの描画
 	UI_->draw(selectNum_);
+	//タイトルの描画
 	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3, 1.0f, 0.0f, titleHandle_, true);
 }
 
+//シーンの変更
 void TitlemenuScene::SceneChange()
 {
 	switch (selectNum_) {

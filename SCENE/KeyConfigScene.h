@@ -1,5 +1,8 @@
 #pragma once
 #include "SceneBase.h"
+#include <memory>
+
+class UIItemManager;
 
 class KeyConfigScene : public SceneBase
 {
@@ -26,8 +29,7 @@ public:
 
 	//現在のkey入力情報を描画
 	void KeyStateDraw();
-	//keyの名前を描画
-	void KeyNameDraw();
+	
 	//keyの画像を描画
 	void KeyGraphDraw();
 
@@ -44,21 +46,24 @@ public:
 
 private:
 
-	int fontHandle_ = -1;
+	int fontHandleSize16_ = -1;				//フォント16サイズを保管する変数
+	int fontHandleSize32_ = -1;				//フォント32サイズを保管する変数
 
-	int makeScreenHandle_ = -1;
+	int makeScreenHandle_ = -1;				//作成したハンドルを保管する変数
 
-	int keyTypeHandle_ = -1;	//keyTypeを描画するためのグラフを受け取るためのhandle
+	int keyTypeHandle_ = -1;				//keyTypeを描画するためのグラフを受け取るためのhandle
 
-	int textColor_ = 0xffffff;		//カラー
-	int selectNum_ = 0;			//現在の選択番号
+	int textColor_ = 0xffffff;				//カラー
+	int selectNum_ = 0;						//現在の選択番号
 
-	bool isEditing_ = false;	//編集中フラグ
+	bool isEditing_ = false;				//編集中フラグ
 
-	const InputState& inputState_;				//コンストラクタの引数input参照を受け取る
+	const InputState& inputState_;			//コンストラクタの引数input参照を受け取る
 
-	void (KeyConfigScene::* updateFunc_)();		//メンバ関数ポインタ
-	void (KeyConfigScene::* drawFunc_)();		//メンバ関数ポインタ
+	std::shared_ptr<UIItemManager> UI_;		//UIマネージャーのスマートポインタ
+
+	void (KeyConfigScene::* updateFunc_)();	//メンバ関数ポインタ
+	void (KeyConfigScene::* drawFunc_)();	//メンバ関数ポインタ
 
 };
 

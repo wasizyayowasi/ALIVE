@@ -50,8 +50,6 @@ public:
 	/// </summary>
 	void Draw();
 
-	VECTOR GetRot();
-
 	/// <summary>
 	/// 死んだ回数を取得する
 	/// </summary>
@@ -80,8 +78,6 @@ public:
 	/// 持ち運ぶ事が出来るフラグと持ち運ぶモデルのポインタを受け取る
 	/// </summary>
 	void SetCarryInfo(bool isCarry, std::shared_ptr<Model> model);
-
-	void SetSaveData(VECTOR pos);
 
 	/// <summary>
 	/// プレイヤーのステータスを取得する
@@ -176,12 +172,12 @@ private:
 
 	int deathCount_ = 0;					//死んだ回数を記録する
 
-	float temp = 0;
-	float tempGravity = 0.0f;
+	float totalAnimFrame_ = 0;
+	float runJumpGravity = 0.0f;
 
 	float targetAngle_ = 0.0f;				//回転
 	float differenceAngle_ = 0.0f;			//目標の角度と現在の角度の差
-	float tempAngle_ = 0.0f;
+	float angle_ = 0.0f;
 
 	bool isMoving_ = false;					//移動中か
 	bool isSitting_ = false;				//座っているか

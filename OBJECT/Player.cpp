@@ -104,7 +104,7 @@ void Player::Update(const InputState& input)
 	(this->*updateFunc_)(input);
 
 	//プレイヤーとその他オブジェクトとの衝突判定
-	checkCollisionModel_->CheckCollision(*this, status_.moveVec,player_hegiht, status_.jump.isJump, status_.jump.jumpVec);
+	checkCollisionModel_->CheckCollision(*this);
 }
 
 
@@ -112,12 +112,6 @@ void Player::Draw()
 {
 	PModel_->Draw();
 }
-
-VECTOR Player::GetRot()
-{
-	return DegreesToRadians(status_.rot);
-}
-
 
 void Player::SetPos(VECTOR pos)
 {
@@ -319,31 +313,31 @@ float Player::Move(const InputState& input) {
 void Player::RotationUpdate()
 {
 	//目標の角度から現在の角度を引いて差を出している
-	differenceAngle_ = targetAngle_ - tempAngle_;
+	differenceAngle_ = targetAngle_ - angle_;
 
 	//常にプレイヤーモデルを大周りさせたくないので
 	//181度又は-181度以上の場合、逆回りにしてあげる
 	if (differenceAngle_ >= 180.0f) {
-		differenceAngle_ = targetAngle_ - tempAngle_ - 360.0f;
+		differenceAngle_ = targetAngle_ - angle_ - 360.0f;
 	}
 	else if (differenceAngle_ <= -180.0f) {
-		differenceAngle_ = targetAngle_ - tempAngle_ + 360.0f;
+		differenceAngle_ = targetAngle_ - angle_ + 360.0f;
 	}
 
 	//滑らかに回転させるため
 	//現在の角度に回転スピードを増減させている
 	if (differenceAngle_ < 0.0f) {
 		status_.rot.y -= playerInfo_.rotSpeed;
-		tempAngle_ -= playerInfo_.rotSpeed;
+		angle_ -= playerInfo_.rotSpeed;
 	}
 	else if (differenceAngle_ > 0.0f) {
 		status_.rot.y += playerInfo_.rotSpeed;
-		tempAngle_ += playerInfo_.rotSpeed;
+		angle_ += playerInfo_.rotSpeed;
 	}
 
 	//360度、一周したら0度に戻すようにしている
-	if (tempAngle_ == 360.0f || tempAngle_ == -360.0f) {
-		tempAngle_ = 0.0f;
+	if (angle_ == 360.0f || angle_ == -360.0f) {
+		angle_ = 0.0f;
 	}
 	if (status_.rot.y == 360.0f || status_.rot.y == -360.0f) {
 		status_.rot.y = 0.0f;
@@ -408,13 +402,13 @@ void Player::RunningJumpUpdate(const InputState& input)
 
 	//HACK：変数が仮のまま　+　どうするか悩んでいる
 	//アニメーションの総時間によって、重力を変更する
-	temp = PModel_->GetAnimTotalTime() + 2;
-	tempGravity = -(playerInfo_.runningJumpPower * 2 / temp);
+	totalAnimFrame_ = PModel_->GetAnimTotalTime() + 2;
+	runJumpGravity = -(playerInfo_.runningJumpPower * 2 / totalAnimFrame_);
 
 	//空中にいるとき
 	//重力をベクトルに足してポジションに足す
 	if (status_.jump.isJump) {
-		status_.jump.jumpVec += tempGravity;
+		status_.jump.jumpVec += runJumpGravity;
 		status_.pos.y += status_.jump.jumpVec;
 	}
 
@@ -532,12 +526,6 @@ void Player::StandUpdate(const InputState& input)
 void Player::SetCarryInfo(bool isCarry, shared_ptr<Model>model) {
 	isCanBeCarried_ = isCarry;
 	deadPersonModelPointer_ = model;
-}
-
-//セーブデータ
-void Player::SetSaveData(VECTOR pos)
-{
-	checkPoint_ = pos;
 }
 
 void Player::CarryObjectUpdate()

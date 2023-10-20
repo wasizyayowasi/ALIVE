@@ -64,8 +64,6 @@ void GameMain::Init()
 	auto data = LoadExternalFile::GetInstance();
 	//死亡回数
 	totalDeathNum_ = data.GetSaveData().totalDeathNum;
-	//
-	player_->SetSaveData(data.GetSaveData().checkPoint);
 
 	//3Dリスナーの位置を設定する
 	SoundManager::GetInstance().Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
@@ -92,6 +90,8 @@ void GameMain::Draw()
 	SetDrawScreen(makeScreenHandle_);
 	ClearDrawScreen();
 
+	//カメラの初期化
+	//SetDrawScreenを行うとカメラの情報がリセットされるために
 	camera_->init();
 	camera_->TrackingCameraUpdate(player_->GetStatus().pos);
 
@@ -99,8 +99,10 @@ void GameMain::Draw()
 	DrawString(0, 0, "GameMain", 0xffffff);
 	DrawFormatString(0, 16, 0x448844, "%d", totalDeathNum_);
 
+	//プレイヤーの描画
 	player_->Draw();
 	
+	//オブジェクトの描画
 	ObjectManager::GetInstance().Draw();
 
 	//broom_->graphFilterUpdate();
@@ -108,10 +110,15 @@ void GameMain::Draw()
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
+	//フィルター処理を行うか
+	if (isFilterOn_) {
+		GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 32, 800);
+	}
+	//makescreenHandleに書き込んだ内容を描画する
 	DrawGraph(0, 0, makeScreenHandle_, true);
 
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	//画面全体を真っ黒に塗りつぶす
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, fadeColor_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
@@ -131,26 +138,31 @@ void GameMain::ObjectGenerater()
 	player_->Init(loadData.GetSpecifiedInfo("player").front());
 
 	for (auto& objInfo : loadData.GetLoadObjectInfo()) {
+		//フィールドを作成
 		if (objInfo.first == "field") {
 			for (auto& objSecond : objInfo.second) {
 				objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, objSecond);
 			}
 		}
+		//ギミックスイッチを作成
 		else if (objInfo.first == "switch") {
 			for (auto& objSecond : objInfo.second) {
 				objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, objSecond);
 			}
 		}
+		//ギミック天秤を作成
 		else if (objInfo.first == "steelyard") {
 			for (auto& objSecond : objInfo.second) {
 				objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, objSecond);
 			}
 		}
+		//箱を作成
 		else if (objInfo.first == "box") {
 			for (auto& objSecond : objInfo.second) {
 				objManager.ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry, objSecond);
 			}
 		}
+		//敵を作成
 		else if (objInfo.first == "player") {
 			for (auto& objSecond : objInfo.second) {
 				objManager.ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
@@ -172,23 +184,32 @@ void GameMain::fadeInUpdate(const InputState& input)
 //更新
 void GameMain::normalUpdate(const InputState& input)
 {
+	//短縮化
 	auto& objManager = ObjectManager::GetInstance();
-
+	//フィルター処理を行わない用にする
+	isFilterOn_ = false;
+	//オブジェクトの更新
 	objManager.Update(*player_);
 
+	//プレイヤーの更新
 	player_->Update(input);
+	//カメラの注視点を変更する
 	camera_->ChangeOfFocus(input);
 
 	//camera_->fixedPointCamera(player_->getPos());
 
+	//リスナーの位置と方向を設定
+	//今回は、プレイヤーではなくカメラの座標にしている
 	SoundManager::GetInstance().Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
 
+	//いらないやつ
 	if (player_->GetStatus().pos.x > 1900) {
 		checkPoint_ = { 1900,0,0 };
 	}
 
+	//ポーズシーンを開く
 	if (input.IsTriggered(InputType::pause)) {
-		//GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 32, 20000);
+		isFilterOn_ = true;
 		manager_.PushScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
 }

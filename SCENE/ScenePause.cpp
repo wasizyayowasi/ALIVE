@@ -4,8 +4,12 @@
 #include "KeyConfigScene.h"
 #include "SoundSettingScene.h"
 #include "DebugScene.h"
+
 #include "../util/InputState.h"
 #include "../util/game.h"
+#include "../util/FontsManager.h"
+#include "../util/UIItemManager.h"
+
 #include <algorithm>
 
 ScenePause::ScenePause(SceneManager& manager):SceneBase(manager)
@@ -18,11 +22,24 @@ ScenePause::~ScenePause()
 
 void ScenePause::Init()
 {
+	//インスタンス化
+	UI_ = std::make_shared<UIItemManager>();
+
+	//UI文字列の作成
 	menuName_.push_back("音調整");
 	menuName_.push_back("操作設定");
 	menuName_.push_back("戻る");
 	menuName_.push_back("タイトルへ");
 	menuName_.push_back("デバッグシーンへ");
+
+	//UI画像の作成
+	int font = FontsManager::getInstance().GetFontHandle("ピグモ 0032");
+	int y = 50;
+	for (auto& menu : menuName_) {
+		UI_->addMenu(Game::screen_width / 2, Game::screen_height / 2 + y, 320, 100, menu.c_str(), font);
+		y += 40;
+	}
+
 }
 
 void ScenePause::End()
@@ -35,16 +52,16 @@ void ScenePause::Update(const InputState& input)
 	//項目選択
 	{
 		if (input.IsTriggered(InputType::up)) {
-			selectionNum_ = (std::max)(selectionNum_ - 1, 0);
+			selectNum_ = (std::max)(selectNum_ - 1, 0);
 		}
 		if (input.IsTriggered(InputType::down)) {
-			selectionNum_ = (std::min)(selectionNum_ + 1, 4);
+			selectNum_ = (std::min)(selectNum_ + 1, 4);
 		}
 	}
 	
 
 	if (input.IsTriggered(InputType::space)) {
-		 switch(selectionNum_) {
+		 switch(selectNum_) {
 		//サウンドセッティングへの遷移
 		 case 0:
 			 manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<SoundSettingScene>(manager_)));
@@ -76,16 +93,12 @@ void ScenePause::Update(const InputState& input)
 
 void ScenePause::Draw()
 {
+	//背景黒の描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND,0);
-	DrawString(0, 0, "scenePause",0xff0000);
 
-	DrawString(90, 16 * selectionNum_ + 32, "←", 0xffff00);
+	//UIの描画
+	UI_->draw(selectNum_);
 
-	int y = 32;
-	for (auto& menu : menuName_) {
-		DrawFormatString(0, y, 0x00ff00, "%s", menu.c_str());
-		y += 16;
-	}
 }
