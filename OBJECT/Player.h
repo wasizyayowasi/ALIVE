@@ -188,8 +188,9 @@ private:
 	PlayerStatus status_ = {};
 
 	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};						//中間ポイント
+	VECTOR scale_ = {0.0f,0.0f, 0.0f};						//拡縮率
 
-	VECTOR deathPos = { 0.0f,0.0f,0.0f };						//死体のポジション
+	VECTOR deathPos_ = { 0.0f,0.0f,0.0f };						//死体のポジション
 
 	std::shared_ptr<Model> deadPersonModelPointer_;				//持ち運ぶ死体のモデルポインタ
 	std::shared_ptr<Model> PModel_;								//モデルクラスのポインタ

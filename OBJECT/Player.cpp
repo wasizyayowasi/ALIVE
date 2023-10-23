@@ -13,7 +13,7 @@ namespace {
 	constexpr float gravity = -0.4f;
 
 	//ファイルパス
-	const char* const player_Filename = "DATA/player/player16.mv1";
+	const char* const player_Filename = "DATA/player/Player16.mv1";
 	//モデルフレーム名
 	const char* const coll_frame_death = "CollisionDeath";
 	const char* const coll_frame_Sit = "CollisionSit";
@@ -89,6 +89,9 @@ void Player::Init(LoadObjectInfo info)
 	checkCollisionModel_ = make_shared<CheckCollisionModel>();
 	//コリジョンフレームの設定
 	PModel_->SetCollFrame("Character");
+
+	scale_ = info.scale;
+
 }
 
 
@@ -426,7 +429,7 @@ void Player::RunningJumpUpdate(const InputState& input)
 /// <param name="input">外部装置の入力情報を参照する</param>
 void Player::DeathUpdate(const InputState& input)
 {
-	deathPos = status_.pos;				//死んだ場所を残す
+	deathPos_ = status_.pos;				//死んだ場所を残す
 
 	//座るアニメーション以外だったら死ぬアニメーションに変える
 	if (status_.animNo != animType_[AnimType::sit]) {
@@ -459,8 +462,8 @@ void Player::DeadPersonGenerater()
 
 	LoadObjectInfo info;
 	info.rot = DegreesToRadians(status_.rot);
-	info.pos = deathPos;
-	info.scale = player_scale;
+	info.pos = deathPos_;
+	info.scale = scale_;
 
 	objManager.DeadPersonGenerator(ObjectType::deadPerson, PModel_->GetModelHandle(),info, status_.animNo);
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="ALIVE" company="" webLink="http://" view-date="2023-10-12" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.2.3247" locale="ja_JP">
+<?xml version="1.0" encoding="UTF-8"?><project name="ALIVE" company="" webLink="http://" view-date="2023-10-13" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.2.3247" locale="ja_JP">
     <description>
         <![CDATA[作品]]>
     </description>
@@ -39,65 +39,65 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="69" name="リファクタリング" color="#8cb6ce" meeting="false" start="2023-10-13" duration="1" complete="32" thirdDate="2023-10-08" thirdDate-constraint="0" expand="false">
-            <task id="6" name="タイトルシーン" color="#8cb6ce" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
-                <task id="43" name="メニュー" color="#ffff00" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
-                <task id="44" name="選択" color="#ffff00" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
+        <task id="69" name="リファクタリング" color="#8cb6ce" meeting="false" start="2023-10-28" duration="4" complete="32" thirdDate="2023-10-08" thirdDate-constraint="0" expand="false">
+            <task id="6" name="タイトルシーン" color="#8cb6ce" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="false">
+                <task id="43" name="メニュー" color="#ffff00" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
+                <task id="44" name="選択" color="#ffff00" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
             </task>
-            <task id="16" name="サウンドセッティングシーン" color="#8cb6ce" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="false">
-                <task id="48" name="音量調整" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true"/>
+            <task id="16" name="サウンドセッティングシーン" color="#8cb6ce" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="false">
+                <task id="48" name="音量調整" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true"/>
             </task>
-            <task id="63" name="キーコンフィグシーン" meeting="false" start="2023-10-13" duration="1" complete="0" expand="false">
-                <task id="64" name="キー選択" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-08" thirdDate-constraint="0" priority="0" expand="true"/>
-                <task id="65" name="キー変更" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-08" thirdDate-constraint="0" priority="0" expand="true"/>
+            <task id="63" name="キーコンフィグシーン" meeting="false" start="2023-10-28" duration="4" complete="0" expand="true">
+                <task id="64" name="キー選択" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-08" thirdDate-constraint="0" priority="0" expand="true"/>
+                <task id="65" name="キー変更" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-08" thirdDate-constraint="0" priority="0" expand="true"/>
             </task>
-            <task id="7" name="シーンポーズ" color="#8cb6ce" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="false">
-                <task id="38" name="メニュー" color="#ffff00" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
-                <task id="41" name="シーン遷移" color="#ff00ff" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
-                <task id="45" name="選択" color="#ff00ff" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
+            <task id="7" name="シーンポーズ" color="#8cb6ce" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="false">
+                <task id="38" name="メニュー" color="#ffff00" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
+                <task id="41" name="シーン遷移" color="#ff00ff" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
+                <task id="45" name="選択" color="#ff00ff" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
             </task>
-            <task id="9" name="カメラ" color="#8cb6ce" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="false">
-                <task id="36" name="定点カメラの追跡" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true"/>
-                <task id="37" name="追跡カメラ" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
+            <task id="9" name="カメラ" color="#8cb6ce" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="false">
+                <task id="36" name="定点カメラの追跡" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true"/>
+                <task id="37" name="追跡カメラ" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
             </task>
-            <task id="4" name="Player" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="80" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="false">
-                <task id="17" name="移動" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
+            <task id="4" name="Player" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="80" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="false">
+                <task id="17" name="移動" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
                     <notes>
                         <![CDATA[大まかには完成している。
 けどリファクタリングが必要]]>
                     </notes>
                 </task>
-                <task id="18" name="ジャンプ" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
+                <task id="18" name="ジャンプ" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
                     <notes>
                         <![CDATA[リファクタリングが必要
 ]]>
                     </notes>
                 </task>
-                <task id="19" name="自死" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
+                <task id="19" name="自死" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
                     <notes>
                         <![CDATA[リファクタリングが必要]]>
                     </notes>
                 </task>
-                <task id="22" name="持ち運ぶ" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
+                <task id="22" name="持ち運ぶ" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
                     <notes>
                         <![CDATA[リファクタリングが必要
 ]]>
                     </notes>
                 </task>
-                <task id="21" name="アニメーション" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="70" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
+                <task id="21" name="アニメーション" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="70" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
                     <notes>
                         <![CDATA[アニメーションを変更または追加するかもしれない
 ステートパターン等を使ってリファクタリングするかもしれない
 ]]>
                     </notes>
                 </task>
-                <task id="20" name="回転" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="80" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
+                <task id="20" name="回転" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="80" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
                     <notes>
                         <![CDATA[移動に関係してくるので移動をリファクタリングしたら
 回転の処理もリファクタリングする必要がある]]>
                     </notes>
                 </task>
-                <task id="25" name="上る" color="#00ff00" meeting="false" start="2023-10-13" duration="1" complete="50" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
+                <task id="25" name="上る" color="#00ff00" meeting="false" start="2023-10-28" duration="4" complete="50" thirdDate="2023-10-13" thirdDate-constraint="0" priority="0" expand="true">
                     <notes>
                         <![CDATA[どうするかわからない
 上るアニメーションを数種類追加して
@@ -107,8 +107,8 @@
                 </task>
             </task>
         </task>
-        <task id="0" name="プロトタイプ" color="#ffff00" meeting="false" start="2023-10-13" duration="15" complete="34" thirdDate="2023-10-13" thirdDate-constraint="0" expand="false">
-            <task id="13" name="Enemy" color="#ff00ff" meeting="false" start="2023-10-21" duration="7" complete="39" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="false">
+        <task id="0" name="プロトタイプ" color="#ffff00" meeting="false" start="2023-10-13" duration="15" complete="34" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
+            <task id="13" name="Enemy" color="#ff00ff" meeting="false" start="2023-10-21" duration="7" complete="39" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true">
                 <task id="26" name="追跡" color="#ff00ff" meeting="false" start="2023-10-21" duration="7" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
                 <task id="29" name="移動" color="#ff00ff" meeting="false" start="2023-10-22" duration="1" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
                 <task id="28" name="ルート巡回" color="#ff00ff" meeting="false" start="2023-10-23" duration="3" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
