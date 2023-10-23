@@ -13,7 +13,7 @@ namespace {
 	constexpr float gravity = -0.4f;
 
 	//ファイルパス
-	const char* const player_Filename = "DATA/player/Player16.mv1";
+	const char* const player_Filename = "DATA/player/temp.mv1";
 	//モデルフレーム名
 	const char* const coll_frame_death = "CollisionDeath";
 	const char* const coll_frame_Sit = "CollisionSit";
