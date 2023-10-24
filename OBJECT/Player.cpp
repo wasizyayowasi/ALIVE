@@ -19,6 +19,9 @@ namespace {
 	const char* const coll_frame_Sit = "CollisionSit";
 	const char* const coll_frame_Stand = "CollisionStand";
 
+	//フレームの名前
+	const char* const frame_name = "foot.L";
+
 	//プレイヤーサイズ
 	const VECTOR player_scale = { 1.0f,1.0f ,1.0f };
 
