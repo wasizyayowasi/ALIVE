@@ -6,13 +6,13 @@ enum class AnimType {
 	run,			//走る
 	jump,			//ジャンプ
 	carryWalking,	//運びながら歩く
-	carry,			//運ぶ
-	stairs,			//階段を上る
-	radder,			//上る
-	runningJump,	//走りジャンプ
-	death,			//走りジャンプ
+	carryIdle,		//運ぶ
+	death,			//死ぬ
+	dead,			//死ぬ
 	idleToSitup,	//idle状態から座る
 	situpToIdle,	//座っている状態からidle
+	radder,			//上る
+	runningJump,	//走りジャンプ
 	sit,			//座っている
 	clim,			//登る
 	stand,			//立ち上がる

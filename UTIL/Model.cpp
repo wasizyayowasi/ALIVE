@@ -124,7 +124,7 @@ void Model::SetAnimation(int animNo, bool isLoop, bool IsForceChange)
 	}
 
 	animNext_.animNo = animNo;
-	animNext_.attachNo = MV1AttachAnim(modelHandle_, animNo, -1, false);
+	animNext_.attachNo = MV1AttachAnim(modelHandle_, animNext_.animNo, -1, false);
 	animNext_.totalTime = MV1GetAttachAnimTotalTime(modelHandle_, animNext_.attachNo);
 	animNext_.isLoop = isLoop;
 
@@ -172,9 +172,8 @@ bool Model::IsAnimEnd()
 //アニメーションの終わりを設定
 void Model::SetAnimEndFrame(int animNo)
 {
-	int momentAnimNo = MV1AttachAnim(modelHandle_, animNo, -1, false);
-	float animEndFrame = MV1GetAttachAnimTotalTime(modelHandle_, momentAnimNo);
-	MV1SetAttachAnimTime(modelHandle_, momentAnimNo, animEndFrame - 1);
+	float animEndFrame = MV1GetAttachAnimTotalTime(modelHandle_, animNo);
+	MV1SetAttachAnimTime(modelHandle_, animNext_.attachNo, animNext_.totalTime);
 }
 
 //特定フレームの座標を取得

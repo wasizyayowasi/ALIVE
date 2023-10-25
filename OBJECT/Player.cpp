@@ -140,29 +140,7 @@ void Player::SetJumpInfo(bool isJump, float jumpVec)
 /// <param name="input">外部装置の入力情報を参照する</param>
 void Player::IdleUpdate(const InputState& input)
 {
-	//メンバ関数ポインタをrunningJumpUpdate、
-	//jumpUpdateのどちらかに変更する
-	if (input.IsTriggered(InputType::space)) {
-		
-		if (isClim_) {
-			//アニメーションの変更
-			ChangeAnimNo(AnimType::clim, false, 20);
-			updateFunc_ = &Player::ClimUpdate;
-			return;
-		}
-		else if (input.IsPressed(InputType::shift)) {
-			PlayerJump(playerInfo_.runningJumpPower);
-			ChangeAnimNo(AnimType::runningJump, false, 20);
-			updateFunc_ = &Player::RunningJumpUpdate;
-			return;
-		}
-		else {
-			PlayerJump(playerInfo_.jumpPower);
-			ChangeAnimNo(AnimType::jump, false, 20);
-			updateFunc_ = &Player::JumpUpdate;
-			return;
-		}
-	}
+	
 
 	if (input.IsTriggered(InputType::carry)) {
 		(this->*carryUpdateFunc_)();
@@ -170,7 +148,7 @@ void Player::IdleUpdate(const InputState& input)
 
 	if (status_.isTransit) {
 		deadPersonModelPointer_->SetRot(DegreesToRadians(status_.rot));
-		deadPersonModelPointer_->SetPos(FramPosition("mixamorig:LeftHand", "mixamorig:RightHand"));
+		deadPersonModelPointer_->SetPos(FramPosition2("hand.R_end"));
 	}
 	else {
 		isCanBeCarried_ = false;
@@ -183,6 +161,31 @@ void Player::IdleUpdate(const InputState& input)
 	//以降の処理を行わない
 	if (status_.isTransit) {
 		return;
+	}
+
+	//メンバ関数ポインタをrunningJumpUpdate、
+	//jumpUpdateのどちらかに変更する
+	if (input.IsTriggered(InputType::space)) {
+
+		if (isClim_) {
+			//アニメーションの変更
+			//ChangeAnimNo(AnimType::clim, false, 20);
+			//updateFunc_ = &Player::ClimUpdate;
+			return;
+		}
+		//ランニングジャンプの削除予定(未定)
+		/*else if (input.IsPressed(InputType::shift)) {
+			PlayerJump(playerInfo_.runningJumpPower);
+			ChangeAnimNo(AnimType::runningJump, false, 20);
+			updateFunc_ = &Player::RunningJumpUpdate;
+			return;
+		}*/
+		else {
+			PlayerJump(playerInfo_.jumpPower);
+			ChangeAnimNo(AnimType::jump, false, 20);
+			updateFunc_ = &Player::JumpUpdate;
+			return;
+		}
 	}
 
 	//メンバ関数ポインタをsitUpdateに変更する
@@ -209,7 +212,7 @@ void Player::ChangeAnimIdle()
 	if (!isMoving_) {
 
 		if (status_.isTransit) {
-			ChangeAnimNo(AnimType::carry, true, 20);
+			ChangeAnimNo(AnimType::carryIdle, true, 20);
 		}
 		else {
 			ChangeAnimNo(AnimType::idle, true, 20);
@@ -435,7 +438,7 @@ void Player::DeathUpdate(const InputState& input)
 	deathPos_ = status_.pos;				//死んだ場所を残す
 
 	//座るアニメーション以外だったら死ぬアニメーションに変える
-	if (status_.animNo != animType_[AnimType::sit]) {
+	if (status_.animNo != animType_[AnimType::idleToSitup]) {
 		//アニメーションの変更
 		ChangeAnimNo(AnimType::death, false, 20);
 	}
@@ -513,7 +516,7 @@ void Player::IdleToSitup(const InputState& input)
 
 	//座る過程のアニメーションが終わったら三角座りにする
 	if (status_.animNo == animType_[AnimType::idleToSitup] && PModel_->IsAnimEnd()) {
-		ChangeAnimNo(AnimType::sit, false, 20);
+		PModel_->SetAnimEndFrame(status_.animNo);
 		updateFunc_ = &Player::SitUpdate;
 	}
 
@@ -549,10 +552,10 @@ void Player::CarryObjectUpdate()
 void Player::DropOffObjectUpdate()
 {
 	bool isCarryWalking = status_.animNo == animType_[AnimType::carryWalking];
-	bool isCarry = status_.animNo == animType_[AnimType::carry];
+	bool isCarry = status_.animNo == animType_[AnimType::carryIdle];
 	if ((isCarryWalking || isCarry) && isCanBeCarried_) {
 		isCanBeCarried_ = false;
-		deadPersonModelPointer_->SetPos(FramPosition("mixamorig:LeftToeBase", "mixamorig:RightToeBase"));
+		deadPersonModelPointer_->SetPos(FramPosition("foot.L", "foot.R"));
 		deadPersonModelPointer_.reset();
 	}
 
@@ -610,6 +613,17 @@ VECTOR Player::FramPosition(const char* const LeftFramename, const char* const R
 	framePosition.x = framePosition.x / 2;
 	framePosition.y = framePosition.y / 2;
 	framePosition.z = framePosition.z / 2;
+
+	return framePosition;
+}
+
+VECTOR Player::FramPosition2(const char* const framename)
+{
+
+	VECTOR framePosition;
+
+	//指定フレームの座標を取得する。
+	framePosition = PModel_->GetAnimFrameLocalPosition(status_.animNo, framename);
 
 	return framePosition;
 }
