@@ -172,15 +172,16 @@ bool Model::IsAnimEnd()
 //アニメーションの終わりを設定
 void Model::SetAnimEndFrame(int animNo)
 {
-	float animEndFrame = MV1GetAttachAnimTotalTime(modelHandle_, animNo);
+	SetAnimation(animNo, false, true);
 	MV1SetAttachAnimTime(modelHandle_, animNext_.attachNo, animNext_.totalTime);
 }
 
 //特定フレームの座標を取得
-VECTOR Model::GetAnimFrameLocalPosition(int animNo, const char* frameName)
+VECTOR Model::GetAnimFrameLocalPosition(const char* frameName)
 {
-	int animFrame = MV1SearchFrame(modelHandle_, frameName);
-	VECTOR localPos = MV1GetFramePosition(modelHandle_, animFrame);
+	int frameNo = MV1SearchFrame(modelHandle_, frameName);
+	auto name = MV1GetFrameName(modelHandle_, frameNo);
+	VECTOR localPos = MV1GetFramePosition(modelHandle_, frameNo);
 
 	return localPos;
 }

@@ -5,9 +5,7 @@
 
 namespace {
 	//ÉÇÉfÉãÉtÉåÅ[ÉÄñº
-	const char* const coll_frame_death = "CollisionDeath";
-	const char* const coll_frame_Sit = "CollisionSit";
-	const char* const coll_frame_Stand = "CollisionStand";
+	const char* const coll_frame_death = "body";
 }
 
 DeadPerson::DeadPerson(const char* const filename, LoadObjectInfo objInfo, int animNo) : CharacterBase(filename,objInfo)
@@ -39,8 +37,7 @@ DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : Characte
 
 	switch (static_cast<AnimType>(animNo)) {
 	case AnimType::death:
-		//model_->SetCollFrame(coll_frame_death);
-		model_->SetCollFrame();
+		model_->SetCollFrame(coll_frame_death);
 		break;
 	//case AnimType::sit:
 	//	model_->SetCollFrame(coll_frame_Sit);
@@ -61,6 +58,8 @@ void DeadPerson::Update(Player& player)
 void DeadPerson::Draw()
 {
 	model_->Draw();
+	DrawFormatString(0, 32, 0x448844, "%.2f , %.2f , %.2f", model_->GetPos().x, model_->GetPos().y, model_->GetPos().z);
+	DrawSphere3D(model_->GetPos(), 32, 32, 0xff0000, 0xff0000, true);
 }
 
 void DeadPerson::NormalUpdate(Player& player)

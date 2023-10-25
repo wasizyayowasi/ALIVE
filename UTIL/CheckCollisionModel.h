@@ -90,7 +90,6 @@ private:
 	std::list<CollModelState> hitDim_;
 	CollResultPoly wallHitDim_[max_hit_coll] = {};
 	CollResultPoly floorHitDim_[max_hit_coll] = {};
-	//MV1_COLL_RESULT_POLY* hitPoly = {};
 	HITRESULT_LINE hitLineResult = {};
 };
 

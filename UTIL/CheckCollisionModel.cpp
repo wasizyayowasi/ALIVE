@@ -26,6 +26,8 @@ void CheckCollisionModel::CheckCollisionPersonalArea(Player& player)
 	nowPos = VAdd(playerState.pos, playerState.moveVec);
 	//ƒ‚ƒfƒ‹‚Æ‹…‚Ì“–‚½‚è”»’è
 	
+	auto aiu = ObjectManager::GetInstance().GetAllCheckCollModel();
+
 	for (auto& model : ObjectManager::GetInstance().GetAllCheckCollModel()) {
 		if (player.GetStatus().isTransit) {
 			if (player.GetDeadPersonModelPointer() == model) {

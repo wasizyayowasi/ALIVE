@@ -13,7 +13,7 @@ namespace {
 	constexpr float gravity = -0.4f;
 
 	//ファイルパス
-	const char* const player_Filename = "DATA/player/temp.mv1";
+	const char* const player_Filename = "data/player/temp.mv1";
 	//モデルフレーム名
 	const char* const coll_frame_death = "CollisionDeath";
 	const char* const coll_frame_Sit = "CollisionSit";
@@ -117,6 +117,8 @@ void Player::Update(const InputState& input)
 void Player::Draw()
 {
 	PModel_->Draw();
+	VECTOR aiu = FramPosition2("hand.R_end");
+	DrawFormatString(0, 48, 0x448844, "%.2f , %.2f , %.2f", aiu.x, aiu.y, aiu.z);
 }
 
 void Player::SetPos(VECTOR pos)
@@ -147,6 +149,7 @@ void Player::IdleUpdate(const InputState& input)
 	}
 
 	if (status_.isTransit) {
+		deadPersonModelPointer_->SetAnimEndFrame(animType_[AnimType::dead]);
 		deadPersonModelPointer_->SetRot(DegreesToRadians(status_.rot));
 		deadPersonModelPointer_->SetPos(FramPosition2("hand.R_end"));
 	}
@@ -471,7 +474,7 @@ void Player::DeadPersonGenerater()
 	info.pos = deathPos_;
 	info.scale = scale_;
 
-	objManager.DeadPersonGenerator(ObjectType::deadPerson, PModel_->GetModelHandle(),info, status_.animNo);
+	objManager.DeadPersonGenerator(PModel_->GetModelHandle(),info, status_.animNo);
 }
 
 /// <summary>
@@ -607,8 +610,8 @@ VECTOR Player::FramPosition(const char* const LeftFramename, const char* const R
 	VECTOR framePosition;
 
 	//指定フレームの座標を取得する。
-	framePosition = PModel_->GetAnimFrameLocalPosition(status_.animNo, LeftFramename);
-	framePosition = VAdd(framePosition, PModel_->GetAnimFrameLocalPosition(status_.animNo, RightFramename));
+	framePosition = PModel_->GetAnimFrameLocalPosition(LeftFramename);
+	framePosition = VAdd(framePosition, PModel_->GetAnimFrameLocalPosition(RightFramename));
 	//二つの座標を足し、2で割り中心を取得する
 	framePosition.x = framePosition.x / 2;
 	framePosition.y = framePosition.y / 2;
@@ -623,7 +626,7 @@ VECTOR Player::FramPosition2(const char* const framename)
 	VECTOR framePosition;
 
 	//指定フレームの座標を取得する。
-	framePosition = PModel_->GetAnimFrameLocalPosition(status_.animNo, framename);
+	framePosition = PModel_->GetAnimFrameLocalPosition(framename);
 
 	return framePosition;
 }

@@ -20,13 +20,39 @@ public:
 		return instance;
 	}
 
+	/// <summary>
+	/// オブジェクト生成
+	/// </summary>
+	/// <param name="baseType">どのbaseクラスをもとに生成するか</param>
+	/// <param name="objType">オブジェクトの種類</param>
+	/// <param name="objInfo">オブジェクトの配置データ等</param>
 	void ObjectGenerator(ObjectBaseType baseType,ObjectType objType,LoadObjectInfo objInfo);
-	void DeadPersonGenerator(ObjectType objType,int handle, LoadObjectInfo objInfo,int animNo);
 
+	/// <summary>
+	/// 死体生成
+	/// </summary>
+	/// <param name="handle">モデルハンドル</param>
+	/// <param name="objInfo">オブジェクトの配置データ等</param>
+	/// <param name="animNo">初期化時に使用するアニメーション番号</param>
+	void DeadPersonGenerator(int handle, LoadObjectInfo objInfo,int animNo);
+
+	//更新
 	void Update(Player& player);
+
+	//描画
 	void Draw();
 
+	/// <summary>
+	/// 衝突判定に使用するモデルを取得する
+	/// </summary>
+	/// <returns>衝突判定を行うモデルスマートポインタのリスト</returns>
 	std::list<std::shared_ptr<Model>> GetAllCheckCollModel();
+
+	/// <summary>
+	/// 特定のモデルポインタを取得する
+	/// </summary>
+	/// <param name="type">取得したいオブジェクトタイプ</param>
+	/// <returns>特定のモデルポインタリスト</returns>
 	std::list<std::shared_ptr<Model>> GetSpecificModel(ObjectType type);
 
 private:
@@ -39,7 +65,7 @@ private:
 private:
 	//キャラクター生成機
 	void CharacterGenerator(ObjectType objType, LoadObjectInfo objInfo);
-	//敵生成機
+
 	void EnemyGenerator(ObjectType objType, LoadObjectInfo objInfo);
 	//置物生成機
 	void OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo);
@@ -50,14 +76,11 @@ private:
 private:
 
 	int playerHandle_ = -1;
-	int fieldHandle_ = -1;
-	int boxHandle_ = -1;
+	int fieldHandle_ = -1;				//仮フィールドのモデルハンドル
+	int boxHandle_ = -1;				//仮の箱オブジェクト用ハンドル
 	int switchHandle_ = -1;
 	int steelyardHandle_ = -1;
 
-	int tempSofaHandle_ = -1;
-	int tempBedHandle_ = -1;
-
-	std::unordered_map<ObjectType, std::list<std::shared_ptr<ObjectBase>>> objects_;
+	std::unordered_map<ObjectType, std::list<std::shared_ptr<ObjectBase>>> objects_;			//オブジェクトをobjectTypeをキーにlistでもつ
 };
 

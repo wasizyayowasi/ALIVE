@@ -75,13 +75,13 @@ void ObjectManager::ObjectGenerator(ObjectBaseType baseType, ObjectType objType,
 
 }
 
-void ObjectManager::DeadPersonGenerator(ObjectType objType, int handle, LoadObjectInfo objInfo, int animNo)
+void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int animNo)
 {
-	objects_[objType].push_back(std::make_shared<DeadPerson>(handle, objInfo, animNo));
+	objects_[ObjectType::deadPerson].push_back(std::make_shared<DeadPerson>(handle, objInfo, animNo));
 
-	if(objects_[objType].size() < 4) return;
+	if(objects_[ObjectType::deadPerson].size() < 4) return;
 
-	objects_[objType].remove(objects_[objType].front());
+	objects_[ObjectType::deadPerson].remove(objects_[ObjectType::deadPerson].front());
 
 }
 
@@ -168,7 +168,7 @@ void ObjectManager::EnemyGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
 	switch (objType) {
 	case ObjectType::enemy:
-		objects_[objType].push_front(std::make_shared<tempEnemy>(playerHandle_,objInfo));
+		objects_[objType].push_front(std::make_shared<tempEnemy>(playerHandle_, objInfo));
 		break;
 	}
 }
@@ -179,12 +179,6 @@ void ObjectManager::OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo
 	switch (objType) {
 	case ObjectType::field:
 		objects_[objType].push_front(std::make_shared<OrnamentBase>(fieldHandle_, objInfo));
-		break;
-	case ObjectType::tempsofa:
-		objects_[objType].push_front(std::make_shared<OrnamentBase>(tempSofaHandle_, objInfo));
-		break;
-	case ObjectType::tempbed:
-		objects_[objType].push_front(std::make_shared<OrnamentBase>(tempBedHandle_, objInfo));
 		break;
 	}
 }

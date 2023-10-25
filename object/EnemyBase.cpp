@@ -12,7 +12,7 @@ namespace {
 
 	//敵の視野角
 	constexpr float viewing_angle = 30.0f;
-	constexpr float visible_range = 500.0f;
+	constexpr float visible_range = 200.0f;
 }
 
 
@@ -38,6 +38,11 @@ void EnemyBase::Update(Player& player)
 
 	//プレイヤーを追跡する
 	TrackingUpdate(playerPos);
+
+	if (distance_ < range_to_stop_tracking + 20.0f) {
+		ThrustAway(player);
+	}
+
 }
 
 void EnemyBase::TrackingUpdate(VECTOR playerPos)
@@ -93,5 +98,15 @@ void EnemyBase::SearchForPlayer(VECTOR playerPos)
 	//上記の結果から度数法に変える
 	float aiu = acos(innerProduct);
 	innerProduct = aiu / DX_PI_F * 180.0f;
+}
+
+//プレイヤーを突き飛ばす
+void EnemyBase::ThrustAway(Player& player)
+{
+	VECTOR push = VScale(VNorm(frontVector_),110);
+
+	VECTOR nockback = VAdd(player.GetStatus().pos, push);
+
+	player.SetPos(nockback);
 }
 
