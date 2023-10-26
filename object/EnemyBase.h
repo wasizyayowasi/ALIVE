@@ -56,10 +56,6 @@ private:
 	bool isMove_ = false;				//移動中フラグ
 	bool isHit_ = false;
 
-
-	VECTOR tempdistance = {};
-	VECTOR tempa = {};
-
 	VECTOR frontVec_ = { 0.0f,0.0f ,-1.0f };		//敵の正面ベクトルを入れる
 
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;

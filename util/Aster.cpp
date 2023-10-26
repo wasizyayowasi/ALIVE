@@ -34,54 +34,73 @@ void Aster::Update()
 
 void Aster::Draw()
 {
-	for (float x = -900.0f; x < 3000.0f; x += 100.0f) {
-		DrawLine3D(VGet(x, 20, 300), VGet(x, 20, -300), 0xff0000);
+	//デバッグ用描画
+	{
+		for (float x = -900.0f; x < 3000.0f; x += 100.0f) {
+			DrawLine3D(VGet(x, 20, 300), VGet(x, 20, -300), 0xff0000);
+		}
+		for (float z = -300.0f; z < 300.0f; z += 100.0f) {
+			DrawLine3D(VGet(-900, 20, z), VGet(3000, 20, z), 0xff0000);
+		}
+
+		for (int i = 0; i < max_Index; i++) {
+			DrawSphere3D(masu_[i].centerPos, 16, 32, 0x00ff00, 0x00ff00, true);
+			VECTOR pos = ConvWorldPosToScreenPos(masu_[i].centerPos);
+			DrawFormatString(pos.x, pos.y, 0x448844, "%d", i);
+		}
+
+		DrawFormatString(0, 16, 0x448844, "敵がいるインデックス%d", enemyIndex_);
+		DrawFormatString(0, 32, 0x448844, "プレイヤーがいるインデックス%d", playerIndex_);
+		DrawFormatString(0, 48, 0x448844, "目的のインデックス%d", destination_.index);
+
+		int y = 128;
+		for (auto& result : score_) {
+			DrawFormatString(0, y, 0x448844, "%d , score:%d , estination:%d , moveCost:%d", result.first, result.second.score, result.second.estimationCost, result.second.moveCost);
+			y += 16;
+		}
 	}
-	for (float z = -300.0f; z < 300.0f; z += 100.0f) {
-		DrawLine3D(VGet(-900, 20, z), VGet(3000, 20, z), 0xff0000);
-	}
-
-	for (int i = 0; i < max_Index; i++) {
-		DrawSphere3D(masu_[i].centerPos, 16, 32, 0x00ff00, 0x00ff00, true);
-		VECTOR pos = ConvWorldPosToScreenPos(masu_[i].centerPos);
-		DrawFormatString(pos.x, pos.y, 0x448844, "%d", i);
-	}
-
-	DrawFormatString(0, 16, 0x448844, "敵がいるインデックス%d", enemyIndex_);
-	DrawFormatString(0, 32, 0x448844, "プレイヤーがいるインデックス%d", playerIndex_);
-	DrawFormatString(0, 48, 0x448844, "目的のインデックス%d", destination_.index);
-
-
-	int y = 112;
-	for (auto& result : score_) {
-		DrawFormatString(0, y, 0x448844, "%d , score:%d , estination:%d , moveCost:%d",result.first, result.second.score, result.second.estimationCost, result.second.moveCost);
-		y += 16;
-	}
-
 }
 
 // ポジション情報を元に配列の何番目に存在するか取得する
 VECTOR Aster::LocationInformation(VECTOR playerPos, VECTOR enemyPos)
 {
 	float min = 1000;
+	VECTOR distance = {};
+	float size = 0.0f;
 
+	//座標から一番近いマスの中心を見つけindex番号を取得する
 	for (int i = 0; i < max_Index; i++) {
-		VECTOR distance = VSub(masu_[i].centerPos, enemyPos);
-		float size = VSize(distance);
+		//中心から敵のポジションの距離をとる
+		distance = VSub(masu_[i].centerPos, enemyPos);
+		size = VSize(distance);
+		//過去最短に近い結果と比べる
 		if (min > size) {
+			//過去最短を更新
 			min = size;
+			//インデックスを取得
 			enemyIndex_ = i;
 		}
 	}
 
 	min = 1000;
+	//座標から一番近いマスの中心を見つけindex番号を取得する
 	for (int i = 0; i < max_Index; i++) {
-		VECTOR distance = VSub(masu_[i].centerPos, playerPos);
-		float size = VSize(distance);
+		//中心から敵のポジションの距離をとる
+		distance = VSub(masu_[i].centerPos, playerPos);
+		size = VSize(distance);
+		//過去最短に近い結果と比べる
 		if (min > size) {
+			//過去最短を更新
 			min = size;
+			//インデックスを取得
 			playerIndex_ = i;
 		}
+	}
+
+	//プレイヤーと敵のインデックスが同じだった場合
+	//そのマスの中心座標を返す
+	if (playerIndex_ == enemyIndex_) {
+		return masu_[playerIndex_].centerPos;
 	}
 
 	return SearchAroundSquares();
@@ -91,11 +110,13 @@ VECTOR Aster::LocationInformation(VECTOR playerPos, VECTOR enemyPos)
 /// 周囲の升が存在するか探す
 VECTOR Aster::SearchAroundSquares()
 {
+	//両端、上下の端のマスを取得
 	int leftEnd = enemyIndex_ % max_X;
 	int rightEnd = enemyIndex_ % max_X;
 	int bottom = enemyIndex_ / max_X;
 	int top = enemyIndex_ / max_X;
 
+	//マスがないところは見ないようにする
 	bool isCheckLeft = false;
 	bool isCheckBottom = false;
 	bool isCheckRight = false;
@@ -222,7 +243,7 @@ VECTOR Aster::SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight,
 		}
 	}
 
-	//score_.clear();
+	score_.clear();
 
 	return masu_[destination_.index].centerPos;
 

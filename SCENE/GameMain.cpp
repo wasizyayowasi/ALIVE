@@ -99,11 +99,11 @@ void GameMain::Draw()
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
 
-	//プレイヤーの描画
-	player_->Draw();
-
 	//オブジェクトの描画
 	ObjectManager::GetInstance().Draw();
+
+	//プレイヤーの描画
+	player_->Draw();
 
 	//broom_->graphFilterUpdate();
 	//broom_->draw();

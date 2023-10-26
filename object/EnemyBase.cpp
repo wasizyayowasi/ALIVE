@@ -45,7 +45,7 @@ void EnemyBase::Update(Player& player)
 	VECTOR playerPos = player.GetStatus().pos;
 
 	//索敵
-//	SearchForPlayer(playerPos);
+	SearchForPlayer(playerPos);
 
 	//モデルの更新
 	model_->Update();
@@ -55,13 +55,25 @@ void EnemyBase::Update(Player& player)
 	//プレイヤーを追跡する
 //	TrackingUpdate(playerPos);
 
-	VECTOR pos = Aster_->LocationInformation(playerPos,pos_);
-	tempa = pos;
-	tempdistance = VSub(pos_,pos);
-	VECTOR moveVec = VScale(VNorm(tempdistance), move_speed);
-//	pos_ = VAdd(pos_,moveVec);
+	//目標マスの中心座標を取得
+	VECTOR pos = Aster_->LocationInformation(playerPos, pos_);
+	//目標地点とポジションの距離を取得
+	VECTOR distance = VSub(pos, pos_);
 
-	model_->SetPos(pos_);
+	float size = VSize(distance);
+
+	if (size > 5.0f) {
+		//正規化
+		VECTOR norm = VNorm(distance);
+		//移動ベクトルを作成
+		VECTOR moveVec = VScale(norm, move_speed);
+		//移動
+		pos_ = VAdd(pos_, moveVec);
+		//ポジションの更新
+		model_->SetPos(pos_);
+	}
+
+	
 
 	if (distance_ < range_to_stop_tracking + 20.0f) {
 		//ThrustAway(player);
@@ -74,12 +86,6 @@ void EnemyBase::Draw()
 	model_->Draw();
 
 	Aster_->Draw();
-
-	DrawSphere3D(pos_, 8, 32, 0xff0000, 0xff0000, true);
-	DrawSphere3D(tempdistance, 32, 32, 0xff0000, 0xff0000, true);
-
-	DrawFormatString(0, 64, 0x448844, "%.2f,%.2f,%.2f", tempdistance.x, tempdistance.y, tempdistance.z);
-	DrawFormatString(0, 80, 0x448844, "%.2f,%.2f,%.2f", tempa.x, tempa.y, tempa.z);
 
 	/*VECTOR stomachPosition = VAdd(pos_,frontVec_);
 	stomachPosition.y = stomachPosition.y + model_height / 2;

@@ -117,6 +117,7 @@ void Player::Update(const InputState& input)
 void Player::Draw()
 {
 	PModel_->Draw();
+	DrawFormatString(0, 96, 0x448844, "%.2f , %.2f , %.2f", status_.pos.x, status_.pos.y, status_.pos.z);
 //	VECTOR aiu = FramPosition2("hand.R_end");
 //	DrawFormatString(0, 48, 0x448844, "%.2f , %.2f , %.2f", aiu.x, aiu.y, aiu.z);
 }
