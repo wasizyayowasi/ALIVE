@@ -41,6 +41,8 @@ public:
 	VECTOR GetPos() { return cameraPos_; }
 	VECTOR GetTarget() { return cameraTarget_; }
 
+	void DebugCamera(VECTOR playerPos);
+
 private:
 
 	int i = 0;
@@ -49,7 +51,7 @@ private:
 	float tempRoom[3];
 	float fixedPointCameraDestinationPosX = 0.0f;		//定点カメラの移動先で座標Xを保管する変数
 
-	VECTOR cameraPos_ = {0, 270, -800};					//カメラのポジション
+	VECTOR cameraPos_ = {0, 500, -800};					//カメラのポジション
 	VECTOR cameraTarget_ = {0, 0, 0};					//カメラのターゲット
 
 };

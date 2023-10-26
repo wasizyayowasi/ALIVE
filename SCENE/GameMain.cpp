@@ -93,15 +93,15 @@ void GameMain::Draw()
 	//カメラの初期化
 	//SetDrawScreenを行うとカメラの情報がリセットされるために
 	camera_->init();
-	camera_->TrackingCameraUpdate(player_->GetStatus().pos);
+	//camera_->TrackingCameraUpdate(player_->GetStatus().pos);
+	camera_->DebugCamera(player_->GetStatus().pos);
 
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
-	DrawFormatString(0, 16, 0x448844, "%d", totalDeathNum_);
 
 	//プレイヤーの描画
 	player_->Draw();
-	
+
 	//オブジェクトの描画
 	ObjectManager::GetInstance().Draw();
 

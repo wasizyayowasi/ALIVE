@@ -9,7 +9,7 @@ public:
 	virtual ~tempEnemy();
 
 	//•`‰æ
-	void Draw();
+	//void Draw();
 
 private:
 

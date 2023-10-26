@@ -153,4 +153,21 @@ void Camera::Tracking(VECTOR playerPos)
 	}
 }
 
+void Camera::DebugCamera(VECTOR playerPos)
+{
+
+	Tracking(playerPos);
+
+	//カメラがプレイヤーを追いかける用にする
+	cameraPos_.y = ((1000.0f * 0.9f) + (playerPos.y * 0.1f));
+	cameraPos_.z = playerPos.z - 800.0f;
+
+	//プレイヤーがいた位置を見るようにする
+	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
+	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
+	cameraTarget_.z = (cameraTarget_.z * 0.95f) + (playerPos.z * 0.05f);
+
+	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
+}
+
 

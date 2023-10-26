@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="util\Aster.cpp" />
     <ClCompile Include="object\DeadPerson.cpp" />
     <ClCompile Include="util\ObjectManager.cpp" />
     <ClCompile Include="object\ObjectBase.cpp" />
@@ -184,6 +185,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util\Aster.h" />
     <ClInclude Include="util\StatePattern.h" />
     <ClInclude Include="util\PlayerData.h" />
     <ClInclude Include="object\DeadPerson.h" />

@@ -1,5 +1,9 @@
 #pragma once
 #include "CharacterBase.h"
+#include <list>
+#include <memory>
+
+class Aster;
 
 class EnemyBase : public CharacterBase
 {
@@ -12,6 +16,7 @@ public:
 	virtual ~EnemyBase() {};
 
 	void Update(Player& player) override;
+	void Draw()override;
 
 	/// <summary>
 	/// プレイヤーを追跡する
@@ -31,12 +36,37 @@ public:
 	/// <param name="player">プレイヤーの参照</param>
 	void ThrustAway(Player& player);
 
+	/*/// <summary>
+	/// オブジェクトを回避しながら追跡する
+	/// </summary>
+	/// <param name="playerPos">プレイヤーのポジション</param>
+	void AvoidAndTrackObjectsUpdate(VECTOR playerPos);
+
+	/// <summary>
+	/// オブジェクトとの正面衝突をチェックする
+	/// </summary>
+	/// <param name="playerPos">プレイヤーのポジション</param>
+	void CheckHeadOnCollision();*/
+
 private:
 
 	float distance_ = 0.0f;				//敵からプレイヤーの距離
 	float innerProduct = 0.0f;			//内積の結果を入れる
 
-	VECTOR frontVector_ = { 0.0f,0.0f ,-1.0f };		//敵の正面ベクトルを入れる
+	bool isMove_ = false;				//移動中フラグ
+	bool isHit_ = false;
+
+
+	VECTOR tempdistance = {};
+	VECTOR tempa = {};
+
+	VECTOR frontVec_ = { 0.0f,0.0f ,-1.0f };		//敵の正面ベクトルを入れる
+
+	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
+
+	MV1_COLL_RESULT_POLY_DIM temp = {};
+
+	std::shared_ptr<Aster> Aster_;
 
 };
 

@@ -14,6 +14,8 @@ tempEnemy::tempEnemy(int handle, LoadObjectInfo objInfo) : EnemyBase(handle,objI
 {
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
+	pos_ = VGet(-50, 0, -50);
+	model_->SetPos(pos_);
 	model_->SetRot(objInfo.rot);
 	scale_ = objInfo.scale;
 }
@@ -22,7 +24,7 @@ tempEnemy::~tempEnemy()
 {
 }
 
-void tempEnemy::Draw()
-{
-	model_->Draw();
-}
+//void tempEnemy::Draw()
+//{
+//	model_->Draw();
+//}
