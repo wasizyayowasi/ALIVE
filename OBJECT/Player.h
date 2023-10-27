@@ -88,7 +88,11 @@ public:
 	/// 持ち運ぶ死体のポインターを取得する
 	/// </summary>
 	std::shared_ptr<Model> GetDeadPersonModelPointer() {return deadPersonModelPointer_;}
-		
+	
+
+	bool temp() { return aaaaa; }
+
+
 private:
 	//通常更新
 	void IdleUpdate(const InputState& input);
@@ -170,6 +174,10 @@ private:
 	VECTOR DegreesToRadians(VECTOR rot);
 
 private:
+
+	bool aaaaa = false;
+
+
 
 	int deathCount_ = 0;					//死んだ回数を記録する
 

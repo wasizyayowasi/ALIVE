@@ -1,6 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include <unordered_map>
+#include <list>
 
 enum class MasuMode {
 	normalMode,			//通常モード
@@ -73,6 +74,21 @@ public:
 	/// <param name="index">升の番号</param>
 	void ScoreCaluculation(Direction direction,int index);
 
+	/// <summary>
+	/// プレイヤーから敵までの直線距離の升にオブジェクトがあるか
+	/// </summary>
+	/// <param name="playerPos">プレイヤーの座標</param>
+	/// <param name="enemyPos">敵の座標</param>
+	/// <returns>直線距離にオブジェクトがあるか</returns>
+	bool StraightLineDistanceSearch(VECTOR playerPos, VECTOR enemyPos);
+
+	/// <summary>
+	/// 座標から升のインデックスを取得する
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <returns></returns>
+	int SearchCurrentIndex(VECTOR pos);
+
 private:
 
 	int enemyIndex_ = 0;
@@ -83,6 +99,9 @@ private:
 
 	std::unordered_map<int, MasuState> masu_;
 	std::unordered_map<Direction, Score> score_;
+	std::unordered_map<Direction, Score> tempscore_;
+
+	std::list<int> preteriteIndex_;
 
 };
 

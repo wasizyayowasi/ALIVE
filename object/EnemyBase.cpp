@@ -43,6 +43,7 @@ void EnemyBase::Update(Player& player)
 {
 	//プレイヤーの座標
 	VECTOR playerPos = player.GetStatus().pos;
+	playerpos_ = playerPos;
 
 	//索敵
 	SearchForPlayer(playerPos);
@@ -55,24 +56,14 @@ void EnemyBase::Update(Player& player)
 	//プレイヤーを追跡する
 //	TrackingUpdate(playerPos);
 
-	//目標マスの中心座標を取得
-	VECTOR pos = Aster_->LocationInformation(playerPos, pos_);
-	//目標地点とポジションの距離を取得
-	VECTOR distance = VSub(pos, pos_);
+//	if (Aster_->StraightLineDistanceSearch(playerPos, pos_)) {
+//		int aiu = 0;
+//	}
 
-	float size = VSize(distance);
-
-	if (size > 5.0f) {
-		//正規化
-		VECTOR norm = VNorm(distance);
-		//移動ベクトルを作成
-		VECTOR moveVec = VScale(norm, move_speed);
-		//移動
-		pos_ = VAdd(pos_, moveVec);
-		//ポジションの更新
-		model_->SetPos(pos_);
+	//経路探索
+	if (player.temp()) {
+		RoutingUpdate(player);
 	}
-
 	
 
 	if (distance_ < range_to_stop_tracking + 20.0f) {
@@ -86,6 +77,32 @@ void EnemyBase::Draw()
 	model_->Draw();
 
 	Aster_->Draw();
+
+	DrawLine3D(VGet(playerpos_.x, playerpos_.y + 20, playerpos_.z), VGet(pos_.x, pos_.y + 20, pos_.z), 0xffff00);
+
+
+
+	VECTOR aiu = VSub(pos_, playerpos_);
+	float ty = VSize(aiu);
+
+	int asd = ty / 100;
+
+	VECTOR temp = VSub(playerpos_, pos_);
+
+	for (int i = 0; i < asd; i++) {
+		aiu = VSub(playerpos_, pos_);
+		aiu = VScale(VNorm(aiu), 100.0f + i * 100.0f);
+		aiu = VAdd(pos_, aiu);
+
+		DrawSphere3D(aiu, 16, 32, 0x0000ff, 0x0000ff, true);
+
+		int x = temp.x / 100;
+		int z = temp.z / 100;
+
+		VECTOR pos = ConvWorldPosToScreenPos(aiu);
+		DrawFormatString(pos.x, pos.y + 10, 0xff0000, "x:%d,z:%d", x,z);
+	}
+	
 
 	/*VECTOR stomachPosition = VAdd(pos_,frontVec_);
 	stomachPosition.y = stomachPosition.y + model_height / 2;
@@ -167,6 +184,30 @@ void EnemyBase::ThrustAway(Player& player)
 	VECTOR nockback = VAdd(player.GetStatus().pos, push);
 
 	player.SetPos(nockback);
+}
+
+void EnemyBase::RoutingUpdate(Player& player)
+{
+	//プレイヤーの座標
+	VECTOR playerPos = player.GetStatus().pos;
+
+	//目標マスの中心座標を取得
+	VECTOR pos = Aster_->LocationInformation(playerPos, pos_);
+	//目標地点とポジションの距離を取得
+	VECTOR distance = VSub(pos, pos_);
+
+	float size = VSize(distance);
+
+	if (size > 5.0f) {
+		//正規化
+		VECTOR norm = VNorm(distance);
+		//移動ベクトルを作成
+		VECTOR moveVec = VScale(norm, move_speed);
+		//移動
+		pos_ = VAdd(pos_, moveVec);
+		//ポジションの更新
+		model_->SetPos(pos_);
+	}
 }
 
 //void EnemyBase::AvoidAndTrackObjectsUpdate(VECTOR playerPos)

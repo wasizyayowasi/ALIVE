@@ -188,6 +188,7 @@ void Player::IdleUpdate(const InputState& input)
 			PlayerJump(playerInfo_.jumpPower);
 			ChangeAnimNo(AnimType::jump, false, 20);
 			updateFunc_ = &Player::JumpUpdate;
+			aaaaa = !aaaaa;
 			return;
 		}
 	}

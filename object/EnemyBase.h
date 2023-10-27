@@ -36,6 +36,12 @@ public:
 	/// <param name="player">プレイヤーの参照</param>
 	void ThrustAway(Player& player);
 
+	/// <summary>
+	/// 経路探索
+	/// </summary>
+	/// <param name="player">プレイヤーの参照</param>
+	void RoutingUpdate(Player& player);
+
 	/*/// <summary>
 	/// オブジェクトを回避しながら追跡する
 	/// </summary>
@@ -57,6 +63,7 @@ private:
 	bool isHit_ = false;
 
 	VECTOR frontVec_ = { 0.0f,0.0f ,-1.0f };		//敵の正面ベクトルを入れる
+	VECTOR playerpos_ = { 0.0f,0.0f ,-1.0f };		//敵の正面ベクトルを入れる
 
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 
