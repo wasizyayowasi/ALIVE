@@ -7,6 +7,7 @@
 
 class Player;
 class Model;
+class ObjectManager;
 
 constexpr int max_hit_coll = 2048;
 
@@ -35,7 +36,7 @@ public:
 	/// <param name="player">プレイヤーを参照</param>
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="models">プレイヤーと衝突判定を行うモデル</param>
-	void CheckCollisionPersonalArea(Player& player);
+	void CheckCollisionPersonalArea(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
 
 	/// <summary>
 	/// 衝突した壁と床のポリゴン数を数える
@@ -47,7 +48,7 @@ public:
 	/// </summary>
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="playerHeight">プレイヤーの高さ</param>
-	void CheckCollisionWall(Player& player);
+	void CheckCollisionWall(std::shared_ptr<Player> player);
 
 	/// <summary>
 	/// 衝突したモデルのポリゴンが床かを判断する
@@ -56,22 +57,22 @@ public:
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="jumpFlag">プレイヤーのジャンプフラグ</param>
 	/// <param name="playerHeight">プレイヤーの高さ</param>
-	void CheckCollisionFloor(Player& player);
+	void CheckCollisionFloor(std::shared_ptr<Player> player);
 
 	/// <summary>
 	/// checkCollisionPersonalArea、checkCollisionWall、checkCollisionFloorを呼び出す。
 	/// 最後、上記の関数で取得した値を消去する
 	/// </summary>
 	/// <param name="player">プレイヤーを参照する</param>
-	void CheckCollision(Player& player);
+	void CheckCollision(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
 
 	/// <summary>
 	/// 衝突したオブジェクトが乗り越えられるか判断する
 	/// </summary>
-	void CheckStepDifference(Player& player);
+	void CheckStepDifference(std::shared_ptr<Player> player);
 
 
-	void CheckCollSpecificModel(Player& player);
+	void CheckCollSpecificModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
 
 private:
 

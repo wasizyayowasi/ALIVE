@@ -10,6 +10,8 @@ class Player;
 class Broom;
 class DepthOfField;
 class Model;
+class CheckCollisionModel;
+class ObjectManager;
 
 class GameMain : public SceneBase
 {
@@ -55,8 +57,11 @@ private:
 	std::shared_ptr<Camera> camera_;			//カメラのシェアードポインタ
 	std::shared_ptr<Player> player_;			//プレイヤーのシェアードポインタ
 	std::shared_ptr<Broom> broom_;				//これも消すかもしれない
-	std::shared_ptr<DepthOfField> depthOfField_;//これも消すかもしれない
+	std::shared_ptr<DepthOfField> depthOfField_;
+	std::shared_ptr<ObjectManager> objManager_;
 	
+	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
+
 	void (GameMain::* updateFunc_)(const InputState& input);		//メンバ関数ポインタ
 
 };

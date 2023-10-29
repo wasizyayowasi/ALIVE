@@ -15,10 +15,10 @@ CheckCollisionModel::~CheckCollisionModel()
 {
 }
 
-void CheckCollisionModel::CheckCollisionPersonalArea(Player& player)
+void CheckCollisionModel::CheckCollisionPersonalArea(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
 {
 	//短縮化
-	auto playerState = player.GetStatus();
+	auto playerState = player->GetStatus();
 
 	//更新前のポジションを取得する
 	oldPos = playerState.pos;
@@ -26,9 +26,9 @@ void CheckCollisionModel::CheckCollisionPersonalArea(Player& player)
 	nowPos = VAdd(playerState.pos, playerState.moveVec);
 	//モデルと球の当たり判定
 	
-	for (auto& model : ObjectManager::GetInstance().GetAllCheckCollModel()) {
-		if (player.GetStatus().isTransit) {
-			if (player.GetDeadPersonModelPointer() == model) {
+	for (auto& model : objManager->GetAllCheckCollModel()) {
+		if (player->GetStatus().isTransit) {
+			if (player->GetDeadPersonModelPointer() == model) {
 				continue;
 			}
 		}
@@ -86,10 +86,10 @@ void CheckCollisionModel::CheckWallAndFloor()
 	}
 }
 
-void CheckCollisionModel::CheckCollisionWall(Player& player)
+void CheckCollisionModel::CheckCollisionWall(std::shared_ptr<Player> player)
 {
 	//短縮化
-	auto playerState = player.GetStatus();
+	auto playerState = player->GetStatus();
 
 	//壁の処理
 	if (hitWallNum != 0) {
@@ -169,13 +169,13 @@ void CheckCollisionModel::CheckCollisionWall(Player& player)
 	}
 }
 
-void CheckCollisionModel::CheckCollisionFloor(Player& player)
+void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 {
 	//短縮化
-	auto playerState = player.GetStatus();
+	auto playerState = player->GetStatus();
 
-	float jumpVec = player.GetStatus().jump.jumpVec;
-	bool isJump = player.GetStatus().jump.isJump;
+	float jumpVec = player->GetStatus().jump.jumpVec;
+	bool isJump = player->GetStatus().jump.isJump;
 
 	//床との当たり判定
 	if (hitFloorNum != 0) {
@@ -215,7 +215,7 @@ void CheckCollisionModel::CheckCollisionFloor(Player& player)
 				if (hitFlag && maxY > hitLineResult.Position.y) {
 					continue;
 				}
-				if (player.GetStatus().animNo == 11) {
+				if (player->GetStatus().animNo == 11) {
 					continue;
 				}
 				hitFlag = true;
@@ -234,17 +234,17 @@ void CheckCollisionModel::CheckCollisionFloor(Player& player)
 		}
 	}
 
-	player.SetJumpInfo(isJump, jumpVec);
+	player->SetJumpInfo(isJump, jumpVec);
 
 }
 
-void CheckCollisionModel::CheckCollision(Player& player)
+void CheckCollisionModel::CheckCollision(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
 {
 
 	//プレイヤーから一定範囲の衝突判定をとる
-	CheckCollisionPersonalArea(player);
+	CheckCollisionPersonalArea(player, objManager);
 
-	CheckCollSpecificModel(player);
+	CheckCollSpecificModel(player, objManager);
 	//衝突したオブジェクトが乗り越えることが出来るオブジェクトか判断する
 	CheckStepDifference(player);
 	//取得した衝突結果から壁に当たった場合の処理
@@ -253,7 +253,7 @@ void CheckCollisionModel::CheckCollision(Player& player)
 	CheckCollisionFloor(player);
 
 	//ポジションのセット
-	player.SetPos(nowPos);
+	player->SetPos(nowPos);
 
 	//衝突判定の消去
 	for (auto& hit : hitDim_) {
@@ -263,10 +263,10 @@ void CheckCollisionModel::CheckCollision(Player& player)
 	hitDim_.clear();
 }
 
-void CheckCollisionModel::CheckStepDifference(Player& player)
+void CheckCollisionModel::CheckStepDifference(std::shared_ptr<Player> player)
 {
 	//短縮化
-	auto playerState = player.GetStatus();
+	auto playerState = player->GetStatus();
 
 	objectHeightY = 0;
 	isGoUpStep_ = false;
@@ -289,11 +289,11 @@ void CheckCollisionModel::CheckStepDifference(Player& player)
 				if (nowPos.y + 60 < hitPoly.hitDim->Position[i].y) {
 					overHeight = true;
 					if (nowPos.y + playerState.height > hitPoly.hitDim->Position[i].y) {
-						player.SetClim(overHeight);
+						player->SetClim(overHeight);
 					}
 				}
 				else {
-					player.SetClim(false);
+					player->SetClim(false);
 				}
 			}
 
@@ -315,21 +315,24 @@ void CheckCollisionModel::CheckStepDifference(Player& player)
 	}
 
 	if (!overHeight) {
-		player.SetClim(false);
+		player->SetClim(false);
 	}
 
 }
 
-void CheckCollisionModel::CheckCollSpecificModel(Player& player)
+void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
 {
 
+	//短縮化
+	auto playerState = player->GetStatus();
+
 	//プレイヤーが現状別の死体を持ち運んでいたら取得しない
-	if (player.GetStatus().isTransit) {
+	if (player->GetStatus().isTransit) {
 		return;
 	}
 
 	//持ち運ぶ死体を取得する
-	for (auto& obj : ObjectManager::GetInstance().GetSpecificModel(ObjectType::deadPerson)) {
+	for (auto& obj : objManager->GetSpecificModel(ObjectType::deadPerson)) {
 		for (auto& hit : hitDim_)
 		{
 			//衝突結果が死体以外だったらcontinue
@@ -338,12 +341,12 @@ void CheckCollisionModel::CheckCollSpecificModel(Player& player)
 			}
 
 			//死体のモデルとプレイヤーの座標を基準に作成されたカプセルとの衝突判定
-			auto result = MV1CollCheck_Capsule(hit.model->GetModelHandle(), hit.model->GetColFrameIndex(), player.GetStatus().pos, VAdd(player.GetStatus().pos, VGet(0, player.GetStatus().height, 0)),30);
+			auto result = MV1CollCheck_Capsule(hit.model->GetModelHandle(), hit.model->GetColFrameIndex(), playerState.pos, VAdd(playerState.pos, VGet(0, playerState.height, 0)),30);
 
 			//上記の衝突判定の結果が1つでもあればプレイヤーに
 			//その死体のポインターと持ち運べるフラグを送る
 			if (result.HitNum > 0) {
-				player.SetCarryInfo(true,hit.model);
+				player->SetCarryInfo(true,hit.model);
 			}
 
 		}

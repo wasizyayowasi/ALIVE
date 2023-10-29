@@ -43,7 +43,6 @@ void EnemyBase::Update(Player& player)
 {
 	//プレイヤーの座標
 	VECTOR playerPos = player.GetStatus().pos;
-	playerpos_ = playerPos;
 
 	//索敵
 	SearchForPlayer(playerPos);
@@ -51,20 +50,18 @@ void EnemyBase::Update(Player& player)
 	//モデルの更新
 	model_->Update();
 
-	//AvoidAndTrackObjectsUpdate(playerPos);
+	if (aiueo(playerPos)) {
+		//目標マスの中心座標を取得
+		Aster_->LocationInformation(playerPos, pos_);
 
-	//プレイヤーを追跡する
-//	TrackingUpdate(playerPos);
-
-//	if (Aster_->StraightLineDistanceSearch(playerPos, pos_)) {
-//		int aiu = 0;
-//	}
-
-	//経路探索
-	if (player.temp()) {
+		//経路探索
 		RoutingUpdate(player);
 	}
-	
+	else {
+		//プレイヤーを追跡する
+		TrackingUpdate(playerPos);
+	}
+
 
 	if (distance_ < range_to_stop_tracking + 20.0f) {
 		//ThrustAway(player);
@@ -78,7 +75,13 @@ void EnemyBase::Draw()
 
 	Aster_->Draw();
 
-	DrawLine3D(VGet(playerpos_.x, playerpos_.y + 20, playerpos_.z), VGet(pos_.x, pos_.y + 20, pos_.z), 0xffff00);
+	for (auto& point : debug_) {
+		//DrawSphere3D(point.second, 16, 32, 0x0000ff, 0x0000ff, true);
+	}
+
+	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
+
+	/*DrawLine3D(VGet(playerpos_.x, playerpos_.y + 20, playerpos_.z), VGet(pos_.x, pos_.y + 20, pos_.z), 0xffff00);
 
 
 
@@ -96,12 +99,12 @@ void EnemyBase::Draw()
 
 		DrawSphere3D(aiu, 16, 32, 0x0000ff, 0x0000ff, true);
 
-		int x = temp.x / 100;
-		int z = temp.z / 100;
+		int x = temp.x / (100 * (asd - i));
+		int z = temp.z / (100 * (asd - i));
 
 		VECTOR pos = ConvWorldPosToScreenPos(aiu);
 		DrawFormatString(pos.x, pos.y + 10, 0xff0000, "x:%d,z:%d", x,z);
-	}
+	}*/
 	
 
 	/*VECTOR stomachPosition = VAdd(pos_,frontVec_);
@@ -126,6 +129,7 @@ void EnemyBase::TrackingUpdate(VECTOR playerPos)
 	//プレイヤーと敵の座標差を見て、
 	if (distance_ < range_to_stop_tracking) {
 		model_->ChangeAnimation(0, true, false, 20);
+		Aster_->Init();
 		return;
 	}
 	//敵の視野角よりも外側にいるまたは
@@ -191,10 +195,10 @@ void EnemyBase::RoutingUpdate(Player& player)
 	//プレイヤーの座標
 	VECTOR playerPos = player.GetStatus().pos;
 
-	//目標マスの中心座標を取得
-	VECTOR pos = Aster_->LocationInformation(playerPos, pos_);
+	VECTOR targetPos = Aster_->GetDestinationCoordinates(playerPos,pos_);
+
 	//目標地点とポジションの距離を取得
-	VECTOR distance = VSub(pos, pos_);
+	VECTOR distance = VSub(targetPos, pos_);
 
 	float size = VSize(distance);
 
@@ -210,65 +214,24 @@ void EnemyBase::RoutingUpdate(Player& player)
 	}
 }
 
-//void EnemyBase::AvoidAndTrackObjectsUpdate(VECTOR playerPos)
-//{
-//	VECTOR distancePlayerAndEnemy = VSub(playerPos, pos_);
-//	VECTOR moveVec = VScale(VNorm(distancePlayerAndEnemy), move_speed);
-//
-//	VECTOR destination = VAdd(frontVec_, moveVec);
-//
-//	for (auto& model : ObjectManager::GetInstance().GetAllCheckCollModel()) {
-//		//衝突判定の更新
-//		MV1RefreshCollInfo(model->GetModelHandle(), model->GetColFrameIndex());
-//
-//		//敵座標からの検出範囲
-//		auto rangeOfDetection = check_collition_radius + VSize(moveVec);
-//		//衝突判定の結果
-//		auto result = MV1CollCheck_Sphere(model->GetModelHandle(), model->GetColFrameIndex(), pos_, rangeOfDetection);
-//		//listに追加
-//		hitDim_.push_back(result);
-//	}
-//
-//	//moveVecの絶対値で動いたか動いてないかを判断
-//	if (fabs(moveVec.x) > 0.000001f || fabs(moveVec.z) > 0.000001f) {
-//		isMove_ = true;
-//	}
-//	else {
-//		isMove_ = false;
-//	}
-//
-//	CheckHeadOnCollision();
-//
-//	for (auto& hit : hitDim_) {
-//		MV1CollResultPolyDimTerminate(hit);
-//	}
-//
-//	temp = hitDim_.front();
-//
-//	hitDim_.clear();
-//
-//}
-//
-//void EnemyBase::CheckHeadOnCollision()
-//{
-//	//大体の腹の高さを得る
-//	VECTOR stomachPosition = VAdd(pos_, frontVec_);
-//	stomachPosition.y = stomachPosition.y + model_height / 2;
-//
-//	VECTOR ray = VScale(frontVec_, ray_radius);
-//	ray = VAdd(pos_, ray);
-//	ray.y = ray.y += model_height / 2;
-//
-//	for (auto& dim : hitDim_) {
-//		//dim.HitNum
-//		auto result = HitCheck_Line_Triangle(stomachPosition, ray, dim.Dim->Position[0], dim.Dim->Position[1], dim.Dim->Position[2]);
-//		if (result.HitFlag) {
-//			isHit_ = result.HitFlag;
-//			break;
-//		}
-//		isHit_ = result.HitFlag;
-//	}
-//	
-//
-//}
+bool EnemyBase::aiueo(VECTOR playerPos)
+{
+	VECTOR distance = VSub(playerPos, pos_);
+	int size = VSize(distance) / 100;
+	VECTOR norm = VNorm(distance);
+	
+	bool noObject = false;
+
+	for (int i = 0; i < size; i++) {
+		VECTOR PointPos = VScale(norm, 100.0f * i);
+		PointPos = VAdd(pos_, PointPos);
+		noObject = Aster_->temp(PointPos);
+		debug_[i] = PointPos;
+		if (noObject) {
+			break;
+		}
+	}
+
+	return noObject;
+}
 

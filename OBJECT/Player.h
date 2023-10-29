@@ -9,8 +9,8 @@
 
 class InputState;
 class Model;
-class CheckCollisionModel;
 class GimmickBase;
+class ObjectManager;
 
 struct JumpInfo {
 	float jumpVec;		//ジャンプベクトル
@@ -43,7 +43,7 @@ public:
 	/// </summary>
 	/// <param name="input">外部装置の入力情報を参照する</param>
 	/// <param name="models">衝突判定を行うモデルのvector型の配列</param>
-	void Update(const InputState& input);
+	void Update(const InputState& input,std::shared_ptr<ObjectManager> objManager);
 
 	/// <summary>
 	/// プレイヤー関連の描画
@@ -90,18 +90,19 @@ public:
 	std::shared_ptr<Model> GetDeadPersonModelPointer() {return deadPersonModelPointer_;}
 	
 
-	bool temp() { return aaaaa; }
+	bool temp() { return a; }
+	bool temp2() { return b; }
 
 
 private:
 	//通常更新
-	void IdleUpdate(const InputState& input);
+	void IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//待機処理
 	void ChangeAnimIdle();
 
 	//移動処理
-	void MovingUpdate(const InputState& input);
+	void MovingUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//移動
 	float Move(const InputState& input);
@@ -110,31 +111,31 @@ private:
 	void RotationUpdate();
 
 	//オブジェクトを登る
-	void ClimUpdate(const InputState& input);
+	void ClimUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//ジャンプ処理
-	void JumpUpdate(const InputState& input);
+	void JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//走りジャンプ処理
-	void RunningJumpUpdate(const InputState& input);
+	void RunningJumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//死亡処理
-	void DeathUpdate(const InputState& input);
+	void DeathUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//死体の後処理
-	void DeathPersonPostProsessing();
+	void DeathPersonPostProsessing(std::shared_ptr<ObjectManager> objManager);
 
 	//死人生成
-	void DeadPersonGenerater();
+	void DeadPersonGenerater(std::shared_ptr<ObjectManager> objManager);
 
 	//座る
-	void SitUpdate(const InputState& input);
+	void SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//座っている途中
-	void IdleToSitup(const InputState& input);
+	void IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//立ち上がる
-	void StandUpdate(const InputState& input);
+	void StandUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//持ち運ぶ
 	void CarryObjectUpdate();
@@ -175,7 +176,8 @@ private:
 
 private:
 
-	bool aaaaa = false;
+	bool a = false;
+	bool b = false;
 
 
 
@@ -203,11 +205,10 @@ private:
 
 	std::shared_ptr<Model> deadPersonModelPointer_;				//持ち運ぶ死体のモデルポインタ
 	std::shared_ptr<Model> PModel_;								//モデルクラスのポインタ
-	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
 
 	std::unordered_map<AnimType, int> animType_;				
 
-	void(Player::* updateFunc_)(const InputState& input);		//メンバ関数ポインタ
+	void(Player::* updateFunc_)(const InputState& input, std::shared_ptr<ObjectManager> objManager);		//メンバ関数ポインタ
 	void(Player::* carryUpdateFunc_)();		//メンバ関数ポインタ
 };
 

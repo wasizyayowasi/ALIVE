@@ -13,12 +13,8 @@ class ObjectManager
 {
 public:
 
+	ObjectManager();
 	virtual ~ObjectManager();
-
-	static ObjectManager& GetInstance() {
-		static ObjectManager instance;
-		return instance;
-	}
 
 	/// <summary>
 	/// オブジェクト生成
@@ -54,13 +50,6 @@ public:
 	/// <param name="type">取得したいオブジェクトタイプ</param>
 	/// <returns>特定のモデルポインタリスト</returns>
 	std::list<std::shared_ptr<Model>> GetSpecificModel(ObjectType type);
-
-private:
-
-	ObjectManager();
-
-	ObjectManager(const ObjectManager&) = delete;
-	void operator = (const ObjectManager) = delete;
 
 private:
 	//キャラクター生成機

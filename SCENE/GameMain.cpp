@@ -21,6 +21,7 @@
 #include "../util/InputState.h"
 #include "../util/model.h"
 #include "../util/LoadExternalFile.h"
+#include "../util/CheckCollisionModel.h"
 
 #include "../util/ObjectManager.h"
 #include "../util/ObjectData.h"
@@ -47,6 +48,9 @@ GameMain::~GameMain()
 void GameMain::Init()
 {
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
+
+	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
+	objManager_ = std::make_shared<ObjectManager>();
 
 	//オブジェクトを生成
 	ObjectGenerater();
@@ -100,7 +104,7 @@ void GameMain::Draw()
 	DrawString(0, 0, "GameMain", 0xffffff);
 
 	//オブジェクトの描画
-	ObjectManager::GetInstance().Draw();
+	objManager_->Draw();
 
 	//プレイヤーの描画
 	player_->Draw();
@@ -127,7 +131,6 @@ void GameMain::Draw()
 void GameMain::ObjectGenerater()
 {
 	//短縮化
-	auto& objManager = ObjectManager::GetInstance();
 	auto& loadData = LoadExternalFile::GetInstance();
 
 	//カメラのインスタンス化
@@ -141,31 +144,31 @@ void GameMain::ObjectGenerater()
 		//フィールドを作成
 		if (objInfo.first == "field") {
 			for (auto& objSecond : objInfo.second) {
-				objManager.ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, objSecond);
+				objManager_->ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, objSecond);
 			}
 		}
 		//ギミックスイッチを作成
 		else if (objInfo.first == "switch") {
 			for (auto& objSecond : objInfo.second) {
-				objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, objSecond);
+				objManager_->ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, objSecond);
 			}
 		}
 		//ギミック天秤を作成
 		else if (objInfo.first == "steelyard") {
 			for (auto& objSecond : objInfo.second) {
-				objManager.ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, objSecond);
+				objManager_->ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, objSecond);
 			}
 		}
 		//箱を作成
 		else if (objInfo.first == "box") {
 			for (auto& objSecond : objInfo.second) {
-				objManager.ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry, objSecond);
+				objManager_->ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry, objSecond);
 			}
 		}
 		//敵を作成
 		else if (objInfo.first == "player") {
 			for (auto& objSecond : objInfo.second) {
-				objManager.ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
+				objManager_->ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
 			}
 		}
 	}
@@ -184,15 +187,19 @@ void GameMain::fadeInUpdate(const InputState& input)
 //更新
 void GameMain::normalUpdate(const InputState& input)
 {
-	//短縮化
-	auto& objManager = ObjectManager::GetInstance();
+	
 	//フィルター処理を行わない用にする
 	isFilterOn_ = false;
-	//オブジェクトの更新
-	objManager.Update(*player_);
 
 	//プレイヤーの更新
-	player_->Update(input);
+	player_->Update(input, objManager_);
+
+	//オブジェクトの更新
+	objManager_->Update(*player_);
+
+	//プレイヤーとその他オブジェクトとの衝突判定
+	checkCollisionModel_->CheckCollision(player_,objManager_);
+
 	//カメラの注視点を変更する
 	camera_->ChangeOfFocus(input);
 

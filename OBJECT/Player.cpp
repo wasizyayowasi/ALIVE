@@ -1,7 +1,6 @@
 #include "Player.h"
 #include "../util/InputState.h"
 #include "../util/Model.h"
-#include "../util/CheckCollisionModel.h"
 #include "../util/LoadExternalFile.h"
 #include "../util/SoundManager.h"
 #include "../util/ObjectManager.h"
@@ -89,7 +88,7 @@ void Player::Init(LoadObjectInfo info)
 	//回転率の設定
 	PModel_->SetPos(info.rot);
 	//マップやブロックなどの当たり判定の生成
-	checkCollisionModel_ = make_shared<CheckCollisionModel>();
+	//checkCollisionModel_ = make_shared<CheckCollisionModel>();
 	//コリジョンフレームの設定
 	PModel_->SetCollFrame("Character");
 
@@ -99,7 +98,7 @@ void Player::Init(LoadObjectInfo info)
 
 
 
-void Player::Update(const InputState& input)
+void Player::Update(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	//移動ベクトルのリセット
 	status_.moveVec = { 0.0f,0.0f,0.0f };
@@ -107,10 +106,8 @@ void Player::Update(const InputState& input)
 	//プレイヤーのアニメーション更新
 	PModel_->Update();
 	
-	(this->*updateFunc_)(input);
+	(this->*updateFunc_)(input,objManager);
 
-	//プレイヤーとその他オブジェクトとの衝突判定
-	checkCollisionModel_->CheckCollision(*this);
 }
 
 
@@ -141,9 +138,8 @@ void Player::SetJumpInfo(bool isJump, float jumpVec)
 /// アニメーションがidle状態の時に行われる
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
-void Player::IdleUpdate(const InputState& input)
+void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
-	
 
 	if (input.IsTriggered(InputType::carry)) {
 		(this->*carryUpdateFunc_)();
@@ -159,7 +155,7 @@ void Player::IdleUpdate(const InputState& input)
 	}
 
 	ChangeAnimIdle();
-	MovingUpdate(input);
+	MovingUpdate(input,objManager);
 
 	//持ち運び中だったら
 	//以降の処理を行わない
@@ -188,7 +184,7 @@ void Player::IdleUpdate(const InputState& input)
 			PlayerJump(playerInfo_.jumpPower);
 			ChangeAnimNo(AnimType::jump, false, 20);
 			updateFunc_ = &Player::JumpUpdate;
-			aaaaa = !aaaaa;
+			a = !a;
 			return;
 		}
 	}
@@ -196,6 +192,7 @@ void Player::IdleUpdate(const InputState& input)
 	//メンバ関数ポインタをsitUpdateに変更する
 	if (input.IsTriggered(InputType::ctrl)) {
 		updateFunc_ = &Player::IdleToSitup;
+		b = !b;
 		return;
 	}
 
@@ -230,7 +227,7 @@ void Player::ChangeAnimIdle()
 /// プレイヤーを移動させるための関数
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
-void Player::MovingUpdate(const InputState& input)
+void Player::MovingUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	
 	float movingSpeed = Move(input);
@@ -362,7 +359,7 @@ void Player::RotationUpdate()
 }
 
 //オブジェクトを登る
-void Player::ClimUpdate(const InputState& input)
+void Player::ClimUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	if (PModel_->IsAnimEnd()) {
 		status_.pos = FramPosition("mixamorig:LeftToeBase", "mixamorig:RightToeBase");
@@ -380,8 +377,12 @@ void Player::ClimUpdate(const InputState& input)
 /// 走りジャンプではないときのジャンプ
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
-void Player::JumpUpdate(const InputState& input)
+void Player::JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
+	if (a) {
+		a = !a;
+	}
+
 	//プレイヤー移動関数
 	Move(input);
 
@@ -409,7 +410,7 @@ void Player::JumpUpdate(const InputState& input)
 /// プレイヤーが走っているときのジャンプ
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
-void Player::RunningJumpUpdate(const InputState& input)
+void Player::RunningJumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	//プレイヤー移動関数
 	Move(input);
@@ -438,7 +439,7 @@ void Player::RunningJumpUpdate(const InputState& input)
 /// プレイヤーの死体に与える情報を作る関数
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
-void Player::DeathUpdate(const InputState& input)
+void Player::DeathUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	deathPos_ = status_.pos;				//死んだ場所を残す
 
@@ -449,17 +450,17 @@ void Player::DeathUpdate(const InputState& input)
 	}
 
 	if (PModel_->IsAnimEnd()) {
-		DeathPersonPostProsessing();
+		DeathPersonPostProsessing(objManager);
 	}
 
 }
 
 //死体の後処理
-void Player::DeathPersonPostProsessing()
+void Player::DeathPersonPostProsessing(std::shared_ptr<ObjectManager> objManager)
 {
 	status_.pos = checkPoint_;				//チェックポイントにプレイヤーを帰す
 
-	DeadPersonGenerater();			//死体を生成する関数
+	DeadPersonGenerater(objManager);			//死体を生成する関数
 
 	updateFunc_ = &Player::IdleUpdate;
 }
@@ -467,23 +468,21 @@ void Player::DeathPersonPostProsessing()
 /// <summary>
 /// プレイヤーの死体をvector配列で管理する関数
 /// </summary>
-void Player::DeadPersonGenerater()
+void Player::DeadPersonGenerater(std::shared_ptr<ObjectManager> objManager)
 {
-	auto& objManager = ObjectManager::GetInstance();
-
 	LoadObjectInfo info;
 	info.rot = DegreesToRadians(status_.rot);
 	info.pos = deathPos_;
 	info.scale = scale_;
 
-	objManager.DeadPersonGenerator(PModel_->GetModelHandle(),info, status_.animNo);
+	objManager->DeadPersonGenerator(PModel_->GetModelHandle(),info, status_.animNo);
 }
 
 /// <summary>
 /// プレイヤーに座るアニメーションをさせる関数
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
-void Player::SitUpdate(const InputState& input)
+void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	//立ち上がるためのコマンド
 	if (input.IsTriggered(InputType::ctrl)) {
@@ -502,7 +501,7 @@ void Player::SitUpdate(const InputState& input)
 
 	//死ぬコマンド
 	if (input.IsTriggered(InputType::death)) {
-		DeathUpdate(input);
+		DeathUpdate(input,objManager);
 		isSitting_ = false;
 		updateFunc_ = &Player::IdleUpdate;
 		return;
@@ -510,8 +509,13 @@ void Player::SitUpdate(const InputState& input)
 
 }
 
-void Player::IdleToSitup(const InputState& input)
+void Player::IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
+
+	if (b) {
+		b = !b;
+	}
+
 	//アニメーションを座る過程のアニメーションに変更
 	//座っているフラグを立て、アニメーションループ変数を折る
 	if (!isSitting_) {
@@ -529,7 +533,7 @@ void Player::IdleToSitup(const InputState& input)
 
 
 //立ち上がる処理
-void Player::StandUpdate(const InputState& input)
+void Player::StandUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	if (PModel_->IsAnimEnd()) {
 		updateFunc_ = &Player::IdleUpdate;

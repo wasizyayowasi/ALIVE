@@ -28,20 +28,21 @@ Aster::Aster()
 //	masu_[165].masuMode = MasuMode::blockadeMode;
 	masu_[204].masuMode = MasuMode::blockadeMode;
 
-//	masu_[46].masuMode = MasuMode::blockadeMode;
-//	masu_[47].masuMode = MasuMode::blockadeMode;
-//	masu_[48].masuMode = MasuMode::blockadeMode;
-//	masu_[85].masuMode = MasuMode::blockadeMode;
-//	masu_[86].masuMode = MasuMode::blockadeMode;
-//	masu_[87].masuMode = MasuMode::blockadeMode;
-//	masu_[124].masuMode = MasuMode::blockadeMode;
-//	masu_[125].masuMode = MasuMode::blockadeMode;
-//	masu_[126].masuMode = MasuMode::blockadeMode;
-
 }
 
 Aster::~Aster()
 {
+}
+
+void Aster::Init()
+{
+	route_.clear();
+	scoreTable_.clear();
+	for (auto& masu : masu_) {
+		if (masu.second.masuMode == MasuMode::doneMode) {
+			masu.second.masuMode = MasuMode::normalMode;
+		}
+	}
 }
 
 void Aster::Update()
@@ -77,11 +78,13 @@ void Aster::Draw()
 
 		DrawFormatString(0, 16, 0x448844, "敵がいるインデックス%d", enemyIndex_);
 		DrawFormatString(0, 32, 0x448844, "プレイヤーがいるインデックス%d", playerIndex_);
-		DrawFormatString(0, 48, 0x448844, "目的のインデックス%d", destination_.index);
+		if (!route_.empty()) {
+			DrawFormatString(0, 48, 0x448844, "目的のインデックス%d", route_.front());
+		}
 
 		//int y = 128;
-		for (auto& result : tempscore_) {
-			VECTOR pos = ConvWorldPosToScreenPos(masu_[result.second.index].centerPos);
+		for (auto& result : debugScoreTable) {
+			VECTOR pos = ConvWorldPosToScreenPos(masu_[result.second.destinationIndex].centerPos);
 			DrawFormatString(pos.x, pos.y + 10, 0xff0000, "S:%d", result.second.score);
 			//y += 16;
 		}
@@ -89,30 +92,13 @@ void Aster::Draw()
 }
 
 // ポジション情報を元に配列の何番目に存在するか取得する
-VECTOR Aster::LocationInformation(VECTOR playerPos, VECTOR enemyPos)
+void Aster::LocationInformation(VECTOR playerPos, VECTOR enemyPos)
 {
-	
-
 	int oldEnemyIndex = enemyIndex_;
+	int oldPlayerIndex = playerIndex_;
 
 	//敵のインデックスを取得
 	enemyIndex_ = SearchCurrentIndex(enemyPos);
-
-	//一個前にいたインデックス座標の升のモードを通過済みにする
-	if (oldEnemyIndex != enemyIndex_) {
-		if (masu_[oldEnemyIndex].masuMode != MasuMode::blockadeMode) {
-			//一個前の升を通過済みにする
-			masu_[oldEnemyIndex].masuMode = MasuMode::passingMode;
-			//通過した升のインデックスを保存する
-			preteriteIndex_.push_back(oldEnemyIndex);
-			//保存した升のインデックスが2個以上になったら
-			//一番古い升のModeをnormalにし、一番古いデータを削除する
-			if (preteriteIndex_.size() > 10) {
-				masu_[preteriteIndex_.front()].masuMode = MasuMode::normalMode;
-				preteriteIndex_.remove(preteriteIndex_.front());
-			}
-		}
-	}
 
 	//プレイヤーのインデックスを取得
 	playerIndex_ = SearchCurrentIndex(playerPos);
@@ -123,17 +109,22 @@ VECTOR Aster::LocationInformation(VECTOR playerPos, VECTOR enemyPos)
 		for (auto& mode : masu_) {
 			if (mode.second.masuMode != MasuMode::blockadeMode) {
 				mode.second.masuMode = MasuMode::normalMode;
+				moveCount_ = 0;
 			}
 		}
-		return masu_[playerIndex_].centerPos;
 	}
 
-	return SearchAroundSquares();
+	//プレイヤーのインデックス座標が前のフレームと比べたとき
+	//違ったら、再度経路探索を行う
+	if (oldPlayerIndex != playerIndex_) {
+		Init();
+		RouteSearch();
+	}
 
 }
 
 /// 周囲の升が存在するか探す
-VECTOR Aster::SearchAroundSquares()
+void Aster::SearchAroundSquares()
 {
 	//両端、上下の端のマスを取得
 	int leftEnd = enemyIndex_ % max_X;
@@ -160,7 +151,7 @@ VECTOR Aster::SearchAroundSquares()
 		isCheckTop = true;
 	}
 
-	return SearchSurrroundingSquares(isCheckLeft, isCheckRight, isCheckTop, isCheckTop);
+	SearchSurrroundingSquares(isCheckLeft, isCheckRight, isCheckTop, isCheckBottom);
 
 }
 
@@ -184,18 +175,30 @@ void Aster::ScoreCaluculation(Direction direction, int index)
 			estimationCostZ = -(std::min)(estimationCostZ, 0);
 		}
 		
-		score_[direction].estimationCost = (std::max)(estimationCostX, estimationCostZ);
+		//四方向の時
+		scoreTable_[index].estimationCost = estimationCostX + estimationCostZ;
+
+		//八方向の時
+		//score_[direction].estimationCost = (std::max)(estimationCostX, estimationCostZ);
 	}
 	else {
-		score_[direction].estimationCost = (std::max)(estimationCostX, estimationCostZ);
+		//四方向の時
+		scoreTable_[index].estimationCost = estimationCostX + estimationCostZ;
+
+		//八方向の時
+		//score_[direction].estimationCost = (std::max)(estimationCostX, estimationCostZ);
 	}
 
 	//移動量をカウントする
-	score_[direction].moveCost = moveCount_;
-	//移動コストと推定コストの結果を足してスコアを出す
-	score_[direction].score = score_[direction].moveCost + score_[direction].estimationCost;
-	//インデックスを入れる
-	score_[direction].index = index;
+	if (masu_[index].masuMode == MasuMode::normalMode) {
+		scoreTable_[index].moveCost = moveCount_;
+		scoreTable_[index].score = scoreTable_[index].moveCost + scoreTable_[index].estimationCost;
+		scoreTable_[index].destinationIndex = index;
+		scoreTable_[index].currentIndex = enemyIndex_;
+		scoreTable_[index].dir = direction;
+	}
+
+	preteriteIndex_[moveCount_].push_back(index);
 
 }
 
@@ -259,17 +262,107 @@ int Aster::SearchCurrentIndex(VECTOR pos)
 	return index;
 }
 
+void Aster::RouteSearch()
+{
+
+	int currentIndex = enemyIndex_;
+
+	while (enemyIndex_ != playerIndex_)
+	{
+		if (masu_[enemyIndex_].masuMode != MasuMode::blockadeMode) {
+			masu_[enemyIndex_].masuMode = MasuMode::doneMode;
+		}
+
+		SearchAroundSquares();
+
+		//次にスコアを出すマスが既にスコアが出してあった場合
+		//何回目にスコア計算が行われたかを取得する
+		for (auto& list : preteriteIndex_) {
+			for (auto& index : list.second) {
+				if (index == enemyIndex_) {
+					moveCount_ = list.first;
+				}
+			}
+		}
+		moveCount_++;
+	}
+
+	int targetIndex = playerIndex_;
+
+	//最短ルートをscoreTableから抽出する
+	while (currentIndex != targetIndex)
+	{
+		targetIndex = scoreTable_[targetIndex].currentIndex;
+		route_.push_front(targetIndex);
+	}
+	//最後にプレイヤーがいるインデックス座標を追加する
+	route_.push_back(playerIndex_);
+
+	//リセット
+	scoreTable_.clear();
+	debugScoreTable.clear();
+
+}
+
+VECTOR Aster::GetDestinationCoordinates(VECTOR playerPos,VECTOR enemyPos)
+{
+	//エネミーとプレイヤーのインデックス座標を取得
+	int enemyIndex = SearchCurrentIndex(enemyPos);
+	int playerIndex = SearchCurrentIndex(playerPos);
+
+	//プレイヤーとエネミーが同じインデックス座標に居る場合
+	if (enemyIndex == playerIndex) {
+		//最短ルートを削除する
+		route_.clear();
+
+		//最短ルートを探す際にマスのモードをdoneModeにしたため
+		//doneModeからnormalModeに戻す
+		for (auto& masu : masu_) {
+			if (masu.second.masuMode == MasuMode::doneMode) {
+				masu.second.masuMode = MasuMode::normalMode;
+			}
+		}
+
+		//プレイヤーの居るインデックス座標の中心のポジションを返す
+		return masu_[playerIndex].centerPos;
+	}
+
+	//目標インデックス座標の中心ポジション
+	VECTOR targetPos = masu_[route_.front()].centerPos;
+
+	//敵のインデックス座標と経路探索で得たインデックスが同じだった場合
+	//同じインデックス座標を削除する
+	if (enemyIndex == route_.front()) {
+		route_.pop_front();
+	}
+
+	//目標ポジションを返す
+	return targetPos;
+}
+
+bool Aster::temp(VECTOR pos)
+{
+	int pointIndex = SearchCurrentIndex(pos);
+
+	if (masu_[pointIndex].masuMode == MasuMode::blockadeMode) {
+		return true;
+	}
+
+	return false;
+}
+
 //周囲の升のスコアを取得する
-VECTOR Aster::SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight, bool skipCheckTop, bool skipCheckBottom)
+void Aster::SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight, bool skipCheckTop, bool skipCheckBottom)
 {
 	//周囲の升のインデックス
 	int left			= enemyIndex_ - 1;
-	int topLeft			= enemyIndex_ + max_X - 1;
-	int top				= enemyIndex_ + max_X;
-	int topRight		= enemyIndex_ + max_X + 1;
 	int right			= enemyIndex_ + 1;
-	int bottomRight		= enemyIndex_ - max_X + 1;
+	int top				= enemyIndex_ + max_X;
 	int bottom			= enemyIndex_ - max_X;
+
+	int topLeft			= enemyIndex_ + max_X - 1;
+	int topRight		= enemyIndex_ + max_X + 1;
+	int bottomRight		= enemyIndex_ - max_X + 1;
 	int bottomLeft		= enemyIndex_ - max_X - 1;
 
 	if (!skipCheckTop) {
@@ -291,14 +384,6 @@ VECTOR Aster::SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight,
 		if (masu_[left].masuMode == MasuMode::normalMode) {
 			ScoreCaluculation(Direction::left, left);
 		}
-		////左上の升のスコアを取得する
-		//if (masu_[topLeft].masuMode == MasuMode::normalMode) {
-		//	ScoreCaluculation(Direction::topLeft, topLeft);
-		//}
-		////左下の升のスコアを取得する
-		//if (masu_[bottomLeft].masuMode == MasuMode::normalMode) {
-		//	ScoreCaluculation(Direction::bottomLeft, bottomLeft);
-		//}
 	}
 
 	if (!skipCheckRight) {
@@ -306,32 +391,23 @@ VECTOR Aster::SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight,
 		if (masu_[right].masuMode == MasuMode::normalMode) {
 			ScoreCaluculation(Direction::right, right);
 		}
-		////右上の升のスコアを取得する
-		//if (masu_[topRight].masuMode == MasuMode::normalMode) {
-		//	ScoreCaluculation(Direction::topRight, topRight);
-		//}
-		////右下の升のスコアを取得する
-		//if (masu_[bottomRight].masuMode == MasuMode::normalMode) {
-		//	ScoreCaluculation(Direction::bottomRight, bottomRight);
-		//}
 	}
 
 	//初期化
-	destination_.score = 100;
-	destination_.index = 0;
-	//一番スコアが低い結果を取得する
-	for (auto& result : score_) {
-		if (destination_.score > result.second.score) {
-			destination_.score = result.second.score;
-			destination_.index = result.second.index;
+	int score = 1000;
+
+	//最短ルートを求める際に一番低いスコアのインデックスマスを次の探索マスにする
+	for (auto& result : scoreTable_) {
+		if (masu_[result.second.destinationIndex].masuMode == MasuMode::normalMode) {
+			if (score > result.second.score) {
+				score = result.second.score;
+				enemyIndex_ = result.second.destinationIndex;
+				count_++;
+			}
 		}
 	}
 
 	//デバッグ用
-	tempscore_ = score_;
-
-	score_.clear();
-
-	return masu_[destination_.index].centerPos;
+	debugScoreTable = scoreTable_;
 
 }

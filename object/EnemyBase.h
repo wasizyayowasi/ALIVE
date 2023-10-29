@@ -2,6 +2,7 @@
 #include "CharacterBase.h"
 #include <list>
 #include <memory>
+#include <unordered_map>
 
 class Aster;
 
@@ -42,19 +43,12 @@ public:
 	/// <param name="player">プレイヤーの参照</param>
 	void RoutingUpdate(Player& player);
 
-	/*/// <summary>
-	/// オブジェクトを回避しながら追跡する
-	/// </summary>
-	/// <param name="playerPos">プレイヤーのポジション</param>
-	void AvoidAndTrackObjectsUpdate(VECTOR playerPos);
 
-	/// <summary>
-	/// オブジェクトとの正面衝突をチェックする
-	/// </summary>
-	/// <param name="playerPos">プレイヤーのポジション</param>
-	void CheckHeadOnCollision();*/
+	bool aiueo(VECTOR playerPos);
 
 private:
+
+	int time = 60;
 
 	float distance_ = 0.0f;				//敵からプレイヤーの距離
 	float innerProduct = 0.0f;			//内積の結果を入れる
@@ -63,13 +57,14 @@ private:
 	bool isHit_ = false;
 
 	VECTOR frontVec_ = { 0.0f,0.0f ,-1.0f };		//敵の正面ベクトルを入れる
-	VECTOR playerpos_ = { 0.0f,0.0f ,-1.0f };		//敵の正面ベクトルを入れる
 
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 
 	MV1_COLL_RESULT_POLY_DIM temp = {};
 
 	std::shared_ptr<Aster> Aster_;
+
+	std::unordered_map<int, VECTOR> debug_;
 
 };
 

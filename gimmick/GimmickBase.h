@@ -1,8 +1,6 @@
 #pragma once
 #include "../object/OrnamentBase.h"
 
-constexpr int max_hit_coll = 2048;
-
 class GimmickBase : public OrnamentBase
 {
 public:

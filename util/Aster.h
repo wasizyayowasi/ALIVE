@@ -4,34 +4,36 @@
 #include <list>
 
 enum class MasuMode {
-	normalMode,			//通常モード
-	passingMode,		//通過済みモード
-	blockadeMode,		//封鎖モード
+	normalMode,				//通常モード
+	doneMode,				//済みモード
+	blockadeMode,			//封鎖モード
 };
 
 enum class Direction {
-	left,				//左
-	topLeft,			//左上
-	top,				//上
-	topRight,			//右上
-	right,				//右
-	bottomRight,		//右下
-	bottom,				//下
-	bottomLeft,			//左下
+	left,					//左
+	topLeft,				//左上
+	top,					//上
+	topRight,				//右上
+	right,					//右
+	bottomRight,			//右下
+	bottom,					//下
+	bottomLeft,				//左下
 };
 
 struct MasuState {
-	VECTOR centerPos;	//中心座標
-	MasuMode masuMode;	//升のモード
-	int x;				//2次元配列のX
-	int z;				//2次元配列のY
+	VECTOR centerPos;		//中心座標
+	MasuMode masuMode;		//升のモード
+	int x;					//2次元配列のX
+	int z;					//2次元配列のY
 };
 
 struct Score {
-	int moveCost;		//移動コスト
-	int estimationCost;	//推定コスト
-	int score;			//プレイヤーを追跡するうえで得点を付ける
-	int index;			//インデックス
+	int moveCost;			//移動コスト
+	int estimationCost;		//推定コスト
+	int score;				//プレイヤーを追跡するうえで得点を付ける
+	int currentIndex;	//移動先のインデックス
+	int destinationIndex;	//移動先のインデックス
+	Direction dir;			//方角
 };
 
 struct DesinationState {
@@ -45,6 +47,9 @@ public:
 	Aster();
 	virtual ~Aster();
 
+	//初期化
+	void Init();
+
 	//更新
 	void Update();
 	//描画
@@ -55,17 +60,17 @@ public:
 	/// </summary>
 	/// <param name="pos">ポジション</param>
 	/// <param name="pos">ポジション</param>
-	VECTOR LocationInformation(VECTOR playerPos,VECTOR enemyPos);
+	void LocationInformation(VECTOR playerPos,VECTOR enemyPos);
 
 	/// <summary>
 	/// 周囲の升を検索する
 	/// </summary>
-	VECTOR SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight, bool skipCheckTop, bool skipCheckBottom);
+	void SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight, bool skipCheckTop, bool skipCheckBottom);
 
 	/// <summary>
 	/// 周囲の升が存在するか探す
 	/// </summary>
-	VECTOR SearchAroundSquares();
+	void SearchAroundSquares();
 
 	/// <summary>
 	/// 升のスコアを取得する
@@ -89,19 +94,37 @@ public:
 	/// <returns></returns>
 	int SearchCurrentIndex(VECTOR pos);
 
+	/// <summary>
+	/// 経路探索
+	/// </summary>
+	void RouteSearch();
+
+	/// <summary>
+	/// 目的地の座標を取得する
+	/// </summary>
+	/// <returns></returns>
+	VECTOR GetDestinationCoordinates(VECTOR playerPos, VECTOR enemyPos);
+
+
+	bool temp(VECTOR pos);
+
 private:
 
 	int enemyIndex_ = 0;
 	int playerIndex_ = 0;
-	int moveCount_ = 1;
+	int moveCount_ = 0;
 
-	DesinationState destination_ = {};
+	int tempIndex_ = 0;
+
+	int count_ = 0;
 
 	std::unordered_map<int, MasuState> masu_;
-	std::unordered_map<Direction, Score> score_;
-	std::unordered_map<Direction, Score> tempscore_;
+	std::unordered_map<int, Score> scoreTable_;
+	std::unordered_map<int, Score> debugScoreTable;
 
-	std::list<int> preteriteIndex_;
+	std::unordered_map<int, std::list<int>> preteriteIndex_;
+
+	std::list<int> route_;
 
 };
 
