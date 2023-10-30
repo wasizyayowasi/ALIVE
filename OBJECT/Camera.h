@@ -11,7 +11,7 @@ public:
 	virtual ~Camera();
 
 	//初期化用
-	void init();
+	void Init();
 
 	/// <summary>
 	/// プレイヤーを追跡するカメラの更新

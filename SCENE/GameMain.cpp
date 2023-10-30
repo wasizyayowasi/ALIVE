@@ -96,7 +96,7 @@ void GameMain::Draw()
 
 	//カメラの初期化
 	//SetDrawScreenを行うとカメラの情報がリセットされるために
-	camera_->init();
+	camera_->Init();
 	//camera_->TrackingCameraUpdate(player_->GetStatus().pos);
 	camera_->DebugCamera(player_->GetStatus().pos);
 

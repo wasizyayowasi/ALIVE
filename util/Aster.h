@@ -108,6 +108,9 @@ public:
 
 	bool temp(VECTOR pos);
 
+
+	bool EndOfDirection();
+
 private:
 
 	int enemyIndex_ = 0;

@@ -33,10 +33,10 @@ void ScenePause::Init()
 	menuName_.push_back("デバッグシーンへ");
 
 	//UI画像の作成
-	int font = FontsManager::getInstance().GetFontHandle("ピグモ 0032");
+	int font = FontsManager::getInstance().GetFontHandle("ピグモ 0042");
 	int y = 50;
 	for (auto& menu : menuName_) {
-		UI_->addMenu(Game::screen_width / 2, Game::screen_height / 2 + y, 320, 100, menu.c_str(), font);
+		UI_->addMenu(Game::screen_width / 2, Game::screen_height / 2 + y, 640, 200, menu.c_str(), font);
 		y += 40;
 	}
 

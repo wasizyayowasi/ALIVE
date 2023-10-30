@@ -4,9 +4,8 @@
 
 FontsManager::FontsManager()
 {
-	AddFonts("High Tower Text",".ttf", 32);
-	AddFonts("ピグモ 00",".otf", 32);
-	AddFonts("ピグモ 00",".otf", 16);
+	AddFonts("ピグモ 00",".otf", 42);
+	AddFonts("ピグモ 00",".otf", 21);
 }
 
 FontsManager::~FontsManager()

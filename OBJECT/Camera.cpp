@@ -23,7 +23,7 @@ Camera::~Camera()
 {
 }
 
-void Camera::init()
+void Camera::Init()
 {
 	/////////////// 3D関連の設定 /////////////
 	// Zバッファを使用する

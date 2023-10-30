@@ -29,7 +29,7 @@ public:
 	/// プレイヤーを索敵する
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの座標</param>
-	void SearchForPlayer(VECTOR playerPos);
+	bool SearchForPlayer(VECTOR playerPos);
 
 	/// <summary>
 	/// プレイヤーを突き飛ばす
@@ -43,8 +43,18 @@ public:
 	/// <param name="player">プレイヤーの参照</param>
 	void RoutingUpdate(Player& player);
 
+	/// <summary>
+	/// 直線距離にオブジェクトがあるか
+	/// </summary>
+	/// <param name="playerPos">プレイヤーのポジション</param>
+	/// <returns>オブジェクトがあるか</returns>
+	bool IsThereAnObject(VECTOR playerPos);
 
-	bool aiueo(VECTOR playerPos);
+	/// <summary>
+	/// 距離が範囲内だったら
+	/// </summary>
+	/// <returns></returns>
+	bool DistanceIsWithinRange();
 
 private:
 

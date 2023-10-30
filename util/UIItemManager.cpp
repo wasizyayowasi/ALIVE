@@ -15,11 +15,11 @@ void UIItemManager::draw(int selectNum)
 	int alpha = 150;
 	for (int i = 0; i < UIMenu_.size();i++) {
 		if (selectNum == i) {
-			scale = 1.3f;
+			scale = 1.0f;
 			alpha = 255;
 		}
 		else {
-			scale = 1.0f;
+			scale = 0.7f;
 			alpha = 150;
 		}
 		UIMenu_[i]->draw(scale,alpha);

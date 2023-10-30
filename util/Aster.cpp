@@ -116,7 +116,7 @@ void Aster::LocationInformation(VECTOR playerPos, VECTOR enemyPos)
 
 	//プレイヤーのインデックス座標が前のフレームと比べたとき
 	//違ったら、再度経路探索を行う
-	if (oldPlayerIndex != playerIndex_) {
+	if (oldPlayerIndex != playerIndex_ && masu_[playerIndex_].masuMode != MasuMode::blockadeMode) {
 		Init();
 		RouteSearch();
 	}
@@ -310,6 +310,10 @@ VECTOR Aster::GetDestinationCoordinates(VECTOR playerPos,VECTOR enemyPos)
 	int enemyIndex = SearchCurrentIndex(enemyPos);
 	int playerIndex = SearchCurrentIndex(playerPos);
 
+	if (masu_[playerIndex].masuMode == MasuMode::blockadeMode) {
+		return masu_[enemyIndex].centerPos;
+	}
+
 	//プレイヤーとエネミーが同じインデックス座標に居る場合
 	if (enemyIndex == playerIndex) {
 		//最短ルートを削除する
@@ -349,6 +353,12 @@ bool Aster::temp(VECTOR pos)
 	}
 
 	return false;
+}
+
+bool Aster::EndOfDirection()
+{
+	auto aiu = route_.empty();
+	return route_.empty();
 }
 
 //周囲の升のスコアを取得する

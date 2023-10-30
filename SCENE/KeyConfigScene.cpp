@@ -30,8 +30,8 @@ KeyConfigScene::~KeyConfigScene()
 void KeyConfigScene::Init()
 {
 	//フォントの作成
-	fontHandleSize16_ = FontsManager::getInstance().GetFontHandle("ピグモ 0016");
-	fontHandleSize32_ = FontsManager::getInstance().GetFontHandle("ピグモ 0032");
+	fontHandleSize16_ = FontsManager::getInstance().GetFontHandle("ピグモ 0021");
+	fontHandleSize32_ = FontsManager::getInstance().GetFontHandle("ピグモ 0042");
 	//インスタンス化
 	UI_ = std::make_shared<UIItemManager>();
 

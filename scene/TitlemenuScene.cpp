@@ -29,13 +29,13 @@ void TitlemenuScene::Init()
 	UI_ = std::make_shared<UIItemManager>();
 
 	//UI文字列の作成
-	menuName_.push_back("New Game");
-	menuName_.push_back("Continue");
-	menuName_.push_back("Setting");
-	menuName_.push_back("end");
+	menuName_.push_back("ニューゲーム");
+	menuName_.push_back("ゲームを再開する");
+	menuName_.push_back("設定");
+	menuName_.push_back("終了");
 
 	//UI画像の作成
-	int font = FontsManager::getInstance().GetFontHandle("High Tower Text32");
+	int font = FontsManager::getInstance().GetFontHandle("ピグモ 0042");
 	int y = 120;
 	for (auto& menu : menuName_) {
 		UI_->addMenu(Game::screen_width / 2, Game::screen_height / 2 + y,320, 100, menu.c_str(), font);
