@@ -6,7 +6,11 @@
 ObjectBase::ObjectBase(const char* const filename, LoadObjectInfo objInfo)
 {
 	model_ = std::make_shared<Model>(filename);
+	model_->SetScale(objInfo.scale);
+	model_->SetPos(objInfo.pos);
+	model_->SetRot(objInfo.rot);
 	model_->SetCollFrame();
+	pos_ = model_->GetPos();
 	isEnable_ = true;
 
 }
@@ -14,7 +18,11 @@ ObjectBase::ObjectBase(const char* const filename, LoadObjectInfo objInfo)
 ObjectBase::ObjectBase(int handle, LoadObjectInfo objInfo)
 {
 	model_ = std::make_shared<Model>(handle);
+	model_->SetScale(objInfo.scale);
+	model_->SetPos(objInfo.pos);
+	model_->SetRot(objInfo.rot);
 	model_->SetCollFrame();
+	pos_ = model_->GetPos();
 	isEnable_ = true;
 }
 
@@ -30,4 +38,8 @@ void ObjectBase::Update(Player& player)
 void ObjectBase::Draw()
 {
 	model_->Draw();
+}
+
+void ObjectBase::HitColl(std::shared_ptr<ObjectBase> pointer)
+{
 }

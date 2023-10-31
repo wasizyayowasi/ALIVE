@@ -16,9 +16,14 @@ public:
 	//•`‰æ
 	void Draw();
 
+	//Õ“Ë”»’è
+	virtual void HitColl(std::shared_ptr<ObjectBase> pointer);
+
 	std::shared_ptr<Model> GetModelInfo() { return model_; }
 
-private:
+protected:
+
+	bool isTransit_ = false;
 
 };
 

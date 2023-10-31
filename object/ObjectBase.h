@@ -21,6 +21,9 @@ public:
 	//•`‰æ
 	virtual void Draw();
 
+	//Õ“Ë”»’è
+	virtual void HitColl(std::shared_ptr<ObjectBase> pointer);
+
 	//Œ»İ—LŒø‚©–³Œø‰»‚ğæ“¾‚·‚é
 	bool IsEnabled() { return isEnable_; };
 

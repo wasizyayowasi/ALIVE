@@ -97,8 +97,8 @@ void GameMain::Draw()
 	//カメラの初期化
 	//SetDrawScreenを行うとカメラの情報がリセットされるために
 	camera_->Init();
-	//camera_->TrackingCameraUpdate(player_->GetStatus().pos);
-	camera_->DebugCamera(player_->GetStatus().pos);
+	camera_->TrackingCameraUpdate(player_->GetStatus().pos);
+	//camera_->DebugCamera(player_->GetStatus().pos);
 
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
@@ -133,13 +133,6 @@ void GameMain::ObjectGenerater()
 	//短縮化
 	auto& loadData = LoadExternalFile::GetInstance();
 
-	//カメラのインスタンス化
-	camera_ = make_shared<Camera>();
-	//プレイヤーのインスタンス化
-	player_ = make_shared<Player>(player_Filename);
-	//プレイヤーの初期化
-	player_->Init(loadData.GetSpecifiedInfo("player").front());
-
 	for (auto& objInfo : loadData.GetLoadObjectInfo()) {
 		//フィールドを作成
 		if (objInfo.first == "field") {
@@ -172,6 +165,14 @@ void GameMain::ObjectGenerater()
 			}
 		}
 	}
+
+	//カメラのインスタンス化
+	camera_ = make_shared<Camera>();
+	//プレイヤーのインスタンス化
+	player_ = make_shared<Player>(player_Filename);
+	//プレイヤーの初期化
+	player_->Init(loadData.GetSpecifiedInfo("player").front());
+
 }
 
 //TODO：別のフェードインが出来次第消去

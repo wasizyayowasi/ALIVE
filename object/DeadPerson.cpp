@@ -32,8 +32,8 @@ DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : Characte
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
 	model_->SetScale(objInfo.scale);
-	model_->SetAnimation(animNo, false, true);
-	model_->SetAnimEndFrame(animNo);
+	//model_->SetAnimation(animNo, false, true);
+	//model_->SetAnimEndFrame(animNo);
 
 	switch (static_cast<AnimType>(animNo)) {
 	case AnimType::death:
@@ -58,8 +58,8 @@ void DeadPerson::Update(Player& player)
 void DeadPerson::Draw()
 {
 	model_->Draw();
-	DrawFormatString(0, 32, 0x448844, "%.2f , %.2f , %.2f", model_->GetPos().x, model_->GetPos().y, model_->GetPos().z);
 	DrawSphere3D(model_->GetPos(), 32, 32, 0xff0000, 0xff0000, true);
+	DrawFormatString(0, 112, 0x448844, "%.2f , %.2f , %.2f", model_->GetPos().x, model_->GetPos().y, model_->GetPos().z);
 }
 
 void DeadPerson::NormalUpdate(Player& player)

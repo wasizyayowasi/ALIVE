@@ -1,8 +1,9 @@
 #pragma once
 #include "GimmickBase.h"
-#include <vector>
+#include <list>
 
 class Player;
+class ObjectBase;
 
 class Switch : public GimmickBase
 {
@@ -15,17 +16,24 @@ public:
 
 	//更新
 	void Update(Player& player)override;
+	void Draw();
 
 private:
-	//スイッチモデルとプレイヤー、死体との衝突判定を行う
-	void HitColl(Player& player);
+	//スイッチモデルとプレイヤーの衝突判定を行う
+	void HitCollPlayer(Player& player);
+	//スイッチモデルと死体との衝突判定を行う
+	void HitColl(std::shared_ptr<ObjectBase> deadPerson);
 	//スイッチをオンにする
 	void OnAnim();
 	//スイッチをオフにする
 	void OffAnim();
 private:
+	int time = 0;
+	int a = 0;
 
-	std::vector<MV1_COLL_RESULT_POLY_DIM> hitDim_;
+	bool hit = false;
+
+	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 
 };
 

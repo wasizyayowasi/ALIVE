@@ -28,7 +28,7 @@ namespace {
 	const VECTOR start_player_rot = { 0.0f,0.0f ,0.0f };
 
 	//ƒvƒŒƒCƒ„[‚Ì‚‚³
-	constexpr float player_hegiht = 150.0f;
+	constexpr float player_hegiht = 140.0f;
 
 }
 
@@ -115,6 +115,8 @@ void Player::Draw()
 {
 	PModel_->Draw();
 	DrawFormatString(0, 96, 0x448844, "%.2f , %.2f , %.2f", status_.pos.x, status_.pos.y, status_.pos.z);
+	DrawLine3D(status_.pos, VAdd(status_.pos, VGet(0, player_hegiht, 0)), 0xff0000);
+	DrawCapsule3D(VAdd(status_.pos, VGet(0, 10, 0)), VAdd(status_.pos, VGet(0, 140, 0)), 20.0f, 32, 0x00ffff, 0x00ffff, true);
 //	VECTOR aiu = FramPosition2("hand.R_end");
 //	DrawFormatString(0, 48, 0x448844, "%.2f , %.2f , %.2f", aiu.x, aiu.y, aiu.z);
 }

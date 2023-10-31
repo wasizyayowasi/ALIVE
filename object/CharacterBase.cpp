@@ -17,3 +17,7 @@ void CharacterBase::Update(Player& player)
 void CharacterBase::Draw()
 {
 }
+
+void CharacterBase::HitColl(std::shared_ptr<ObjectBase> pointer)
+{
+}

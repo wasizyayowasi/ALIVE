@@ -16,8 +16,13 @@ public:
 	//デストラクタ
 	virtual ~EnemyBase() {};
 
+	//更新
 	void Update(Player& player) override;
+	//描画
 	void Draw()override;
+
+	//衝突判定
+	virtual void HitColl(std::shared_ptr<ObjectBase> pointer);
 
 	/// <summary>
 	/// プレイヤーを追跡する

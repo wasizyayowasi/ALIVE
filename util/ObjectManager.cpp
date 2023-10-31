@@ -91,12 +91,34 @@ void ObjectManager::Update(Player& player)
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
 	std::erase_if(objects_, [](const auto& obj) {return !obj.second.front()->IsEnabled(); });
 
+	//死体のポインターを収集する
+	std::list<std::shared_ptr<ObjectBase>> deadPerson = {};
+	for (auto obj : objects_) {
+		for (auto objSecond : obj.second) {
+			if (obj.first == ObjectType::deadPerson) {
+				deadPerson.push_back(objSecond);
+			}
+		}
+	}
+
+	//死体とその他のオブジェクトの衝突判定を行う
+	for (auto& obj : objects_) {
+		for (auto& objSecond : obj.second) {
+			if (obj.first != ObjectType::deadPerson) {
+				for (auto& dead : deadPerson) {
+					objSecond->HitColl(dead);
+				}
+			}
+		}
+	}
+
 	//更新
 	for (auto obj : objects_) {
 		for (auto objSecond : obj.second) {
 			objSecond->Update(player);
 		}
 	}
+
 }
 
 //描画

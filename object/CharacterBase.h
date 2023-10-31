@@ -18,6 +18,9 @@ public:
 	//描画
 	virtual void Draw();
 
+	//衝突判定
+	virtual void HitColl(std::shared_ptr<ObjectBase> pointer);
+
 protected:
 
 	int animNo_ = 0;				//アニメーション番号

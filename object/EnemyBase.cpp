@@ -77,6 +77,10 @@ void EnemyBase::Draw()
 	Aster_->Draw();
 }
 
+void EnemyBase::HitColl(std::shared_ptr<ObjectBase> pointer)
+{
+}
+
 void EnemyBase::TrackingUpdate(VECTOR playerPos)
 {
 	model_->ChangeAnimation(7, true, false, 20);
