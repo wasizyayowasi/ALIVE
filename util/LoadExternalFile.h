@@ -22,6 +22,9 @@ public:
 		return instance;
 	}
 
+	//読み込み
+	void LoadFile();
+
 	/// <summary>
 	/// プレイヤーに関する情報を取得する
 	/// </summary>
@@ -33,6 +36,12 @@ public:
 	/// </summary>
 	/// <returns>saveData</returns>
 	SaveData GetSaveData() { return data; }
+
+	/// <summary>
+	/// オブジェクトの配置情報を取得
+	/// </summary>
+	/// <returns>配置データ</returns>
+	LoadObjectInfo GetGimmickInfo(const char* const name);
 	
 	/// <summary>
 	/// オブジェクトの配置、回転率、拡縮率を取得する
@@ -54,8 +63,8 @@ public:
 	/// <param name="num">死亡回数</param>
 	void SaveDataRewriteInfo(VECTOR pos, int num);
 
-	//セーブデータを使用するか
-	void LoadSaveFile(bool isContinue);
+	//セーブデータを初期化する
+	void ClearSaveData();
 
 private:
 
@@ -64,7 +73,7 @@ private:
 	//セーブデータを読み込む
 	void LoadSaveDataInfo(const char* const filename);
 	//オブジェクトの配置情報を読み込む
-	void LoadObjectData(const char* const filename);
+	void LoadObjectData(const char* const filename, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable);
 
 	//プレイヤーのステータス情報を書き出す
 	void RewritePlayerInfo();
@@ -80,6 +89,7 @@ private:
 	SaveData data;
 
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadObjInfo_;
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadGimmickInfo_;
 
 };
 

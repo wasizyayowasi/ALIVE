@@ -6,7 +6,7 @@ namespace {
 	//二次元配列の最大X
 	constexpr int max_X = 39 ;
 	//二次元配列の最大Z
-	constexpr int max_Y = 6;
+	constexpr int max_Y = 14;
 
 	//二次元配列の最大要素数
 	constexpr int max_Index = max_X * max_Y;
@@ -14,7 +14,7 @@ namespace {
 
 Aster::Aster()
 {
-	for (int i = 0; i < 234;i++) {
+	for (int i = 0; i < max_Index;i++) {
 		masu_[i].centerPos = VGet((i % max_X) * 100.0f - 850.0f, 0.0f, (i / max_X) * 100.0f - 250.0f);
 		masu_[i].masuMode = MasuMode::normalMode;
 		masu_[i].x = i % max_X;

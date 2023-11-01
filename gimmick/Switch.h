@@ -1,11 +1,14 @@
 #pragma once
 #include "GimmickBase.h"
+#include "DxLib.h"
 #include <list>
+#include <memory>
 
 class Player;
 class ObjectBase;
+class Model;
 
-class Switch : public GimmickBase
+class Switch
 {
 public:
 	//コンストラクタ
@@ -15,24 +18,31 @@ public:
 	virtual ~Switch();
 
 	//更新
-	void Update(Player& player)override;
+	void Update(Player& player);
 	void Draw();
+
+	//スイッチモデルと死体との衝突判定を行う
+	void HitColl(std::shared_ptr<ObjectBase> deadPerson);
+
+	//衝突判定の結果の処理
+	bool CollResult();
 
 private:
 	//スイッチモデルとプレイヤーの衝突判定を行う
 	void HitCollPlayer(Player& player);
-	//スイッチモデルと死体との衝突判定を行う
-	void HitColl(std::shared_ptr<ObjectBase> deadPerson);
 	//スイッチをオンにする
 	void OnAnim();
 	//スイッチをオフにする
 	void OffAnim();
 private:
+
 	int time = 0;
-	int a = 0;
 
-	bool hit = false;
+	bool isTransit_ = false;
 
+	VECTOR pos_ = {};
+
+	std::shared_ptr<Model> model_;
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 
 };

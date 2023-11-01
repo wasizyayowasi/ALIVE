@@ -12,12 +12,14 @@ namespace {
 Steelyard::Steelyard(const char* const filename, LoadObjectInfo objInfo):GimmickBase(filename,objInfo)
 {
 	InitialPosition_ = pos_;
+	isCollCheck_ = true;
 }
 
 Steelyard::Steelyard(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInfo)
 {
 	//左
 	InitialPosition_ = pos_;
+	isCollCheck_ = true;
 }
 
 Steelyard::~Steelyard()
@@ -40,26 +42,30 @@ void Steelyard::Update(Player& player)
 	PriorityState(hitStateListLeft_, priorityStateLeft_);
 	PriorityState(hitStateListRight_, priorityStateRight_);
 
+	if (priorityStateLeft_ == HitState::bottom && priorityStateRight_ == HitState::noHit) {
+		moveState_ = HitState::bottom;
+	}
+	else if (priorityStateLeft_ == HitState::noHit && priorityStateRight_ == HitState::bottom) {
+		moveState_ = HitState::top;
+	}
+	else if (priorityStateLeft_ != priorityStateRight_) {
+		moveState_ = HitState::noHit;
+	}
+
 	//フレームを動かす
-	MoveFrame(priorityStateRight_, "right", moveDescentRight_, isStartRight_);
-	MoveFrame(priorityStateLeft_, "left", moveDescentLeft_, isStartLeft_);
+	MoveFrame(priorityStateLeft_, priorityStateRight_, moveDescent_, isStart_);
 
 	model_->SetPos(pos_);
 
 	hitStateListLeft_.clear();
 	hitStateListRight_.clear();
 
-	isStartRight_ = false;
-	isStartLeft_ = false;
+	//isStart_ = false;
 }
 
 void Steelyard::Draw()
 {
 	model_->Draw();
-	DrawSphere3D(pos_, 50, 32, 0xff0000, 0xff0000, true);
-	DrawFormatString(0, 128, 0x448844, "%.2f", moveDescentLeft_);
-	DrawFormatString(0, 144, 0x448844, "%.2f", moveDescentRight_);
-	DrawFormatString(0, 160, 0x448844, "%.2f , %.2f , %.2f", framePos_.x, framePos_.y, framePos_.z);
 }
 
 void Steelyard::HitCollPlayer(Player& player)
@@ -77,8 +83,8 @@ void Steelyard::HitCollPlayer(Player& player)
 	hitDimRight_ = MV1CollCheck_Capsule(model_->GetModelHandle(), RightFrameNo, VAdd(player.GetStatus().pos,VGet(0,10,0)), VAdd(player.GetStatus().pos, VGet(0.0f, player.GetStatus().height, 0.0f)), 20.0f);
 
 	//リストにまとめる
-	SummarizeList(hitDimLeft_, hitStateListLeft_,isStartLeft_);
-	SummarizeList(hitDimRight_, hitStateListRight_,isStartRight_);
+	SummarizeList(hitDimLeft_, hitStateListLeft_,isStart_);
+	SummarizeList(hitDimRight_, hitStateListRight_, isStart_);
 
 	//衝突判定の消去
 	MV1CollResultPolyDimTerminate(hitDimLeft_);
@@ -101,13 +107,15 @@ void Steelyard::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 	MV1RefreshCollInfo(model_->GetModelHandle(), leftFrameNo);
 	MV1RefreshCollInfo(model_->GetModelHandle(), RightFrameNo);
 
-	//天秤の左右別で衝突判定を行う
-	hitDimLeft_ = MV1CollCheck_Capsule(deadPerson->GetModelPointer()->GetModelHandle(), leftFrameNo, pos_, VAdd(pos_, VGet(0.0f, 50.0f, 0.0f)), 50.0f);
-	hitDimRight_ = MV1CollCheck_Capsule(deadPerson->GetModelPointer()->GetModelHandle(), RightFrameNo, pos_, VAdd(pos_, VGet(0.0f, 50.0f, 0.0f)), 50.0f);
+	VECTOR deadPersonPos = deadPerson->GetModelPointer()->GetPos();
 
+	//天秤の左右別で衝突判定を行う
+	hitDimLeft_ = MV1CollCheck_Capsule(model_->GetModelHandle(), leftFrameNo, VAdd(deadPersonPos, VGet(0.0f, 10.0f, 0.0f)), VAdd(deadPersonPos, VGet(0.0f, playerHeight_, 0.0f)), 20.0f);
+	hitDimRight_ = MV1CollCheck_Capsule(model_->GetModelHandle(), RightFrameNo, VAdd(deadPersonPos, VGet(0.0f, 10.0f, 0.0f)), VAdd(deadPersonPos, VGet(0.0f, playerHeight_ + 2.0f, 0.0f)), 20.0f);
+	
 	//リストにまとめる
-	SummarizeList(hitDimLeft_, hitStateListLeft_, isStartLeft_);
-	SummarizeList(hitDimRight_, hitStateListRight_, isStartRight_);
+	SummarizeList(hitDimLeft_, hitStateListLeft_, isStart_);
+	SummarizeList(hitDimRight_, hitStateListRight_, isStart_);
 
 	//衝突判定の消去
 	MV1CollResultPolyDimTerminate(hitDimLeft_);
@@ -146,7 +154,7 @@ void Steelyard::PriorityState(std::list<HitState> list, HitState& hitState)
 	}
 }
 
-void Steelyard::MoveFrame(HitState hitState, std::string string, float& moveDescent, bool isStart)
+void Steelyard::MoveFrame(HitState LeftHitState, HitState RightHitState, float& moveDescent, bool isStart)
 {
 
 	//指定フレームの番号を取得する
@@ -156,27 +164,32 @@ void Steelyard::MoveFrame(HitState hitState, std::string string, float& moveDesc
 	VECTOR leftFramePos = MV1GetFramePosition(model_->GetModelHandle(), leftFrameNo);
 	VECTOR rightFramePos = MV1GetFramePosition(model_->GetModelHandle(), rightFrameNo);
 
+	//下降制限
 	float descendingLimit = InitialPosition_.y - 50.0f;
+	//上昇制限
 	float upwardRevisionLimit = InitialPosition_.y + 50.0f;
 
 	if (isStart) {
-		if (leftFramePos.y >= descendingLimit) {
-			moveDescent -= move_speed;
+		//if (HitState::bottom == LeftHitState && HitState::noHit == RightHitState) {
+		if (moveState_ == HitState::bottom) {
+			if (leftFramePos.y >= descendingLimit) {
+				moveDescent -= move_speed;
+			}
 		}
-		else if (leftFramePos.y <= upwardRevisionLimit) {
-			moveDescent += move_speed;
+		//else if(HitState::noHit == LeftHitState && HitState::bottom == RightHitState) {
+		else if(moveState_ == HitState::top) {
+			if (leftFramePos.y <= upwardRevisionLimit) {
+				moveDescent += move_speed;
+			}
 		}
 	}
 
 	MATRIX mtx = {};
 
-	//優先ステータスがbottomだったら
-	if (hitState == HitState::bottom) {
-		//左
-		mtx = MGetTranslate(VGet(0, moveDescent, 0));
-		MV1SetFrameUserLocalMatrix(model_->GetModelHandle(), leftFrameNo, mtx);
-		//右
-		mtx = MGetTranslate(VGet(0, -moveDescent, 0));
-		MV1SetFrameUserLocalMatrix(model_->GetModelHandle(), rightFrameNo, mtx);
-	}
+	//左
+	mtx = MGetTranslate(VGet(0, moveDescent, 0));
+	MV1SetFrameUserLocalMatrix(model_->GetModelHandle(), leftFrameNo, mtx);
+	//右
+	mtx = MGetTranslate(VGet(0, -moveDescent, 0));
+	MV1SetFrameUserLocalMatrix(model_->GetModelHandle(), rightFrameNo, mtx);
 }

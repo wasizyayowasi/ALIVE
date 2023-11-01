@@ -6,16 +6,27 @@ namespace {
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
-Switch::Switch(const char* const filename, LoadObjectInfo objInfo) :GimmickBase(filename,objInfo)
+Switch::Switch(const char* const filename, LoadObjectInfo objInfo)
 {
+	model_ = std::make_shared<Model>(filename);
+	model_->SetScale(objInfo.scale);
+	model_->SetPos(objInfo.pos);
+	model_->SetRot(objInfo.rot);
 	model_->SetCollFrame();
-	model_->SetAnimation(0, true, false);
+
+	pos_ = model_->GetPos();
+
 }
 
-Switch::Switch(int handle, LoadObjectInfo objInfo) :GimmickBase(handle,objInfo)
+Switch::Switch(int handle, LoadObjectInfo objInfo)
 {
+	model_ = std::make_shared<Model>(handle);
+	model_->SetScale(objInfo.scale);
+	model_->SetPos(objInfo.pos);
+	model_->SetRot(objInfo.rot);
 	model_->SetCollFrame();
-	model_->SetAnimation(0, true, false);
+
+	pos_ = model_->GetPos();
 }
 
 Switch::~Switch()
@@ -26,8 +37,6 @@ Switch::~Switch()
 void Switch::Update(Player& player)
 {
 
-	hit = false;
-
 	//アニメーションの更新
 	model_->Update();
 
@@ -36,22 +45,11 @@ void Switch::Update(Player& player)
 
 	isTransit_ = player.GetStatus().isTransit;
 
-	//衝突結果の削除
-	for (auto& result : hitDim_) {
-		MV1CollResultPolyDimTerminate(result);
-	}
-
-	//衝突結果を保持する配列の削除
-	hitDim_.erase(hitDim_.begin(), hitDim_.end());
-
 }
 
 void Switch::Draw()
 {
 	model_->Draw();
-	if (hit) {
-		DrawSphere3D(VAdd(pos_, VGet(0, 200, 0)), 50, 21, 0x00ffff, 0x00ff00, true);
-	}
 }
 
 //衝突判定
@@ -60,31 +58,6 @@ void Switch::HitCollPlayer(Player& player)
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
 	hitDim_.push_back(MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), VAdd(player.GetStatus().pos, VGet(0.0f, 10.0f, 0.0f)), VAdd(player.GetStatus().pos, VGet(0.0f, 150.0f, 0.0f)), 20.0f));
 
-	int hitNum = 0;
-	//当たっている数を数える
-	for (auto& result : hitDim_) {
-		if (result.HitNum < 1) continue;
-		hitNum++;
-	}
-
-	//当たっていなかったら
-	//アニメーションを変更し終了
-	if (hitNum < 1) {
-		OffAnim();
-		return;
-	}
-
-	//衝突判定の消去
-	for (auto& hit : hitDim_) {
-		MV1CollResultPolyDimTerminate(hit);
-	}
-
-	hitDim_.clear();
-
-	hit = true;
-
-	//アニメーションの変更
-	OnAnim();
 }
 
 void Switch::HitColl(std::shared_ptr<ObjectBase> deadPerson)
@@ -95,9 +68,13 @@ void Switch::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 		return;
 	}
 
+	MV1RefreshCollInfo(deadPerson->GetModelPointer()->GetModelHandle(), -1);
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
 	hitDim_.push_back(MV1CollCheck_Capsule(deadPerson->GetModelPointer()->GetModelHandle(), deadPerson->GetModelPointer()->GetColFrameIndex(), pos_, VAdd(pos_, VGet(0.0f, 50.0f, 0.0f)), 50.0f));
+}
 
+bool Switch::CollResult()
+{
 	int hitNum = 0;
 	//当たっている数を数える
 	for (auto& result : hitDim_) {
@@ -110,30 +87,31 @@ void Switch::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 	//アニメーションを変更し終了
 	if (hitNum < 1) {
 		OffAnim();
-		return;
+		return false;
 	}
 
-	//衝突判定の消去
-	for (auto& hit : hitDim_) {
-		MV1CollResultPolyDimTerminate(hit);
+	//衝突結果の削除
+	for (auto& result : hitDim_) {
+		MV1CollResultPolyDimTerminate(result);
 	}
 
-	hitDim_.clear();
-
-	hit = true;
+	//衝突結果を保持する配列の削除
+	hitDim_.erase(hitDim_.begin(), hitDim_.end());
 
 	//アニメーションの変更
 	OnAnim();
+
+	return true;
 }
 
 //スイッチオンアニメーション
 void Switch::OnAnim()
 {
-	model_->SetAnimation(1, false, false);
+	MV1SetMaterialDifColor(model_->GetModelHandle(), 1, GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
 }
 
 //スイッチオフアニメーション
 void Switch::OffAnim()
 {
-	model_->SetAnimation(2, false, false);
+	MV1SetMaterialDifColor(model_->GetModelHandle(), 1, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 }

@@ -74,7 +74,7 @@ void EnemyBase::Draw()
 {
 	model_->Draw();
 
-	Aster_->Draw();
+	//Aster_->Draw();
 }
 
 void EnemyBase::HitColl(std::shared_ptr<ObjectBase> pointer)
@@ -197,7 +197,6 @@ bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 		VECTOR PointPos = VScale(norm, 50.0f * i);
 		PointPos = VAdd(pos_, PointPos);
 		noObject = Aster_->temp(PointPos);
-		debug_[i] = PointPos;
 		if (noObject) {
 			break;
 		}

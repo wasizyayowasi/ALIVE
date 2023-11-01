@@ -34,18 +34,15 @@ public:
 	void PriorityState(std::list<HitState> list,HitState& hitState);
 
 	//frameの移動
-	void MoveFrame(HitState hitState,std::string string, float& moveDescent,bool isStart);
-
+	void MoveFrame(HitState LeftHitState, HitState RightHitState, float& moveDescent, bool isStart);
 private:
 
 	int time_ = 0; 
 
-	float moveDescentLeft_ = 0.0f;
-	float moveDescentRight_ = 0.0f;
+	float moveDescent_ = 0.0f;
 	float playerHeight_ = 0.0f;
 
-	bool isStartLeft_ = false;
-	bool isStartRight_ = false;
+	bool isStart_ = false;
 
 	VECTOR InitialPosition_ = {};						//初期の高さを取得する
 	VECTOR framePos_ = {};								//初期の高さを取得する
@@ -53,6 +50,7 @@ private:
 
 	HitState priorityStateLeft_;						//優先させるステータスを取得する
 	HitState priorityStateRight_;						//優先させるステータスを取得する
+	HitState moveState_;
 
 	MV1_COLL_RESULT_POLY_DIM hitDimRight_;				//衝突判定の結果を収集
 	MV1_COLL_RESULT_POLY_DIM hitDimLeft_;				//衝突判定の結果を収集

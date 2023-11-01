@@ -6,7 +6,7 @@
 #include "object/tempEnemy.h"
 #include "object/OrnamentBase.h"
 #include "object/CarryObjectBase.h"
-#include "gimmick/Switch.h"
+#include "../gimmick/TransparentObject.h"
 #include "gimmick/steelyard.h"
 
 namespace {
@@ -18,6 +18,7 @@ namespace {
 	const char* const bigPillar_filename = "data/level0_model/bigPillar.mv1";
 	const char* const switch_filename = "data/model/switch.mv1";
 	const char* const steelyard_filename = "data/model/steelyard.mv1";
+	const char* const transparent_obj_filename = "data/model/trans.mv1";
 }
 
 ObjectManager::ObjectManager()
@@ -27,7 +28,7 @@ ObjectManager::ObjectManager()
 	boxHandle_ = MV1LoadModel(box_filename);
 	switchHandle_ = MV1LoadModel(switch_filename);
 	steelyardHandle_ = MV1LoadModel(steelyard_filename);
-
+	transObjHandle_ = MV1LoadModel(transparent_obj_filename);
 }
 
 ObjectManager::~ObjectManager()
@@ -37,6 +38,7 @@ ObjectManager::~ObjectManager()
 	MV1DeleteModel(boxHandle_);
 	MV1DeleteModel(switchHandle_);
 	MV1DeleteModel(steelyardHandle_);
+	MV1DeleteModel(transObjHandle_);
 }
 
 void ObjectManager::ObjectGenerator(ObjectBaseType baseType, ObjectType objType, LoadObjectInfo objInfo)
@@ -137,9 +139,10 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
 	std::list<std::shared_ptr<Model>> checkCollList;
 
 	for (auto& obj : objects_) {
-		if (obj.first == ObjectType::player || obj.first == ObjectType::enemy) continue;
 		for (auto& model : obj.second) {
-			checkCollList.push_back(model->GetModelPointer());
+			if (model->IsCollCheck()) {
+				checkCollList.push_back(model->GetModelPointer());
+			}
 		}
 	}
 
@@ -218,8 +221,8 @@ void ObjectManager::CarryObjectGenerator(ObjectType objType, LoadObjectInfo objI
 void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
 	switch (objType) {
-	case ObjectType::gimmickSwitch:
-		objects_[objType].push_front(std::make_shared<Switch>(switchHandle_, objInfo));
+	case ObjectType::trans:
+		objects_[objType].push_front(std::make_shared<TransparentObject>(transObjHandle_, objInfo));
 		break;
 	case ObjectType::gimmickSteelyard:
 		objects_[objType].push_front(std::make_shared<Steelyard>(steelyardHandle_, objInfo));

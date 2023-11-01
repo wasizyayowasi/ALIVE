@@ -106,6 +106,8 @@ void GameMain::Draw()
 	//オブジェクトの描画
 	objManager_->Draw();
 
+	DrawFormatString(0, 16, 0x448844, "%d", totalDeathNum_);
+
 	//プレイヤーの描画
 	player_->Draw();
 
@@ -141,9 +143,9 @@ void GameMain::ObjectGenerater()
 			}
 		}
 		//ギミックスイッチを作成
-		else if (objInfo.first == "switch") {
+		else if (objInfo.first == "trans") {
 			for (auto& objSecond : objInfo.second) {
-				objManager_->ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSwitch, objSecond);
+				objManager_->ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::trans, objSecond);
 			}
 		}
 		//ギミック天秤を作成

@@ -8,6 +8,7 @@ OrnamentBase::OrnamentBase(const char* const filename, LoadObjectInfo objInfo):O
 
 OrnamentBase::OrnamentBase(int handle, LoadObjectInfo objInfo) : ObjectBase(handle,objInfo)
 {
+	isCollCheck_ = true;
 }
 
 OrnamentBase::~OrnamentBase()

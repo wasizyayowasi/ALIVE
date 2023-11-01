@@ -12,9 +12,7 @@ using namespace std;
 
 LoadExternalFile::LoadExternalFile()
 {
-	LoadPlayerInfo("player");
-//	LoadObjectData("data/objData/temp.pos");
-	LoadObjectData("data/objData/data.pos");
+	LoadFile();
 }
 
 VECTOR LoadExternalFile::DegreesToRadians(VECTOR rot)
@@ -29,6 +27,25 @@ VECTOR LoadExternalFile::DegreesToRadians(VECTOR rot)
 LoadExternalFile::~LoadExternalFile()
 {
 	RewritePlayerInfo();
+}
+
+void LoadExternalFile::LoadFile()
+{
+	if (!loadObjInfo_.empty()) {
+		loadObjInfo_.clear();
+	}
+
+	LoadPlayerInfo("player");
+	LoadSaveDataInfo("saveData");
+	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
+	LoadObjectData("data/objData/gimmick.pos",loadGimmickInfo_);
+}
+
+LoadObjectInfo LoadExternalFile::GetGimmickInfo(const char* const name)
+{
+	auto info = loadGimmickInfo_[name].front();
+	loadGimmickInfo_[name].pop_front();
+	return info;
 }
 
 std::list<LoadObjectInfo> LoadExternalFile::GetSpecifiedInfo(const char* const name)
@@ -66,11 +83,10 @@ void LoadExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 
 }
 
-void LoadExternalFile::LoadSaveFile(bool isContinue)
+void LoadExternalFile::ClearSaveData()
 {
-	if (isContinue) {
-		LoadSaveDataInfo("saveData");
-	}
+	data.checkPoint = VGet(0, 0, 0);
+	data.totalDeathNum = 0;
 }
 
 //プレイヤーのステータス情報を読み込む
@@ -98,6 +114,8 @@ void LoadExternalFile::LoadPlayerInfo(const char* const filename)
 		i++;
 	}
 
+	ifs.close();
+
 }
 
 //セーブデータを読み込む
@@ -118,10 +136,12 @@ void LoadExternalFile::LoadSaveDataInfo(const char* const filename)
 	data.checkPoint.z = json["checkPointZ"];
 	data.totalDeathNum = json["totalDeath"];
 
+	ifs.close();
+
 }
 
 //オブジェクトのポジションを読み込む
-void LoadExternalFile::LoadObjectData(const char* const filename)
+void LoadExternalFile::LoadObjectData(const char* const filename, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
 {
 	//ファイルのロード
 	auto dataHandle = FileRead_open(filename);
@@ -158,7 +178,7 @@ void LoadExternalFile::LoadObjectData(const char* const filename)
 		assert(result != -1);
 		
 		//追加
-		loadObjInfo_[info.name].push_back(info);
+		dataTable[info.name].push_back(info);
 
 	}
 
@@ -166,7 +186,7 @@ void LoadExternalFile::LoadObjectData(const char* const filename)
 	FileRead_close(dataHandle);
 
 	//読み取ったデータの回転率を度数法から弧度法へと変換する
-	for (auto& obj : loadObjInfo_) {
+	for (auto& obj : dataTable) {
 		for (auto& objSecond : obj.second) {
 			objSecond.rot = DegreesToRadians(objSecond.rot);
 		}

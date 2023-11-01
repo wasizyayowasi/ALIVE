@@ -89,11 +89,6 @@ public:
 	/// </summary>
 	std::shared_ptr<Model> GetDeadPersonModelPointer() {return deadPersonModelPointer_;}
 	
-
-	bool temp() { return a; }
-	bool temp2() { return b; }
-
-
 private:
 	//通常更新
 	void IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
@@ -176,11 +171,6 @@ private:
 
 private:
 
-	bool a = false;
-	bool b = false;
-
-
-
 	int deathCount_ = 0;					//死んだ回数を記録する
 
 	float totalAnimFrame_ = 0;
@@ -204,7 +194,7 @@ private:
 	VECTOR deathPos_ = { 0.0f,0.0f,0.0f };						//死体のポジション
 
 	std::shared_ptr<Model> deadPersonModelPointer_;				//持ち運ぶ死体のモデルポインタ
-	std::shared_ptr<Model> PModel_;								//モデルクラスのポインタ
+	std::shared_ptr<Model> player_;								//モデルクラスのポインタ
 
 	std::unordered_map<AnimType, int> animType_;				
 

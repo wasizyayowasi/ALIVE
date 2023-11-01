@@ -65,21 +65,17 @@ private:
 
 	int time = 60;
 
-	float distance_ = 0.0f;				//敵からプレイヤーの距離
-	float innerProduct = 0.0f;			//内積の結果を入れる
+	float distance_ = 0.0f;							//敵からプレイヤーの距離
+	float innerProduct = 0.0f;						//内積の結果を入れる
 
-	bool isMove_ = false;				//移動中フラグ
-	bool isHit_ = false;
+	bool isMove_ = false;							//移動中フラグ
 
 	VECTOR frontVec_ = { 0.0f,0.0f ,-1.0f };		//敵の正面ベクトルを入れる
 
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 
-	MV1_COLL_RESULT_POLY_DIM temp = {};
-
 	std::shared_ptr<Aster> Aster_;
 
-	std::unordered_map<int, VECTOR> debug_;
 
 };
 

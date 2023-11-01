@@ -69,6 +69,7 @@ private:
 	int boxHandle_ = -1;				//仮の箱オブジェクト用ハンドル
 	int switchHandle_ = -1;
 	int steelyardHandle_ = -1;
+	int transObjHandle_ = -1;
 
 	std::unordered_map<ObjectType, std::list<std::shared_ptr<ObjectBase>>> objects_;			//オブジェクトをobjectTypeをキーにlistでもつ
 };
