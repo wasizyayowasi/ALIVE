@@ -13,19 +13,9 @@ namespace {
 
 	//ファイルパス
 	const char* const player_Filename = "data/player/temp.mv1";
-	//モデルフレーム名
-	const char* const coll_frame_death = "CollisionDeath";
-	const char* const coll_frame_Sit = "CollisionSit";
-	const char* const coll_frame_Stand = "CollisionStand";
 
 	//フレームの名前
 	const char* const frame_name = "foot.L";
-
-	//プレイヤーサイズ
-	const VECTOR player_scale = { 1.0f,1.0f ,1.0f };
-
-	//初期プレイヤーの回転角度
-	const VECTOR start_player_rot = { 0.0f,0.0f ,0.0f };
 
 	//プレイヤーの高さ
 	constexpr float player_hegiht = 130.0f;
@@ -54,7 +44,6 @@ Player::Player(int handle) :updateFunc_(&Player::IdleUpdate)
 Player::~Player()
 {
 }
-
 
 void Player::Init(LoadObjectInfo info)
 {
@@ -87,16 +76,12 @@ void Player::Init(LoadObjectInfo info)
 	player_->SetPos(info.pos);
 	//回転率の設定
 	player_->SetPos(info.rot);
-	//マップやブロックなどの当たり判定の生成
-	//checkCollisionModel_ = make_shared<CheckCollisionModel>();
 	//コリジョンフレームの設定
 	player_->SetCollFrame("Character");
 
 	scale_ = info.scale;
 
 }
-
-
 
 void Player::Update(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
@@ -143,9 +128,9 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 	}
 
 	if (status_.isTransit) {
-		deadPersonModelPointer_->SetAnimEndFrame(animType_[AnimType::dead]);
-		deadPersonModelPointer_->SetRot(DegreesToRadians(status_.rot));
-		deadPersonModelPointer_->SetPos(FramPosition2("hand.R_end"));
+		deadPersonModelPointer_->GetModelPointer()->SetAnimEndFrame(animType_[AnimType::dead]);
+		deadPersonModelPointer_->GetModelPointer()->SetRot(DegreesToRadians(status_.rot));
+		deadPersonModelPointer_->GetModelPointer()->SetPos(FramPosition2("hand.R_end"));
 	}
 	else {
 		isCanBeCarried_ = false;
@@ -527,7 +512,7 @@ void Player::StandUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 	}
 }
 
-void Player::SetCarryInfo(bool isCarry, shared_ptr<Model>model) {
+void Player::SetCarryInfo(bool isCarry, shared_ptr<ObjectBase>model) {
 	isCanBeCarried_ = isCarry;
 	deadPersonModelPointer_ = model;
 }
@@ -538,6 +523,8 @@ void Player::CarryObjectUpdate()
 	if (!isCanBeCarried_) return;
 
 	status_.isTransit = true;
+
+	deadPersonModelPointer_->SetIsTransit(true);
 
 	carryUpdateFunc_ = &Player::DropOffObjectUpdate;
 
@@ -550,7 +537,8 @@ void Player::DropOffObjectUpdate()
 	bool isCarry = status_.animNo == animType_[AnimType::carryIdle];
 	if ((isCarryWalking || isCarry) && isCanBeCarried_) {
 		isCanBeCarried_ = false;
-		deadPersonModelPointer_->SetPos(FramPosition("foot.L", "foot.R"));
+		deadPersonModelPointer_->SetIsTransit(false);
+		deadPersonModelPointer_->GetModelPointer()->SetPos(FramPosition("foot.L", "foot.R"));
 		deadPersonModelPointer_.reset();
 	}
 

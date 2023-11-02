@@ -28,14 +28,21 @@ public:
 	bool IsEnabled() { return isEnable_; };
 	//衝突判定を行うか
 	bool IsCollCheck() { return isCollCheck_; }
+	//持ち運び中か
+	bool IsTransit() { return isTransit_; }
+	//持ち運び中フラグの設定
+	void SetIsTransit(bool isTransit) { isTransit_ = isTransit; }
 
 	//モデルのスマートポインタを取得する
 	std::shared_ptr<Model> GetModelPointer() { return model_; }
+
+	void temp(int a);
 
 protected:
 
 	bool isEnable_ = false;						//有効か無効か
 	bool isCollCheck_ = false;					//衝突判定を行うか
+	bool isTransit_ = false;					//持ち運び中か
 
 	VECTOR pos_ = { 0.0f,0.0f,0.0f };			//ポジション
 	VECTOR rot_ = { 0.0f,0.0f,0.0f };			//回転率

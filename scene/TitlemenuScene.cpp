@@ -82,10 +82,11 @@ void TitlemenuScene::SceneChange()
 	switch (selectNum_) {
 	case 0:
 		LoadExternalFile::GetInstance().ClearSaveData();
+		LoadExternalFile::GetInstance().LoadFile(false);
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 		break;
 	case 1:
-		LoadExternalFile::GetInstance().LoadFile();
+		LoadExternalFile::GetInstance().LoadFile(true);
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 		break;
 	case 2:

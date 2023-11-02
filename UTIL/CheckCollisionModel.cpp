@@ -28,7 +28,7 @@ void CheckCollisionModel::CheckCollisionPersonalArea(std::shared_ptr<Player> pla
 	
 	for (auto& model : objManager->GetAllCheckCollModel()) {
 		if (player->GetStatus().isTransit) {
-			if (player->GetDeadPersonModelPointer() == model) {
+			if (player->GetDeadPersonModelPointer()->GetModelPointer() == model) {
 				continue;
 			}
 		}
@@ -332,11 +332,11 @@ void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player,
 	}
 
 	//持ち運ぶ死体を取得する
-	for (auto& obj : objManager->GetSpecificModel(ObjectType::deadPerson)) {
+	for (auto& obj : objManager->GetSpecificObject(ObjectType::deadPerson)) {
 		for (auto& hit : hitDim_)
 		{
 			//衝突結果が死体以外だったらcontinue
-			if (hit.model != obj) {
+			if (hit.model != obj->GetModelPointer()) {
 				continue;
 			}
 
@@ -346,7 +346,7 @@ void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player,
 			//上記の衝突判定の結果が1つでもあればプレイヤーに
 			//その死体のポインターと持ち運べるフラグを送る
 			if (result.HitNum > 0) {
-				player->SetCarryInfo(true,hit.model);
+				player->SetCarryInfo(true,obj);
 			}
 
 		}

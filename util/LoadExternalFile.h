@@ -23,7 +23,7 @@ public:
 	}
 
 	//“Ç‚İ‚İ
-	void LoadFile();
+	void LoadFile(bool isLood);
 
 	/// <summary>
 	/// ƒvƒŒƒCƒ„[‚ÉŠÖ‚·‚éî•ñ‚ğæ“¾‚·‚é

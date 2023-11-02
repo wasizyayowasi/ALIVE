@@ -60,7 +60,6 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos)
 	cameraTarget_.z = (cameraTarget_.z * 0.95f) + (playerPos.z * 0.05f);
 
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
-
 }
 
 //定点カメラの更新
@@ -104,16 +103,19 @@ void Camera::FixedPointCamera(VECTOR playerPos)
 //カメラの注視点を逸らす
 void Camera::ChangeOfFocus(const InputState& input)
 {
-	if (input.IsPressed(InputType::upArrow)) {
+	
+	GetJoypadDirectInputState(DX_INPUT_PAD1, &input_);
+
+	if (input_.Ry < 0 || input.IsPressed(InputType::upArrow)) {
 		cameraTarget_.y += add_focus;
 	}
-	else if (input.IsPressed(InputType::downArrow)) {
+	else if (input_.Ry > 0 || input.IsPressed(InputType::downArrow)) {
 		cameraTarget_.y -= add_focus;
 	}
-	else if (input.IsPressed(InputType::leftArrow)) {
+	else if (input_.Rx < 0 || input.IsPressed(InputType::leftArrow)) {
 		cameraTarget_.x -= add_focus;
 	} 
-	else if (input.IsPressed(InputType::rightArrow)) {
+	else if (input_.Rx > 0 || input.IsPressed(InputType::rightArrow)) {
 		cameraTarget_.x += add_focus;
 	}
 }

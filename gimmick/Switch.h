@@ -36,14 +36,11 @@ private:
 	void OffAnim();
 private:
 
-	int time = 0;
-
 	bool isTransit_ = false;
 
 	VECTOR pos_ = {};
 
 	std::shared_ptr<Model> model_;
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
-
 };
 

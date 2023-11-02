@@ -9,8 +9,8 @@
 
 class InputState;
 class Model;
-class GimmickBase;
 class ObjectManager;
+class ObjectBase;
 
 struct JumpInfo {
 	float jumpVec;		//ジャンプベクトル
@@ -77,7 +77,7 @@ public:
 	/// <summary>
 	/// 持ち運ぶ事が出来るフラグと持ち運ぶモデルのポインタを受け取る
 	/// </summary>
-	void SetCarryInfo(bool isCarry, std::shared_ptr<Model> model);
+	void SetCarryInfo(bool isCarry, std::shared_ptr<ObjectBase> model);
 
 	/// <summary>
 	/// プレイヤーのステータスを取得する
@@ -87,7 +87,7 @@ public:
 	/// <summary>
 	/// 持ち運ぶ死体のポインターを取得する
 	/// </summary>
-	std::shared_ptr<Model> GetDeadPersonModelPointer() {return deadPersonModelPointer_;}
+	std::shared_ptr<ObjectBase> GetDeadPersonModelPointer() {return deadPersonModelPointer_;}
 	
 private:
 	//通常更新
@@ -193,7 +193,7 @@ private:
 
 	VECTOR deathPos_ = { 0.0f,0.0f,0.0f };						//死体のポジション
 
-	std::shared_ptr<Model> deadPersonModelPointer_;				//持ち運ぶ死体のモデルポインタ
+	std::shared_ptr<ObjectBase> deadPersonModelPointer_;				//持ち運ぶ死体のモデルポインタ
 	std::shared_ptr<Model> player_;								//モデルクラスのポインタ
 
 	std::unordered_map<AnimType, int> animType_;				

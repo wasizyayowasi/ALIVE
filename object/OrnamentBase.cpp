@@ -15,6 +15,10 @@ OrnamentBase::~OrnamentBase()
 {
 }
 
+void OrnamentBase::temp(char aiu)
+{
+}
+
 void OrnamentBase::Update(Player& player)
 {
 }

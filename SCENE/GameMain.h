@@ -9,9 +9,10 @@ class Camera;
 class Player;
 class Broom;
 class DepthOfField;
-class Model;
 class CheckCollisionModel;
 class ObjectManager;
+
+class ManualCrank;
 
 class GameMain : public SceneBase
 {
@@ -60,6 +61,8 @@ private:
 	std::shared_ptr<DepthOfField> depthOfField_;
 	std::shared_ptr<ObjectManager> objManager_;
 	
+	std::shared_ptr<ManualCrank> crank_;
+
 	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
 
 	void (GameMain::* updateFunc_)(const InputState& input);		//メンバ関数ポインタ

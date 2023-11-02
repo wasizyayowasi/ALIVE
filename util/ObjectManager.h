@@ -51,6 +51,16 @@ public:
 	/// <returns>特定のモデルポインタリスト</returns>
 	std::list<std::shared_ptr<Model>> GetSpecificModel(ObjectType type);
 
+	/// <summary>
+	/// 特定のオブジェクトベースポインタを取得する
+	/// </summary>
+	/// <param name="type">取得したオブジェクトタイプ</param>
+	/// <returns>特定のオブジェクトベースポインタ</returns>
+	std::list<std::shared_ptr<ObjectBase>> GetSpecificObject(ObjectType type);
+
+	//衝突判定を行うモデルを追加する
+	void AddCheckCollModel(std::shared_ptr<Model> model);
+
 private:
 	//キャラクター生成機
 	void CharacterGenerator(ObjectType objType, LoadObjectInfo objInfo);
@@ -66,10 +76,12 @@ private:
 
 	int playerHandle_ = -1;
 	int fieldHandle_ = -1;				//仮フィールドのモデルハンドル
-	int boxHandle_ = -1;				//仮の箱オブジェクト用ハンドル
+	//int boxHandle_ = -1;				//仮の箱オブジェクト用ハンドル
 	int switchHandle_ = -1;
 	int steelyardHandle_ = -1;
 	int transObjHandle_ = -1;
+
+	std::list<std::shared_ptr<Model>> checkCollList_;
 
 	std::unordered_map<ObjectType, std::list<std::shared_ptr<ObjectBase>>> objects_;			//オブジェクトをobjectTypeをキーにlistでもつ
 };

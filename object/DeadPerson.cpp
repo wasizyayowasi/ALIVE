@@ -29,7 +29,7 @@ DeadPerson::DeadPerson(const char* const filename, LoadObjectInfo objInfo, int a
 
 }
 
-DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : CharacterBase(handle,objInfo),updateFunc_(&DeadPerson::NormalUpdate)
+DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : CharacterBase(handle,objInfo)
 {
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
@@ -57,26 +57,17 @@ DeadPerson::~DeadPerson()
 
 void DeadPerson::Update(Player& player)
 {
-	(this->*updateFunc_)(player);
+	HitColl(player);
+
+	MV1CollResultPolyDimTerminate(hitDim_);
+
+	pos_ = model_->GetPos();
 }
 
 void DeadPerson::Draw()
 {
 	model_->Draw();
-	DrawSphere3D(model_->GetPos(), 32, 32, 0xff0000, 0xff0000, true);
-	DrawFormatString(0, 112, 0x448844, "%.2f , %.2f , %.2f", model_->GetPos().x, model_->GetPos().y, model_->GetPos().z);
-}
-
-void DeadPerson::NormalUpdate(Player& player)
-{
-	HitColl(player);
-
-	MV1CollResultPolyDimTerminate(hitDim_);
-}
-
-void DeadPerson::DuringTransportUpdate(Player& player)
-{
-	model_->SetPos(player.GetStatus().pos);
+	DrawSphere3D(pos_, 32, 32, 0xff0000, 0xff0000, true);
 }
 
 void DeadPerson::HitColl(Player& player)

@@ -13,47 +13,47 @@ using namespace std;
 InputState::InputState()
 {
 	//ポーズ
-	defaultMapTable_[InputType::pause] = { {InputCategory::keybd,KEY_INPUT_TAB},
-										 {InputCategory::pad,PAD_INPUT_8} };
+	defaultMapTable_[InputType::pause] =		{ {InputCategory::keybd,KEY_INPUT_TAB},
+												{InputCategory::pad,PAD_INPUT_8} };
 	//上
-	defaultMapTable_[InputType::up] = { {InputCategory::keybd,KEY_INPUT_W},
-									  {InputCategory::pad,PAD_INPUT_UP} };
+	defaultMapTable_[InputType::up] =			{ {InputCategory::keybd,KEY_INPUT_W},
+												{InputCategory::pad,PAD_INPUT_UP} };
 	//下
-	defaultMapTable_[InputType::down] = { {InputCategory::keybd,KEY_INPUT_S},
-										{InputCategory::pad,PAD_INPUT_DOWN} };
+	defaultMapTable_[InputType::down] =			{ {InputCategory::keybd,KEY_INPUT_S},
+												{InputCategory::pad,PAD_INPUT_DOWN} };
 	//左
-	defaultMapTable_[InputType::left] = { {InputCategory::keybd,KEY_INPUT_A},
-										{InputCategory::pad,PAD_INPUT_LEFT} };
+	defaultMapTable_[InputType::left] =			{ {InputCategory::keybd,KEY_INPUT_A},
+												{InputCategory::pad,PAD_INPUT_LEFT} };
 	//右
-	defaultMapTable_[InputType::right] = { {InputCategory::keybd,KEY_INPUT_D},
-									  {InputCategory::pad,PAD_INPUT_RIGHT} };
+	defaultMapTable_[InputType::right] =		{ {InputCategory::keybd,KEY_INPUT_D},
+												{InputCategory::pad,PAD_INPUT_RIGHT} };
 	//上矢印
-	defaultMapTable_[InputType::upArrow] = { {InputCategory::keybd,KEY_INPUT_UP},
-									  {InputCategory::pad,PAD_INPUT_UP} };
+	defaultMapTable_[InputType::upArrow] =		{ {InputCategory::keybd,KEY_INPUT_UP},
+												/*{InputCategory::pad,PAD_INPUT_UP}*/ };
 	//下矢印
-	defaultMapTable_[InputType::downArrow] = { {InputCategory::keybd,KEY_INPUT_DOWN},
-										{InputCategory::pad,PAD_INPUT_DOWN} };
+	defaultMapTable_[InputType::downArrow] =	{ {InputCategory::keybd,KEY_INPUT_DOWN},
+												/*{InputCategory::pad,PAD_INPUT_DOWN}*/ };
 	//左矢印
-	defaultMapTable_[InputType::leftArrow] = { {InputCategory::keybd,KEY_INPUT_LEFT},
-										{InputCategory::pad,PAD_INPUT_LEFT} };
+	defaultMapTable_[InputType::leftArrow] =	{ {InputCategory::keybd,KEY_INPUT_LEFT},
+												/*{InputCategory::pad,PAD_INPUT_LEFT}*/ };
 	//右矢印
-	defaultMapTable_[InputType::rightArrow] = { {InputCategory::keybd,KEY_INPUT_RIGHT},
-									  {InputCategory::pad,PAD_INPUT_RIGHT} };
+	defaultMapTable_[InputType::rightArrow] =	{ {InputCategory::keybd,KEY_INPUT_RIGHT},
+												 /*{InputCategory::pad,PAD_INPUT_RIGHT}*/ };
 	//Space
-	defaultMapTable_[InputType::space] = { {InputCategory::keybd,KEY_INPUT_SPACE},
-									  {InputCategory::pad,PAD_INPUT_1} };
+	defaultMapTable_[InputType::space] =		{ {InputCategory::keybd,KEY_INPUT_SPACE},
+												{InputCategory::pad,PAD_INPUT_1} };
 	//死亡
-	defaultMapTable_[InputType::death] = { {InputCategory::keybd,KEY_INPUT_Z},
-									  {InputCategory::pad,PAD_INPUT_2} };
+	defaultMapTable_[InputType::death] =		{ {InputCategory::keybd,KEY_INPUT_Z},
+												{InputCategory::pad,PAD_INPUT_6} };
 	//shift
-	defaultMapTable_[InputType::shift] = { {InputCategory::keybd,KEY_INPUT_LSHIFT},
-									  {InputCategory::pad,PAD_INPUT_3} };
+	defaultMapTable_[InputType::shift] =		{ {InputCategory::keybd,KEY_INPUT_LSHIFT},
+												{InputCategory::pad,PAD_INPUT_3} };
 	//ctrl
-	defaultMapTable_[InputType::ctrl] = { {InputCategory::keybd,KEY_INPUT_LCONTROL},
-									  {InputCategory::pad,PAD_INPUT_4} };
+	defaultMapTable_[InputType::ctrl] =			{ {InputCategory::keybd,KEY_INPUT_LCONTROL},
+												{InputCategory::pad,PAD_INPUT_4} };
 	//ctrl
-	defaultMapTable_[InputType::carry] = { {InputCategory::keybd,KEY_INPUT_F},
-									  {InputCategory::pad,PAD_INPUT_4} };
+	defaultMapTable_[InputType::carry] =		{ {InputCategory::keybd,KEY_INPUT_F},
+												{InputCategory::pad,PAD_INPUT_2} };
 
 	inputMapTable_ = defaultMapTable_;
 
@@ -111,6 +111,7 @@ void InputState::Update()
 			//この中身は、keybd,KEY_INPUT_RETURNなどのセット(InputInfo)が入ってる
 			//keymap.secondには、この入力情報セットInputInfoが入っている。
 			//keymap.firstには、対応するゲーム入力名の"InputType"などが入っている
+
 			if (input.cat == InputCategory::keybd) {
 				currentInput_[static_cast<int>(keymap.first)] = keystate[input.id];
 			}

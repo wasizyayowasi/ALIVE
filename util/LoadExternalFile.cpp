@@ -12,7 +12,7 @@ using namespace std;
 
 LoadExternalFile::LoadExternalFile()
 {
-	LoadFile();
+	LoadFile(true);
 }
 
 VECTOR LoadExternalFile::DegreesToRadians(VECTOR rot)
@@ -29,14 +29,17 @@ LoadExternalFile::~LoadExternalFile()
 	RewritePlayerInfo();
 }
 
-void LoadExternalFile::LoadFile()
+void LoadExternalFile::LoadFile(bool isLood)
 {
 	if (!loadObjInfo_.empty()) {
 		loadObjInfo_.clear();
 	}
 
+	if (isLood) {
+		LoadSaveDataInfo("saveData");
+	}
+
 	LoadPlayerInfo("player");
-	LoadSaveDataInfo("saveData");
 	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
 	LoadObjectData("data/objData/gimmick.pos",loadGimmickInfo_);
 }

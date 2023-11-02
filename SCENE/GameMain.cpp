@@ -5,6 +5,7 @@
 #include "../gimmick/GimmickBase.h"
 #include "../gimmick/Switch.h"
 #include "../gimmick/Steelyard.h"
+#include "../gimmick/ManualCrank.h"
 
 #include "../object/Player.h"
 #include "../object/cube.h"
@@ -51,6 +52,8 @@ void GameMain::Init()
 
 	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
 	objManager_ = std::make_shared<ObjectManager>();
+
+	crank_ = std::make_shared<ManualCrank>();
 
 	//オブジェクトを生成
 	ObjectGenerater();
@@ -110,6 +113,10 @@ void GameMain::Draw()
 
 	//プレイヤーの描画
 	player_->Draw();
+
+
+	crank_->Draw();
+
 
 	//broom_->graphFilterUpdate();
 	//broom_->draw();
@@ -193,6 +200,10 @@ void GameMain::normalUpdate(const InputState& input)
 	
 	//フィルター処理を行わない用にする
 	isFilterOn_ = false;
+
+
+	crank_->Update();
+
 
 	//プレイヤーの更新
 	player_->Update(input, objManager_);

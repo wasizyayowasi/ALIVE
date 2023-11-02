@@ -43,3 +43,7 @@ void ObjectBase::Draw()
 void ObjectBase::HitColl(std::shared_ptr<ObjectBase> pointer)
 {
 }
+
+void ObjectBase::temp(int a)
+{
+}

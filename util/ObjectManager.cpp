@@ -14,7 +14,6 @@ namespace {
 
 	const char* const temp_fieldpath = "data/model/tempFiled4.mv1";
 	const char* const temp_stairs = "data/model/stairs.mv1";
-	const char* const box_filename = "data/model/box.mv1";
 	const char* const bigPillar_filename = "data/level0_model/bigPillar.mv1";
 	const char* const switch_filename = "data/model/switch.mv1";
 	const char* const steelyard_filename = "data/model/steelyard.mv1";
@@ -25,7 +24,7 @@ ObjectManager::ObjectManager()
 {
 	playerHandle_ = MV1LoadModel(player_Filename);
 	fieldHandle_ = MV1LoadModel(temp_fieldpath);
-	boxHandle_ = MV1LoadModel(box_filename);
+	//boxHandle_ = MV1LoadModel(box_filename);
 	switchHandle_ = MV1LoadModel(switch_filename);
 	steelyardHandle_ = MV1LoadModel(steelyard_filename);
 	transObjHandle_ = MV1LoadModel(transparent_obj_filename);
@@ -35,7 +34,7 @@ ObjectManager::~ObjectManager()
 {
 	MV1DeleteModel(playerHandle_);
 	MV1DeleteModel(fieldHandle_);
-	MV1DeleteModel(boxHandle_);
+	//MV1DeleteModel(boxHandle_);
 	MV1DeleteModel(switchHandle_);
 	MV1DeleteModel(steelyardHandle_);
 	MV1DeleteModel(transObjHandle_);
@@ -120,7 +119,6 @@ void ObjectManager::Update(Player& player)
 			objSecond->Update(player);
 		}
 	}
-
 }
 
 //描画
@@ -136,17 +134,17 @@ void ObjectManager::Draw()
 std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
 {
 
-	std::list<std::shared_ptr<Model>> checkCollList;
+	checkCollList_.clear();
 
 	for (auto& obj : objects_) {
 		for (auto& model : obj.second) {
 			if (model->IsCollCheck()) {
-				checkCollList.push_back(model->GetModelPointer());
+				checkCollList_.push_back(model->GetModelPointer());
 			}
 		}
 	}
 
-	return checkCollList;
+	return checkCollList_;
 }
 
 std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(ObjectType type)
@@ -171,6 +169,23 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(ObjectType typ
 
 	//リストを返す
 	return specificList;
+}
+
+std::list<std::shared_ptr<ObjectBase>> ObjectManager::GetSpecificObject(ObjectType type)
+{
+
+	std::list<std::shared_ptr<ObjectBase>> obj;
+
+	if (objects_.count(type) > 0) {
+		obj = objects_[type];
+	}
+
+	return obj;
+}
+
+void ObjectManager::AddCheckCollModel(std::shared_ptr<Model> model)
+{
+	checkCollList_.push_back(model);
 }
 
 //キャラクター生成機
@@ -213,7 +228,7 @@ void ObjectManager::CarryObjectGenerator(ObjectType objType, LoadObjectInfo objI
 {
 	switch (objType) {
 	case ObjectType::carry:
-		objects_[objType].push_front(std::make_shared <CarryObjectBase>(boxHandle_, objInfo));
+		//objects_[objType].push_front(std::make_shared <CarryObjectBase>(boxHandle_, objInfo));
 		break;
 	}
 }

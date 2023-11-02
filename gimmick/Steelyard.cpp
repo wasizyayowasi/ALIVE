@@ -42,14 +42,14 @@ void Steelyard::Update(Player& player)
 	PriorityState(hitStateListLeft_, priorityStateLeft_);
 	PriorityState(hitStateListRight_, priorityStateRight_);
 
-	if (priorityStateLeft_ == HitState::bottom && priorityStateRight_ == HitState::noHit) {
+	bool isNoHitLeft = priorityStateLeft_ == HitState::noHit;
+	bool isNoHitRight = priorityStateRight_ == HitState::noHit;
+
+	if (priorityStateLeft_ == HitState::bottom && isNoHitRight) {
 		moveState_ = HitState::bottom;
 	}
-	else if (priorityStateLeft_ == HitState::noHit && priorityStateRight_ == HitState::bottom) {
+	else if (isNoHitLeft && priorityStateRight_ == HitState::bottom) {
 		moveState_ = HitState::top;
-	}
-	else if (priorityStateLeft_ != priorityStateRight_) {
-		moveState_ = HitState::noHit;
 	}
 
 	//ÉtÉåÅ[ÉÄÇìÆÇ©Ç∑
@@ -59,8 +59,6 @@ void Steelyard::Update(Player& player)
 
 	hitStateListLeft_.clear();
 	hitStateListRight_.clear();
-
-	//isStart_ = false;
 }
 
 void Steelyard::Draw()

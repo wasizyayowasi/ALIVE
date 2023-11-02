@@ -7,6 +7,10 @@ public:
 	OrnamentBase(int handle, LoadObjectInfo objInfo);
 	virtual ~OrnamentBase();
 
+	using ObjectBase::temp;
+
+	void temp(char aiu);
+
 	//XV
 	virtual void Update(Player& player)override;
 	//•`‰æ

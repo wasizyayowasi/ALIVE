@@ -11,19 +11,20 @@ public:
 	DeadPerson(int handle, LoadObjectInfo objInfo, int animNo);
 	virtual ~DeadPerson();
 
+	//çXêV
 	void Update(Player& player)override;
+	//ï`âÊ
 	void Draw();
 
-	void NormalUpdate(Player& player);
-	void DuringTransportUpdate(Player& player);
+	using ObjectBase::Draw;
 
 private:
 
 	void HitColl(Player& player);
 
-	MV1_COLL_RESULT_POLY_DIM hitDim_;
+private:
 
-	void(DeadPerson::* updateFunc_)(Player& player);
+	MV1_COLL_RESULT_POLY_DIM hitDim_ = {};
 
 };
 
