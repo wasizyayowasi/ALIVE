@@ -207,7 +207,7 @@ void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerState.height, 0)), VAdd(nowPos, VGet(0.0f, -10.0f, 0.0f)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
 				}
 				else {
-					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerState.height, 0)), VAdd(nowPos, VGet(0.0f, -playerState.height, 0.0f)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
+					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerState.height, 0)), nowPos, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
 				}
 				if (hitLineResult.HitFlag == false) {
 					continue;
@@ -225,11 +225,11 @@ void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 				nowPos.y = maxY;
 				jumpVec = 0.0f;
 				if (isJump) {
-					isJump = false;
+  					isJump = false;
 				}
 			}
 			else {
-				isJump = true;
+ 				isJump = true;
 			}
 		}
 	}

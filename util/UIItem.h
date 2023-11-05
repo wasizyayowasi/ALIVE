@@ -8,11 +8,35 @@ public:
 	UIItem();
 	virtual ~UIItem();
 
-	void draw(float scale, int alpha);
+	/// <summary>
+	/// サイズ調整ありのUI描画
+	/// </summary>
+	/// <param name="scale">サイズ</param>
+	/// <param name="alpha">アルファ値</param>
+	void Draw(float scale, int alpha);
 
-	void createUIGraphSetUp(float centerPosX, float centerPosY, int width, int height, const char* str, int fontHandle);
+	/// <summary>
+	/// サイズ固定のUI描画
+	/// </summary>
+	/// <param name="alpha">アルファ値</param>
+	void Draw(int alpha);
 
-	void createUIGraph(int fontHandle);
+	/// <summary>
+	/// UI画像を作成するための位置情報等を設定する
+	/// </summary>
+	/// <param name="centerPosX">ポジションのX</param>
+	/// <param name="centerPosY">ポジションのY</param>
+	/// <param name="width"></param>
+	/// <param name="height"></param>
+	/// <param name="str">文字列</param>
+	/// <param name="fontHandle">フォントハンドル</param>
+	void CreateUIGraphSetUp(float centerPosX, float centerPosY, int width, int height, const char* str, int fontHandle);
+
+	/// <summary>
+	/// UI画像の作成
+	/// </summary>
+	/// <param name="fontHandle">フォントハンドル</param>
+	void CreateUIGraph(int fontHandle);
 
 private:
 	

@@ -99,6 +99,9 @@ void Player::Update(const InputState& input, std::shared_ptr<ObjectManager> objM
 void Player::Draw()
 {
 	player_->Draw();
+
+	DrawFormatString(0, 64, 0x448844, "%.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
+
 }
 
 void Player::SetPos(VECTOR pos)
@@ -139,6 +142,14 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 	ChangeAnimIdle();
 	MovingUpdate(input,objManager);
 
+	//空中にいるとき
+		//重力をベクトルに足してポジションに足す
+	//if (status_.jump.isJump) {
+		status_.jump.jumpVec += gravity;
+		status_.pos.y += status_.jump.jumpVec;
+		player_->SetPos(status_.pos);
+	//}
+
 	//持ち運び中だったら
 	//以降の処理を行わない
 	if (status_.isTransit) {
@@ -163,7 +174,9 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 			return;
 		}*/
 		else {
-			PlayerJump(playerInfo_.jumpPower);
+			if (!status_.jump.isJump) {
+				PlayerJump(playerInfo_.jumpPower);
+			}
 			ChangeAnimNo(AnimType::jump, false, 20);
 			updateFunc_ = &Player::JumpUpdate;
 			return;
@@ -371,12 +384,10 @@ void Player::JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 			return;
 		}
 
-		//空中にいるとき
-		//重力をベクトルに足してポジションに足す
-		if (status_.jump.isJump) {
-			status_.jump.jumpVec += gravity;
-			status_.pos.y += status_.jump.jumpVec;
-		}
+		status_.jump.jumpVec += gravity;
+		status_.pos.y += status_.jump.jumpVec;
+		player_->SetPos(status_.pos);
+
 	}
 }
 
@@ -578,7 +589,7 @@ float Player::PlayerSpeed(bool pressedShift)
 
 //ジャンプの設定
 void Player::PlayerJump(float jumpPower) {
-	status_.jump.jumpVec += jumpPower;
+	status_.jump.jumpVec = jumpPower;
 	status_.pos.y += status_.jump.jumpVec;
 	status_.jump.isJump = true;
 }

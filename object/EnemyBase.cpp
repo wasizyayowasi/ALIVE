@@ -6,8 +6,8 @@
 
 
 namespace {
-	//追跡を止める範囲
-	constexpr float range_to_stop_tracking = 500.0f;
+	//プレイヤーから敵までの距離が下記だったら追跡を止める範囲
+	constexpr float range_to_stop_tracking = 50.0f;
 
 	//モデルの初期回転ベクトル
 	const VECTOR init_rot = { 0.0f,0.0f,-1.0f };
@@ -65,6 +65,12 @@ void EnemyBase::Update(Player& player)
 	model_->Update();
 
 	if (distance_ < range_to_stop_tracking + 20.0f) {
+		pushVec_ = VScale(VNorm(frontVec_), 10);
+	}
+
+	float pushVecSize = VSize(pushVec_);
+
+	if (pushVecSize > 7.0f) {
 		//ThrustAway(player);
 	}
 
@@ -140,9 +146,8 @@ bool EnemyBase::SearchForPlayer(VECTOR playerPos)
 //プレイヤーを突き飛ばす
 void EnemyBase::ThrustAway(Player& player)
 {
-	VECTOR push = VScale(VNorm(frontVec_),110);
-
-	VECTOR nockback = VAdd(player.GetStatus().pos, push);
+	pushVec_ = VScale(pushVec_, 0.96f);
+	VECTOR nockback = VAdd(player.GetStatus().pos,pushVec_);
 
 	player.SetPos(nockback);
 }

@@ -42,7 +42,7 @@ void KeyConfigScene::Init()
 	int nameNo = 0;
 	for (auto& table : inputState_.inputNameTable_) {
 		//メニューの追加
-		UI_->addMenu(namePosX, namePosY, 320, 100, table.second.c_str(), fontHandleSize16_);
+		UI_->AddMenu(namePosX, namePosY, 320, 100, table.second.c_str(), fontHandleSize16_);
 
 		//ポジション調整
 		namePosY += graph_chip_size + graph_gap_size;
@@ -57,8 +57,8 @@ void KeyConfigScene::Init()
 	}
 
 	//メニューの追加
-	UI_->addMenu(Game::screen_width / 2, Game::screen_height / 5 * 4, 320, 100, "変更", fontHandleSize32_);
-	UI_->addMenu(Game::screen_width / 2, Game::screen_height / 5 * 4 + 32, 320, 100, "キャンセル", fontHandleSize32_);
+	UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 5 * 4, 320, 100, "変更", fontHandleSize32_);
+	UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 5 * 4 + 32, 320, 100, "キャンセル", fontHandleSize32_);
 
 	//スクリーンサイズのハンドルを作成
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
@@ -110,7 +110,7 @@ void KeyConfigScene::KeyStateDraw()
 	ClearDrawScreen();
 
 	//キーの役割を描画する
-	UI_->draw(selectNum_);
+	UI_->Draw(selectNum_);
 
 	//キーに対応する画像を描画する
 	KeyGraphDraw();

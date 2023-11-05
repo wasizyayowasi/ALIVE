@@ -10,14 +10,21 @@ UIItem::~UIItem()
 {
 }
 
-void UIItem::draw(float scale,int alpha)
+void UIItem::Draw(float scale,int alpha)
 {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 	DrawRotaGraph(centerPosX_, centerPosY_, scale, 0.0f, makeScreenHandle_, true, false);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void UIItem::createUIGraphSetUp(float centerPosX, float centerPosY, int width, int height, const char* str, int fontHandle)
+void UIItem::Draw(int alpha)
+{
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+	DrawRotaGraph(centerPosX_, centerPosY_, 1.0f, 0.0f, makeScreenHandle_, true, false);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void UIItem::CreateUIGraphSetUp(float centerPosX, float centerPosY, int width, int height, const char* str, int fontHandle)
 {
 	makeScreenWidth_ = width;
 	makeScreenHeight_ = height;
@@ -27,11 +34,11 @@ void UIItem::createUIGraphSetUp(float centerPosX, float centerPosY, int width, i
 	UIString = str;
 
 	makeScreenHandle_ = MakeScreen(makeScreenWidth_, makeScreenHeight_, true);
-	createUIGraph(fontHandle);
+	CreateUIGraph(fontHandle);
 
 }
 
-void UIItem::createUIGraph(int fontHandle)
+void UIItem::CreateUIGraph(int fontHandle)
 {
 	assert(fontHandle != -1);
 

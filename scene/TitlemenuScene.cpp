@@ -38,7 +38,7 @@ void TitlemenuScene::Init()
 	int font = FontsManager::getInstance().GetFontHandle("ピグモ 0042");
 	int y = 120;
 	for (auto& menu : menuName_) {
-		UI_->addMenu(Game::screen_width / 2, Game::screen_height / 2 + y,320, 100, menu.c_str(), font);
+		UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 2 + y,320, 100, menu.c_str(), font);
 		y += 40;
 	}
 
@@ -71,7 +71,7 @@ void TitlemenuScene::Update(const InputState& input)
 void TitlemenuScene::Draw()
 {
 	//UIの描画
-	UI_->draw(selectNum_);
+	UI_->Draw(selectNum_);
 	//タイトルの描画
 	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3, 1.0f, 0.0f, titleHandle_, true);
 }

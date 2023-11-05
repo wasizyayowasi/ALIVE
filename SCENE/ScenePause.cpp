@@ -36,7 +36,7 @@ void ScenePause::Init()
 	int font = FontsManager::getInstance().GetFontHandle("ƒsƒOƒ‚ 0042");
 	int y = 50;
 	for (auto& menu : menuName_) {
-		UI_->addMenu(Game::screen_width / 2, Game::screen_height / 2 + y, 640, 200, menu.c_str(), font);
+		UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 2 + y, 640, 200, menu.c_str(), font);
 		y += 40;
 	}
 
@@ -99,6 +99,6 @@ void ScenePause::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND,0);
 
 	//UI‚Ì•`‰æ
-	UI_->draw(selectNum_);
+	UI_->Draw(selectNum_);
 
 }

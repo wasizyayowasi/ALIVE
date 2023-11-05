@@ -55,8 +55,8 @@ private:
 		unsigned short volumeBGM;
 	};
 
-	int volumeSE_ = 25;
-	int volumeBGM_ = 25;
+	int volumeSE_ = 0;
+	int volumeBGM_ = 0;
 
 	std::unordered_map<std::string, int> nameAndHandleTable_;
 	int Load2DSoundSEFile(const char* fileName);
