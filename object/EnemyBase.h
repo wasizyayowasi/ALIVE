@@ -17,7 +17,7 @@ public:
 	virtual ~EnemyBase() {};
 
 	//XV
-	void Update(Player& player) override;
+	void Update(Player& player, const InputState& input) override;
 	//•`‰æ
 	void Draw()override;
 

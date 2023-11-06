@@ -39,7 +39,7 @@ EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,
 	Aster_ = std::make_shared<Aster>();
 }
 
-void EnemyBase::Update(Player& player)
+void EnemyBase::Update(Player& player, const InputState& input)
 {
 	//プレイヤーの座標
 	VECTOR playerPos = player.GetStatus().pos;

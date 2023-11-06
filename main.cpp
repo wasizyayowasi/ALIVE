@@ -19,6 +19,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//windowモードの設定
 	ChangeWindowMode(Game::window_mode);
 
+	//画面モード変更時グラフィックシステムやグラフィックハンドルをリセットするか
+	//(true：する、false：しない)
+	SetChangeScreenModeGraphicsSystemResetFlag(false);
+
 	//window名設定
 	SetMainWindowText(Game::title_text);
 
@@ -47,7 +51,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	InputState input;
 	SceneManager manager;
 
-	//manager.changeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager)));
+//	manager.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager)));
+//	manager.PushBackScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager)));
 	manager.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager)));
 
 	while (ProcessMessage() == 0) {

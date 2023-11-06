@@ -8,6 +8,7 @@
 class ObjectBase;
 class Model;
 class Player;
+class InputState;
 
 class ObjectManager
 {
@@ -22,7 +23,7 @@ public:
 	/// <param name="baseType">どのbaseクラスをもとに生成するか</param>
 	/// <param name="objType">オブジェクトの種類</param>
 	/// <param name="objInfo">オブジェクトの配置データ等</param>
-	void ObjectGenerator(ObjectBaseType baseType,ObjectType objType,LoadObjectInfo objInfo);
+	void ObjectGenerator();
 
 	/// <summary>
 	/// 死体生成
@@ -33,7 +34,7 @@ public:
 	void DeadPersonGenerator(int handle, LoadObjectInfo objInfo,int animNo);
 
 	//更新
-	void Update(Player& player);
+	void Update(Player& player, const InputState& input);
 
 	//描画
 	void Draw();
@@ -43,6 +44,8 @@ public:
 	/// </summary>
 	/// <returns>衝突判定を行うモデルスマートポインタのリスト</returns>
 	std::list<std::shared_ptr<Model>> GetAllCheckCollModel();
+
+	void SortingObject(ObjectBaseType baseType, ObjectType objType, LoadObjectInfo objInfo);
 
 	/// <summary>
 	/// 特定のモデルポインタを取得する

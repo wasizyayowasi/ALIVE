@@ -19,7 +19,7 @@ void OrnamentBase::temp(char aiu)
 {
 }
 
-void OrnamentBase::Update(Player& player)
+void OrnamentBase::Update(Player& player, const InputState& input)
 {
 }
 

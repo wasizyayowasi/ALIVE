@@ -27,7 +27,7 @@ TransparentObject::~TransparentObject()
 {
 }
 
-void TransparentObject::Update(Player& player)
+void TransparentObject::Update(Player& player, const InputState& input)
 {
 	switch_->Update(player);
 

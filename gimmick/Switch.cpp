@@ -50,7 +50,7 @@ void Switch::Update(Player& player)
 void Switch::Draw()
 {
 	model_->Draw();
-	DrawFormatString(0, 48, 0x448844, "%.2f,%.2f,%.2f", pos_.x, pos_.y, pos_.z);
+//	DrawFormatString(0, 48, 0x448844, "%.2f,%.2f,%.2f", pos_.x, pos_.y, pos_.z);
 }
 
 //è’ìÀîªíË

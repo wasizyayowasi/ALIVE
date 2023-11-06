@@ -19,7 +19,7 @@ public:
 	Steelyard(int handle, LoadObjectInfo objInfo);
 	virtual ~Steelyard();
 
-	void Update(Player& player)override;
+	void Update(Player& player, const InputState& input)override;
 	void Draw();
 
 	//天秤モデルとプレイヤーの衝突判定を行う

@@ -12,7 +12,7 @@ public:
 	virtual ~GimmickBase();
 
 	//XV
-	virtual void Update(Player& player)override;
+	virtual void Update(Player& player, const InputState& input)override;
 	//•`‰æ
 	void Draw();
 

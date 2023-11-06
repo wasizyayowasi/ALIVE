@@ -100,7 +100,7 @@ void Player::Draw()
 {
 	player_->Draw();
 
-	DrawFormatString(0, 64, 0x448844, "%.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
+//	DrawFormatString(0, 64, 0x448844, "%.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
 
 }
 

@@ -2,17 +2,17 @@
 #include "../util/Model.h"
 #include "../object/Player.h"
 
-tempEnemy::tempEnemy(const char* const filename, LoadObjectInfo objInfo):EnemyBase(filename,objInfo)
+TempEnemy::TempEnemy(const char* const filename, LoadObjectInfo objInfo):EnemyBase(filename,objInfo)
 {
 	scale_ = objInfo.scale;
 }
 
-tempEnemy::tempEnemy(int handle, LoadObjectInfo objInfo) : EnemyBase(handle,objInfo)
+TempEnemy::TempEnemy(int handle, LoadObjectInfo objInfo) : EnemyBase(handle,objInfo)
 {
 	scale_ = objInfo.scale;
 }
 
-tempEnemy::~tempEnemy()
+TempEnemy::~TempEnemy()
 {
 }
 

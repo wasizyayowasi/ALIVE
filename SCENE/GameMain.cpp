@@ -100,8 +100,8 @@ void GameMain::Draw()
 	//カメラの初期化
 	//SetDrawScreenを行うとカメラの情報がリセットされるために
 	camera_->Init();
-	camera_->TrackingCameraUpdate(player_->GetStatus().pos);
-	//camera_->DebugCamera(player_->GetStatus().pos);
+//	camera_->TrackingCameraUpdate(player_->GetStatus().pos);
+	camera_->DebugCamera(player_->GetStatus().pos);
 
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
@@ -139,42 +139,11 @@ void GameMain::Draw()
 //オブジェクトの生成
 void GameMain::ObjectGenerater()
 {
-	//短縮化
+
 	auto& loadData = LoadExternalFile::GetInstance();
 
-	for (auto& objInfo : loadData.GetLoadObjectInfo()) {
-		//フィールドを作成
-		if (objInfo.first == "field") {
-			for (auto& objSecond : objInfo.second) {
-				objManager_->ObjectGenerator(ObjectBaseType::ornamentBase, ObjectType::field, objSecond);
-			}
-		}
-		//ギミックスイッチを作成
-		else if (objInfo.first == "trans") {
-			for (auto& objSecond : objInfo.second) {
-				objManager_->ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::trans, objSecond);
-			}
-		}
-		//ギミック天秤を作成
-		else if (objInfo.first == "steelyard") {
-			for (auto& objSecond : objInfo.second) {
-				objManager_->ObjectGenerator(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, objSecond);
-			}
-		}
-		//箱を作成
-		else if (objInfo.first == "box") {
-			for (auto& objSecond : objInfo.second) {
-				objManager_->ObjectGenerator(ObjectBaseType::carryBase, ObjectType::carry, objSecond);
-			}
-		}
-		//敵を作成
-		else if (objInfo.first == "player") {
-			for (auto& objSecond : objInfo.second) {
-				objManager_->ObjectGenerator(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
-			}
-		}
-	}
-
+	//ゲームオブジェクトの生成
+	objManager_->ObjectGenerator();
 	//カメラのインスタンス化
 	camera_ = make_shared<Camera>();
 	//プレイヤーのインスタンス化
@@ -202,14 +171,14 @@ void GameMain::normalUpdate(const InputState& input)
 	isFilterOn_ = false;
 
 
-	crank_->Update();
+	crank_->Update(input);
 
 
 	//プレイヤーの更新
-	player_->Update(input, objManager_);
+//	player_->Update(input, objManager_);
 
 	//オブジェクトの更新
-	objManager_->Update(*player_);
+	objManager_->Update(*player_,input);
 
 	//プレイヤーとその他オブジェクトとの衝突判定
 	checkCollisionModel_->CheckCollision(player_,objManager_);
@@ -231,7 +200,7 @@ void GameMain::normalUpdate(const InputState& input)
 	//ポーズシーンを開く
 	if (input.IsTriggered(InputType::pause)) {
 		isFilterOn_ = true;
-		manager_.PushScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
 }
 

@@ -17,11 +17,18 @@ void SceneManager::ChangeScene(std::shared_ptr<SceneBase> scene)
 	scenes_.front()->Init();
 }
 
-void SceneManager::PushScene(std::shared_ptr<SceneBase> scene)
+void SceneManager::PushFrontScene(std::shared_ptr<SceneBase> scene)
 {
 	//先頭に引数で得たシーンを追加する
 	scenes_.push_front(scene);
 	scenes_.front()->Init();
+}
+
+void SceneManager::PushBackScene(std::shared_ptr<SceneBase> scene)
+{
+	//後尾に引数で得たシーンを追加
+	scenes_.push_back(scene);
+	scenes_.back()->Init();
 }
 
 void SceneManager::SwapScene(std::shared_ptr<SceneBase> scene)

@@ -14,7 +14,7 @@ public:
 	virtual ~CharacterBase() {};
 
 	//XV
-	virtual void Update(Player& player) override;
+	virtual void Update(Player& player, const InputState& input) override;
 	//•`‰æ
 	virtual void Draw();
 

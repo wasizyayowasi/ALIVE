@@ -26,7 +26,7 @@ Steelyard::~Steelyard()
 {
 }
 
-void Steelyard::Update(Player& player)
+void Steelyard::Update(Player& player, const InputState& input)
 {
 	playerPos_ = player.GetStatus().pos;
 	playerHeight_ = player.GetStatus().height;

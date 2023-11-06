@@ -9,6 +9,7 @@
 #include "../util/game.h"
 #include "../util/FontsManager.h"
 #include "../util/UIItemManager.h"
+#include "../util/Util.h"
 
 #include <algorithm>
 
@@ -59,7 +60,6 @@ void ScenePause::Update(const InputState& input)
 		}
 	}
 	
-
 	if (input.IsTriggered(InputType::space)) {
 		 switch(selectNum_) {
 		//サウンドセッティングへの遷移

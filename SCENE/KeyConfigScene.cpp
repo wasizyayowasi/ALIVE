@@ -214,10 +214,20 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	//選択操作
 	{
 		if (inputState_.IsTriggered(InputType::up)) {
-			selectNum_ = ((selectNum_ - 1) + keyNum) % keyNum;
+			if (selectNum_ == (keyNum - 1) / 2) {
+				selectNum_ += keyNum / 2;
+			}
+			else {
+				selectNum_ = ((selectNum_ - 1) + keyNum) % keyNum;
+			}
 		}
 		if (inputState_.IsTriggered(InputType::down)) {
-			selectNum_ = (selectNum_ + 1)% keyNum;
+			if (selectNum_ + 1 == (keyNum - 1) / 2) {
+				selectNum_ += keyNum / 2;
+			}
+			else {
+				selectNum_ = (selectNum_ + 1) % keyNum;
+			}
 		}
 		if (inputState_.IsTriggered(InputType::left) || inputState_.IsTriggered(InputType::right)) {
 			selectNum_ = (selectNum_ + (keyNum / 2 - 1)) % (keyNum - 2);
@@ -228,7 +238,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	if (selectNum_ == inputState_.inputNameTable_.size()) {
 		if (inputState_.IsTriggered(InputType::space)) {
 			configInput.CommitChangedInputInfo();		//仮のキー情報を実際に参照しているキー情報に代入する
-			manager_.PushScene(std::shared_ptr<SceneBase>(std::make_shared<PopUpTextScene>(manager_)));		//シーンをポップアップテキストを描画するシーンに変更する
+			manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<PopUpTextScene>(manager_)));		//シーンをポップアップテキストを描画するシーンに変更する
 			return;
 		}
 	}

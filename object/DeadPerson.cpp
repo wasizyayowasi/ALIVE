@@ -55,7 +55,7 @@ DeadPerson::~DeadPerson()
 {
 }
 
-void DeadPerson::Update(Player& player)
+void DeadPerson::Update(Player& player, const InputState& input)
 {
 	HitColl(player);
 

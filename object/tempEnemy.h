@@ -1,12 +1,12 @@
 #pragma once
 #include "EnemyBase.h"
 
-class tempEnemy : public EnemyBase
+class TempEnemy : public EnemyBase
 {
 public:
-	tempEnemy(const char* const filename, LoadObjectInfo objInfo);
-	tempEnemy(int handle, LoadObjectInfo objInfo);
-	virtual ~tempEnemy();
+	TempEnemy(const char* const filename, LoadObjectInfo objInfo);
+	TempEnemy(int handle, LoadObjectInfo objInfo);
+	virtual ~TempEnemy();
 
 	//•`‰æ
 	//void Draw();

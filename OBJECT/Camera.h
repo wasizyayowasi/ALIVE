@@ -46,6 +46,7 @@ public:
 private:
 
 	int i = 0;
+
 	DINPUT_JOYSTATE input_;
 
 	float threshold;

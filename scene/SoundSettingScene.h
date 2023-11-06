@@ -30,7 +30,8 @@ private:
 
 	int BGMBarHandle_ = -1;
 	int SEBarHandle_ = -1;
-	int afterProcessingBarGraph_ = -1;
+	int afterProcessingBGMBarGraph_ = -1;
+	int afterProcessingSEBarGraph_ = -1;
 	int pictogramGraph_ = -1;
 
 	int volumeBGM_ = 0;

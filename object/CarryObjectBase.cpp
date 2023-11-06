@@ -14,7 +14,7 @@ CarryObjectBase::~CarryObjectBase()
 {
 }
 
-void CarryObjectBase::Update(Player& player)
+void CarryObjectBase::Update(Player& player, const InputState& input)
 {
 	
 }

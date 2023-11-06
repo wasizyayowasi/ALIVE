@@ -1,13 +1,16 @@
 #include "ObjectManager.h"
-#include "object/ObjectBase.h"
 
-#include "object/Player.h"
+#include "../object/ObjectBase.h"
+#include "../object/EnemyBase.h"
 #include "../object/DeadPerson.h"
-#include "object/tempEnemy.h"
-#include "object/OrnamentBase.h"
-#include "object/CarryObjectBase.h"
+#include "../object/tempEnemy.h"
+#include "../object/OrnamentBase.h"
+
 #include "../gimmick/TransparentObject.h"
-#include "gimmick/steelyard.h"
+#include "../gimmick/Steelyard.h"
+
+#include "InputState.h"
+#include "LoadExternalFile.h"
 
 namespace {
 	const char* const player_Filename = "data/player/player16.mv1";
@@ -40,40 +43,43 @@ ObjectManager::~ObjectManager()
 	MV1DeleteModel(transObjHandle_);
 }
 
-void ObjectManager::ObjectGenerator(ObjectBaseType baseType, ObjectType objType, LoadObjectInfo objInfo)
+void ObjectManager::ObjectGenerator()
 {
-	//objectBaseTypeを元にインスタンス化するクラスを決める
-	switch (baseType) {
 
-	//自我を持ったenemy以外のキャラクターを生成
-	case ObjectBaseType::characterBase:
-		CharacterGenerator(objType, objInfo);
-		break;
+	auto& loadData = LoadExternalFile::GetInstance();
 
-	//enemyを生成
-	case ObjectBaseType::enemyBase:
-		EnemyGenerator(objType, objInfo);
-		break;
-
-	//置物を生成
-	case ObjectBaseType::ornamentBase:
-		OrnamentGenerator(objType, objInfo);
-		break;
-	
-	//運べる置物生成
-	case ObjectBaseType::carryBase:
-		CarryObjectGenerator(objType, objInfo);
-		break;
-
-	//ギミックを生成
-	case ObjectBaseType::gimmickBase:
-		GimmickObjectGenerator(objType, objInfo);
-		break;
-	case ObjectBaseType::temp:
-		OrnamentGenerator(objType, objInfo);
-		break;
+	for (auto& objInfo : loadData.GetLoadObjectInfo()) {
+		//フィールドを作成
+		if (objInfo.first == "field") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::field, objSecond);
+			}
+		}
+		//ギミックスイッチを作成
+		else if (objInfo.first == "trans") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::gimmickBase, ObjectType::trans, objSecond);
+			}
+		}
+		//ギミック天秤を作成
+		else if (objInfo.first == "steelyard") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, objSecond);
+			}
+		}
+		//箱を作成
+		else if (objInfo.first == "box") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::carryBase, ObjectType::carry, objSecond);
+			}
+		}
+		//敵を作成
+		else if (objInfo.first == "player") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
+			}
+		}
 	}
-
 }
 
 void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int animNo)
@@ -87,7 +93,7 @@ void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int 
 }
 
 //更新
-void ObjectManager::Update(Player& player)
+void ObjectManager::Update(Player& player, const InputState& input)
 {
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
 	std::erase_if(objects_, [](const auto& obj) {return !obj.second.front()->IsEnabled(); });
@@ -116,7 +122,7 @@ void ObjectManager::Update(Player& player)
 	//更新
 	for (auto obj : objects_) {
 		for (auto objSecond : obj.second) {
-			objSecond->Update(player);
+			objSecond->Update(player,input);
 		}
 	}
 }
@@ -145,6 +151,38 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
 	}
 
 	return checkCollList_;
+}
+
+void ObjectManager::SortingObject(ObjectBaseType baseType, ObjectType objType, LoadObjectInfo objInfo)
+{
+	//objectBaseTypeを元にインスタンス化するクラスを決める
+	switch (baseType) {
+
+		//自我を持ったenemy以外のキャラクターを生成
+	case ObjectBaseType::characterBase:
+		CharacterGenerator(objType, objInfo);
+		break;
+
+		//enemyを生成
+	case ObjectBaseType::enemyBase:
+		EnemyGenerator(objType, objInfo);
+		break;
+
+		//置物を生成
+	case ObjectBaseType::ornamentBase:
+		OrnamentGenerator(objType, objInfo);
+		break;
+
+		//運べる置物生成
+	case ObjectBaseType::carryBase:
+		CarryObjectGenerator(objType, objInfo);
+		break;
+
+		//ギミックを生成
+	case ObjectBaseType::gimmickBase:
+		GimmickObjectGenerator(objType, objInfo);
+		break;
+	}
 }
 
 std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(ObjectType type)
@@ -208,7 +246,7 @@ void ObjectManager::EnemyGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
 	switch (objType) {
 	case ObjectType::enemy:
-		objects_[objType].push_front(std::make_shared<tempEnemy>(playerHandle_, objInfo));
+		objects_[objType].push_front(std::make_shared<TempEnemy>(playerHandle_, objInfo));
 		break;
 	}
 }

@@ -21,7 +21,7 @@ SceneTitle::~SceneTitle()
 
 void SceneTitle::Init()
 {
-	manager_.PushScene(std::shared_ptr<SceneBase>(std::make_shared<TitlemenuScene>(manager_)));
+	manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<TitlemenuScene>(manager_)));
 }
 
 void SceneTitle::End()
@@ -47,7 +47,7 @@ void SceneTitle::fadeInUpdate(const InputState& input)
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) {
-		manager_.PushScene(std::shared_ptr<SceneBase>(std::make_shared<TitlemenuScene>(manager_)));
+		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<TitlemenuScene>(manager_)));
 		updateFunc_ = &SceneTitle::normalUpdate;
 		fadeValue_ = 0;
 		return;

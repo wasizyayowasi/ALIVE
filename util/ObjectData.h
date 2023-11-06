@@ -8,7 +8,6 @@ enum class ObjectBaseType {
 	ornamentBase,			//置物ベース
 	carryBase,				//運べるオブジェクトベース
 	gimmickBase,			//装置ベース
-	temp,
 };
 
 enum class ObjectType{
@@ -24,7 +23,7 @@ enum class ObjectType{
 
 struct LoadObjectInfo {
 	std::string name;	//オブジェクトの名前
-	VECTOR pos;			//ポジション
-	VECTOR rot;			//回転率
-	VECTOR scale;		//拡縮率
+	VECTOR pos = {};	//ポジション
+	VECTOR rot = {};	//回転率
+	VECTOR scale = {};	//拡縮率
 };

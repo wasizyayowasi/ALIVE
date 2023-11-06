@@ -10,7 +10,7 @@ CharacterBase::CharacterBase(int handle, LoadObjectInfo objInfo) :ObjectBase(han
 {
 }
 
-void CharacterBase::Update(Player& player)
+void CharacterBase::Update(Player& player, const InputState& input)
 {
 }
 

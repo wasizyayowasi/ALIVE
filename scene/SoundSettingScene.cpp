@@ -32,7 +32,15 @@ void SoundSettingScene::Init()
 	SEBarHandle_ = LoadGraph("data/graph/bar.png");
 	pictogramGraph_ = LoadGraph("data/graph/pict.png");
 
+	//barHandleの画像サイズを取得
 	GetGraphSize(BGMBarHandle_, &barHandleWidth_, &barHandleHeight_);
+
+	afterProcessingBGMBarGraph_ = MakeGraph(barHandleWidth_, barHandleHeight_);
+	afterProcessingSEBarGraph_ = MakeGraph(barHandleWidth_, barHandleHeight_);
+
+	//barHandleの加工後画像を作成
+	GraphFilterRectBlt(BGMBarHandle_, afterProcessingBGMBarGraph_, 0, 0, barHandleWidth_, barHandleHeight_, 0, 0, DX_GRAPH_FILTER_HSB, 0, 0, 0, 0);
+	GraphFilterRectBlt(SEBarHandle_, afterProcessingSEBarGraph_, 0, 0, barHandleWidth_, barHandleHeight_, 0, 0, DX_GRAPH_FILTER_HSB, 0, 0, 0, 0);
 
 	barHandleWidth_ = barHandleWidth_ * 0.8f;
 	barHandleHeight_ = barHandleHeight_ * 0.8f;
@@ -105,8 +113,8 @@ void SoundSettingScene::Draw()
 	UIManager_->Draw(selectNum_);
 
 	//音量バー画像
-	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 2, 0.8f, 0.0f, BGMBarHandle_, true);
-	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3 * 2, 0.8f, 0.0f, SEBarHandle_, true);
+	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 2, 0.8f, 0.0f, afterProcessingBGMBarGraph_, true);
+	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3 * 2, 0.8f, 0.0f, afterProcessingSEBarGraph_, true);
 
 	time_++;
 
@@ -116,6 +124,8 @@ void SoundSettingScene::Draw()
 	//ピクトグラム
 	DrawRotaGraph(BGMPictogramPosX_, Game::screen_height / 2, 0.3f, BGMPictogramRot_, pictogramGraph_, true, BGMPictogramTransInversion_);
 	DrawRotaGraph(SEPictogramPosX_, Game::screen_height / 3 * 2, 0.3f, SEPictogramRot_, pictogramGraph_, true, SEPictogramTransInversion_);
+
+	DrawFormatString(Game::screen_width / 2, Game::screen_height / 2, 0x00ff00, "%d", selectNum_);
 
 	DrawFormatString(0, 16, 0x00ff00, "%.2f", volumeBGM_);
 	DrawFormatString(0, 32, 0x00ff00, "%.2f", volumeSE_);
@@ -138,8 +148,7 @@ void SoundSettingScene::BGMUpdate(const InputState& input)
 
 	int BGMPictPos = static_cast<int>((static_cast<float>(volumeBGM_) / 250.0f) * 10);
 
-	GraphFilterRectBlt(BGMBarHandle_, BGMBarHandle_, 0, 0, BGMPictPos * 73, barHandleHeight_, 0, 0, DX_GRAPH_FILTER_HSB, 0, 100, 100, 255);
-//	GraphFilterRectBlt(barHandle_, barHandle_, BGMPictPos * 73, 0, barHandleWidth_, barHandleHeight_, 0, 0, DX_GRAPH_FILTER_HSB, 0, 0, 0, 0);
+	GraphFilterRectBlt(BGMBarHandle_, afterProcessingBGMBarGraph_, 0, 0, BGMPictPos * 73, barHandleHeight_, 0, 0, DX_GRAPH_FILTER_HSB, 0, 100, 100, 255);
 
 	//音量の変更
 	SoundManager::GetInstance().SetBGMVolume(volumeBGM_);
@@ -157,7 +166,7 @@ void SoundSettingScene::SEUpdate(const InputState& input)
 	}
 
 	int SEPictPos = static_cast<int>((static_cast<float>(volumeSE_) / 250.0f) * 10);
-	GraphFilterRectBlt(SEBarHandle_, SEBarHandle_, 0, 0, SEPictPos * 73, barHandleHeight_, 0, 0, DX_GRAPH_FILTER_HSB, 0, 100, 100, 255);
+	GraphFilterRectBlt(SEBarHandle_, afterProcessingSEBarGraph_, 0, 0, SEPictPos * 73, barHandleHeight_, 0, 0, DX_GRAPH_FILTER_HSB, 0, 100, 100, 255);
 
 	//音量の変更
 	SoundManager::GetInstance().SetSEVolume(volumeSE_);
@@ -210,7 +219,7 @@ void SoundSettingScene::ChangeUpdateFunc()
 		updateFunc_ = &SoundSettingScene::SEUpdate;
 		break;
 	case 2:
-//		updateFunc_ = &SoundSettingScene::ChangeWindowUpdate;
+		updateFunc_ = &SoundSettingScene::ChangeWindowUpdate;
 		break;
 	}
 }
