@@ -221,3 +221,8 @@ bool EnemyBase::DistanceIsWithinRange()
 	return false;
 }
 
+std::shared_ptr<Model> EnemyBase::AddCollModel()
+{
+	return nullptr;
+}
+

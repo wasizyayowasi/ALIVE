@@ -104,6 +104,11 @@ bool Switch::CollResult()
 	return true;
 }
 
+std::shared_ptr<Model> Switch::GetModelPointer()
+{
+	return model_;
+}
+
 //スイッチオンアニメーション
 void Switch::OnAnim()
 {

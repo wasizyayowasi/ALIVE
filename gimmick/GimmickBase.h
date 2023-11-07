@@ -21,6 +21,9 @@ public:
 
 	std::shared_ptr<Model> GetModelInfo() { return model_; }
 
+	//Õ“Ë”»’è‚ğs‚¤ƒ‚ƒfƒ‹‚ğ’Ç‰Á‚·‚é
+	virtual std::shared_ptr<Model> AddCollModel();
+
 protected:
 
 	bool isTransit_ = false;

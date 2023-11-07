@@ -21,3 +21,8 @@ void CharacterBase::Draw()
 void CharacterBase::HitColl(std::shared_ptr<ObjectBase> pointer)
 {
 }
+
+std::shared_ptr<Model> CharacterBase::AddCollModel()
+{
+    return nullptr;
+}

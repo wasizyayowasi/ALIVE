@@ -37,3 +37,8 @@ void GimmickBase::HitColl(std::shared_ptr<ObjectBase> pointer)
 {
 	int a = 0;
 }
+
+std::shared_ptr<Model> GimmickBase::AddCollModel()
+{
+	return nullptr;
+}

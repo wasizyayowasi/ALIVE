@@ -61,6 +61,9 @@ public:
 	/// <returns></returns>
 	bool DistanceIsWithinRange();
 
+	//Õ“Ë”»’è‚ğs‚¤ƒ‚ƒfƒ‹‚ğ’Ç‰Á‚·‚é
+	virtual std::shared_ptr<Model> AddCollModel();
+
 private:
 
 	int time = 60;

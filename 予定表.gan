@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="ALIVE" company="" webLink="http://" view-date="2023-10-04" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.2.3247" locale="ja_JP">
+<?xml version="1.0" encoding="UTF-8"?><project name="ALIVE" company="" webLink="http://" view-date="2023-11-04" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.2.3247" locale="ja_JP">
     <description>
         <![CDATA[作品]]>
     </description>
@@ -107,7 +107,7 @@
                 </task>
             </task>
         </task>
-        <task id="0" name="プロトタイプ" color="#ffff00" meeting="false" start="2023-10-13" duration="15" complete="70" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
+        <task id="0" name="プロトタイプ" color="#ffff00" meeting="false" start="2023-10-13" duration="15" complete="70" thirdDate="2023-10-13" thirdDate-constraint="0" expand="false">
             <task id="13" name="Enemy" color="#ff00ff" meeting="false" start="2023-10-21" duration="7" complete="86" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true">
                 <task id="26" name="追跡" color="#ff00ff" meeting="false" start="2023-10-21" duration="7" complete="90" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
                 <task id="30" name="アニメーション" color="#ff00ff" meeting="false" start="2023-10-21" duration="7" complete="80" thirdDate="2023-10-13" thirdDate-constraint="0" priority="2" expand="true"/>
@@ -126,18 +126,14 @@
             </task>
             <task id="8" name="ギミック" color="#ffff00" meeting="false" start="2023-10-13" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
         </task>
-        <task id="1" name="アルファ" color="#669900" meeting="false" start="2023-11-01" duration="21" complete="11" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
-            <task id="11" name="サウンド" color="#8cb6ce" meeting="false" start="2023-11-01" duration="3" complete="30" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
-                <task id="33" name="SE" color="#ffff00" meeting="false" start="2023-11-01" duration="3" complete="30" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
-                <task id="34" name="BGM" color="#ffff00" meeting="false" start="2023-11-01" duration="1" complete="30" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
+        <task id="1" name="アルファ" color="#669900" meeting="false" start="2023-11-07" duration="17" complete="11" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
+            <task id="11" name="サウンド" color="#8cb6ce" meeting="false" start="2023-11-07" duration="3" complete="30" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
+                <task id="33" name="SE" color="#ffff00" meeting="false" start="2023-11-07" duration="3" complete="30" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
+                <task id="34" name="BGM" color="#ffff00" meeting="false" start="2023-11-07" duration="1" complete="30" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
             </task>
-            <task id="5" name="エンドシーン" color="#8cb6ce" meeting="false" start="2023-11-05" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
-                <task id="46" name="エンドカード" color="#ffff00" meeting="false" start="2023-11-05" duration="4" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
-            </task>
-            <task id="15" name="シェーダー" color="#66cc00" meeting="false" start="2023-11-05" duration="17" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
-            <task id="59" name="タイトルシーン" color="#8cb6ce" meeting="false" start="2023-11-05" duration="2" complete="25" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
-                <task id="60" name="タイトル" color="#669900" meeting="false" start="2023-11-05" duration="1" complete="50" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
-                <task id="62" name="背景" color="#669900" meeting="false" start="2023-11-06" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
+            <task id="59" name="タイトルシーン" color="#8cb6ce" meeting="false" start="2023-11-07" duration="1" complete="25" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
+                <task id="60" name="タイトル" color="#669900" meeting="false" start="2023-11-07" duration="1" complete="50" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
+                <task id="62" name="背景" color="#669900" meeting="false" start="2023-11-07" duration="1" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
             </task>
             <task id="55" name="サウンドセッティングシーン" color="#8cb6ce" meeting="false" start="2023-11-07" duration="2" complete="35" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
                 <task id="57" name="画像" color="#66cc00" meeting="false" start="2023-11-07" duration="1" complete="50" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
@@ -147,10 +143,11 @@
                 <task id="67" name="画像" color="#66cc00" meeting="false" start="2023-11-09" duration="1" complete="100" thirdDate="2023-10-08" thirdDate-constraint="0" expand="true"/>
                 <task id="68" name="デザイン" color="#66cc00" meeting="false" start="2023-11-10" duration="1" complete="20" thirdDate="2023-10-08" thirdDate-constraint="0" expand="true"/>
             </task>
+            <task id="71" name="ステージ" color="#8cb6ce" meeting="false" start="2023-11-11" duration="5" complete="0" thirdDate="2023-10-11" thirdDate-constraint="0" expand="false"/>
+            <task id="15" name="シェーダー" color="#66cc00" meeting="false" start="2023-11-07" duration="17" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
         </task>
-        <task id="71" name="ステージ" color="#8cb6ce" meeting="false" start="2023-11-11" duration="5" complete="0" thirdDate="2023-10-11" thirdDate-constraint="0" expand="true"/>
-        <task id="2" name="ベータ" meeting="false" start="2023-10-13" duration="1" complete="0" expand="true"/>
-        <task id="3" name="マスター" meeting="false" start="2023-10-13" duration="1" complete="0" expand="true"/>
+        <task id="2" name="ベータ" color="#8cb6ce" meeting="false" start="2023-11-22" duration="21" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
+        <task id="3" name="マスター" color="#8cb6ce" meeting="false" start="2023-12-13" duration="7" complete="0" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true"/>
         <task id="70" name="モデル制作" color="#8cb6ce" meeting="false" start="2023-10-12" duration="41" complete="0" thirdDate="2023-10-12" thirdDate-constraint="0" priority="4" expand="true"/>
     </tasks>
     <resources/>

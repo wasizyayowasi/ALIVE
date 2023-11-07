@@ -19,6 +19,7 @@ enum class ObjectType{
 	gimmickSwitch,
 	gimmickSteelyard,
 	trans,
+	elevator,
 };
 
 struct LoadObjectInfo {

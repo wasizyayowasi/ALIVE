@@ -7,8 +7,6 @@ public:
 	OrnamentBase(int handle, LoadObjectInfo objInfo);
 	virtual ~OrnamentBase();
 
-	using ObjectBase::temp;
-
 	void temp(char aiu);
 
 	//更新
@@ -18,6 +16,9 @@ public:
 
 	//衝突判定
 	virtual void HitColl(std::shared_ptr<ObjectBase> pointer);
+
+	//衝突判定を行うモデルを追加する
+	virtual std::shared_ptr<Model> AddCollModel();
 
 private:
 

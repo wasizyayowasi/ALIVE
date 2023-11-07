@@ -26,6 +26,7 @@ void CheckCollisionModel::CheckCollisionPersonalArea(std::shared_ptr<Player> pla
 	nowPos = VAdd(playerState.pos, playerState.moveVec);
 	//ƒ‚ƒfƒ‹‚Æ‹…‚Ì“–‚½‚è”»’è
 	
+	objManager->AddCheckCollModel();
 	for (auto& model : objManager->GetAllCheckCollModel()) {
 		if (player->GetStatus().isTransit) {
 			if (player->GetDeadPersonModelPointer()->GetModelPointer() == model) {
@@ -348,7 +349,7 @@ void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player,
 			if (result.HitNum > 0) {
 				player->SetCarryInfo(true,obj);
 			}
-
 		}
 	}
+
 }

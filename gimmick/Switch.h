@@ -27,6 +27,9 @@ public:
 	//衝突判定の結果の処理
 	bool CollResult();
 
+	//衝突判定を行うモデルを追加する
+	std::shared_ptr<Model> GetModelPointer();
+
 private:
 	//スイッチモデルとプレイヤーの衝突判定を行う
 	void HitCollPlayer(Player& player);

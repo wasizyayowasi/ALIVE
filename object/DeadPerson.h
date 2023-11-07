@@ -16,7 +16,8 @@ public:
 	//•`‰æ
 	void Draw();
 
-	using ObjectBase::Draw;
+	//Õ“Ë”»’è‚ğs‚¤ƒ‚ƒfƒ‹‚ğ’Ç‰Á‚·‚é
+	virtual std::shared_ptr<Model> AddCollModel();
 
 private:
 

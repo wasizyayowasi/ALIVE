@@ -21,6 +21,9 @@ public:
 	//天秤モデルと死体との衝突判定を行う
 	void HitColl(std::shared_ptr<ObjectBase> deadPerson);
 
+	//衝突判定を行うモデルを追加する
+	virtual std::shared_ptr<Model> AddCollModel();
+
 private:
 
 	float alphaValue_ = 0.0f;

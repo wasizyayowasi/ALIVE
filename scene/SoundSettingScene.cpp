@@ -15,6 +15,8 @@ namespace {
 	const char* const font_name = "ƒsƒOƒ‚ 0042";
 	//ˆÚ“®‹——£
 	constexpr float pictgram_move_distance = 58.4f;
+
+	constexpr float move_speed = 3.0f;
 }
 
 SoundSettingScene::SoundSettingScene(SceneManager& manager):SceneBase(manager),updateFunc_(&SoundSettingScene::BGMUpdate)
@@ -189,16 +191,16 @@ void SoundSettingScene::MovePictogram(int pictPos, float& pos, float& rot, bool&
 	float distance = targetPos - pos;
 
 	if (distance > 0) {
-		pos = (std::min)(pos + 1.0f, targetPos);
+		pos = (std::min)(pos + move_speed, targetPos);
 		inversion = false;
-		if (time_ % 8 == 0) {
+		if (time_ % 4 == 0) {
 			rot = -rot;
 		}
 	}
 	else if(distance < 0) {
-		pos = (std::max)(pos - 1.0f, targetPos);
+		pos = (std::max)(pos - move_speed, targetPos);
 		inversion = true;
-		if (time_ % 8 == 0) {
+		if (time_ % 4 == 0) {
 			rot = -rot;
 		}
 	}

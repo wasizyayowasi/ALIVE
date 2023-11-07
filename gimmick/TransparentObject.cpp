@@ -60,3 +60,8 @@ void TransparentObject::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 {
 	switch_->HitColl(deadPerson);
 }
+
+std::shared_ptr<Model> TransparentObject::AddCollModel()
+{
+	return switch_->GetModelPointer();
+}

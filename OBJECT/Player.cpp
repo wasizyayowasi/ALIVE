@@ -50,17 +50,8 @@ void Player::Init(LoadObjectInfo info)
 
 	auto loadExternalFile = LoadExternalFile::GetInstance();
 	//ÉvÉåÉCÉÑÅ[èÓïÒÇÃèâä˙âª
-	{
-		playerInfo_.jumpPower = loadExternalFile.GetPlayerInfo().jumpPower;
-		playerInfo_.runningJumpPower = loadExternalFile.GetPlayerInfo().runningJumpPower;
-		playerInfo_.walkSpeed = loadExternalFile.GetPlayerInfo().walkSpeed;
-		playerInfo_.runningSpeed = loadExternalFile.GetPlayerInfo().runningSpeed;
-		playerInfo_.rotSpeed = loadExternalFile.GetPlayerInfo().rotSpeed;
-		for (int i = 0; i < static_cast<int>(AnimType::max); i++) {
-			playerInfo_.animNo_[i] = loadExternalFile.GetPlayerInfo().animNo_[i];
-		}
-	}
-
+	playerInfo_ = loadExternalFile.GetPlayerInfo();
+	
 	for (int i = 0; i < static_cast<int>(AnimType::max); i++)
 	{
 		animType_[static_cast<AnimType>(i)] = playerInfo_.animNo_[i];

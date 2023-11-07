@@ -8,6 +8,7 @@
 
 #include "../gimmick/TransparentObject.h"
 #include "../gimmick/Steelyard.h"
+#include "../gimmick/Elevator.h"
 
 #include "InputState.h"
 #include "LoadExternalFile.h"
@@ -21,6 +22,7 @@ namespace {
 	const char* const switch_filename = "data/model/switch.mv1";
 	const char* const steelyard_filename = "data/model/steelyard.mv1";
 	const char* const transparent_obj_filename = "data/model/trans.mv1";
+	const char* const elevator_obj_filename = "data/model/elevator.mv1";
 }
 
 ObjectManager::ObjectManager()
@@ -31,6 +33,7 @@ ObjectManager::ObjectManager()
 	switchHandle_ = MV1LoadModel(switch_filename);
 	steelyardHandle_ = MV1LoadModel(steelyard_filename);
 	transObjHandle_ = MV1LoadModel(transparent_obj_filename);
+	elevatorHandle_ = MV1LoadModel(elevator_obj_filename);
 }
 
 ObjectManager::~ObjectManager()
@@ -41,6 +44,7 @@ ObjectManager::~ObjectManager()
 	MV1DeleteModel(switchHandle_);
 	MV1DeleteModel(steelyardHandle_);
 	MV1DeleteModel(transObjHandle_);
+	MV1DeleteModel(elevatorHandle_);
 }
 
 void ObjectManager::ObjectGenerator()
@@ -77,6 +81,11 @@ void ObjectManager::ObjectGenerator()
 		else if (objInfo.first == "player") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
+			}
+		}
+		else if (objInfo.first == "elevator") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::gimmickBase, ObjectType::elevator, objSecond);
 			}
 		}
 	}
@@ -139,8 +148,6 @@ void ObjectManager::Draw()
 
 std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
 {
-
-	checkCollList_.clear();
 
 	for (auto& obj : objects_) {
 		for (auto& model : obj.second) {
@@ -221,9 +228,18 @@ std::list<std::shared_ptr<ObjectBase>> ObjectManager::GetSpecificObject(ObjectTy
 	return obj;
 }
 
-void ObjectManager::AddCheckCollModel(std::shared_ptr<Model> model)
+void ObjectManager::AddCheckCollModel()
 {
-	checkCollList_.push_back(model);
+
+	checkCollList_.clear();
+
+	for (auto obj : objects_) {
+		for (auto objSecond : obj.second) {
+			if (objSecond->AddCollModel() != nullptr) {
+				checkCollList_.push_back(objSecond->AddCollModel());
+			}
+		}
+	}
 }
 
 //キャラクター生成機
@@ -279,5 +295,9 @@ void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo ob
 		break;
 	case ObjectType::gimmickSteelyard:
 		objects_[objType].push_front(std::make_shared<Steelyard>(steelyardHandle_, objInfo));
+		break;
+	case ObjectType::elevator:
+		objects_[objType].push_front(std::make_shared<Elevator>(elevatorHandle_, objInfo));
+		break;
 	}
 }

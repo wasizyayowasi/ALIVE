@@ -70,6 +70,11 @@ void DeadPerson::Draw()
 	DrawSphere3D(pos_, 32, 32, 0xff0000, 0xff0000, true);
 }
 
+std::shared_ptr<Model> DeadPerson::AddCollModel()
+{
+	return std::shared_ptr<Model>();
+}
+
 void DeadPerson::HitColl(Player& player)
 {
 	hitDim_ = MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), VAdd(player.GetStatus().pos, VGet(0.0f, 10.0f, 0.0f)), VAdd(player.GetStatus().pos, VGet(0.0f, 150.0f, 0.0f)), 20.0f);

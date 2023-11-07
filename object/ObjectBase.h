@@ -40,7 +40,8 @@ public:
 	//モデルのスマートポインタを取得する
 	std::shared_ptr<Model> GetModelPointer() { return model_; }
 
-	void temp(int a);
+	//衝突判定を行うモデルを追加する
+	virtual std::shared_ptr<Model> AddCollModel();
 
 protected:
 

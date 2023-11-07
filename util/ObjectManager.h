@@ -62,7 +62,7 @@ public:
 	std::list<std::shared_ptr<ObjectBase>> GetSpecificObject(ObjectType type);
 
 	//衝突判定を行うモデルを追加する
-	void AddCheckCollModel(std::shared_ptr<Model> model);
+	void AddCheckCollModel();
 
 private:
 	//キャラクター生成機
@@ -83,6 +83,7 @@ private:
 	int switchHandle_ = -1;
 	int steelyardHandle_ = -1;
 	int transObjHandle_ = -1;
+	int elevatorHandle_ = -1;
 
 	std::list<std::shared_ptr<Model>> checkCollList_;
 

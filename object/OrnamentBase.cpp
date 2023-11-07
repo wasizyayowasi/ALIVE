@@ -31,3 +31,8 @@ void OrnamentBase::Draw()
 void OrnamentBase::HitColl(std::shared_ptr<ObjectBase> pointer)
 {
 }
+
+std::shared_ptr<Model> OrnamentBase::AddCollModel()
+{
+	return nullptr;
+}
