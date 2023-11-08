@@ -138,7 +138,7 @@
     <ClCompile Include="UTIL\CheckCollisionModel.cpp">
       <Filter>ソース ファイル\util</Filter>
     </ClCompile>
-    <ClCompile Include="util\LoadExternalFile.cpp">
+    <ClCompile Include="util\ExternalFile.cpp">
       <Filter>ソース ファイル\util</Filter>
     </ClCompile>
     <ClCompile Include="UTIL\SoundManager.cpp">
@@ -251,7 +251,7 @@
     <ClInclude Include="UTIL\SoundManager.h">
       <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
-    <ClInclude Include="util\LoadExternalFile.h">
+    <ClInclude Include="util\ExternalFile.h">
       <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
     <ClInclude Include="util\FontsManager.h">

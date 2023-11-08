@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "../util/InputState.h"
 #include "../util/Model.h"
-#include "../util/LoadExternalFile.h"
+#include "../util/ExternalFile.h"
 #include "../util/SoundManager.h"
 #include "../util/ObjectManager.h"
 #include<algorithm>
@@ -48,7 +48,7 @@ Player::~Player()
 void Player::Init(LoadObjectInfo info)
 {
 
-	auto loadExternalFile = LoadExternalFile::GetInstance();
+	auto loadExternalFile = ExternalFile::GetInstance();
 	//プレイヤー情報の初期化
 	playerInfo_ = loadExternalFile.GetPlayerInfo();
 	
@@ -124,7 +124,7 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 	if (status_.isTransit) {
 		deadPersonModelPointer_->GetModelPointer()->SetAnimEndFrame(animType_[AnimType::dead]);
 		deadPersonModelPointer_->GetModelPointer()->SetRot(DegreesToRadians(status_.rot));
-		deadPersonModelPointer_->GetModelPointer()->SetPos(FramPosition2("hand.R_end"));
+		deadPersonModelPointer_->GetModelPointer()->SetPos(FramPosition("hand.R_end"));
 	}
 	else {
 		isCanBeCarried_ = false;
@@ -346,7 +346,7 @@ void Player::RotationUpdate()
 void Player::ClimUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	if (player_->IsAnimEnd()) {
-		status_.pos = FramPosition("mixamorig:LeftToeBase", "mixamorig:RightToeBase");
+		status_.pos = CenterFramPosition("mixamorig:LeftToeBase", "mixamorig:RightToeBase");
 		player_->SetPos(status_.pos);
 
 		status_.animNo = animType_[AnimType::stand];
@@ -540,7 +540,7 @@ void Player::DropOffObjectUpdate()
 	if ((isCarryWalking || isCarry) && isCanBeCarried_) {
 		isCanBeCarried_ = false;
 		deadPersonModelPointer_->SetIsTransit(false);
-		deadPersonModelPointer_->GetModelPointer()->SetPos(FramPosition("foot.L", "foot.R"));
+		deadPersonModelPointer_->GetModelPointer()->SetPos(CenterFramPosition("foot.L", "foot.R"));
 		deadPersonModelPointer_.reset();
 	}
 
@@ -586,7 +586,7 @@ void Player::PlayerJump(float jumpPower) {
 }
 
 //二つのフレーム座標の中心を取得する
-VECTOR Player::FramPosition(const char* const LeftFramename, const char* const RightFramename)
+VECTOR Player::CenterFramPosition(const char* const LeftFramename, const char* const RightFramename)
 {
 
 	VECTOR framePosition;
@@ -602,7 +602,7 @@ VECTOR Player::FramPosition(const char* const LeftFramename, const char* const R
 	return framePosition;
 }
 
-VECTOR Player::FramPosition2(const char* const framename)
+VECTOR Player::FramPosition(const char* const framename)
 {
 
 	VECTOR framePosition;

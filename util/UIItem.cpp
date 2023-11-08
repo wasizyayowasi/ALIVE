@@ -10,17 +10,10 @@ UIItem::~UIItem()
 {
 }
 
-void UIItem::Draw(float scale,int alpha)
+void UIItem::AlphaChangeDraw(float scale,int alpha)
 {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 	DrawRotaGraph(centerPosX_, centerPosY_, scale, 0.0f, makeScreenHandle_, true, false);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-}
-
-void UIItem::Draw(int alpha)
-{
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraph(centerPosX_, centerPosY_, 1.0f, 0.0f, makeScreenHandle_, true, false);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 

@@ -53,7 +53,7 @@ public:
 	/// <summary>
 	/// 死んだ回数を取得する
 	/// </summary>
-	int getDeathCount() { return deathCount_; }
+	int GetDeathCount() { return deathCount_; }
 
 	/// <summary>
 	/// 外部からのポジションを受け取る
@@ -154,8 +154,8 @@ private:
 	/// <summary>
 	/// 指定した2フレームの中心座標を算出する
 	/// </summary>
-	VECTOR FramPosition(const char* const LeftFramename, const char* const RightFramename);
-	VECTOR FramPosition2(const char* const framename);
+	VECTOR CenterFramPosition(const char* const LeftFramename, const char* const RightFramename);
+	VECTOR FramPosition(const char* const framename);
 
 	/// <summary>
 	/// アニメーションの変更を行う

@@ -1,25 +1,31 @@
 #include "SoundSettingScene.h"
 #include "SceneManager.h"
 #include "ScenePause.h"
+#include "KeyConfigScene.h"
+
 #include "../util/SoundManager.h"
 #include "../util/InputState.h"
 #include "../util/game.h"
 #include "../util/FontsManager.h"
 #include "../util/UIItemManager.h"
+
 #include <algorithm>
 
 using namespace std;
 
 namespace {
 	//フォントの名前
-	const char* const font_name = "ピグモ 0042";
+	const char* const pigumo42_font_name = "ピグモ 0042";
+	const char* const pigumo21_font_name = "ピグモ 0021";
+	//画像ファイルパス
+	const char* const bar_graph_path = "data/graph/bar2.png";
 	//移動距離
 	constexpr float pictgram_move_distance = 58.4f;
 
 	constexpr float move_speed = 3.0f;
 }
 
-SoundSettingScene::SoundSettingScene(SceneManager& manager):SceneBase(manager),updateFunc_(&SoundSettingScene::BGMUpdate)
+SoundSettingScene::SoundSettingScene(SceneManager& manager):SceneBase(manager),updateFunc_(&SoundSettingScene::GaussFadeInUpdate)
 {
 }
 
@@ -30,8 +36,8 @@ SoundSettingScene::~SoundSettingScene()
 void SoundSettingScene::Init()
 {
 	//画像の読み込み
-	BGMBarHandle_ = LoadGraph("data/graph/bar.png");
-	SEBarHandle_ = LoadGraph("data/graph/bar.png");
+	BGMBarHandle_ = LoadGraph(bar_graph_path);
+	SEBarHandle_ = LoadGraph(bar_graph_path);
 	pictogramGraph_ = LoadGraph("data/graph/pict.png");
 
 	//barHandleの画像サイズを取得
@@ -59,18 +65,24 @@ void SoundSettingScene::Init()
 	BGMPictogramPosX_ = Game::screen_width / 4 + pictgram_move_distance + BGMPictPos * pictgram_move_distance;
 	SEPictogramPosX_ = Game::screen_width / 4 + pictgram_move_distance + SEPictPos * pictgram_move_distance;
 
-	DrawFormatString(Game::screen_width / 4, Game::screen_height / 3, 0xffffff, "%s", "BGM");
-	DrawFormatString(Game::screen_width / 4, Game::screen_height / 3 * 2, 0xffffff, "%s", "SE");
-
 	//UI画像の作成
 	//フォントの取得
-	int font = FontsManager::getInstance().GetFontHandle(font_name);
+	int pigumo42Font = FontsManager::getInstance().GetFontHandle(pigumo42_font_name);
+	int pigumo21Font = FontsManager::getInstance().GetFontHandle(pigumo21_font_name);
 	//フォントを適用した文字列のサイズ取得
-	int BGMFontSize = FontsManager::getInstance().GetStringSize("BGM", font_name);
-	int SEFontSize = FontsManager::getInstance().GetStringSize("SE", font_name);
+	int windowFontSize = FontsManager::getInstance().GetStringSize("ウィンドウモード", pigumo42_font_name);
+	int BGMFontSize = FontsManager::getInstance().GetStringSize("BGM", pigumo42_font_name);
+	int SEFontSize = FontsManager::getInstance().GetStringSize("SE", pigumo42_font_name);
+
 	//UI画像の作成
-	UIManager_->AddMenu(Game::screen_width / 4 - BGMFontSize / 2, Game::screen_height / 2 - 20, 320, 100, "BGM", font);
-	UIManager_->AddMenu(Game::screen_width / 4 - SEFontSize / 2, Game::screen_height / 3 * 2 - 20, 320, 100, "SE", font);
+	UIManager_->AddMenu(Game::screen_width / 4, Game::screen_height / 3, 320, 100, "ウィンドウモード", pigumo42Font);
+	UIManager_->AddMenu(Game::screen_width / 4, Game::screen_height / 2 - 20, 320, 100, "BGM", pigumo42Font);
+	UIManager_->AddMenu(Game::screen_width / 4, Game::screen_height / 3 * 2 - 20, 320, 100, "SE", pigumo42Font);
+	UIManager_->AddMenu(Game::screen_width / 2, Game::screen_height / 4 * 3, 320, 100, "操作設定", pigumo42Font);
+	UIManager_->AddMenu(Game::screen_width / 2, Game::screen_height / 4 * 3 + 40, 320, 100, "戻る", pigumo42Font);
+
+
+	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
 
 }
 
@@ -78,45 +90,35 @@ void SoundSettingScene::End()
 {
 	DeleteGraph(BGMBarHandle_);
 	DeleteGraph(SEBarHandle_);
+	DeleteGraph(afterProcessingBGMBarGraph_);
+	DeleteGraph(afterProcessingSEBarGraph_);
 	DeleteGraph(pictogramGraph_);
+	DeleteGraph(makeScreenHandle_);
 }
 
 void SoundSettingScene::Update(const InputState& input)
 {
-	
-	if (input.IsTriggered(InputType::up)) {
-		selectNum_ = (std::max)(selectNum_ - 1, 0);
-	}
-	else if (input.IsTriggered(InputType::down)) {
-		selectNum_ = (std::min)(selectNum_ + 1, 2);
-	}
-
-	ChangeUpdateFunc();
-
 	(this->*updateFunc_)(input);
-
-	//シーン切り替え
-	if (input.IsTriggered(InputType::pause)) {
-		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
-	}
-
 }
 
 void SoundSettingScene::Draw()
 {
-
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
+	SetDrawScreen(makeScreenHandle_);
+	ClearDrawScreen();
+
 	int BGMPictPos = static_cast<int>((static_cast<float>(volumeBGM_) / 250.0f) * 10);
 	int SEPictPos = static_cast<int>((static_cast<float>(volumeSE_) / 250.0f) * 10);
 
-	UIManager_->Draw(selectNum_);
+
+	UIManager_->AlphaChangeDraw(selectNum_);
 
 	//音量バー画像
-	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 2, 0.8f, 0.0f, afterProcessingBGMBarGraph_, true);
-	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3 * 2, 0.8f, 0.0f, afterProcessingSEBarGraph_, true);
+	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 2, 1.0f, 0.0f, afterProcessingBGMBarGraph_, true);
+	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3 * 2, 1.0f, 0.0f, afterProcessingSEBarGraph_, true);
 
 	time_++;
 
@@ -129,12 +131,55 @@ void SoundSettingScene::Draw()
 
 	DrawFormatString(Game::screen_width / 2, Game::screen_height / 2, 0x00ff00, "%d", selectNum_);
 
-	DrawFormatString(0, 16, 0x00ff00, "%.2f", volumeBGM_);
-	DrawFormatString(0, 32, 0x00ff00, "%.2f", volumeSE_);
+	//現在の画面モードを表示
+	int pigumo42 = FontsManager::getInstance().GetFontHandle(pigumo42_font_name);
+	int windowModeFontSize = FontsManager::getInstance().GetStringSize(windowModeText_.c_str(), pigumo42_font_name);
 
-	DrawFormatString(0, 48, 0x00ff00, "%d", static_cast<int>(volumeBGM_));
-	DrawFormatString(0, 64, 0x00ff00, "%d", static_cast<int>(volumeSE_));
+	DrawStringFToHandle(Game::screen_width / 2 - windowModeFontSize / 2, Game::screen_height / 3, windowModeText_.c_str(), 0xffffff, pigumo42);
 
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
+	DrawGraph(0, 0, makeScreenHandle_, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+}
+
+void SoundSettingScene::NormalUpdate(const InputState& input)
+{
+
+	if (input.IsTriggered(InputType::up)) {
+		selectNum_ = (std::max)(selectNum_ - 1, 0);
+	}
+	else if (input.IsTriggered(InputType::down)) {
+		selectNum_ = (std::min)(selectNum_ + 1, 4);
+	}
+
+	ChangeUpdateFunc(input);
+
+	//シーン切り替え
+	if (input.IsTriggered(InputType::pause)) {
+		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+	}
+}
+
+void SoundSettingScene::GaussFadeInUpdate(const InputState& input)
+{
+	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	if (++fadeTimer_ == fadeInterval_) {
+		updateFunc_ = &SoundSettingScene::NormalUpdate;
+		fadeValue_ = 255;
+	}
+}
+
+void SoundSettingScene::GaussFadeOutUpdate(const InputState& input)
+{
+	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	if (--fadeTimer_ == 0) {
+		manager_.SwapScene(std::shared_ptr<SceneBase>(nextScene_));
+		fadeValue_ = 0;
+		return;
+	}
 }
 
 void SoundSettingScene::BGMUpdate(const InputState& input)
@@ -178,16 +223,18 @@ void SoundSettingScene::SEUpdate(const InputState& input)
 void SoundSettingScene::ChangeWindowUpdate(const InputState& input)
 {
 	if (input.IsTriggered(InputType::left)) {
+		windowModeText_ = "≪  フルスクリーン  ≫";
 		ChangeWindowMode(true);
 	}
 	if (input.IsTriggered(InputType::right)) {
+		windowModeText_ = "≪  ウィドウモード  ≫";
 		ChangeWindowMode(false);
 	}
 }
 
 void SoundSettingScene::MovePictogram(int pictPos, float& pos, float& rot, bool& inversion)
 {
-	float targetPos = Game::screen_width / 4 + pictgram_move_distance + pictPos * pictgram_move_distance;
+	float targetPos = Game::screen_width / 3 + pictgram_move_distance + pictPos * pictgram_move_distance;
 	float distance = targetPos - pos;
 
 	if (distance > 0) {
@@ -211,17 +258,29 @@ void SoundSettingScene::MovePictogram(int pictPos, float& pos, float& rot, bool&
 
 }
 
-void SoundSettingScene::ChangeUpdateFunc()
+void SoundSettingScene::ChangeUpdateFunc(const InputState& input)
 {
 	switch (selectNum_) {
 	case 0:
-		updateFunc_ = &SoundSettingScene::BGMUpdate;
+		ChangeWindowUpdate(input);
 		break;
 	case 1:
-		updateFunc_ = &SoundSettingScene::SEUpdate;
+		BGMUpdate(input);
 		break;
 	case 2:
-		updateFunc_ = &SoundSettingScene::ChangeWindowUpdate;
+		SEUpdate(input);
+		break;
+	case 3:
+		if (input.IsTriggered(InputType::space)) {
+			nextScene_ = std::make_shared<KeyConfigScene>(manager_, input);
+			updateFunc_ = &SoundSettingScene::GaussFadeOutUpdate;
+		}
+		break;
+	case 4:
+		if (input.IsTriggered(InputType::space)) {
+			nextScene_ = std::make_shared<ScenePause>(manager_);
+			updateFunc_ = &SoundSettingScene::GaussFadeOutUpdate;
+		}
 		break;
 	}
 }

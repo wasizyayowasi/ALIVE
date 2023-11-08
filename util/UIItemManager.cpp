@@ -9,7 +9,7 @@ UIItemManager::~UIItemManager()
 {
 }
 
-void UIItemManager::Draw(int selectNum)
+void UIItemManager::AlphaChangeDraw(int selectNum)
 {
 	float scale = 1.0f;
 	int alpha = 150;
@@ -22,16 +22,7 @@ void UIItemManager::Draw(int selectNum)
 			scale = 0.7f;
 			alpha = 150;
 		}
-		UIMenu_[i]->Draw(scale,alpha);
-	}
-}
-
-void UIItemManager::Draw()
-{
-	int alpha = 150;
-
-	for (int i = 0; i < UIMenu_.size(); i++) {
-		UIMenu_[i]->Draw(alpha);
+		UIMenu_[i]->AlphaChangeDraw(scale,alpha);
 	}
 }
 

@@ -167,7 +167,7 @@
     <ClCompile Include="scene\DebugScene.cpp" />
     <ClCompile Include="util\DrawFunctions.cpp" />
     <ClCompile Include="scene\SoundSettingScene.cpp" />
-    <ClCompile Include="util\LoadExternalFile.cpp" />
+    <ClCompile Include="util\ExternalFile.cpp" />
     <ClCompile Include="object\CharacterBase.cpp" />
     <ClCompile Include="scene\PopUpTextScene.cpp" />
     <ClCompile Include="SCENE\KeyConfigScene.cpp" />
@@ -215,7 +215,7 @@
     <ClInclude Include="scene\DebugScene.h" />
     <ClInclude Include="util\DrawFunctions.h" />
     <ClInclude Include="scene\SoundSettingScene.h" />
-    <ClInclude Include="util\LoadExternalFile.h" />
+    <ClInclude Include="util\ExternalFile.h" />
     <ClInclude Include="object\CharacterBase.h" />
     <ClInclude Include="scene\PopUpTextScene.h" />
     <ClInclude Include="SCENE\KeyConfigScene.h" />

@@ -9,17 +9,11 @@ public:
 	virtual ~UIItem();
 
 	/// <summary>
-	/// サイズ調整ありのUI描画
+	/// サイズ調整、アルファ値の変更があるのUI描画
 	/// </summary>
 	/// <param name="scale">サイズ</param>
 	/// <param name="alpha">アルファ値</param>
-	void Draw(float scale, int alpha);
-
-	/// <summary>
-	/// サイズ固定のUI描画
-	/// </summary>
-	/// <param name="alpha">アルファ値</param>
-	void Draw(int alpha);
+	void AlphaChangeDraw(float scale, int alpha);
 
 	/// <summary>
 	/// UI画像を作成するための位置情報等を設定する

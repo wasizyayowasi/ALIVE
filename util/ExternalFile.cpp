@@ -1,4 +1,4 @@
-#include "LoadExternalFile.h"
+#include "ExternalFile.h"
 #include "util/InputState.h"
 #include "util/ObjectData.h"
 
@@ -10,12 +10,12 @@
 using json = nlohmann::json;
 using namespace std;
 
-LoadExternalFile::LoadExternalFile()
+ExternalFile::ExternalFile()
 {
 	LoadFile(true);
 }
 
-VECTOR LoadExternalFile::DegreesToRadians(VECTOR rot)
+VECTOR ExternalFile::DegreesToRadians(VECTOR rot)
 {
 	rot.x = rot.x * DX_PI_F / 180.0f;
 	rot.y = rot.y * DX_PI_F / 180.0f;
@@ -24,12 +24,12 @@ VECTOR LoadExternalFile::DegreesToRadians(VECTOR rot)
 	return rot;
 }
 
-LoadExternalFile::~LoadExternalFile()
+ExternalFile::~ExternalFile()
 {
 	RewritePlayerInfo();
 }
 
-void LoadExternalFile::LoadFile(bool isLood)
+void ExternalFile::LoadFile(bool isLood)
 {
 	if (!loadObjInfo_.empty()) {
 		loadObjInfo_.clear();
@@ -44,14 +44,14 @@ void LoadExternalFile::LoadFile(bool isLood)
 	LoadObjectData("data/objData/gimmick.pos",loadGimmickInfo_);
 }
 
-LoadObjectInfo LoadExternalFile::GetGimmickInfo(const char* const name)
+LoadObjectInfo ExternalFile::GetGimmickInfo(const char* const name)
 {
 	auto info = loadGimmickInfo_[name].front();
 	loadGimmickInfo_[name].pop_front();
 	return info;
 }
 
-std::list<LoadObjectInfo> LoadExternalFile::GetSpecifiedInfo(const char* const name)
+std::list<LoadObjectInfo> ExternalFile::GetSpecifiedInfo(const char* const name)
 {
 
 	for (auto& obj : loadObjInfo_) {
@@ -64,7 +64,7 @@ std::list<LoadObjectInfo> LoadExternalFile::GetSpecifiedInfo(const char* const n
 }
 
 //セーブデータの書き出し
-void LoadExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
+void ExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 {
 	json saveData = {
 		{"name","saveData"},
@@ -86,14 +86,14 @@ void LoadExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 
 }
 
-void LoadExternalFile::ClearSaveData()
+void ExternalFile::ClearSaveData()
 {
 	data.checkPoint = VGet(0, 0, 0);
 	data.totalDeathNum = 0;
 }
 
 //プレイヤーのステータス情報を読み込む
-void LoadExternalFile::LoadPlayerInfo(const char* const filename)
+void ExternalFile::LoadPlayerInfo(const char* const filename)
 {
 	string path = "data/jsonFile/";
 	path += filename;
@@ -122,7 +122,7 @@ void LoadExternalFile::LoadPlayerInfo(const char* const filename)
 }
 
 //セーブデータを読み込む
-void LoadExternalFile::LoadSaveDataInfo(const char* const filename)
+void ExternalFile::LoadSaveDataInfo(const char* const filename)
 {
 	string path = "data/jsonFile/";
 	path += filename;
@@ -144,7 +144,7 @@ void LoadExternalFile::LoadSaveDataInfo(const char* const filename)
 }
 
 //オブジェクトのポジションを読み込む
-void LoadExternalFile::LoadObjectData(const char* const filename, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
+void ExternalFile::LoadObjectData(const char* const filename, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
 {
 	//ファイルのロード
 	auto dataHandle = FileRead_open(filename);
@@ -198,7 +198,7 @@ void LoadExternalFile::LoadObjectData(const char* const filename, std::unordered
 }
 
 //プレイヤーのステータスを書き出す
-void LoadExternalFile::RewritePlayerInfo()
+void ExternalFile::RewritePlayerInfo()
 {
 	json player = {
 	   {"name","player"},

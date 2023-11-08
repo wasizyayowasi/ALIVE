@@ -8,7 +8,7 @@
 
 #include "util/game.h"
 #include "util/InputState.h"
-#include "util/LoadExternalFile.h"
+#include "util/ExternalFile.h"
 #include "util/EffekseerManager.h"
 
 #include "staging/Broom.h"
@@ -52,7 +52,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SceneManager manager;
 
 //	manager.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager)));
-//	manager.PushBackScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager)));
 	manager.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager)));
 
 	while (ProcessMessage() == 0) {

@@ -20,7 +20,7 @@
 #include "../util/SoundManager.h"
 #include "../util/InputState.h"
 #include "../util/model.h"
-#include "../util/LoadExternalFile.h"
+#include "../util/ExternalFile.h"
 #include "../util/CheckCollisionModel.h"
 
 #include "../util/ObjectManager.h"
@@ -33,7 +33,7 @@ namespace {
 }
 
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),
-updateFunc_(&GameMain::fadeInUpdate)
+updateFunc_(&GameMain::FadeInUpdate)
 {
 }
 
@@ -42,7 +42,7 @@ GameMain::~GameMain()
 	//ゲームメインが終わるときにプレイ中に死んだ回数と
 	//saveDataに記録されている死亡回数を足す
 	totalDeathNum_ += player_->GetDeathCount();
-	LoadExternalFile::GetInstance().SaveDataRewriteInfo(checkPoint_, totalDeathNum_);
+	ExternalFile::GetInstance().SaveDataRewriteInfo(checkPoint_, totalDeathNum_);
 }
 
 void GameMain::Init()
@@ -65,7 +65,7 @@ void GameMain::Init()
 	Set3DSoundOneMetre(10.0f);
 
 	//セーブデータの内容を読み取る
-	auto data = LoadExternalFile::GetInstance();
+	auto data = ExternalFile::GetInstance();
 	//死亡回数
 	totalDeathNum_ = data.GetSaveData().totalDeathNum;
 
@@ -97,8 +97,8 @@ void GameMain::Draw()
 	//カメラの初期化
 	//SetDrawScreenを行うとカメラの情報がリセットされるために
 	camera_->Init();
-//	camera_->TrackingCameraUpdate(player_->GetStatus().pos);
-	camera_->DebugCamera(player_->GetStatus().pos);
+	camera_->TrackingCameraUpdate(player_->GetStatus().pos);
+//	camera_->DebugCamera(player_->GetStatus().pos);
 
 	//broom_->writingScreenUpdate(player_->getPos());
 	DrawString(0, 0, "GameMain", 0xffffff);
@@ -133,7 +133,7 @@ void GameMain::Draw()
 void GameMain::ObjectGenerater()
 {
 
-	auto& loadData = LoadExternalFile::GetInstance();
+	auto& loadData = ExternalFile::GetInstance();
 
 	//ゲームオブジェクトの生成
 	objManager_->ObjectGenerator();
@@ -147,24 +147,21 @@ void GameMain::ObjectGenerater()
 }
 
 //TODO：別のフェードインが出来次第消去
-void GameMain::fadeInUpdate(const InputState& input)
+void GameMain::FadeInUpdate(const InputState& input)
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) {
-		updateFunc_ = &GameMain::normalUpdate;
+		updateFunc_ = &GameMain::NormalUpdate;
 		fadeValue_ = 0;
 	}
 }
 
 //更新
-void GameMain::normalUpdate(const InputState& input)
+void GameMain::NormalUpdate(const InputState& input)
 {
 	
 	//フィルター処理を行わない用にする
 	isFilterOn_ = false;
-
-
-
 
 	//プレイヤーの更新
 	player_->Update(input, objManager_);
@@ -197,7 +194,7 @@ void GameMain::normalUpdate(const InputState& input)
 }
 
 //TODO：別のフェードインが出来次第消去
-void GameMain::fadeOutUpdate(const InputState& input)
+void GameMain::FadeOutUpdate(const InputState& input)
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) {

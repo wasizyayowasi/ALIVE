@@ -35,8 +35,8 @@ DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : Characte
 	model_->SetRot(objInfo.rot);
 	model_->SetScale(objInfo.scale);
 	MV1SetMaterialDifColor(model_->GetModelHandle(), 8, GetColorF(1.0f,0.0f,0.0f,1.0f));
-	//model_->SetAnimation(animNo, false, true);
-	//model_->SetAnimEndFrame(animNo);
+	model_->SetAnimation(animNo, false, true);
+	model_->SetAnimEndFrame(animNo);
 
 	isCollCheck_ = true;
 

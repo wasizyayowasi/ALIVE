@@ -11,7 +11,7 @@
 #include "../gimmick/Elevator.h"
 
 #include "InputState.h"
-#include "LoadExternalFile.h"
+#include "ExternalFile.h"
 
 namespace {
 	const char* const player_Filename = "data/player/player16.mv1";
@@ -50,7 +50,7 @@ ObjectManager::~ObjectManager()
 void ObjectManager::ObjectGenerator()
 {
 
-	auto& loadData = LoadExternalFile::GetInstance();
+	auto& loadData = ExternalFile::GetInstance();
 
 	for (auto& objInfo : loadData.GetLoadObjectInfo()) {
 		//フィールドを作成

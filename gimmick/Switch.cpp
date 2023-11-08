@@ -56,8 +56,12 @@ void Switch::Draw()
 //衝突判定
 void Switch::HitCollPlayer(Player& player)
 {
+
+	VECTOR playerPos = player.GetStatus().pos;
+
+	MV1RefreshCollInfo(model_->GetModelHandle(), model_->GetColFrameIndex());
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
-	hitDim_.push_back(MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), VAdd(player.GetStatus().pos, VGet(0.0f, 10.0f, 0.0f)), VAdd(player.GetStatus().pos, VGet(0.0f, 150.0f, 0.0f)), 20.0f));
+	hitDim_.push_back(MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, VAdd(playerPos, VGet(0.0f, player.GetStatus().height, 0.0f)), 20.0f));
 }
 
 void Switch::HitColl(std::shared_ptr<ObjectBase> deadPerson)
@@ -78,7 +82,7 @@ bool Switch::CollResult()
 	int hitNum = 0;
 	//当たっている数を数える
 	for (auto& result : hitDim_) {
-		if (result.HitNum > 1) {
+		if (result.HitNum > 0) {
 			hitNum++;
 		}
 	}

@@ -1,12 +1,14 @@
 #include "KeyConfigScene.h"
 #include "SceneManager.h"
-#include "ScenePause.h"
+#include "SoundSettingScene.h"
 #include "PopUpTextScene.h"
+
 #include"../util/InputState.h"
 #include"../util/game.h"
 #include"../util/DrawFunctions.h"
 #include"../util/FontsManager.h"
 #include "../util/UIItemManager.h"
+
 #include "DxLib.h"
 #include <algorithm>
 
@@ -110,7 +112,7 @@ void KeyConfigScene::KeyStateDraw()
 	ClearDrawScreen();
 
 	//キーの役割を描画する
-	UI_->Draw(selectNum_);
+	UI_->AlphaChangeDraw(selectNum_);
 
 	//キーに対応する画像を描画する
 	KeyGraphDraw();
@@ -247,7 +249,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	if (selectNum_ == inputState_.inputNameTable_.size() + 1) {
 		if (inputState_.IsTriggered(InputType::space)) {
 			configInput.ResetInputInfo();
-			manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+			manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<SoundSettingScene>(manager_)));
 			return;
 		}
 	}
@@ -263,7 +265,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 
 	//ひとつ前のシーンに戻る
 	if (inputState_.IsTriggered(InputType::pause)) {
-		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<SoundSettingScene>(manager_)));
 		configInput.RollbackChangedInputInfo();
 		return;
 	}

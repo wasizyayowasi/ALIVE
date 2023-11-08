@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "TitlemenuScene.h"
 #include "../util/InputState.h"
+#include "../util/ExternalFile.h"
 #include <algorithm>
 
 DebugScene::DebugScene(SceneManager& manager):SceneBase(manager)
@@ -42,6 +43,7 @@ void DebugScene::Update(const InputState& input)
 	if (input.IsTriggered(InputType::space)) {
 		switch (selectNum_) {
 		case 0:
+			ExternalFile::GetInstance().LoadFile(true);
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 			break;
 		case 1:

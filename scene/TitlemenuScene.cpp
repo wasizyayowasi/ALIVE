@@ -6,7 +6,7 @@
 #include "../util/FontsManager.h"
 #include "../util/InputState.h"
 #include "../util/UIItemManager.h"
-#include "../util/LoadExternalFile.h"
+#include "../util/ExternalFile.h"
 #include <algorithm>
 
 using namespace std;
@@ -71,7 +71,7 @@ void TitlemenuScene::Update(const InputState& input)
 void TitlemenuScene::Draw()
 {
 	//UI‚Ì•`‰æ
-	UI_->Draw(selectNum_);
+	UI_->AlphaChangeDraw(selectNum_);
 	//ƒ^ƒCƒgƒ‹‚Ì•`‰æ
 	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3, 1.0f, 0.0f, titleHandle_, true);
 }
@@ -81,12 +81,12 @@ void TitlemenuScene::SceneChange()
 {
 	switch (selectNum_) {
 	case 0:
-		LoadExternalFile::GetInstance().ClearSaveData();
-		LoadExternalFile::GetInstance().LoadFile(false);
+		ExternalFile::GetInstance().ClearSaveData();
+		ExternalFile::GetInstance().LoadFile(false);
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 		break;
 	case 1:
-		LoadExternalFile::GetInstance().LoadFile(true);
+		ExternalFile::GetInstance().LoadFile(true);
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 		break;
 	case 2:

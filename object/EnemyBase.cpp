@@ -7,7 +7,7 @@
 
 namespace {
 	//プレイヤーから敵までの距離が下記だったら追跡を止める範囲
-	constexpr float range_to_stop_tracking = 50.0f;
+	constexpr float range_to_stop_tracking = 500.0f;
 
 	//モデルの初期回転ベクトル
 	const VECTOR init_rot = { 0.0f,0.0f,-1.0f };
@@ -80,7 +80,7 @@ void EnemyBase::Draw()
 {
 	model_->Draw();
 
-	//Aster_->Draw();
+	Aster_->Draw();
 }
 
 void EnemyBase::HitColl(std::shared_ptr<ObjectBase> pointer)

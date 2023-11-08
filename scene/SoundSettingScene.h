@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneBase.h"
 #include <memory>
+#include <string>
 
 class InputState;
 class UIItemManager;
@@ -18,15 +19,21 @@ public:
 	void Update(const InputState& input);
 	void Draw();
 
+	void NormalUpdate(const InputState& input);
+	void GaussFadeInUpdate(const InputState& input);
+	void GaussFadeOutUpdate(const InputState& input);
+
 	void BGMUpdate(const InputState& input);
 	void SEUpdate(const InputState& input);
 	void ChangeWindowUpdate(const InputState& input);
 
 	void MovePictogram(int pictPos, float& pos, float& rot,bool& inversion);
 
-	void ChangeUpdateFunc();
+	void ChangeUpdateFunc(const InputState& input);
 
 private:
+
+	int makeScreenHandle_ = -1;
 
 	int BGMBarHandle_ = -1;
 	int SEBarHandle_ = -1;
@@ -51,6 +58,17 @@ private:
 
 	bool BGMPictogramTransInversion_ = false;	//BGMピクトグラム画像のの反転
 	bool SEPictogramTransInversion_ = false;	//SEピクトグラム画像のの反転
+
+
+	//ここも消すかもしれない
+	static constexpr int fadeInterval_ = 60;
+	int fadeTimer_ = 0;
+	int fadeValue_ = 0;
+	int fadeColor_ = 0x000000;
+
+	std::shared_ptr<SceneBase> nextScene_;
+
+	std::string windowModeText_ = "≪  ウィンドモード  ≫";
 
 	std::shared_ptr<UIItemManager> UIManager_;
 

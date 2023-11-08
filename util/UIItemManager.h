@@ -16,12 +16,7 @@ public:
 	/// Šgk—¦‚ğ•ÏX‚·‚é‚Æ‚«‚Ì•`‰æ
 	/// </summary>
 	/// <param name="selectNum"></param>
-	void Draw(int selectNum);
-
-	/// <summary>
-	/// “Á’è‚ÌUI‚ğŠgk‚¹‚¸‚É•`‰æ‚·‚é
-	/// </summary>
-	void Draw();
+	void AlphaChangeDraw(int selectNum);
 
 	/// <summary>
 	/// UIƒƒjƒ…[‚Ì’Ç‰Á

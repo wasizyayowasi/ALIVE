@@ -1,7 +1,7 @@
 #include "TransparentObject.h"
 #include "Switch.h"
 #include "../util/Model.h"
-#include "../util/LoadExternalFile.h"
+#include "../util/ExternalFile.h"
 #include <algorithm>
 
 namespace {
@@ -14,7 +14,7 @@ TransparentObject::TransparentObject(const char* const filename, LoadObjectInfo 
 
 TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
 {
-	auto info = LoadExternalFile::GetInstance().GetGimmickInfo("switch");
+	auto info = ExternalFile::GetInstance().GetGimmickInfo("switch");
 	switch_ = std::make_shared<Switch>(switch_filename,info);
 	
 	InitialPosition_ = model_->GetPos();

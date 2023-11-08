@@ -11,14 +11,14 @@ struct SaveData {
 	int totalDeathNum;
 };
 
-class LoadExternalFile
+class ExternalFile
 {
 public:
 
-	~LoadExternalFile();
+	~ExternalFile();
 
-	static LoadExternalFile& GetInstance() {
-		static LoadExternalFile instance;
+	static ExternalFile& GetInstance() {
+		static ExternalFile instance;
 		return instance;
 	}
 
@@ -78,7 +78,7 @@ private:
 	//プレイヤーのステータス情報を書き出す
 	void RewritePlayerInfo();
 
-	LoadExternalFile();
+	ExternalFile();
 
 	//度数法から弧度法
 	VECTOR DegreesToRadians(VECTOR rot);

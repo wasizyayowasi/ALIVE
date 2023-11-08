@@ -48,13 +48,16 @@ private:
 
 	int fontHandleSize16_ = -1;				//フォント16サイズを保管する変数
 	int fontHandleSize32_ = -1;				//フォント32サイズを保管する変数
-
 	int makeScreenHandle_ = -1;				//作成したハンドルを保管する変数
-
 	int keyTypeHandle_ = -1;				//keyTypeを描画するためのグラフを受け取るためのhandle
-
 	int textColor_ = 0xffffff;				//カラー
 	int selectNum_ = 0;						//現在の選択番号
+
+	//ここも消すかもしれない
+	static constexpr int fadeInterval_ = 60;
+	int fadeTimer_ = 0;
+	int fadeValue_ = 0;
+	int fadeColor_ = 0x000000;
 
 	bool isEditing_ = false;				//編集中フラグ
 

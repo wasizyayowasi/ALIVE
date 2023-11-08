@@ -41,9 +41,9 @@ private:
 	bool isFilterOn_ = false;				//フィルターを使用するか
 
 	//消すかもしれない
-	void fadeInUpdate(const InputState& input);
-	void normalUpdate(const InputState& input);
-	void fadeOutUpdate(const InputState& input);
+	void FadeInUpdate(const InputState& input);
+	void NormalUpdate(const InputState& input);
+	void FadeOutUpdate(const InputState& input);
 
 	//ここも消すかもしれない
 	static constexpr int fadeInterval_ = 60;
