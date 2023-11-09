@@ -11,21 +11,31 @@ class InputState;
 class Model;
 class ObjectManager;
 class ObjectBase;
+class ManualCrank;
 
 struct JumpInfo {
-	float jumpVec;		//ジャンプベクトル
-	bool isJump;		//ジャンプ中かどうか
+	float jumpVec = 0.0f;					//ジャンプベクトル
+	bool isJump = false;					//ジャンプ中かどうか
+};
+
+struct Situation {
+	bool isMoving = false;					//移動中か
+	bool isSitting = false;					//座っているか
+	bool isClim = false;					//登れるか
+	bool isInTransit = false;				//運送中か
+	bool isCanBeCarried = false;			//持ち運ぶことが出来るか
+	bool isGimmickCanBeOperated = false;	//ギミックを操作中か
 };
 
 struct PlayerStatus {
-	JumpInfo jump;
 	VECTOR pos;
 	VECTOR rot;
 	VECTOR moveVec;
-	int animNo;
 	float height;
+	int animNo;
 	bool isAnimLoop;
-	bool isTransit;
+	JumpInfo jump;
+	Situation situation;
 };
 
 class Player
@@ -72,7 +82,7 @@ public:
 	/// 登れるかの情報を受け取る
 	/// </summary>
 	/// <returns>登れるかのフラグ</returns>
-	void SetClim(bool isClim) { isClim_ = isClim; }
+	void SetClim(bool isClim) { status_.situation.isClim = isClim; }
 
 	/// <summary>
 	/// 持ち運ぶ事が出来るフラグと持ち運ぶモデルのポインタを受け取る
@@ -89,6 +99,12 @@ public:
 	/// </summary>
 	std::shared_ptr<ObjectBase> GetDeadPersonModelPointer() {return deadPersonModelPointer_;}
 	
+	/// <summary>
+	/// ManualCrankのポインタを取得する
+	/// </summary>
+	/// <param name="crank"></param>
+	void SetGimmickModelPointer(std::shared_ptr<ManualCrank> crank);
+
 private:
 	//通常更新
 	void IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
@@ -138,6 +154,9 @@ private:
 	//荷物を下ろす
 	void DropOffObjectUpdate();
 
+	//クランクを回す
+	void CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	void CrankRotatinUpdate(float rotZ,VECTOR pos);
 private:
 	/// <summary>
 	/// プレイヤーの移動速度を設定する
@@ -155,6 +174,10 @@ private:
 	/// 指定した2フレームの中心座標を算出する
 	/// </summary>
 	VECTOR CenterFramPosition(const char* const LeftFramename, const char* const RightFramename);
+
+	/// <summary>
+	/// 指定したフレームの中心座標を算出する
+	/// </summary>
 	VECTOR FramPosition(const char* const framename);
 
 	/// <summary>
@@ -180,21 +203,17 @@ private:
 	float differenceAngle_ = 0.0f;			//目標の角度と現在の角度の差
 	float angle_ = 0.0f;
 
-	bool isMoving_ = false;					//移動中か
-	bool isSitting_ = false;				//座っているか
-	bool isClim_ = false;
-	bool isCanBeCarried_ = false;
-
 	PlayerInfo playerInfo_ = {};
 	PlayerStatus status_ = {};
 
 	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};						//中間ポイント
-	VECTOR scale_ = {0.0f,0.0f, 0.0f};						//拡縮率
+	VECTOR scale_ = {0.0f,0.0f, 0.0f};							//拡縮率
 
 	VECTOR deathPos_ = { 0.0f,0.0f,0.0f };						//死体のポジション
 
-	std::shared_ptr<ObjectBase> deadPersonModelPointer_;				//持ち運ぶ死体のモデルポインタ
+	std::shared_ptr<ObjectBase> deadPersonModelPointer_;		//持ち運ぶ死体のモデルポインタ
 	std::shared_ptr<Model> player_;								//モデルクラスのポインタ
+	std::shared_ptr<ManualCrank> crank_;						//クランククラスのポインタ
 
 	std::unordered_map<AnimType, int> animType_;				
 

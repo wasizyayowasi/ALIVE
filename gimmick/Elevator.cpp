@@ -24,11 +24,10 @@ Elevator::~Elevator()
 
 void Elevator::Update(Player& player, const InputState& input)
 {
-//	if (crank_->HitCollPlayer(player)) {
-//		if (input.IsTriggered(InputType::carry)) {
-			crank_->Update(input);
-//		}
-//	}
+
+	if (crank_->HitCollPlayer(player)) {
+		player.SetGimmickModelPointer(crank_);
+	}
 
 	pos_.y = crank_->GetRotZ()* upVec_;
 

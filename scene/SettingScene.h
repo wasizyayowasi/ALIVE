@@ -6,12 +6,12 @@
 class InputState;
 class UIItemManager;
 
-class SoundSettingScene : public SceneBase
+class SettingScene : public SceneBase
 {
 public:
 
-	SoundSettingScene(SceneManager& manager);
-	virtual ~SoundSettingScene();
+	SettingScene(SceneManager& manager);
+	virtual ~SettingScene();
 
 	void Init();
 	void End();
@@ -72,7 +72,7 @@ private:
 
 	std::shared_ptr<UIItemManager> UIManager_;
 
-	void(SoundSettingScene::* updateFunc_)(const InputState& input);
+	void(SettingScene::* updateFunc_)(const InputState& input);
 
 };
 

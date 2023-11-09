@@ -28,7 +28,7 @@ void CheckCollisionModel::CheckCollisionPersonalArea(std::shared_ptr<Player> pla
 	
 	objManager->AddCheckCollModel();
 	for (auto& model : objManager->GetAllCheckCollModel()) {
-		if (player->GetStatus().isTransit) {
+		if (player->GetStatus().situation.isInTransit) {
 			if (player->GetDeadPersonModelPointer()->GetModelPointer() == model) {
 				continue;
 			}
@@ -175,20 +175,29 @@ void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 	//短縮化
 	auto playerState = player->GetStatus();
 
-	float jumpVec = player->GetStatus().jump.jumpVec;
-	bool isJump = player->GetStatus().jump.isJump;
+	float jumpVec = playerState.jump.jumpVec;
+	bool isJump = playerState.jump.isJump;
 
 	//床との当たり判定
 	if (hitFloorNum != 0) {
-
+		//ジャンプ中かつベクトルがマイナスでなければ
 		if (isJump && jumpVec > 0.0f) {
 			float minY = 0.0f;
 			hitFlag = false;
 			for (int i = 0; i < hitFloorNum; i++) {
+				//データのコピー
 				auto hitPoly = floorHitDim_[i];
+				//衝突判定結果
 				hitLineResult = HitCheck_Line_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerState.height, 0.0f)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
-				if (hitLineResult.HitFlag == FALSE)continue;
-				if (hitFlag == true && minY < hitLineResult.Position.y)continue;
+
+				//衝突判定結果で衝突してなかったら以降の処理を行わない
+				if (hitLineResult.HitFlag == false) {
+					continue;
+				}
+				//衝突判定結果で衝突してなかったら以降の処理を行わない
+				if (hitFlag == true && minY < hitLineResult.Position.y) {
+					continue;
+				}
 				hitFlag = true;
 				minY = hitLineResult.Position.y;
 			}
@@ -205,7 +214,7 @@ void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 			for (int i = 0; i < hitFloorNum; i++) {
 				auto hitPoly = floorHitDim_[i];
 				if (isJump) {
-					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerState.height, 0)), VAdd(nowPos, VGet(0.0f, -10.0f, 0.0f)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
+					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerState.height, 0)),nowPos, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
 				}
 				else {
 					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerState.height, 0)), nowPos, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
@@ -328,7 +337,7 @@ void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player,
 	auto playerState = player->GetStatus();
 
 	//プレイヤーが現状別の死体を持ち運んでいたら取得しない
-	if (player->GetStatus().isTransit) {
+	if (player->GetStatus().situation.isInTransit) {
 		return;
 	}
 

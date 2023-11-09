@@ -1,6 +1,6 @@
 #include "KeyConfigScene.h"
 #include "SceneManager.h"
-#include "SoundSettingScene.h"
+#include "SettingScene.h"
 #include "PopUpTextScene.h"
 
 #include"../util/InputState.h"
@@ -20,7 +20,10 @@ namespace {
 }
 
 //コンストラクタ
-KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):SceneBase(manager),updateFunc_(&KeyConfigScene::SelectChangeKeyUpdate),drawFunc_(&KeyConfigScene::KeyStateDraw), inputState_(input)
+KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):SceneBase(manager),
+updateFunc_(&KeyConfigScene::FadeInUpdate),
+changeKeyUpdateFunc_(&KeyConfigScene::SelectChangeKeyUpdate),
+drawFunc_(&KeyConfigScene::KeyStateDraw), inputState_(input)
 {
 }
 
@@ -80,7 +83,7 @@ void KeyConfigScene::End()
 //メンバ関数ポインタの更新
 void KeyConfigScene::Update(const InputState& input)
 {
-	(this->*updateFunc_)();
+	(this->*updateFunc_)(input);
 }
 
 //描画
@@ -92,7 +95,9 @@ void KeyConfigScene::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	//makeScreenで作成したハンドルを描画
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	DrawGraph(0, 0, makeScreenHandle_, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	(this->*drawFunc_)();
 	
@@ -249,7 +254,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	if (selectNum_ == inputState_.inputNameTable_.size() + 1) {
 		if (inputState_.IsTriggered(InputType::space)) {
 			configInput.ResetInputInfo();
-			manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<SoundSettingScene>(manager_)));
+			updateFunc_ = &KeyConfigScene::FadeOutUpdate;
 			return;
 		}
 	}
@@ -258,14 +263,14 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	if (inputState_.IsTriggered(InputType::space)) {
 		isEditing_ = !isEditing_;
 		drawFunc_ = &KeyConfigScene::ChangeKeyPopUpText;
-		updateFunc_ = &KeyConfigScene::ChangeKeyUpdate;
+		changeKeyUpdateFunc_ = &KeyConfigScene::ChangeKeyUpdate;
 		GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 32, 800);
 		return;
 	}
 
 	//ひとつ前のシーンに戻る
 	if (inputState_.IsTriggered(InputType::pause)) {
-		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<SoundSettingScene>(manager_)));
+		updateFunc_ = &KeyConfigScene::FadeOutUpdate;
 		configInput.RollbackChangedInputInfo();
 		return;
 	}
@@ -285,7 +290,7 @@ void KeyConfigScene::ChangeKeyUpdate()
 
 	//メンバ関数ポインタを変更するキーを選択する関数に変更する
 	if (inputState_.IsTriggered(InputType::pause)) {
-		updateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
+		changeKeyUpdateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
 		drawFunc_ = &KeyConfigScene::KeyStateDraw;
 		isEditing_ = !isEditing_;
 		configInput.UndoSelectKey(static_cast<InputType>(selectNum_), InputCategory::keybd);
@@ -313,7 +318,7 @@ void KeyConfigScene::ChangeKeyUpdate()
 		if (keyState[i]) {
 			configInput.RewriteInputInfo(currentType, InputCategory::keybd, i);
 			isEditing_ = !isEditing_;
-			updateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
+			changeKeyUpdateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
 			drawFunc_ = &KeyConfigScene::KeyStateDraw;
 			break;
 		}
@@ -322,7 +327,7 @@ void KeyConfigScene::ChangeKeyUpdate()
 	if (padState != 0) {
 		configInput.RewriteInputInfo(currentType, InputCategory::pad, padState);
 		isEditing_ = !isEditing_;
-		updateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
+		changeKeyUpdateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
 		drawFunc_ = &KeyConfigScene::KeyStateDraw;
 	}
 
@@ -404,4 +409,28 @@ int KeyConfigScene::GetKeyName(int num)
 	}
 
 	return num;
+}
+
+void KeyConfigScene::FadeInUpdate(const InputState& input)
+{
+	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	if (++fadeTimer_ == fadeInterval_) {
+		updateFunc_ = &KeyConfigScene::NormalUpdate;
+		fadeValue_ = 255;
+	}
+}
+
+void KeyConfigScene::NormalUpdate(const InputState& input)
+{
+	(this->*changeKeyUpdateFunc_)();
+}
+
+void KeyConfigScene::FadeOutUpdate(const InputState& input)
+{
+	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	if (--fadeTimer_ == 0) {
+		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<SettingScene>(manager_)));
+		fadeValue_ = 0;
+		return;
+	}
 }

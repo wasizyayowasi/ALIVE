@@ -166,7 +166,7 @@
     <ClCompile Include="object\EnemyBase.cpp" />
     <ClCompile Include="scene\DebugScene.cpp" />
     <ClCompile Include="util\DrawFunctions.cpp" />
-    <ClCompile Include="scene\SoundSettingScene.cpp" />
+    <ClCompile Include="scene\SettingScene.cpp" />
     <ClCompile Include="util\ExternalFile.cpp" />
     <ClCompile Include="object\CharacterBase.cpp" />
     <ClCompile Include="scene\PopUpTextScene.cpp" />
@@ -214,7 +214,7 @@
     <ClInclude Include="object\EnemyBase.h" />
     <ClInclude Include="scene\DebugScene.h" />
     <ClInclude Include="util\DrawFunctions.h" />
-    <ClInclude Include="scene\SoundSettingScene.h" />
+    <ClInclude Include="scene\SettingScene.h" />
     <ClInclude Include="util\ExternalFile.h" />
     <ClInclude Include="object\CharacterBase.h" />
     <ClInclude Include="scene\PopUpTextScene.h" />

@@ -6,9 +6,6 @@
 
 
 namespace {
-	//プレイヤーから敵までの距離が下記だったら追跡を止める範囲
-	constexpr float range_to_stop_tracking = 500.0f;
-
 	//モデルの初期回転ベクトル
 	const VECTOR init_rot = { 0.0f,0.0f,-1.0f };
 
@@ -17,7 +14,7 @@ namespace {
 	//敵がプレイヤーを視認できる範囲
 	constexpr float visible_range = 500.0f;
 	//敵のスピード
-	constexpr float move_speed = 3.0f;
+	constexpr float move_speed = 0.0f;
 
 	//オブジェクト認知範囲
 	constexpr float check_collition_radius = 200.0f;
@@ -26,6 +23,9 @@ namespace {
 
 	//敵モデルの高さ
 	constexpr float model_height = 150.0f;
+
+	//リーチ
+	constexpr float within_reach = 50.0f;
 }
 
 
@@ -64,14 +64,14 @@ void EnemyBase::Update(Player& player, const InputState& input)
 	//モデルの更新
 	model_->Update();
 
-	if (distance_ < range_to_stop_tracking + 20.0f) {
+	if (distance_ < within_reach) {
 		pushVec_ = VScale(VNorm(frontVec_), 10);
 	}
 
 	float pushVecSize = VSize(pushVec_);
 
 	if (pushVecSize > 7.0f) {
-		//ThrustAway(player);
+		ThrustAway(player);
 	}
 
 }
@@ -80,7 +80,7 @@ void EnemyBase::Draw()
 {
 	model_->Draw();
 
-	Aster_->Draw();
+//	Aster_->Draw();
 }
 
 void EnemyBase::HitColl(std::shared_ptr<ObjectBase> pointer)
@@ -93,16 +93,17 @@ void EnemyBase::TrackingUpdate(VECTOR playerPos)
 
 	//プレイヤーと自分の差を算出し、正規化し、スピードを掛ける
 	VECTOR distancePlayerAndEnemy = VSub(playerPos, pos_);
+	distancePlayerAndEnemy.y = 0;
 	VECTOR moveVec = VScale(VNorm(distancePlayerAndEnemy), move_speed);
 
 	//回転行列の取得
-	MATRIX rotMtx = MGetRotVec2(VGet(0, 0, -1), VSub(playerPos, pos_));
+	MATRIX rotMtx = MGetRotVec2(init_rot, VSub(playerPos, pos_));
 
 	//拡縮行列の取得
 	MATRIX scaleMtx = MGetScale(scale_);
 
 	//正面ベクトルを取得する
-	frontVec_ = VTransformSR(VGet(0, 0, -1), rotMtx);
+	frontVec_ = VTransformSR(init_rot, rotMtx);
 
 	//回転行列と拡縮行列の掛け算
 	MATRIX mtx = MMult(rotMtx, scaleMtx);
@@ -166,7 +167,10 @@ void EnemyBase::RoutingUpdate(Player& player)
 
 
 	//回転行列の取得
-	MATRIX rotMtx = MGetRotVec2(VGet(0, 0, -1), VSub(targetPos, pos_));
+	MATRIX rotMtx = MGetRotVec2(init_rot, VSub(targetPos, pos_));
+
+	//正面ベクトルを取得する
+	frontVec_ = VTransformSR(init_rot, rotMtx);
 
 	//拡縮行列の取得
 	MATRIX scaleMtx = MGetScale(scale_);
@@ -213,7 +217,7 @@ bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 bool EnemyBase::DistanceIsWithinRange()
 {
 	//プレイヤーと敵の座標差を見て、
-	if (distance_ < range_to_stop_tracking) {
+	if (distance_ < visible_range) {
 		model_->ChangeAnimation(0, true, false, 20);
 		return true;
 	}

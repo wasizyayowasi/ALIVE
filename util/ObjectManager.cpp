@@ -29,7 +29,6 @@ ObjectManager::ObjectManager()
 {
 	playerHandle_ = MV1LoadModel(player_Filename);
 	fieldHandle_ = MV1LoadModel(temp_fieldpath);
-	//boxHandle_ = MV1LoadModel(box_filename);
 	switchHandle_ = MV1LoadModel(switch_filename);
 	steelyardHandle_ = MV1LoadModel(steelyard_filename);
 	transObjHandle_ = MV1LoadModel(transparent_obj_filename);
@@ -40,7 +39,6 @@ ObjectManager::~ObjectManager()
 {
 	MV1DeleteModel(playerHandle_);
 	MV1DeleteModel(fieldHandle_);
-	//MV1DeleteModel(boxHandle_);
 	MV1DeleteModel(switchHandle_);
 	MV1DeleteModel(steelyardHandle_);
 	MV1DeleteModel(transObjHandle_);

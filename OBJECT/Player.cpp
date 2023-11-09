@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "../gimmick/ManualCrank.h"
 #include "../util/InputState.h"
 #include "../util/Model.h"
 #include "../util/ExternalFile.h"
@@ -48,9 +49,8 @@ Player::~Player()
 void Player::Init(LoadObjectInfo info)
 {
 
-	auto loadExternalFile = ExternalFile::GetInstance();
 	//プレイヤー情報の初期化
-	playerInfo_ = loadExternalFile.GetPlayerInfo();
+	playerInfo_ = ExternalFile::GetInstance().GetPlayerInfo();
 	
 	for (int i = 0; i < static_cast<int>(AnimType::max); i++)
 	{
@@ -118,16 +118,21 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 {
 
 	if (input.IsTriggered(InputType::carry)) {
-		(this->*carryUpdateFunc_)();
+		if (status_.situation.isCanBeCarried) {
+			(this->*carryUpdateFunc_)();
+		}
+		else if (status_.situation.isGimmickCanBeOperated) {
+			updateFunc_ = &Player::CrankUpdate;
+		}
 	}
 
-	if (status_.isTransit) {
+	if (status_.situation.isInTransit) {
 		deadPersonModelPointer_->GetModelPointer()->SetAnimEndFrame(animType_[AnimType::dead]);
 		deadPersonModelPointer_->GetModelPointer()->SetRot(DegreesToRadians(status_.rot));
 		deadPersonModelPointer_->GetModelPointer()->SetPos(FramPosition("hand.R_end"));
 	}
 	else {
-		isCanBeCarried_ = false;
+		status_.situation.isCanBeCarried = false;
 	}
 
 	ChangeAnimIdle();
@@ -143,7 +148,7 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 
 	//持ち運び中だったら
 	//以降の処理を行わない
-	if (status_.isTransit) {
+	if (status_.situation.isInTransit) {
 		return;
 	}
 
@@ -151,7 +156,7 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 	//jumpUpdateのどちらかに変更する
 	if (input.IsTriggered(InputType::space)) {
 
-		if (isClim_) {
+		if (status_.situation.isClim) {
 			//アニメーションの変更
 			//ChangeAnimNo(AnimType::clim, false, 20);
 			//updateFunc_ = &Player::ClimUpdate;
@@ -195,9 +200,9 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 void Player::ChangeAnimIdle()
 {
 	//待機アニメーションに戻す
-	if (!isMoving_) {
+	if (!status_.situation.isMoving) {
 
-		if (status_.isTransit) {
+		if (status_.situation.isInTransit) {
 			ChangeAnimNo(AnimType::carryIdle, true, 20);
 		}
 		else {
@@ -220,7 +225,7 @@ void Player::MovingUpdate(const InputState& input, std::shared_ptr<ObjectManager
 	if (movingSpeed != 0.0f) {
 		if (movingSpeed > playerInfo_.walkSpeed) {
 			//アニメーションの変更
-			if (status_.isTransit) {
+			if (status_.situation.isInTransit) {
 				ChangeAnimNo(AnimType::carryRunning, true, 20);
 			}
 			else {
@@ -229,7 +234,7 @@ void Player::MovingUpdate(const InputState& input, std::shared_ptr<ObjectManager
 		}
 		else if (movingSpeed <= playerInfo_.walkSpeed) {
 			//アニメーションの変更
-			if (status_.isTransit) {
+			if (status_.situation.isInTransit) {
 				ChangeAnimNo(AnimType::carryWalking, true, 20);
 			}
 			else {
@@ -239,7 +244,7 @@ void Player::MovingUpdate(const InputState& input, std::shared_ptr<ObjectManager
 	}
 
 	if (VSize(status_.moveVec) == 0.0f) {
-		isMoving_ = false;
+		status_.situation.isMoving = false;
 		return;
 	}
 
@@ -256,12 +261,12 @@ float Player::Move(const InputState& input) {
 	bool pressedRight = input.IsPressed(InputType::right);
 	bool pressedShift = input.IsPressed(InputType::shift);
 
-	isMoving_ = false;
+	status_.situation.isMoving = false;
 	float movingSpeed = 0.0f;
 
 	if (pressedUp || pressedDown || pressedLeft || pressedRight) {
 		movingSpeed = PlayerSpeed(pressedShift);
-		isMoving_ = true;
+		status_.situation.isMoving = true;
 	}
 
 	//HACK：汚い、リファクタリング必須
@@ -471,7 +476,7 @@ void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> o
 	//立つ家庭のアニメーションが終わったらidleupdateに変更する
 	if (status_.animNo == animType_[AnimType::situpToIdle] && player_->IsAnimEnd()) {
 		updateFunc_ = &Player::IdleUpdate;
-		isSitting_ = false;
+		status_.situation.isSitting = false;
 		return;
 	}
 
@@ -480,7 +485,7 @@ void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> o
 	//死ぬコマンド
 	if (input.IsTriggered(InputType::death)) {
 		DeathUpdate(input,objManager);
-		isSitting_ = false;
+		status_.situation.isSitting = false;
 		updateFunc_ = &Player::IdleUpdate;
 		return;
 	}
@@ -491,8 +496,8 @@ void Player::IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager>
 {
 	//アニメーションを座る過程のアニメーションに変更
 	//座っているフラグを立て、アニメーションループ変数を折る
-	if (!isSitting_) {
-		isSitting_ = true;
+	if (!status_.situation.isSitting) {
+		status_.situation.isSitting = true;
 		ChangeAnimNo(AnimType::idleToSitup, false, 20);
 	}
 
@@ -504,27 +509,31 @@ void Player::IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager>
 
 }
 
-
 //立ち上がる処理
 void Player::StandUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	if (player_->IsAnimEnd()) {
 		updateFunc_ = &Player::IdleUpdate;
-		isClim_ = false;
+		status_.situation.isClim = false;
 	}
 }
 
 void Player::SetCarryInfo(bool isCarry, shared_ptr<ObjectBase>model) {
-	isCanBeCarried_ = isCarry;
+	status_.situation.isCanBeCarried = isCarry;
 	deadPersonModelPointer_ = model;
+}
+
+void Player::SetGimmickModelPointer(std::shared_ptr<ManualCrank> crank) {
+	crank_ = crank;
+	status_.situation.isGimmickCanBeOperated = true;
 }
 
 void Player::CarryObjectUpdate()
 {
 	
-	if (!isCanBeCarried_) return;
+	if (!status_.situation.isCanBeCarried) return;
 
-	status_.isTransit = true;
+	status_.situation.isInTransit = true;
 
 	deadPersonModelPointer_->SetIsTransit(true);
 
@@ -537,18 +546,53 @@ void Player::DropOffObjectUpdate()
 {
 	bool isCarryWalking = status_.animNo == animType_[AnimType::carryWalking];
 	bool isCarry = status_.animNo == animType_[AnimType::carryIdle];
-	if ((isCarryWalking || isCarry) && isCanBeCarried_) {
-		isCanBeCarried_ = false;
+	if ((isCarryWalking || isCarry) && status_.situation.isCanBeCarried) {
+		status_.situation.isCanBeCarried = false;
 		deadPersonModelPointer_->SetIsTransit(false);
 		deadPersonModelPointer_->GetModelPointer()->SetPos(CenterFramPosition("foot.L", "foot.R"));
 		deadPersonModelPointer_.reset();
 	}
 
-	status_.isTransit = false;
-	isCanBeCarried_ = false;
+	status_.situation.isInTransit = false;
+	status_.situation.isCanBeCarried = false;
 
 	carryUpdateFunc_ = &Player::CarryObjectUpdate;
 
+}
+
+void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager) {
+
+	VECTOR pos = crank_->GetModelPointer()->GetPos();
+	float rotZ = crank_->GetRotZ();
+
+	if (input.IsPressed(InputType::up)) {
+		rotZ = (std::max)(rotZ - 3.0f, 0.0f);
+		CrankRotatinUpdate(rotZ, pos);
+	}
+	else if (input.IsPressed(InputType::down)) {
+		rotZ = (std::min)(rotZ + 3.0f, 630.0f);
+		CrankRotatinUpdate(rotZ, pos);
+	}
+
+	if (input.IsTriggered(InputType::carry)) {
+		status_.situation.isGimmickCanBeOperated = false;
+		updateFunc_ = &Player::IdleUpdate;
+	}
+
+}
+
+void Player::CrankRotatinUpdate(float rotZ, VECTOR pos) {
+
+	float radian = rotZ * DX_PI_F / 180.0f;
+
+	float x = sin(radian);
+	float z = cos(radian);
+
+	pos.x = -200 + x * 40;
+	pos.y = 100 + z * 40;
+
+	crank_->GetModelPointer()->SetPos(pos);
+	crank_->SetRotZ(rotZ);
 }
 
 //度数法から弧度法に変換した角度を返す

@@ -6,35 +6,19 @@ class Model;
 class InputState;
 class Player;
 
-enum class State {
-	top,
-	left,
-	bottom,
-	right,
-};
-
 class ManualCrank
 {
 public:
 	ManualCrank();
 	virtual ~ManualCrank();
 
-	void Update(const InputState& input);
+	//描画
 	void Draw();
-
-	//回転の更新
-	void AngleUpdate(const InputState& input);
-
-	//※現在使えてない※
-	//現在の状態を角度によって変化させる
-	void CurrentStateUpdate();
-
-	//次に移動できる角度の状態を更新する
-	void NextStateUpdate();
 
 	//プレイヤーとモデルの当たり判定を行う
 	bool HitCollPlayer(Player& player);
 
+	//モデルポインタを取得
 	std::shared_ptr<Model>GetModelPointer() { return model_; }
 
 	//現在のZ軸の回転率を取得する
@@ -43,19 +27,14 @@ public:
 	//Z軸の最大回転率を取得する
 	float GetMaxRotZ();
 
-private:
+	//回転率を設定する
+	void SetRotZ(float rotZ) { rotZ_ = rotZ; }
 
-	int crankLaps_ = 0;
+private:
 
 	float rotZ_ = 0.0f;
 
 	VECTOR pos_ = { -200, 100, 0 };
-	VECTOR rot_ = {};
-
-	State currentState_ = {};
-
-	State turnRight_ = {};
-	State turnLeft_ = {};
 
 	std::shared_ptr<Model> model_;
 

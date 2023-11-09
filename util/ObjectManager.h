@@ -79,7 +79,6 @@ private:
 
 	int playerHandle_ = -1;
 	int fieldHandle_ = -1;				//仮フィールドのモデルハンドル
-	//int boxHandle_ = -1;				//仮の箱オブジェクト用ハンドル
 	int switchHandle_ = -1;
 	int steelyardHandle_ = -1;
 	int transObjHandle_ = -1;

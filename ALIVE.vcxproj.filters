@@ -123,7 +123,7 @@
     <ClCompile Include="scene\PopUpTextScene.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
-    <ClCompile Include="scene\SoundSettingScene.cpp">
+    <ClCompile Include="scene\SettingScene.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
     <ClCompile Include="scene\TitlemenuScene.cpp">
@@ -272,7 +272,7 @@
     <ClInclude Include="scene\PopUpTextScene.h">
       <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
-    <ClInclude Include="scene\SoundSettingScene.h">
+    <ClInclude Include="scene\SettingScene.h">
       <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
     <ClInclude Include="scene\TitlemenuScene.h">

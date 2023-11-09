@@ -2,7 +2,7 @@
 #include "SceneManager.h"
 #include "SceneTitle.h"
 #include "KeyConfigScene.h"
-#include "SoundSettingScene.h"
+#include "SettingScene.h"
 #include "DebugScene.h"
 
 #include "../util/InputState.h"
@@ -67,7 +67,7 @@ void ScenePause::Update(const InputState& input)
 			break;
 		//サウンドセッティングへの遷移
 		 case 1:
-			 manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<SoundSettingScene>(manager_)));
+			 manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<SettingScene>(manager_)));
 			 break;
 		//タイトルシーンへの遷移
 		case 2:

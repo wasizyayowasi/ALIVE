@@ -73,7 +73,7 @@ void Aster::Draw()
 			}
 			
 			VECTOR pos = ConvWorldPosToScreenPos(masu_[i].centerPos);
-			DrawFormatString(pos.x, pos.y, 0x448844, "%d", i);
+			DrawFormatStringF(pos.x, pos.y, 0x448844, "%d", i);
 		}
 
 		DrawFormatString(0, 16, 0x448844, "敵がいるインデックス%d", enemyIndex_);
@@ -85,7 +85,7 @@ void Aster::Draw()
 		//int y = 128;
 		for (auto& result : debugScoreTable) {
 			VECTOR pos = ConvWorldPosToScreenPos(masu_[result.second.destinationIndex].centerPos);
-			DrawFormatString(pos.x, pos.y + 10, 0xff0000, "S:%d", result.second.score);
+			DrawFormatStringF(pos.x, pos.y + 10, 0xff0000, "S:%d", result.second.score);
 			//y += 16;
 		}
 	}
@@ -207,7 +207,7 @@ bool Aster::StraightLineDistanceSearch(VECTOR playerPos, VECTOR enemyPos)
 	VECTOR distance = VSub(playerPos, enemyPos);
 
 	float size = VSize(distance);
-	int num = size / 100;
+	int num = static_cast<int>(size / 100);
 	bool isBlockade = false;
 
 	//敵のインデックスを取得
@@ -221,8 +221,8 @@ bool Aster::StraightLineDistanceSearch(VECTOR playerPos, VECTOR enemyPos)
 		VECTOR scale = VScale(norm, i * 100.0f);
 		VECTOR pos = VAdd(enemyPos, scale);
 
-		int x = pos.x / 100;
-		int z = pos.z / 100;
+		int x = static_cast<int>(pos.x / 100);
+		int z = static_cast<int>(pos.z / 100);
 
 		int temp = enemyIndex_ + (x * max_X + z);
 

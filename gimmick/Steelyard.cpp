@@ -36,7 +36,7 @@ void Steelyard::Update(Player& player, const InputState& input)
 	priorityStateLeft_ = HitState::noHit;
 	priorityStateRight_ = HitState::noHit;
 
-	isTransit_ = player.GetStatus().isTransit;
+	isTransit_ = player.GetStatus().situation.isInTransit;
 
 	//優先ステータスの取得
 	PriorityState(hitStateListLeft_, priorityStateLeft_);

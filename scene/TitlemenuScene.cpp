@@ -36,10 +36,10 @@ void TitlemenuScene::Init()
 
 	//UI‰æ‘œ‚Ìì¬
 	int font = FontsManager::getInstance().GetFontHandle("ƒsƒOƒ‚ 0042");
-	int y = 120;
+	float y = 120.0f;
 	for (auto& menu : menuName_) {
 		UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 2 + y,320, 100, menu.c_str(), font);
-		y += 40;
+		y += 40.0f;
 	}
 
 }

@@ -46,6 +46,13 @@ public:
 
 private:
 
+	//消すかもしれない
+	void FadeInUpdate(const InputState& input);
+	void NormalUpdate(const InputState& input);
+	void FadeOutUpdate(const InputState& input);
+
+private:
+
 	int fontHandleSize16_ = -1;				//フォント16サイズを保管する変数
 	int fontHandleSize32_ = -1;				//フォント32サイズを保管する変数
 	int makeScreenHandle_ = -1;				//作成したハンドルを保管する変数
@@ -59,14 +66,15 @@ private:
 	int fadeValue_ = 0;
 	int fadeColor_ = 0x000000;
 
-	bool isEditing_ = false;				//編集中フラグ
+	bool isEditing_ = false;							//編集中フラグ
 
-	const InputState& inputState_;			//コンストラクタの引数input参照を受け取る
+	const InputState& inputState_;						//コンストラクタの引数input参照を受け取る
 
-	std::shared_ptr<UIItemManager> UI_;		//UIマネージャーのスマートポインタ
+	std::shared_ptr<UIItemManager> UI_;					//UIマネージャーのスマートポインタ
 
-	void (KeyConfigScene::* updateFunc_)();	//メンバ関数ポインタ
-	void (KeyConfigScene::* drawFunc_)();	//メンバ関数ポインタ
+	void (KeyConfigScene::* updateFunc_)(const InputState& input);
+	void (KeyConfigScene::* changeKeyUpdateFunc_)();	//メンバ関数ポインタ
+	void (KeyConfigScene::* drawFunc_)();				//メンバ関数ポインタ
 
 };
 

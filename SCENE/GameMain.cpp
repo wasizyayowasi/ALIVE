@@ -65,9 +65,8 @@ void GameMain::Init()
 	Set3DSoundOneMetre(10.0f);
 
 	//セーブデータの内容を読み取る
-	auto data = ExternalFile::GetInstance();
 	//死亡回数
-	totalDeathNum_ = data.GetSaveData().totalDeathNum;
+	totalDeathNum_ = ExternalFile::GetInstance().GetSaveData().totalDeathNum;
 
 	//3Dリスナーの位置を設定する
 	SoundManager::GetInstance().Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
@@ -100,19 +99,19 @@ void GameMain::Draw()
 	camera_->TrackingCameraUpdate(player_->GetStatus().pos);
 //	camera_->DebugCamera(player_->GetStatus().pos);
 
-	//broom_->writingScreenUpdate(player_->getPos());
+//	broom_->writingScreenUpdate(player_->GetStatus().pos);
 	DrawString(0, 0, "GameMain", 0xffffff);
 
 	//オブジェクトの描画
 	objManager_->Draw();
 
-	DrawFormatString(0, 16, 0x448844, "%d", totalDeathNum_);
+//	DrawFormatString(0, 16, 0x448844, "%d", totalDeathNum_);
 
 	//プレイヤーの描画
 	player_->Draw();
 
-	//broom_->graphFilterUpdate();
-	//broom_->draw();
+//	broom_->graphFilterUpdate();
+//	broom_->draw();
 
 	SetDrawScreen(DX_SCREEN_BACK);
 

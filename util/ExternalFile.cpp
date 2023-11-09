@@ -88,8 +88,8 @@ void ExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 
 void ExternalFile::ClearSaveData()
 {
-	data.checkPoint = VGet(0, 0, 0);
-	data.totalDeathNum = 0;
+	data_.checkPoint = VGet(0, 0, 0);
+	data_.totalDeathNum = 0;
 }
 
 //プレイヤーのステータス情報を読み込む
@@ -105,15 +105,15 @@ void ExternalFile::LoadPlayerInfo(const char* const filename)
 	json json_;
 	ifs >> json_;
 
-	player.jumpPower = json_["jumpPower"];
-	player.runningJumpPower = json_["runningJumpPower"];
-	player.rotSpeed = json_["rotSpeed"];
-	player.walkSpeed = json_["walkSpeed"];
-	player.runningSpeed = json_["runningSpeed"];
+	player_.jumpPower = json_["jumpPower"];
+	player_.runningJumpPower = json_["runningJumpPower"];
+	player_.rotSpeed = json_["rotSpeed"];
+	player_.walkSpeed = json_["walkSpeed"];
+	player_.runningSpeed = json_["runningSpeed"];
 
 	int i = 0;
 	for (auto& animNo : json_["animNo"]) {
-		player.animNo_[i] = animNo;
+		player_.animNo_[i] = animNo;
 		i++;
 	}
 
@@ -134,10 +134,10 @@ void ExternalFile::LoadSaveDataInfo(const char* const filename)
 	json json;
 	ifs >> json;
 
-	data.checkPoint.x = json["checkPointX"];
-	data.checkPoint.y = json["checkPointY"];
-	data.checkPoint.z = json["checkPointZ"];
-	data.totalDeathNum = json["totalDeath"];
+	data_.checkPoint.x = json["checkPointX"];
+	data_.checkPoint.y = json["checkPointY"];
+	data_.checkPoint.z = json["checkPointZ"];
+	data_.totalDeathNum = json["totalDeath"];
 
 	ifs.close();
 

@@ -1,4 +1,4 @@
-#include "SoundSettingScene.h"
+#include "SettingScene.h"
 #include "SceneManager.h"
 #include "ScenePause.h"
 #include "KeyConfigScene.h"
@@ -25,15 +25,15 @@ namespace {
 	constexpr float move_speed = 3.0f;
 }
 
-SoundSettingScene::SoundSettingScene(SceneManager& manager):SceneBase(manager),updateFunc_(&SoundSettingScene::GaussFadeInUpdate)
+SettingScene::SettingScene(SceneManager& manager):SceneBase(manager),updateFunc_(&SettingScene::GaussFadeInUpdate)
 {
 }
 
-SoundSettingScene::~SoundSettingScene()
+SettingScene::~SettingScene()
 {
 }
 
-void SoundSettingScene::Init()
+void SettingScene::Init()
 {
 	//画像の読み込み
 	BGMBarHandle_ = LoadGraph(bar_graph_path);
@@ -86,7 +86,7 @@ void SoundSettingScene::Init()
 
 }
 
-void SoundSettingScene::End()
+void SettingScene::End()
 {
 	DeleteGraph(BGMBarHandle_);
 	DeleteGraph(SEBarHandle_);
@@ -96,12 +96,12 @@ void SoundSettingScene::End()
 	DeleteGraph(makeScreenHandle_);
 }
 
-void SoundSettingScene::Update(const InputState& input)
+void SettingScene::Update(const InputState& input)
 {
 	(this->*updateFunc_)(input);
 }
 
-void SoundSettingScene::Draw()
+void SettingScene::Draw()
 {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, 0x000000, true);
@@ -145,7 +145,7 @@ void SoundSettingScene::Draw()
 
 }
 
-void SoundSettingScene::NormalUpdate(const InputState& input)
+void SettingScene::NormalUpdate(const InputState& input)
 {
 
 	if (input.IsTriggered(InputType::up)) {
@@ -163,16 +163,16 @@ void SoundSettingScene::NormalUpdate(const InputState& input)
 	}
 }
 
-void SoundSettingScene::GaussFadeInUpdate(const InputState& input)
+void SettingScene::GaussFadeInUpdate(const InputState& input)
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) {
-		updateFunc_ = &SoundSettingScene::NormalUpdate;
+		updateFunc_ = &SettingScene::NormalUpdate;
 		fadeValue_ = 255;
 	}
 }
 
-void SoundSettingScene::GaussFadeOutUpdate(const InputState& input)
+void SettingScene::GaussFadeOutUpdate(const InputState& input)
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) {
@@ -182,7 +182,7 @@ void SoundSettingScene::GaussFadeOutUpdate(const InputState& input)
 	}
 }
 
-void SoundSettingScene::BGMUpdate(const InputState& input)
+void SettingScene::BGMUpdate(const InputState& input)
 {
 
 	//BGM音量調整
@@ -202,7 +202,7 @@ void SoundSettingScene::BGMUpdate(const InputState& input)
 	
 }
 
-void SoundSettingScene::SEUpdate(const InputState& input)
+void SettingScene::SEUpdate(const InputState& input)
 {
 	//SE音量調整
 	if (input.IsTriggered(InputType::left)) {
@@ -220,7 +220,7 @@ void SoundSettingScene::SEUpdate(const InputState& input)
 
 }
 
-void SoundSettingScene::ChangeWindowUpdate(const InputState& input)
+void SettingScene::ChangeWindowUpdate(const InputState& input)
 {
 	if (input.IsTriggered(InputType::left)) {
 		windowModeText_ = "≪  フルスクリーン  ≫";
@@ -232,7 +232,7 @@ void SoundSettingScene::ChangeWindowUpdate(const InputState& input)
 	}
 }
 
-void SoundSettingScene::MovePictogram(int pictPos, float& pos, float& rot, bool& inversion)
+void SettingScene::MovePictogram(int pictPos, float& pos, float& rot, bool& inversion)
 {
 	float targetPos = Game::screen_width / 3 + pictgram_move_distance + pictPos * pictgram_move_distance;
 	float distance = targetPos - pos;
@@ -258,7 +258,7 @@ void SoundSettingScene::MovePictogram(int pictPos, float& pos, float& rot, bool&
 
 }
 
-void SoundSettingScene::ChangeUpdateFunc(const InputState& input)
+void SettingScene::ChangeUpdateFunc(const InputState& input)
 {
 	switch (selectNum_) {
 	case 0:
@@ -273,13 +273,13 @@ void SoundSettingScene::ChangeUpdateFunc(const InputState& input)
 	case 3:
 		if (input.IsTriggered(InputType::space)) {
 			nextScene_ = std::make_shared<KeyConfigScene>(manager_, input);
-			updateFunc_ = &SoundSettingScene::GaussFadeOutUpdate;
+			updateFunc_ = &SettingScene::GaussFadeOutUpdate;
 		}
 		break;
 	case 4:
 		if (input.IsTriggered(InputType::space)) {
 			nextScene_ = std::make_shared<ScenePause>(manager_);
-			updateFunc_ = &SoundSettingScene::GaussFadeOutUpdate;
+			updateFunc_ = &SettingScene::GaussFadeOutUpdate;
 		}
 		break;
 	}

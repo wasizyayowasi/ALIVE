@@ -29,13 +29,13 @@ public:
 	/// プレイヤーに関する情報を取得する
 	/// </summary>
 	/// <returns>playerData</returns>
-	PlayerInfo GetPlayerInfo() { return player; }
+	PlayerInfo GetPlayerInfo() { return player_; }
 
 	/// <summary>
 	/// savedataを取得する
 	/// </summary>
 	/// <returns>saveData</returns>
-	SaveData GetSaveData() { return data; }
+	SaveData GetSaveData() { return data_; }
 
 	/// <summary>
 	/// オブジェクトの配置情報を取得
@@ -85,8 +85,11 @@ private:
 
 private:
 
-	PlayerInfo player;
-	SaveData data;
+	PlayerInfo player_;
+	SaveData data_;
+
+	ExternalFile(const ExternalFile&) = delete;
+	void operator = (const ExternalFile&) = delete;
 
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadObjInfo_;
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadGimmickInfo_;
