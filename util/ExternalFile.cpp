@@ -40,7 +40,8 @@ void ExternalFile::LoadFile(bool isLood)
 	}
 
 	LoadPlayerInfo("player");
-	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
+//	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
+	LoadObjectData("data/objData/gati.pos",loadObjInfo_);
 	LoadObjectData("data/objData/gimmick.pos",loadGimmickInfo_);
 }
 

@@ -35,8 +35,8 @@ KeyConfigScene::~KeyConfigScene()
 void KeyConfigScene::Init()
 {
 	//フォントの作成
-	fontHandleSize16_ = FontsManager::getInstance().GetFontHandle("ピグモ 0021");
-	fontHandleSize32_ = FontsManager::getInstance().GetFontHandle("ピグモ 0042");
+	fontHandleSize21_ = FontsManager::getInstance().GetFontHandle("ピグモ 0021");
+	fontHandleSize42_ = FontsManager::getInstance().GetFontHandle("ピグモ 0042");
 	//インスタンス化
 	UI_ = std::make_shared<UIItemManager>();
 
@@ -47,7 +47,7 @@ void KeyConfigScene::Init()
 	int nameNo = 0;
 	for (auto& table : inputState_.inputNameTable_) {
 		//メニューの追加
-		UI_->AddMenu(namePosX, namePosY, 320, 100, table.second.c_str(), fontHandleSize16_);
+		UI_->AddMenu(namePosX, namePosY, 320, 100, table.second.c_str(), fontHandleSize21_);
 
 		//ポジション調整
 		namePosY += graph_chip_size + graph_gap_size;
@@ -62,8 +62,8 @@ void KeyConfigScene::Init()
 	}
 
 	//メニューの追加
-	UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 5 * 4, 320, 100, "変更", fontHandleSize32_);
-	UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 5 * 4 + 32, 320, 100, "キャンセル", fontHandleSize32_);
+	UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 5 * 4, 320, 100, "変更", fontHandleSize42_);
+	UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 5 * 4 + 32, 320, 100, "キャンセル", fontHandleSize42_);
 
 	//スクリーンサイズのハンドルを作成
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
@@ -93,6 +93,8 @@ void KeyConfigScene::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 8, 255 - fadeValue_);
 
 	//makeScreenで作成したハンドルを描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
@@ -187,9 +189,9 @@ void KeyConfigScene::ChangeKeyPopUpText()
 	//文字列
 	const char* text = inputState_.inputNameTable_.find(static_cast<InputType>(selectNum_))->second.c_str();
 	//文字列の横幅
-	int strWidth = GetDrawStringWidthToHandle(text, strlen(text), fontHandleSize16_);
+	int strWidth = GetDrawStringWidthToHandle(text, strlen(text), fontHandleSize21_);
 	//選択したキーの名前を出力
-	DrawStringToHandle(Game::screen_width / 6 + strWidth / 2 , Game::screen_height / 5 - graph_chip_size / 2 - 8, text, 0xffffff, fontHandleSize16_);
+	DrawStringToHandle(Game::screen_width / 6 + strWidth / 2 , Game::screen_height / 5 - graph_chip_size / 2 - 8, text, 0xffffff, fontHandleSize21_);
 
 	//選択したキーのidを取得して画像を分割する
 	int num = GetKeyName(inputState_.tempMapTable_.find(static_cast<InputType>(selectNum_))->second.begin()->id);
@@ -201,9 +203,9 @@ void KeyConfigScene::ChangeKeyPopUpText()
 	//文字列
 	text = "変更したいキーを入力してください";
 	//文字列の横幅
-	strWidth = GetDrawStringWidthToHandle(text, strlen(text), fontHandleSize32_);
+	strWidth = GetDrawStringWidthToHandle(text, strlen(text), fontHandleSize42_);
 	//文字列の描画
-	DrawStringToHandle(Game::screen_width / 2 - strWidth / 2, Game::screen_height / 2, text, 0xffffff, fontHandleSize32_);
+	DrawStringToHandle(Game::screen_width / 2 - strWidth / 2, Game::screen_height / 2, text, 0xffffff, fontHandleSize42_);
 
 }
 

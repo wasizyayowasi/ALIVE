@@ -43,9 +43,9 @@ void SceneManager::SwapScene(std::shared_ptr<SceneBase> scene)
 	scenes_.front()->Init();
 }
 
-void SceneManager::PopScene()
+void SceneManager::PopFrontScene()
 {
-	//先頭のシーン以外を削除する
+	//先頭のシーンを削除する
 	if (scenes_.size() > 1) {
 		scenes_.front()->End();
 		scenes_.pop_front();

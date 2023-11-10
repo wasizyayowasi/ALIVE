@@ -27,7 +27,7 @@ void PopUpTextScene::End()
 void PopUpTextScene::Update(const InputState& input)
 {
 	if (input.IsTriggered(InputType::space)) {
-		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+		manager_.PopFrontScene();
 	}
 }
 

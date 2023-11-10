@@ -141,7 +141,7 @@ void GameMain::ObjectGenerater()
 	//プレイヤーのインスタンス化
 	player_ = make_shared<Player>(player_Filename);
 	//プレイヤーの初期化
-	player_->Init(loadData.GetSpecifiedInfo("player").front());
+	player_->Init(loadData.GetSpecifiedInfo("Player").front());
 
 }
 

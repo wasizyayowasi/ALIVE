@@ -63,7 +63,7 @@ void ScenePause::Update(const InputState& input)
 		 switch(selectNum_) {
 		//一個前のシーン(メインシーン)へ遷移
 		case 0:
-			manager_.PopScene();
+			manager_.PopFrontScene();
 			break;
 		//サウンドセッティングへの遷移
 		 case 1:
@@ -82,7 +82,7 @@ void ScenePause::Update(const InputState& input)
 
 	//一個前のシーン(メインシーン)へ遷移
 	if (input.IsTriggered(InputType::pause)) {
-		manager_.PopScene();
+		manager_.PopFrontScene();
 	}
 }
 

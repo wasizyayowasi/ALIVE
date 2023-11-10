@@ -20,6 +20,8 @@ enum class ObjectType{
 	gimmickSteelyard,
 	trans,
 	elevator,
+	BigBuildingA,
+	Street,
 	max,
 };
 

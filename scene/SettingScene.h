@@ -61,7 +61,7 @@ private:
 
 
 	//Ç±Ç±Ç‡è¡Ç∑Ç©Ç‡ÇµÇÍÇ»Ç¢
-	static constexpr int fadeInterval_ = 60;
+	static constexpr int fadeInterval_ = 30;
 	int fadeTimer_ = 0;
 	int fadeValue_ = 0;
 	int fadeColor_ = 0x000000;

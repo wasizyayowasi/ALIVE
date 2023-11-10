@@ -84,6 +84,9 @@ private:
 	int transObjHandle_ = -1;
 	int elevatorHandle_ = -1;
 
+	int buildingAHandle_ = -1;
+	int streetHandle_ = -1;
+
 	std::list<std::shared_ptr<Model>> checkCollList_;
 
 	std::unordered_map<ObjectType, std::list<std::shared_ptr<ObjectBase>>> objects_;			//オブジェクトをobjectTypeをキーにlistでもつ

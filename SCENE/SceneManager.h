@@ -12,7 +12,7 @@ public:
 	void PushFrontScene(std::shared_ptr<SceneBase> scene);			//メインのシーンを保ったまま別のシーンを前画面に表示する
 	void PushBackScene(std::shared_ptr<SceneBase> scene);			//メインのシーンを保ったまま別のシーンを後画面に表示する
 	void SwapScene(std::shared_ptr<SceneBase> scene);				//シーンをすり替える
-	void PopScene();												//ひとつ前のシーンに戻る
+	void PopFrontScene();												//ひとつ前のシーンに戻る
 	void Update(const InputState& input);							//シーンの更新
 	void Draw();													//シーンの描画
 	bool End() { return isEnd_; };									//メインwhile文を終了させるため

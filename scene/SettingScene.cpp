@@ -113,7 +113,6 @@ void SettingScene::Draw()
 	int BGMPictPos = static_cast<int>((static_cast<float>(volumeBGM_) / 250.0f) * 10);
 	int SEPictPos = static_cast<int>((static_cast<float>(volumeSE_) / 250.0f) * 10);
 
-
 	UIManager_->AlphaChangeDraw(selectNum_);
 
 	//音量バー画像
@@ -139,6 +138,8 @@ void SettingScene::Draw()
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
+	GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 8, 255-fadeValue_);
+
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	DrawGraph(0, 0, makeScreenHandle_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -159,7 +160,7 @@ void SettingScene::NormalUpdate(const InputState& input)
 
 	//シーン切り替え
 	if (input.IsTriggered(InputType::pause)) {
-		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+		updateFunc_ = &SettingScene::GaussFadeOutUpdate;
 	}
 }
 

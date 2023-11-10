@@ -65,8 +65,9 @@ void Player::Init(LoadObjectInfo info)
 	player_->SetScale(info.scale);
 	//ポジションの設定
 	player_->SetPos(info.pos);
+	status_.pos = info.pos;
 	//回転率の設定
-	player_->SetPos(info.rot);
+	player_->SetRot(info.rot);
 	//コリジョンフレームの設定
 	player_->SetCollFrame("Character");
 

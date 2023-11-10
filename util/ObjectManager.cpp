@@ -23,6 +23,9 @@ namespace {
 	const char* const steelyard_filename = "data/model/steelyard.mv1";
 	const char* const transparent_obj_filename = "data/model/trans.mv1";
 	const char* const elevator_obj_filename = "data/model/elevator.mv1";
+
+	const char* const buildingA_filepath = "data/model/city/BigBuildingA.mv1";
+	const char* const street_filepath = "data/model/city/Street.mv1";
 }
 
 ObjectManager::ObjectManager()
@@ -33,6 +36,9 @@ ObjectManager::ObjectManager()
 	steelyardHandle_ = MV1LoadModel(steelyard_filename);
 	transObjHandle_ = MV1LoadModel(transparent_obj_filename);
 	elevatorHandle_ = MV1LoadModel(elevator_obj_filename);
+
+	buildingAHandle_ = MV1LoadModel(buildingA_filepath);
+	streetHandle_ = MV1LoadModel(street_filepath);
 }
 
 ObjectManager::~ObjectManager()
@@ -43,6 +49,9 @@ ObjectManager::~ObjectManager()
 	MV1DeleteModel(steelyardHandle_);
 	MV1DeleteModel(transObjHandle_);
 	MV1DeleteModel(elevatorHandle_);
+
+	MV1DeleteModel(buildingAHandle_);
+	MV1DeleteModel(streetHandle_);
 }
 
 void ObjectManager::ObjectGenerator()
@@ -76,7 +85,7 @@ void ObjectManager::ObjectGenerator()
 			}
 		}
 		//ìGÇçÏê¨
-		else if (objInfo.first == "player") {
+		else if (objInfo.first == "Player") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
 			}
@@ -84,6 +93,16 @@ void ObjectManager::ObjectGenerator()
 		else if (objInfo.first == "elevator") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::gimmickBase, ObjectType::elevator, objSecond);
+			}
+		}
+		else if (objInfo.first == "BigBuildingA") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingA, objSecond);
+			}
+		}
+		else if (objInfo.first == "Street") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Street, objSecond);
 			}
 		}
 	}
@@ -271,6 +290,12 @@ void ObjectManager::OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo
 	switch (objType) {
 	case ObjectType::field:
 		objects_[objType].push_front(std::make_shared<OrnamentBase>(fieldHandle_, objInfo));
+		break;
+	case ObjectType::BigBuildingA:
+		objects_[objType].push_front(std::make_shared<OrnamentBase>(buildingAHandle_, objInfo));
+		break;
+	case ObjectType::Street:
+		objects_[objType].push_front(std::make_shared<OrnamentBase>(streetHandle_, objInfo));
 		break;
 	}
 }
