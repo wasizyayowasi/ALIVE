@@ -7,11 +7,16 @@ namespace {
 
 	constexpr float camera_sride_speed = 10.0f;
 
-	constexpr float add_focus = 50.0f;
+	constexpr float add_focus = 30.0f;
+
+	const VECTOR init_pos = VGet(0, 500, -600);
 }
 
 Camera::Camera()
 {
+
+	cameraPos_ = init_pos;
+
 	tempRoom[0] = 1000;
 	tempRoom[1] = 1500;
 	tempRoom[2] = 2000;
@@ -52,7 +57,7 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos)
 
 	//カメラがプレイヤーを追いかける用にする
 	cameraPos_.y = ((300.0f * 0.9f) + (playerPos.y * 0.1f));
-	cameraPos_.z = playerPos.z - 800.0f;
+	cameraPos_.z = playerPos.z + init_pos.z;
 
 	//プレイヤーがいた位置を見るようにする
 	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
@@ -109,13 +114,13 @@ void Camera::ChangeOfFocus(const InputState& input)
 	if (input_.Ry < 0 || input.IsPressed(InputType::upArrow)) {
 		cameraTarget_.y += add_focus;
 	}
-	else if (input_.Ry > 0 || input.IsPressed(InputType::downArrow)) {
+	if (input_.Ry > 0 || input.IsPressed(InputType::downArrow)) {
 		cameraTarget_.y -= add_focus;
 	}
-	else if (input_.Rx < 0 || input.IsPressed(InputType::leftArrow)) {
+	if (input_.Rx < 0 || input.IsPressed(InputType::leftArrow)) {
 		cameraTarget_.x -= add_focus;
 	} 
-	else if (input_.Rx > 0 || input.IsPressed(InputType::rightArrow)) {
+	if (input_.Rx > 0 || input.IsPressed(InputType::rightArrow)) {
 		cameraTarget_.x += add_focus;
 	}
 }

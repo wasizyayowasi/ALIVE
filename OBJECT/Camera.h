@@ -53,7 +53,7 @@ private:
 	float tempRoom[3];
 	float fixedPointCameraDestinationPosX = 0.0f;		//定点カメラの移動先で座標Xを保管する変数
 
-	VECTOR cameraPos_ = {0, 500, -800};					//カメラのポジション
+	VECTOR cameraPos_;									//カメラのポジション
 	VECTOR cameraTarget_ = {0, 0, 0};					//カメラのターゲット
 
 };

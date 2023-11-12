@@ -10,6 +10,14 @@ class Model;
 class Player;
 class InputState;
 
+enum class ModelHandleType {
+	BigBuilding,
+	BuildingType1,
+	BuildingType2,
+	Store,
+	Street,
+};
+
 class ObjectManager
 {
 public:
@@ -84,10 +92,9 @@ private:
 	int transObjHandle_ = -1;
 	int elevatorHandle_ = -1;
 
-	int buildingAHandle_ = -1;
-	int streetHandle_ = -1;
-
 	std::list<std::shared_ptr<Model>> checkCollList_;
+
+	std::unordered_map<ObjectType,int> modelHandle_;
 
 	std::unordered_map<ObjectType, std::list<std::shared_ptr<ObjectBase>>> objects_;			//オブジェクトをobjectTypeをキーにlistでもつ
 };

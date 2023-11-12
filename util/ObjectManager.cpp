@@ -15,7 +15,7 @@
 
 namespace {
 	const char* const player_Filename = "data/player/player16.mv1";
-
+	//仮モデルのファイルパス
 	const char* const temp_fieldpath = "data/model/tempFiled4.mv1";
 	const char* const temp_stairs = "data/model/stairs.mv1";
 	const char* const bigPillar_filename = "data/level0_model/bigPillar.mv1";
@@ -24,8 +24,28 @@ namespace {
 	const char* const transparent_obj_filename = "data/model/trans.mv1";
 	const char* const elevator_obj_filename = "data/model/elevator.mv1";
 
-	const char* const buildingA_filepath = "data/model/city/BigBuildingA.mv1";
+	//実際に使う予定のモデルパス
+	//でかいビル
+	const char* const big_buildingA_filepath = "data/model/city/BigBuildingA.mv1";
+	const char* const big_buildingB_filepath = "data/model/city/BigBuildingB.mv1";
+	const char* const big_buildingC_filepath = "data/model/city/BigBuildingC.mv1";
+	const char* const big_buildingD_filepath = "data/model/city/BigBuildingD.mv1";
+	//Aみたいな形のビル
+	const char* const buildingA_filepath = "data/model/city/BuildingA.mv1";
+	const char* const buildingB_filepath = "data/model/city/BuildingB.mv1";
+	const char* const buildingC_filepath = "data/model/city/BuildingC.mv1";
+	//長方形のビル
+	const char* const buildingA_type2_filepath = "data/model/city/Building2A.mv1";
+	const char* const buildingB_type2_filepath = "data/model/city/Building2B.mv1";
+	const char* const buildingC_type2_filepath = "data/model/city/Building2C.mv1";
+	//海外で見るような飲食店
+	const char* const storeA_filepath = "data/model/city/StoreA.mv1";
+	const char* const storeB_filepath = "data/model/city/StoreB.mv1";
+	const char* const storeC_filepath = "data/model/city/StoreC.mv1";
+	//道
 	const char* const street_filepath = "data/model/city/Street.mv1";
+	const char* const T_street_filepath = "data/model/city/TStreet.mv1";
+	const char* const Tile_filepath = "data/model/city/Tile.mv1";
 }
 
 ObjectManager::ObjectManager()
@@ -37,8 +57,27 @@ ObjectManager::ObjectManager()
 	transObjHandle_ = MV1LoadModel(transparent_obj_filename);
 	elevatorHandle_ = MV1LoadModel(elevator_obj_filename);
 
-	buildingAHandle_ = MV1LoadModel(buildingA_filepath);
-	streetHandle_ = MV1LoadModel(street_filepath);
+	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);
+	modelHandle_[ObjectType::BigBuildingB] = MV1LoadModel(big_buildingB_filepath);
+	modelHandle_[ObjectType::BigBuildingC] = MV1LoadModel(big_buildingC_filepath);
+	modelHandle_[ObjectType::BigBuildingD] = MV1LoadModel(big_buildingD_filepath);
+
+	modelHandle_[ObjectType::BuildingAType1] = MV1LoadModel(buildingA_filepath);
+	modelHandle_[ObjectType::BuildingBType1] = MV1LoadModel(buildingB_filepath);
+	modelHandle_[ObjectType::BuildingCType1] = MV1LoadModel(buildingC_filepath);
+
+	modelHandle_[ObjectType::BuildingAType2] = MV1LoadModel(buildingA_type2_filepath);
+	modelHandle_[ObjectType::BuildingBType2] = MV1LoadModel(buildingB_type2_filepath);
+	modelHandle_[ObjectType::BuildingCType2] = MV1LoadModel(buildingC_type2_filepath);
+
+	modelHandle_[ObjectType::StoreA] = MV1LoadModel(storeA_filepath);
+	modelHandle_[ObjectType::StoreB] = MV1LoadModel(storeB_filepath);
+	modelHandle_[ObjectType::StoreC] = MV1LoadModel(storeC_filepath);
+
+	modelHandle_[ObjectType::Street] = MV1LoadModel(street_filepath);
+	modelHandle_[ObjectType::TStreet] = MV1LoadModel(T_street_filepath);
+	modelHandle_[ObjectType::Tile] = MV1LoadModel(Tile_filepath);
+
 }
 
 ObjectManager::~ObjectManager()
@@ -50,8 +89,10 @@ ObjectManager::~ObjectManager()
 	MV1DeleteModel(transObjHandle_);
 	MV1DeleteModel(elevatorHandle_);
 
-	MV1DeleteModel(buildingAHandle_);
-	MV1DeleteModel(streetHandle_);
+	for (auto& type : modelHandle_) {
+		MV1DeleteModel(type.second);
+	}
+
 }
 
 void ObjectManager::ObjectGenerator()
@@ -100,9 +141,79 @@ void ObjectManager::ObjectGenerator()
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingA, objSecond);
 			}
 		}
+		else if (objInfo.first == "BigBuildingB") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingB, objSecond);
+			}
+		}
+		else if (objInfo.first == "BigBuildingC") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingC, objSecond);
+			}
+		}
+		else if (objInfo.first == "BigBuildingD") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingD, objSecond);
+			}
+		}
+		else if (objInfo.first == "BuildingA") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingAType1, objSecond);
+			}
+		}
+		else if (objInfo.first == "BuildingB") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingBType1, objSecond);
+			}
+		}
+		else if (objInfo.first == "BuildingC") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingCType1, objSecond);
+			}
+		}
+		else if (objInfo.first == "Building2A") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingAType2, objSecond);
+			}
+		}
+		else if (objInfo.first == "Building2B") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingBType2, objSecond);
+			}
+		}
+		else if (objInfo.first == "Building2C") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingCType2, objSecond);
+			}
+		}
+		else if (objInfo.first == "StoreA") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::StoreA, objSecond);
+			}
+		}
+		else if (objInfo.first == "StoreB") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::StoreB, objSecond);
+			}
+		}
+		else if (objInfo.first == "StoreC") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::StoreC, objSecond);
+			}
+		}
 		else if (objInfo.first == "Street") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Street, objSecond);
+			}
+		}
+		else if (objInfo.first == "TStreet") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::TStreet, objSecond);
+			}
+		}
+		else if (objInfo.first == "Tile") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Tile, objSecond);
 			}
 		}
 	}
@@ -287,17 +398,21 @@ void ObjectManager::EnemyGenerator(ObjectType objType, LoadObjectInfo objInfo)
 //置物生成機
 void ObjectManager::OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
-	switch (objType) {
-	case ObjectType::field:
-		objects_[objType].push_front(std::make_shared<OrnamentBase>(fieldHandle_, objInfo));
-		break;
-	case ObjectType::BigBuildingA:
-		objects_[objType].push_front(std::make_shared<OrnamentBase>(buildingAHandle_, objInfo));
-		break;
-	case ObjectType::Street:
-		objects_[objType].push_front(std::make_shared<OrnamentBase>(streetHandle_, objInfo));
-		break;
-	}
+
+	objects_[objType].push_front(std::make_shared<OrnamentBase>(modelHandle_[objType], objInfo));
+
+//	switch (objType) {
+//	case ObjectType::field:
+//		objects_[objType].push_front(std::make_shared<OrnamentBase>(fieldHandle_, objInfo));
+//		break;
+//	case ObjectType::BigBuildingA:
+//		objects_[objType].push_front(std::make_shared<OrnamentBase>(buildingAHandle_, objInfo));
+//		objects_[objType].push_front(std::make_shared<OrnamentBase>(modelHandle2_[objType], objInfo));
+//		break;
+//	case ObjectType::Street:
+//		objects_[objType].push_front(std::make_shared<OrnamentBase>(streetHandle_, objInfo));
+//		break;
+//	}
 }
 
 //運べる置物生成機

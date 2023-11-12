@@ -14,8 +14,8 @@ void EffekseerManager::Init()
 {
     //loadEffekseerFile();
 
-  // Effekseerを初期化する。
-  //引数には画面に表示する最大パーティクル数を設定する。
+    // Effekseerを初期化する。
+    //引数には画面に表示する最大パーティクル数を設定する。
     assert(Effkseer_Init(8000) != -1);
 }
 
