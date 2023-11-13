@@ -1,6 +1,6 @@
 #pragma once
 #include "SceneBase.h"
-#include "DxLib.h"
+#include <DxLib.h>
 #include <memory>
 #include <list>
 #include <unordered_map>

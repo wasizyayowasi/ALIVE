@@ -1,5 +1,5 @@
 #include "DrawFunctions.h"
-#include "DxLib.h"
+#include <DxLib.h>
 #include <cassert>
 
 namespace Graph {

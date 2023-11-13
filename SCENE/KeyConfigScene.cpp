@@ -9,7 +9,7 @@
 #include"../util/FontsManager.h"
 #include "../util/UIItemManager.h"
 
-#include "DxLib.h"
+#include <DxLib.h>
 #include <algorithm>
 
 namespace {

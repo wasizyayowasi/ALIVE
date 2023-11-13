@@ -32,8 +32,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//3DサウンドにXAudioを使用するか
 	SetEnableXAudioFlag(true);
 
-	SetUseDirect3DVersion(DX_DIRECT3D_9);
-
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
 	{
 		return -1;			// エラーが起きたら直ちに終了

@@ -1,5 +1,5 @@
 #pragma once
-#include "DxLib.h"
+#include <DxLib.h>
 #include "../util/ObjectData.h"
 #include <memory>
 

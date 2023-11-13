@@ -1,5 +1,5 @@
 #include "InputState.h"
-#include "DxLib.h"
+#include <DxLib.h>
 #include <cassert>
 
 #include<iostream>

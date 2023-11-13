@@ -1,5 +1,5 @@
 #pragma once
-#include "DxLib.h"
+#include <DxLib.h>
 #include "CharacterBase.h"
 #include "util/PlayerData.h"
 #include "util/ObjectData.h"

@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <list>
 #include <string>
-#include "DxLib.h"
+#include <DxLib.h>
 #include "PlayerData.h"
 #include "ObjectData.h"
 

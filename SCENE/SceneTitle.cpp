@@ -6,7 +6,7 @@
 #include "../util/game.h"
 #include "../util/InputState.h"
 #include "../util/FontsManager.h"
-#include "DxLib.h"
+#include <DxLib.h>
 #include<algorithm>
 
 

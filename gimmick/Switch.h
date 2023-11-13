@@ -1,6 +1,6 @@
 #pragma once
 #include "GimmickBase.h"
-#include "DxLib.h"
+#include <DxLib.h>
 #include <list>
 #include <memory>
 

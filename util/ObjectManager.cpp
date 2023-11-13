@@ -401,18 +401,6 @@ void ObjectManager::OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo
 
 	objects_[objType].push_front(std::make_shared<OrnamentBase>(modelHandle_[objType], objInfo));
 
-//	switch (objType) {
-//	case ObjectType::field:
-//		objects_[objType].push_front(std::make_shared<OrnamentBase>(fieldHandle_, objInfo));
-//		break;
-//	case ObjectType::BigBuildingA:
-//		objects_[objType].push_front(std::make_shared<OrnamentBase>(buildingAHandle_, objInfo));
-//		objects_[objType].push_front(std::make_shared<OrnamentBase>(modelHandle2_[objType], objInfo));
-//		break;
-//	case ObjectType::Street:
-//		objects_[objType].push_front(std::make_shared<OrnamentBase>(streetHandle_, objInfo));
-//		break;
-//	}
 }
 
 //â^Ç◊ÇÈíuï®ê∂ê¨ã@

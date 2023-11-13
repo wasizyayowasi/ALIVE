@@ -1,5 +1,5 @@
 #include "FontsManager.h"
-#include "DxLib.h"
+#include <DxLib.h>
 #include <cassert>
 
 FontsManager::FontsManager()
