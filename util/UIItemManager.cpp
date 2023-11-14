@@ -9,18 +9,22 @@ UIItemManager::~UIItemManager()
 {
 }
 
-void UIItemManager::AlphaChangeDraw(int selectNum)
+void UIItemManager::AlphaChangeDraw(int selectNum, int fadeAlphaValue)
 {
 	float scale = 1.0f;
-	int alpha = 150;
+	float alpha = 150;
+
+	float currentNum = 250.0f / 255.0f;
+	float notCurrentNum = 150.0f / 255.0f;
+
 	for (int i = 0; i < UIMenu_.size();i++) {
 		if (selectNum == i) {
 			scale = 1.0f;
-			alpha = 255;
+			alpha = currentNum * fadeAlphaValue;
 		}
 		else {
 			scale = 0.7f;
-			alpha = 150;
+			alpha = notCurrentNum * fadeAlphaValue;
 		}
 		UIMenu_[i]->AlphaChangeDraw(scale,alpha);
 	}

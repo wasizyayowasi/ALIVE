@@ -5,11 +5,17 @@
 namespace {
 	constexpr float horizonta_size_of_one_room = 1000.0f;
 
+	//カメラが境界線に到達したときスライド移動するスピード
 	constexpr float camera_sride_speed = 10.0f;
 
+	//注視点を逸らすときのどのくらい注視点から逸らすのか
 	constexpr float add_focus = 30.0f;
 
+	//カメラの初期ポジション
 	const VECTOR init_pos = VGet(0, 500, -600);
+
+	//カメラのZ座標が移動する際のボーダーライン
+	constexpr float tracking_Z_borderline = 1000.0f;
 }
 
 Camera::Camera()
@@ -22,6 +28,8 @@ Camera::Camera()
 	tempRoom[2] = 2000;
 
 	threshold = tempRoom[0];
+
+	cameraTargetPosZ = -600;
 }
 
 Camera::~Camera()
@@ -45,6 +53,7 @@ void Camera::Init()
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, VGet(0, 0, 0));
 	// カメラの視野角を設定(ラジアン)
 	SetupCamera_Perspective(60.0f * DX_PI_F / 180.0f);
+
 }
 
 //プレイヤーを追跡するカメラの更新
@@ -57,7 +66,7 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos)
 
 	//カメラがプレイヤーを追いかける用にする
 	cameraPos_.y = ((300.0f * 0.9f) + (playerPos.y * 0.1f));
-	cameraPos_.z = playerPos.z + init_pos.z;
+	cameraPos_.z = TrackingPozZ(playerPos);
 
 	//プレイヤーがいた位置を見るようにする
 	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
@@ -128,7 +137,6 @@ void Camera::ChangeOfFocus(const InputState& input)
 //プレイヤーを追跡
 void Camera::Tracking(VECTOR playerPos)
 {
-
 	bool overRightEndOfTheRoom = playerPos.x > threshold;
 	bool overLeftEndOfTheRoom = playerPos.x > threshold - tempRoom[i];
 
@@ -139,14 +147,14 @@ void Camera::Tracking(VECTOR playerPos)
 	//ある一定のラインに来るとカメラの位置を右方向(xがプラスの方向)に移動させる
 	if (overRightEndOfTheRoom && overLeftEndOfTheRoom) {
 		cameraPos_.x = (std::min)(cameraPos_.x + camera_sride_speed, threshold + 200.0f);
-		if (playerPos.x >= threshold + 50.0f) {
+		if (playerPos.x >= threshold + 200.0f) {
 			i++;
 			threshold += tempRoom[i];
 		}
 	}
 	//ある一定のラインに来るとカメラの位置を左方向(xがマイナスの方向)に移動させる
 	else if (belowRightEndOfTheRoom && belowLeftEndOfTheRoom) {
-		if (playerPos.x < threshold - tempRoom[i] - 50.0f) {
+		if (playerPos.x < threshold - tempRoom[i] - 200.0f) {
 			threshold -= tempRoom[i];
 			i--;
 		}
@@ -162,7 +170,6 @@ void Camera::Tracking(VECTOR playerPos)
 
 void Camera::DebugCamera(VECTOR playerPos)
 {
-
 	Tracking(playerPos);
 
 	//カメラがプレイヤーを追いかける用にする
@@ -175,6 +182,26 @@ void Camera::DebugCamera(VECTOR playerPos)
 	cameraTarget_.z = (cameraTarget_.z * 0.95f) + (playerPos.z * 0.05f);
 
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
+}
+
+float Camera::TrackingPozZ(VECTOR playerPos)
+{
+	if (playerPos.z > cameraTargetPosZ) {
+		cameraTargetPosZ += 1000;
+		return cameraPos_.z + tracking_Z_borderline;
+	}
+
+	if (playerPos.z < cameraTargetPosZ - 1000) {
+		cameraTargetPosZ -= 1000;
+		return cameraPos_.z - tracking_Z_borderline;
+	}
+
+	return cameraPos_.z;
+}
+
+void Camera::tempDraW()
+{
+	DrawFormatString(0, 32, 0x448844, "%.2f",cameraPos_.z);
 }
 
 

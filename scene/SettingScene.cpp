@@ -113,7 +113,7 @@ void SettingScene::Draw()
 	int BGMPictPos = static_cast<int>((static_cast<float>(volumeBGM_) / 250.0f) * 10);
 	int SEPictPos = static_cast<int>((static_cast<float>(volumeSE_) / 250.0f) * 10);
 
-	UIManager_->AlphaChangeDraw(selectNum_);
+	UIManager_->AlphaChangeDraw(selectNum_,fadeValue_);
 
 	//âπó ÉoÅ[âÊëú
 	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 2, 1.0f, 0.0f, afterProcessingBGMBarGraph_, true);

@@ -113,6 +113,8 @@ void GameMain::Draw()
 //	broom_->graphFilterUpdate();
 //	broom_->draw();
 
+	camera_->tempDraW();
+
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	//フィルター処理を行うか
@@ -123,8 +125,8 @@ void GameMain::Draw()
 	DrawGraph(0, 0, makeScreenHandle_, true);
 
 	//画面全体を真っ黒に塗りつぶす
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
-	DrawBox(0, 0, Game::screen_width, Game::screen_height, fadeColor_, true);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+//	DrawBox(0, 0, Game::screen_width, Game::screen_height, fadeColor_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 

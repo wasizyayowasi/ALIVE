@@ -119,7 +119,7 @@ void KeyConfigScene::KeyStateDraw()
 	ClearDrawScreen();
 
 	//キーの役割を描画する
-	UI_->AlphaChangeDraw(selectNum_);
+	UI_->AlphaChangeDraw(selectNum_,fadeValue_);
 
 	//キーに対応する画像を描画する
 	KeyGraphDraw();
@@ -415,7 +415,8 @@ int KeyConfigScene::GetKeyName(int num)
 
 void KeyConfigScene::FadeInUpdate(const InputState& input)
 {
-	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	float timer = static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_);
+	fadeValue_ = static_cast <int>(255 * timer);
 	if (++fadeTimer_ == fadeInterval_) {
 		updateFunc_ = &KeyConfigScene::NormalUpdate;
 		fadeValue_ = 255;

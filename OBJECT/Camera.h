@@ -43,9 +43,15 @@ public:
 
 	void DebugCamera(VECTOR playerPos);
 
+	float TrackingPozZ(VECTOR playerPos);
+
+
+	void tempDraW();
+
 private:
 
 	int i = 0;
+	int cameraTargetPosZ = 0;
 
 	DINPUT_JOYSTATE input_;
 

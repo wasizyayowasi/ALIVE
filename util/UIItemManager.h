@@ -15,8 +15,8 @@ public:
 	/// ˆø”‚Å‘—‚ç‚ê‚Ä‚«‚½”Ô†‚¾‚¯
 	/// Šgk—¦‚ğ•ÏX‚·‚é‚Æ‚«‚Ì•`‰æ
 	/// </summary>
-	/// <param name="selectNum"></param>
-	void AlphaChangeDraw(int selectNum);
+	/// <param name="selectNum">”Ô†</param>
+	void AlphaChangeDraw(int selectNum,int fadeAlphaValue);
 
 	/// <summary>
 	/// UIƒƒjƒ…[‚Ì’Ç‰Á

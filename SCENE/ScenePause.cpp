@@ -94,6 +94,6 @@ void ScenePause::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND,0);
 
 	//UI‚Ì•`‰æ
-	UI_->AlphaChangeDraw(selectNum_);
+	UI_->AlphaChangeDraw(selectNum_,255);
 
 }

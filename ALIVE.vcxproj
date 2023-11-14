@@ -153,7 +153,6 @@
     <ClCompile Include="object\cube.cpp" />
     <ClCompile Include="object\CarryObjectBase.cpp" />
     <ClCompile Include="object\OrnamentBase.cpp" />
-    <ClCompile Include="scene\TitlemenuScene.cpp" />
     <ClCompile Include="object\tempEnemy.cpp" />
     <ClCompile Include="util\Util.cpp" />
     <ClCompile Include="util\UIItemManager.cpp" />
@@ -201,7 +200,6 @@
     <ClInclude Include="object\cube.h" />
     <ClInclude Include="object\CarryObjectBase.h" />
     <ClInclude Include="object\OrnamentBase.h" />
-    <ClInclude Include="scene\TitlemenuScene.h" />
     <ClInclude Include="object\tempEnemy.h" />
     <ClInclude Include="util\Util.h" />
     <ClInclude Include="util\UIItemManager.h" />
