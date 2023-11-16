@@ -1,5 +1,5 @@
 #pragma once
-#include "GimmickBase.h"
+#include "../util/ObjectData.h"
 #include <DxLib.h>
 #include <list>
 #include <memory>
@@ -12,8 +12,7 @@ class Switch
 {
 public:
 	//コンストラクタ
-	Switch(const char* const filename, LoadObjectInfo objInfo);
-	Switch(int handle, LoadObjectInfo objInfo);
+	Switch( LoadObjectInfo objInfo);
 	//デストラクタ
 	virtual ~Switch();
 

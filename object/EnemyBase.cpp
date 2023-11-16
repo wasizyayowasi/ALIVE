@@ -148,6 +148,7 @@ bool EnemyBase::SearchForPlayer(VECTOR playerPos)
 void EnemyBase::ThrustAway(Player& player)
 {
 	pushVec_ = VScale(pushVec_, 0.96f);
+	float size = VSize(pushVec_);
 	VECTOR nockback = VAdd(player.GetStatus().pos,pushVec_);
 
 	player.SetPos(nockback);

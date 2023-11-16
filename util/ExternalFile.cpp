@@ -12,7 +12,7 @@ using namespace std;
 
 ExternalFile::ExternalFile()
 {
-	LoadFile(true);
+	//LoadFile(true);
 }
 
 VECTOR ExternalFile::DegreesToRadians(VECTOR rot)
@@ -45,7 +45,7 @@ void ExternalFile::LoadFile(bool isLood)
 	LoadObjectData("data/objData/gimmick.pos",loadGimmickInfo_);
 }
 
-LoadObjectInfo ExternalFile::GetGimmickInfo(const char* const name)
+LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const char* const name)
 {
 	auto info = loadGimmickInfo_[name].front();
 	loadGimmickInfo_[name].pop_front();
@@ -58,6 +58,12 @@ std::list<LoadObjectInfo> ExternalFile::GetSpecifiedInfo(const char* const name)
 	for (auto& obj : loadObjInfo_) {
 		if (obj.first == name) {
 			return loadObjInfo_[name];
+		}
+	}
+
+	for (auto& gimmick : loadGimmickInfo_) {
+		if (gimmick.first == name) {
+			return loadGimmickInfo_[name];
 		}
 	}
 

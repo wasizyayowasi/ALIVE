@@ -3,12 +3,15 @@
 #include "../OBJECT/Player.h"
 
 namespace {
+
+	const char* const switch_filename = "data/model/switch.mv1";
+
 	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
-Switch::Switch(const char* const filename, LoadObjectInfo objInfo)
+Switch::Switch(LoadObjectInfo objInfo)
 {
-	model_ = std::make_shared<Model>(filename);
+	model_ = std::make_shared<Model>(switch_filename);
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
@@ -16,17 +19,6 @@ Switch::Switch(const char* const filename, LoadObjectInfo objInfo)
 
 	pos_ = model_->GetPos();
 
-}
-
-Switch::Switch(int handle, LoadObjectInfo objInfo)
-{
-	model_ = std::make_shared<Model>(handle);
-	model_->SetScale(objInfo.scale);
-	model_->SetPos(objInfo.pos);
-	model_->SetRot(objInfo.rot);
-	model_->SetCollFrame();
-
-	pos_ = model_->GetPos();
 }
 
 Switch::~Switch()

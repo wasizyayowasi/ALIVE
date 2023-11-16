@@ -41,8 +41,15 @@ public:
 	/// オブジェクトの配置情報を取得
 	/// </summary>
 	/// <returns>配置データ</returns>
-	LoadObjectInfo GetGimmickInfo(const char* const name);
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetGimmickInfo() { return loadGimmickInfo_; }
 	
+	/// <summary>
+	/// 特定のギミックの配置情報を取得する
+	/// </summary>
+	/// <param name="name">取得したいオブジェクトの名前</param>
+	/// <returns></returns>
+	LoadObjectInfo GetSpecifiedGimmickInfo(const char* const name);
+
 	/// <summary>
 	/// オブジェクトの配置、回転率、拡縮率を取得する
 	/// </summary>

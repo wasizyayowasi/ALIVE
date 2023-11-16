@@ -14,11 +14,15 @@ namespace {
 	constexpr float max_rot_Z = 630.0f;
 }
 
-ManualCrank::ManualCrank()
+ManualCrank::ManualCrank(LoadObjectInfo objInfo)
 {
 	model_ = std::make_shared<Model>(box_filename);
-	model_->SetRot(VGet(0.0f, 0.0f, 0.0f));
-	model_->SetScale(VGet(50, 50, 50));
+	model_->SetScale(objInfo.scale);
+	model_->SetPos(objInfo.pos);
+	model_->SetCollFrame();
+
+	pos_ = objInfo.pos;
+	initPos_ = objInfo.pos;
 
 	float radian = 0.0f * DX_PI_F / 180.0f;
 	float x = sin(radian);

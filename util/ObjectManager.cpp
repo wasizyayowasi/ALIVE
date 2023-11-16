@@ -107,18 +107,6 @@ void ObjectManager::ObjectGenerator()
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::field, objSecond);
 			}
 		}
-		//ギミックスイッチを作成
-		else if (objInfo.first == "trans") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::gimmickBase, ObjectType::trans, objSecond);
-			}
-		}
-		//ギミック天秤を作成
-		else if (objInfo.first == "steelyard") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, objSecond);
-			}
-		}
 		//箱を作成
 		else if (objInfo.first == "box") {
 			for (auto& objSecond : objInfo.second) {
@@ -126,14 +114,9 @@ void ObjectManager::ObjectGenerator()
 			}
 		}
 		//敵を作成
-		else if (objInfo.first == "Player") {
+		else if (objInfo.first == "Enemy") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
-			}
-		}
-		else if (objInfo.first == "elevator") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::gimmickBase, ObjectType::elevator, objSecond);
+ 				SortingObject(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
 			}
 		}
 		else if (objInfo.first == "BigBuildingA") {
@@ -217,6 +200,27 @@ void ObjectManager::ObjectGenerator()
 			}
 		}
 	}
+
+	for (auto& gimmick : loadData.GetGimmickInfo()) {
+		//ギミックスイッチを作成
+		if (gimmick.first == "Trans") {
+			for (auto& objSecond : gimmick.second) {
+				SortingObject(ObjectBaseType::gimmickBase, ObjectType::trans, objSecond);
+			}
+		}
+		//ギミック天秤を作成
+		else if (gimmick.first == "Steelyard") {
+			for (auto& objSecond : gimmick.second) {
+				SortingObject(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, objSecond);
+			}
+		}
+		else if (gimmick.first == "Elevator") {
+			for (auto& objSecond : gimmick.second) {
+				SortingObject(ObjectBaseType::gimmickBase, ObjectType::elevator, objSecond);
+			}
+		}
+	}
+
 }
 
 void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int animNo)

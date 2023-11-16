@@ -1,7 +1,8 @@
 #include "Elevator.h"
+#include "ManualCrank.h"
 #include "../util/Model.h"
 #include "../util/InputState.h"
-#include "../gimmick/ManualCrank.h"
+#include "../util/ExternalFile.h"
 #include "../object/Player.h"
 
 namespace {
@@ -14,7 +15,10 @@ Elevator::Elevator(const char* const filename, LoadObjectInfo objInfo):GimmickBa
 
 Elevator::Elevator(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
 {
-	crank_ = std::make_shared<ManualCrank>();
+	initPos_ = objInfo.pos;
+
+	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo("Crank");
+	crank_ = std::make_shared<ManualCrank>(info);
 	upVec_ = ascent_limit / crank_->GetMaxRotZ();
 }
 
@@ -29,7 +33,7 @@ void Elevator::Update(Player& player, const InputState& input)
 		player.SetGimmickModelPointer(crank_);
 	}
 
-	pos_.y = crank_->GetRotZ()* upVec_;
+	pos_.y = crank_->GetRotZ()* upVec_ + initPos_.y;
 
 	model_->SetPos(pos_);
 

@@ -18,7 +18,7 @@ public:
 	/// </summary>
 	/// <param name="input">入力情報</param>
 	/// <param name="playerPos">プレイヤーのポジション</param>
-	void TrackingCameraUpdate(VECTOR playerPos);
+	void TrackingCameraUpdate(VECTOR playerPos, float playerHeight);
 
 	/// <summary>
 	/// 定点カメラ
@@ -51,7 +51,8 @@ public:
 private:
 
 	int i = 0;
-	int cameraTargetPosZ = 0;
+	float cameraTargetPosZ = 0.0f;
+	float moveVecZ = 0.0f;
 
 	DINPUT_JOYSTATE input_;
 

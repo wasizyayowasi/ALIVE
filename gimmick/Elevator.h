@@ -22,6 +22,8 @@ private:
 
 	float upVec_ = 0.0f;
 
+	VECTOR initPos_ = {};
+
 	std::shared_ptr<ManualCrank> crank_;
 
 };

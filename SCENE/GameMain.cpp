@@ -59,7 +59,7 @@ void GameMain::Init()
 	//depthOfField_ = make_shared<DepthOfField>();
 
 	//仮でライト処理を消している
-	SetUseLighting(false);
+	SetUseLighting(true);
 
 	//1mの範囲を設定する
 	Set3DSoundOneMetre(10.0f);
@@ -96,7 +96,7 @@ void GameMain::Draw()
 	//カメラの初期化
 	//SetDrawScreenを行うとカメラの情報がリセットされるために
 	camera_->Init();
-	camera_->TrackingCameraUpdate(player_->GetStatus().pos);
+	camera_->TrackingCameraUpdate(player_->GetStatus().pos, player_->GetStatus().height);
 //	camera_->DebugCamera(player_->GetStatus().pos);
 
 //	broom_->writingScreenUpdate(player_->GetStatus().pos);

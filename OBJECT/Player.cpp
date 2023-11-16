@@ -93,7 +93,6 @@ void Player::Draw()
 	player_->Draw();
 
 //	DrawFormatString(0, 64, 0x448844, "%.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
-	DrawFormatString(0, 64, 0x448844, "%.2f", status_.pos.z);
 
 }
 
@@ -443,7 +442,7 @@ void Player::DeathUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 //死体の後処理
 void Player::DeathPersonPostProsessing(std::shared_ptr<ObjectManager> objManager)
 {
-	status_.pos = checkPoint_;				//チェックポイントにプレイヤーを帰す
+//	status_.pos = checkPoint_;				//チェックポイントにプレイヤーを帰す
 
 	DeadPersonGenerater(objManager);			//死体を生成する関数
 
@@ -590,8 +589,8 @@ void Player::CrankRotatinUpdate(float rotZ, VECTOR pos) {
 	float x = sin(radian);
 	float z = cos(radian);
 
-	pos.x = -200 + x * 40;
-	pos.y = 100 + z * 40;
+	pos.x = crank_->GetInitPos().x + x * 40;
+	pos.y = crank_->GetInitPos().y + z * 40;
 
 	crank_->GetModelPointer()->SetPos(pos);
 	crank_->SetRotZ(rotZ);

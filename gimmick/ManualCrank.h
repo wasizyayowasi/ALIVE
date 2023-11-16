@@ -1,4 +1,5 @@
 #pragma once
+#include "../util/ObjectData.h"
 #include <DxLib.h>
 #include <memory>
 
@@ -9,7 +10,7 @@ class Player;
 class ManualCrank
 {
 public:
-	ManualCrank();
+	ManualCrank(LoadObjectInfo objInfo);
 	virtual ~ManualCrank();
 
 	//描画
@@ -20,6 +21,8 @@ public:
 
 	//モデルポインタを取得
 	std::shared_ptr<Model>GetModelPointer() { return model_; }
+
+	VECTOR GetInitPos() { return initPos_; }
 
 	//現在のZ軸の回転率を取得する
 	float GetRotZ() { return rotZ_; }
@@ -34,7 +37,8 @@ private:
 
 	float rotZ_ = 0.0f;
 
-	VECTOR pos_ = { -200, 100, 0 };
+	VECTOR pos_ = {};
+	VECTOR initPos_ = {};
 
 	std::shared_ptr<Model> model_;
 

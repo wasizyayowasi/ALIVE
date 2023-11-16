@@ -6,13 +6,14 @@ namespace {
 	constexpr float horizonta_size_of_one_room = 1000.0f;
 
 	//カメラが境界線に到達したときスライド移動するスピード
-	constexpr float camera_sride_speed = 10.0f;
+	constexpr float camera_moveX_speed = 10.0f;
+	constexpr float camera_moveZ_speed = 40.0f;
 
 	//注視点を逸らすときのどのくらい注視点から逸らすのか
 	constexpr float add_focus = 30.0f;
 
 	//カメラの初期ポジション
-	const VECTOR init_pos = VGet(0, 500, -600);
+	const VECTOR init_pos = VGet(0, 300, -600);
 
 	//カメラのZ座標が移動する際のボーダーライン
 	constexpr float tracking_Z_borderline = 1000.0f;
@@ -57,7 +58,7 @@ void Camera::Init()
 }
 
 //プレイヤーを追跡するカメラの更新
-void Camera::TrackingCameraUpdate(VECTOR playerPos)
+void Camera::TrackingCameraUpdate(VECTOR playerPos,float playerHeight)
 {
 	
 	i = (std::max)(i, 0);
@@ -65,12 +66,12 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos)
 	Tracking(playerPos);
 
 	//カメラがプレイヤーを追いかける用にする
-	cameraPos_.y = ((300.0f * 0.9f) + (playerPos.y * 0.1f));
+	cameraPos_.y = ((init_pos.y * 0.9f) + ((playerPos.y + playerHeight) * 0.1f));
 	cameraPos_.z = TrackingPozZ(playerPos);
 
 	//プレイヤーがいた位置を見るようにする
 	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
-	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
+	cameraTarget_.y = (cameraTarget_.y * 0.9f) + ((playerPos.y + playerHeight / 2) * 0.1f);
 	cameraTarget_.z = (cameraTarget_.z * 0.95f) + (playerPos.z * 0.05f);
 
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
@@ -146,7 +147,7 @@ void Camera::Tracking(VECTOR playerPos)
 
 	//ある一定のラインに来るとカメラの位置を右方向(xがプラスの方向)に移動させる
 	if (overRightEndOfTheRoom && overLeftEndOfTheRoom) {
-		cameraPos_.x = (std::min)(cameraPos_.x + camera_sride_speed, threshold + 200.0f);
+		cameraPos_.x = (std::min)(cameraPos_.x + camera_moveX_speed, threshold + 200.0f);
 		if (playerPos.x >= threshold + 200.0f) {
 			i++;
 			threshold += tempRoom[i];
@@ -159,7 +160,7 @@ void Camera::Tracking(VECTOR playerPos)
 			i--;
 		}
 		if (cameraPos_.x > threshold - tempRoom[i] - 200.0f) {
-			cameraPos_.x -= camera_sride_speed;
+			cameraPos_.x -= camera_moveX_speed;
 		}
 	}
 	//通常時のカメラ移動
@@ -186,14 +187,32 @@ void Camera::DebugCamera(VECTOR playerPos)
 
 float Camera::TrackingPozZ(VECTOR playerPos)
 {
-	if (playerPos.z > cameraTargetPosZ) {
-		cameraTargetPosZ += 1000;
-		return cameraPos_.z + tracking_Z_borderline;
+	
+	float nextCameraPotision = cameraTargetPosZ + tracking_Z_borderline;
+
+	if (nextCameraPotision + 250.0f < playerPos.z) {
+		float distance = (cameraTargetPosZ + tracking_Z_borderline) - cameraPos_.z;
+		distance = distance / camera_moveZ_speed;
+		moveVecZ = distance * 0.96f;
+		cameraPos_.z += moveVecZ;
 	}
 
-	if (playerPos.z < cameraTargetPosZ - 1000) {
-		cameraTargetPosZ -= 1000;
-		return cameraPos_.z - tracking_Z_borderline;
+	if (cameraTargetPosZ + 250.0f > playerPos.z) {
+		float distance = (cameraTargetPosZ - tracking_Z_borderline) - cameraPos_.z;
+		distance = distance / camera_moveZ_speed;
+		moveVecZ = distance * 0.96f;
+		cameraPos_.z += moveVecZ;
+	}
+
+	if (nextCameraPotision - 5.0f <= cameraPos_.z) {
+		cameraTargetPosZ += tracking_Z_borderline;
+	}
+
+	if (cameraTargetPosZ - tracking_Z_borderline + 5.0f > cameraPos_.z) {
+		cameraTargetPosZ -= tracking_Z_borderline;
+	}
+	else if (cameraPos_.z + 200.0f > playerPos.z) {
+		cameraTargetPosZ -= tracking_Z_borderline;
 	}
 
 	return cameraPos_.z;
@@ -201,7 +220,6 @@ float Camera::TrackingPozZ(VECTOR playerPos)
 
 void Camera::tempDraW()
 {
-	DrawFormatString(0, 32, 0x448844, "%.2f",cameraPos_.z);
 }
 
 
