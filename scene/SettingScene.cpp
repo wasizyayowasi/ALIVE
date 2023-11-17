@@ -160,6 +160,7 @@ void SettingScene::NormalUpdate(const InputState& input)
 
 	//ƒV[ƒ“Ø‚è‘Ö‚¦
 	if (input.IsTriggered(InputType::pause)) {
+		nextScene_ = std::make_shared<ScenePause>(manager_);
 		updateFunc_ = &SettingScene::GaussFadeOutUpdate;
 	}
 }

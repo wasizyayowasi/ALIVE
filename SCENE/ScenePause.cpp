@@ -10,6 +10,7 @@
 #include "../util/FontsManager.h"
 #include "../util/UIItemManager.h"
 #include "../util/Util.h"
+#include "../util/ExternalFile.h"
 
 #include <algorithm>
 
@@ -71,6 +72,7 @@ void ScenePause::Update(const InputState& input)
 			 break;
 		//タイトルシーンへの遷移
 		case 2:
+			ExternalFile::GetInstance().LoadFile(false);
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
 			break;
 		//デバッグシーンに戻る

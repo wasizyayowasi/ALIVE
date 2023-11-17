@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "../util/InputState.h"
+#include "../util/ExternalFile.h"
 #include <algorithm>
 
 namespace {
@@ -188,34 +189,28 @@ void Camera::DebugCamera(VECTOR playerPos)
 float Camera::TrackingPozZ(VECTOR playerPos)
 {
 	
-	float nextCameraPotision = cameraTargetPosZ + tracking_Z_borderline;
+	float gimmickPosZ = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "TrackingZ").pos.z;
+	float distance = 0.0f;
 
-	if (nextCameraPotision + 250.0f < playerPos.z) {
-		float distance = (cameraTargetPosZ + tracking_Z_borderline) - cameraPos_.z;
+	if (gimmickPosZ <= 0) {
+		return init_pos.z;
+	}
+
+	if (playerPos.z < gimmickPosZ) {
+		distance = init_pos.z - cameraPos_.z;
 		distance = distance / camera_moveZ_speed;
 		moveVecZ = distance * 0.96f;
-		cameraPos_.z += moveVecZ;
+		return cameraPos_.z + moveVecZ;
 	}
 
-	if (cameraTargetPosZ + 250.0f > playerPos.z) {
-		float distance = (cameraTargetPosZ - tracking_Z_borderline) - cameraPos_.z;
-		distance = distance / camera_moveZ_speed;
-		moveVecZ = distance * 0.96f;
-		cameraPos_.z += moveVecZ;
-	}
+	float targetPosZ = (init_pos.z * 0.3f) + (playerPos.z * 0.7f);
+	distance = targetPosZ - cameraPos_.z;
 
-	if (nextCameraPotision - 5.0f <= cameraPos_.z) {
-		cameraTargetPosZ += tracking_Z_borderline;
-	}
+	distance = distance / camera_moveZ_speed;
+	moveVecZ = distance * 0.96f;
 
-	if (cameraTargetPosZ - tracking_Z_borderline + 5.0f > cameraPos_.z) {
-		cameraTargetPosZ -= tracking_Z_borderline;
-	}
-	else if (cameraPos_.z + 200.0f > playerPos.z) {
-		cameraTargetPosZ -= tracking_Z_borderline;
-	}
+	return cameraPos_.z + moveVecZ;
 
-	return cameraPos_.z;
 }
 
 void Camera::tempDraW()

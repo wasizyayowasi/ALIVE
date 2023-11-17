@@ -57,6 +57,13 @@ public:
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadObjectInfo() { return loadObjInfo_; }
 
 	/// <summary>
+	/// カメラが特殊な動きを行う印(オブジェクト)が
+	/// どこにあるかの配置データを取得する
+	/// </summary>
+	/// <returns></returns>
+	LoadObjectInfo GetCameraGimmickInfo(VECTOR playerPos,const char* const name);
+
+	/// <summary>
 	/// 指定した名前のオブジェクト配置データを返す
 	/// </summary>
 	/// <param name="name">取得したいオブジェクトの名前</param>
@@ -92,14 +99,15 @@ private:
 
 private:
 
-	PlayerInfo player_;
-	SaveData data_;
+	PlayerInfo player_ = {};
+	SaveData data_ = {};
 
 	ExternalFile(const ExternalFile&) = delete;
 	void operator = (const ExternalFile&) = delete;
 
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadObjInfo_;
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadGimmickInfo_;
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadCameraGimmickInfo_;
 
 };
 

@@ -54,7 +54,7 @@ private:
 	float cameraTargetPosZ = 0.0f;
 	float moveVecZ = 0.0f;
 
-	DINPUT_JOYSTATE input_;
+	DINPUT_JOYSTATE input_ = {};
 
 	float threshold;
 	float tempRoom[3];

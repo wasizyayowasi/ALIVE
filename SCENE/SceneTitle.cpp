@@ -62,9 +62,10 @@ void SceneTitle::Draw()
 
 	DrawString(0, 0, "SceneTitle", 0xffffff);
 
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	//UI‚Ì•`‰æ
 	UI_->AlphaChangeDraw(selectNum_,fadeValue_);
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	//ƒ^ƒCƒgƒ‹‚Ì•`‰æ
 	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3, 1.0f, 0.0f, titleHandle_, true);
 

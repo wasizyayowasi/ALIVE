@@ -33,6 +33,8 @@ void ExternalFile::LoadFile(bool isLood)
 {
 	if (!loadObjInfo_.empty()) {
 		loadObjInfo_.clear();
+		loadGimmickInfo_.clear();
+		loadCameraGimmickInfo_.clear();
 	}
 
 	if (isLood) {
@@ -43,12 +45,30 @@ void ExternalFile::LoadFile(bool isLood)
 //	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
 	LoadObjectData("data/objData/gati.pos",loadObjInfo_);
 	LoadObjectData("data/objData/gimmick.pos",loadGimmickInfo_);
+	LoadObjectData("data/objData/cameraGimmick.pos", loadCameraGimmickInfo_);
 }
 
 LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const char* const name)
 {
 	auto info = loadGimmickInfo_[name].front();
 	loadGimmickInfo_[name].pop_front();
+	return info;
+}
+
+LoadObjectInfo ExternalFile::GetCameraGimmickInfo(VECTOR playerPos, const char* const name)
+{
+
+	float minDistance = 10000.0f;
+	LoadObjectInfo info = {};
+
+	for (auto& data : loadCameraGimmickInfo_[name]) {
+		VECTOR distance = VSub(data.pos, playerPos);
+		float distanceSize = VSize(distance);
+		if (minDistance > distanceSize) {
+			minDistance = distanceSize;
+			info = data;
+		}
+	}
 	return info;
 }
 
