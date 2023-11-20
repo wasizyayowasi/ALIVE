@@ -36,6 +36,15 @@ enum class ObjectType{
 	Street,
 	TStreet,
 	Tile,
+	Scaffold,
+	SlopeScaffold,
+	Fence,
+	BlueContainer,
+	RedContainer,
+	YellowContainer,
+	OrangeContainer,
+	PurpleContainer,
+	GreenContainer,
 	max,
 };
 

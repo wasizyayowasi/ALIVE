@@ -46,6 +46,16 @@ namespace {
 	const char* const street_filepath = "data/model/city/Street.mv1";
 	const char* const T_street_filepath = "data/model/city/TStreet.mv1";
 	const char* const Tile_filepath = "data/model/city/Tile.mv1";
+	const char* const scaffold_filepath = "data/model/city/others/Scaffold.mv1";
+	const char* const slopeScaffold_filepath = "data/model/city/others/SlopeScaffold.mv1";
+	const char* const fence_filepath = "data/model/city/others/Fence.mv1";
+	//Œš•¨
+	const char* const BlueContainer_filepath = "data/model/city/container/mv1/BlueContainer.mv1";
+	const char* const RedContainer_filepath = "data/model/city/container/mv1/RedContainer.mv1";
+	const char* const YellowContainer_filepath = "data/model/city/container/mv1/YellowContainer.mv1";
+	const char* const OrangeContainer_filepath = "data/model/city/container/mv1/OrangeContainer.mv1";
+	const char* const PurpleContainer_filepath = "data/model/city/container/mv1/PurpleContainer.mv1";
+	const char* const GreenContainer_filepath = "data/model/city/container/mv1/GreenContainer.mv1";
 }
 
 ObjectManager::ObjectManager()
@@ -77,6 +87,16 @@ ObjectManager::ObjectManager()
 	modelHandle_[ObjectType::Street] = MV1LoadModel(street_filepath);
 	modelHandle_[ObjectType::TStreet] = MV1LoadModel(T_street_filepath);
 	modelHandle_[ObjectType::Tile] = MV1LoadModel(Tile_filepath);
+	modelHandle_[ObjectType::Scaffold] = MV1LoadModel(scaffold_filepath);
+	modelHandle_[ObjectType::SlopeScaffold ] = MV1LoadModel(slopeScaffold_filepath);
+	modelHandle_[ObjectType::Fence] = MV1LoadModel(fence_filepath);
+
+	modelHandle_[ObjectType::BlueContainer] = MV1LoadModel(BlueContainer_filepath);
+	modelHandle_[ObjectType::RedContainer] = MV1LoadModel(RedContainer_filepath);
+	modelHandle_[ObjectType::YellowContainer] = MV1LoadModel(YellowContainer_filepath);
+	modelHandle_[ObjectType::OrangeContainer] = MV1LoadModel(OrangeContainer_filepath);
+	modelHandle_[ObjectType::PurpleContainer] = MV1LoadModel(PurpleContainer_filepath);
+	modelHandle_[ObjectType::GreenContainer] = MV1LoadModel(GreenContainer_filepath);
 
 }
 
@@ -197,6 +217,51 @@ void ObjectManager::ObjectGenerator()
 		else if (objInfo.first == "Tile") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Tile, objSecond);
+			}
+		}
+		else if (objInfo.first == "Scaffold") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Scaffold, objSecond);
+			}
+		}
+		else if (objInfo.first == "SlopeScaffold") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::SlopeScaffold, objSecond);
+			}
+		}
+		else if (objInfo.first == "Fence") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Fence, objSecond);
+			}
+		}
+		else if (objInfo.first == "BlueContainer") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BlueContainer, objSecond);
+			}
+		}
+		else if (objInfo.first == "RedContainer") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::RedContainer, objSecond);
+			}
+		}
+		else if (objInfo.first == "YellowContainer") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::YellowContainer, objSecond);
+			}
+		}
+		else if (objInfo.first == "OrangeContainer") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::OrangeContainer, objSecond);
+			}
+		}
+		else if (objInfo.first == "PurpleContainer") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::PurpleContainer, objSecond);
+			}
+		}
+		else if (objInfo.first == "GreenContainer") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::GreenContainer, objSecond);
 			}
 		}
 	}

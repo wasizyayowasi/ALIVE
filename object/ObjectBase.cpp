@@ -21,7 +21,7 @@ ObjectBase::ObjectBase(int handle, LoadObjectInfo objInfo)
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
-	model_->SetCollFrame();
+	model_->SetCollFrame("Coll");
 	pos_ = model_->GetPos();
 	isEnable_ = true;
 }
