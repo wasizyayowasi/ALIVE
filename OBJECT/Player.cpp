@@ -92,6 +92,8 @@ void Player::Draw()
 {
 	player_->Draw();
 
+	//DrawSphere3D(VGet(status_.pos.x + 1000, status_.pos.y, status_.pos.z), 16, 32, 0xff0000, 0xff0000, true);
+
 //	DrawFormatString(0, 64, 0x448844, "%.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
 
 }
@@ -140,12 +142,15 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 	MovingUpdate(input,objManager);
 
 	//空中にいるとき
-		//重力をベクトルに足してポジションに足す
-	//if (status_.jump.isJump) {
+	//重力をベクトルに足してポジションに足す
+	if (status_.jump.isJump) {
 		status_.jump.jumpVec += gravity;
 		status_.pos.y += status_.jump.jumpVec;
 		player_->SetPos(status_.pos);
-	//}
+	}
+	else {
+		status_.jump.jumpVec = 0.0f;
+	}
 
 	//持ち運び中だったら
 	//以降の処理を行わない

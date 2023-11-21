@@ -80,6 +80,9 @@ public:
 	//セーブデータを初期化する
 	void ClearSaveData();
 
+	//ロードしたデータを削除する
+	void DeleteData();
+
 private:
 
 	//プレイヤーのステータスに関する情報を読み込む

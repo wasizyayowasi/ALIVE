@@ -10,14 +10,6 @@ class Model;
 class Player;
 class InputState;
 
-enum class ModelHandleType {
-	BigBuilding,
-	BuildingType1,
-	BuildingType2,
-	Store,
-	Street,
-};
-
 class ObjectManager
 {
 public:
@@ -45,7 +37,7 @@ public:
 	void Update(Player& player, const InputState& input);
 
 	//描画
-	void Draw();
+	void Draw(VECTOR pos);
 
 	/// <summary>
 	/// 衝突判定に使用するモデルを取得する
@@ -79,14 +71,11 @@ private:
 	void EnemyGenerator(ObjectType objType, LoadObjectInfo objInfo);
 	//置物生成機
 	void OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo);
-	//運べる置物生成機
-	void CarryObjectGenerator(ObjectType objType, LoadObjectInfo objInfo);
 	//ギミック生成機
 	void GimmickObjectGenerator(ObjectType objType, LoadObjectInfo objInfo);
 private:
 
 	int playerHandle_ = -1;
-	int fieldHandle_ = -1;				//仮フィールドのモデルハンドル
 	int switchHandle_ = -1;
 	int steelyardHandle_ = -1;
 	int transObjHandle_ = -1;

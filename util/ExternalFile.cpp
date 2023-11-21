@@ -12,7 +12,7 @@ using namespace std;
 
 ExternalFile::ExternalFile()
 {
-	//LoadFile(true);
+	LoadFile(true);
 }
 
 VECTOR ExternalFile::DegreesToRadians(VECTOR rot)
@@ -31,19 +31,14 @@ ExternalFile::~ExternalFile()
 
 void ExternalFile::LoadFile(bool isLood)
 {
-	if (!loadObjInfo_.empty()) {
-		loadObjInfo_.clear();
-		loadGimmickInfo_.clear();
-		loadCameraGimmickInfo_.clear();
-	}
+	DeleteData();
 
 	if (isLood) {
 		LoadSaveDataInfo("saveData");
 	}
 
 	LoadPlayerInfo("player");
-//	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
-	LoadObjectData("data/objData/gati.pos",loadObjInfo_);
+	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
 	LoadObjectData("data/objData/gimmick.pos",loadGimmickInfo_);
 	LoadObjectData("data/objData/cameraGimmick.pos", loadCameraGimmickInfo_);
 }
@@ -117,6 +112,19 @@ void ExternalFile::ClearSaveData()
 {
 	data_.checkPoint = VGet(0, 0, 0);
 	data_.totalDeathNum = 0;
+}
+
+void ExternalFile::DeleteData()
+{
+	if (!loadObjInfo_.empty()) {
+		loadObjInfo_.clear();
+	}
+	if (!loadGimmickInfo_.empty()) {
+		loadGimmickInfo_.clear();
+	}
+	if (!loadCameraGimmickInfo_.empty()) {
+		loadCameraGimmickInfo_.clear();
+	}
 }
 
 //プレイヤーのステータス情報を読み込む

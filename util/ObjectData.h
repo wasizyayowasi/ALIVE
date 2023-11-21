@@ -14,8 +14,6 @@ enum class ObjectType{
 	player,
 	deadPerson,
 	enemy,
-	field,
-	carry,
 	gimmickSwitch,
 	gimmickSteelyard,
 	trans,
@@ -38,13 +36,12 @@ enum class ObjectType{
 	Tile,
 	Scaffold,
 	SlopeScaffold,
+	SlopeScaffold35,
 	Fence,
 	BlueContainer,
 	RedContainer,
 	YellowContainer,
 	OrangeContainer,
-	PurpleContainer,
-	GreenContainer,
 	max,
 };
 

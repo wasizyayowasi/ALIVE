@@ -130,7 +130,7 @@ void SceneTitle::SceneChange()
 		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 		break;
 	case 3:
-		DxLib_End();
+		manager_.SetEndFlag(true);
 		break;
 	}
 }

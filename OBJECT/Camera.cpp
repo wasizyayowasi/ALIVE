@@ -50,7 +50,7 @@ void Camera::Init()
 
 	//////////////// カメラの設定 //////////////////
 	// カメラからどれだけ離れたところ( Near )から、 どこまで( Far )のものを描画するかを設定
-	SetCameraNearFar(5.0f, 2800.0f);
+	SetCameraNearFar(5.0f, 3300.0f);
 	// カメラの位置、どこを見ているかを設定する
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, VGet(0, 0, 0));
 	// カメラの視野角を設定(ラジアン)
@@ -64,10 +64,12 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos,float playerHeight)
 	
 	i = (std::max)(i, 0);
 
-	Tracking(playerPos);
+//	Tracking(playerPos);
 
 	//カメラがプレイヤーを追いかける用にする
-	cameraPos_.y = ((init_pos.y * 0.9f) + ((playerPos.y + playerHeight) * 0.1f));
+//	cameraPos_.y = ((init_pos.y * 0.9f) + ((playerPos.y + playerHeight) * 0.1f));
+	cameraPos_.x = playerPos.x;
+	cameraPos_.y = ((playerPos.y + playerHeight + init_pos.y) * 0.96f);
 	cameraPos_.z = TrackingPozZ(playerPos);
 
 	//プレイヤーがいた位置を見るようにする
@@ -84,9 +86,9 @@ void Camera::FixedPointCamera(VECTOR playerPos)
 	//一定範囲を出たらカメラが次の場所へヌルっと動く
 
 	//プレイヤーがいる部屋の番号を取得
-	int playerRoomNum = (playerPos.x + horizonta_size_of_one_room / 2 ) / (horizonta_size_of_one_room) ;
+	int playerRoomNum = static_cast<int>((playerPos.x + horizonta_size_of_one_room / 2 ) / (horizonta_size_of_one_room));
 	//カメラがいる部屋の番号を取得する
-	int cameraRoomNum = fixedPointCameraDestinationPosX / (horizonta_size_of_one_room);
+	int cameraRoomNum = static_cast<int>(fixedPointCameraDestinationPosX / (horizonta_size_of_one_room));
 	//プレイヤーとカメラがいる部屋の番号が違ったらカメラのX座標変数(仮)をプレイヤーがいる部屋の番号に変える
 	if (playerRoomNum != cameraRoomNum) {
 		fixedPointCameraDestinationPosX = horizonta_size_of_one_room * playerRoomNum;
@@ -215,6 +217,7 @@ float Camera::TrackingPozZ(VECTOR playerPos)
 
 void Camera::tempDraW()
 {
+	DrawFormatString(0, 16, 0x448844, "%.2f,%.2f,%.2f", cameraPos_.x, cameraPos_.y, cameraPos_.z);
 }
 
 

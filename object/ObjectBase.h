@@ -25,6 +25,9 @@ public:
 	//衝突判定
 	virtual void HitColl(std::shared_ptr<ObjectBase> pointer);
 
+	//ポジションの取得
+	VECTOR GetPos() { return pos_; }
+
 	//現在有効か無効化を取得する
 	bool IsEnabled() { return isEnable_; };
 

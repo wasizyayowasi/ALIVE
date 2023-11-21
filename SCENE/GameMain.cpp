@@ -59,7 +59,7 @@ void GameMain::Init()
 	//depthOfField_ = make_shared<DepthOfField>();
 
 	//仮でライト処理を消している
-	SetUseLighting(true);
+	SetUseLighting(false);
 
 	//1mの範囲を設定する
 	Set3DSoundOneMetre(10.0f);
@@ -103,7 +103,7 @@ void GameMain::Draw()
 	DrawString(0, 0, "GameMain", 0xffffff);
 
 	//オブジェクトの描画
-	objManager_->Draw();
+	objManager_->Draw(player_->GetStatus().pos);
 
 //	DrawFormatString(0, 16, 0x448844, "%d", totalDeathNum_);
 
@@ -136,14 +136,14 @@ void GameMain::ObjectGenerater()
 
 	auto& loadData = ExternalFile::GetInstance();
 
-	//ゲームオブジェクトの生成
-	objManager_->ObjectGenerator();
-	//カメラのインスタンス化
-	camera_ = make_shared<Camera>();
 	//プレイヤーのインスタンス化
 	player_ = make_shared<Player>(player_Filename);
 	//プレイヤーの初期化
 	player_->Init(loadData.GetSpecifiedInfo("Player").front());
+	//ゲームオブジェクトの生成
+	objManager_->ObjectGenerator();
+	//カメラのインスタンス化
+	camera_ = make_shared<Camera>();
 
 }
 

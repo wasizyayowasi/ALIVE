@@ -10,15 +10,14 @@
 #include "../gimmick/Steelyard.h"
 #include "../gimmick/Elevator.h"
 
+#include "game.h"
+
 #include "InputState.h"
 #include "ExternalFile.h"
 
 namespace {
 	const char* const player_Filename = "data/player/player16.mv1";
 	//仮モデルのファイルパス
-	const char* const temp_fieldpath = "data/model/tempFiled4.mv1";
-	const char* const temp_stairs = "data/model/stairs.mv1";
-	const char* const bigPillar_filename = "data/level0_model/bigPillar.mv1";
 	const char* const switch_filename = "data/model/switch.mv1";
 	const char* const steelyard_filename = "data/model/steelyard.mv1";
 	const char* const transparent_obj_filename = "data/model/trans.mv1";
@@ -48,6 +47,7 @@ namespace {
 	const char* const Tile_filepath = "data/model/city/Tile.mv1";
 	const char* const scaffold_filepath = "data/model/city/others/Scaffold.mv1";
 	const char* const slopeScaffold_filepath = "data/model/city/others/SlopeScaffold.mv1";
+	const char* const slopeScaffold35_filepath = "data/model/city/others/SlopeScaffold35.mv1";
 	const char* const fence_filepath = "data/model/city/others/Fence.mv1";
 	//建物
 	const char* const BlueContainer_filepath = "data/model/city/container/mv1/BlueContainer.mv1";
@@ -61,7 +61,6 @@ namespace {
 ObjectManager::ObjectManager()
 {
 	playerHandle_ = MV1LoadModel(player_Filename);
-	fieldHandle_ = MV1LoadModel(temp_fieldpath);
 	switchHandle_ = MV1LoadModel(switch_filename);
 	steelyardHandle_ = MV1LoadModel(steelyard_filename);
 	transObjHandle_ = MV1LoadModel(transparent_obj_filename);
@@ -89,21 +88,19 @@ ObjectManager::ObjectManager()
 	modelHandle_[ObjectType::Tile] = MV1LoadModel(Tile_filepath);
 	modelHandle_[ObjectType::Scaffold] = MV1LoadModel(scaffold_filepath);
 	modelHandle_[ObjectType::SlopeScaffold ] = MV1LoadModel(slopeScaffold_filepath);
+	modelHandle_[ObjectType::SlopeScaffold35 ] = MV1LoadModel(slopeScaffold35_filepath);
 	modelHandle_[ObjectType::Fence] = MV1LoadModel(fence_filepath);
 
 	modelHandle_[ObjectType::BlueContainer] = MV1LoadModel(BlueContainer_filepath);
 	modelHandle_[ObjectType::RedContainer] = MV1LoadModel(RedContainer_filepath);
 	modelHandle_[ObjectType::YellowContainer] = MV1LoadModel(YellowContainer_filepath);
 	modelHandle_[ObjectType::OrangeContainer] = MV1LoadModel(OrangeContainer_filepath);
-	modelHandle_[ObjectType::PurpleContainer] = MV1LoadModel(PurpleContainer_filepath);
-	modelHandle_[ObjectType::GreenContainer] = MV1LoadModel(GreenContainer_filepath);
 
 }
 
 ObjectManager::~ObjectManager()
 {
 	MV1DeleteModel(playerHandle_);
-	MV1DeleteModel(fieldHandle_);
 	MV1DeleteModel(switchHandle_);
 	MV1DeleteModel(steelyardHandle_);
 	MV1DeleteModel(transObjHandle_);
@@ -121,20 +118,8 @@ void ObjectManager::ObjectGenerator()
 	auto& loadData = ExternalFile::GetInstance();
 
 	for (auto& objInfo : loadData.GetLoadObjectInfo()) {
-		//フィールドを作成
-		if (objInfo.first == "field") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::field, objSecond);
-			}
-		}
-		//箱を作成
-		else if (objInfo.first == "box") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::carryBase, ObjectType::carry, objSecond);
-			}
-		}
 		//敵を作成
-		else if (objInfo.first == "Enemy") {
+		 if (objInfo.first == "Enemy") {
 			for (auto& objSecond : objInfo.second) {
  				SortingObject(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
 			}
@@ -229,6 +214,11 @@ void ObjectManager::ObjectGenerator()
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::SlopeScaffold, objSecond);
 			}
 		}
+		else if (objInfo.first == "SlopeScaffold35") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::SlopeScaffold35, objSecond);
+			}
+		}
 		else if (objInfo.first == "Fence") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Fence, objSecond);
@@ -254,16 +244,6 @@ void ObjectManager::ObjectGenerator()
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::OrangeContainer, objSecond);
 			}
 		}
-		else if (objInfo.first == "PurpleContainer") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::PurpleContainer, objSecond);
-			}
-		}
-		else if (objInfo.first == "GreenContainer") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::GreenContainer, objSecond);
-			}
-		}
 	}
 
 	for (auto& gimmick : loadData.GetGimmickInfo()) {
@@ -285,15 +265,17 @@ void ObjectManager::ObjectGenerator()
 			}
 		}
 	}
-
 }
 
 void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int animNo)
 {
+	//死体を一つ生成する
 	objects_[ObjectType::deadPerson].push_back(std::make_shared<DeadPerson>(handle, objInfo, animNo));
 
+	//死体が4個未満だったらリターン
 	if(objects_[ObjectType::deadPerson].size() < 4) return;
 
+	//死体のリストの一番先頭(古い)死体を削除する
 	objects_[ObjectType::deadPerson].remove(objects_[ObjectType::deadPerson].front());
 
 }
@@ -334,11 +316,18 @@ void ObjectManager::Update(Player& player, const InputState& input)
 }
 
 //描画
-void ObjectManager::Draw()
+void ObjectManager::Draw(VECTOR PlayerPos)
 {
+	float distance = 0.0f;
+
 	for (auto& objs : objects_) {
 		for (auto& obj : objs.second) {
-			obj->Draw();
+			//オブジェクトからプレイヤーまでの距離をとりサイズ変換する
+			distance = VSize(VSub(obj->GetPos(), PlayerPos));
+			//プレイヤーから距離が5000.0f未満だったら描画する
+			if (distance < 5000.0f) {
+				obj->Draw();
+			}
 		}
 	}
 }
@@ -361,27 +350,18 @@ void ObjectManager::SortingObject(ObjectBaseType baseType, ObjectType objType, L
 {
 	//objectBaseTypeを元にインスタンス化するクラスを決める
 	switch (baseType) {
-
 		//自我を持ったenemy以外のキャラクターを生成
 	case ObjectBaseType::characterBase:
 		CharacterGenerator(objType, objInfo);
 		break;
-
 		//enemyを生成
 	case ObjectBaseType::enemyBase:
 		EnemyGenerator(objType, objInfo);
 		break;
-
 		//置物を生成
 	case ObjectBaseType::ornamentBase:
 		OrnamentGenerator(objType, objInfo);
 		break;
-
-		//運べる置物生成
-	case ObjectBaseType::carryBase:
-		CarryObjectGenerator(objType, objInfo);
-		break;
-
 		//ギミックを生成
 	case ObjectBaseType::gimmickBase:
 		GimmickObjectGenerator(objType, objInfo);
@@ -470,16 +450,6 @@ void ObjectManager::OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo
 
 	objects_[objType].push_front(std::make_shared<OrnamentBase>(modelHandle_[objType], objInfo));
 
-}
-
-//運べる置物生成機
-void ObjectManager::CarryObjectGenerator(ObjectType objType, LoadObjectInfo objInfo)
-{
-	switch (objType) {
-	case ObjectType::carry:
-		//objects_[objType].push_front(std::make_shared <CarryObjectBase>(boxHandle_, objInfo));
-		break;
-	}
 }
 
 void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo objInfo)

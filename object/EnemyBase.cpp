@@ -14,7 +14,7 @@ namespace {
 	//敵がプレイヤーを視認できる範囲
 	constexpr float visible_range = 500.0f;
 	//敵のスピード
-	constexpr float move_speed = 0.0f;
+	constexpr float move_speed = 3.0f;
 
 	//オブジェクト認知範囲
 	constexpr float check_collition_radius = 200.0f;
