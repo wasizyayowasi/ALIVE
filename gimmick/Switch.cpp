@@ -52,6 +52,9 @@ void Switch::HitCollPlayer(Player& player)
 	VECTOR playerPos = player.GetStatus().pos;
 
 	MV1RefreshCollInfo(model_->GetModelHandle(), model_->GetColFrameIndex());
+
+	int model = model_->GetModelHandle();
+
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
 	hitDim_.push_back(MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, VAdd(playerPos, VGet(0.0f, player.GetStatus().height, 0.0f)), 20.0f));
 }

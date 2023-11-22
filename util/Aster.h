@@ -44,7 +44,7 @@ struct DesinationState {
 class Aster
 {
 public:
-	Aster();
+	Aster(VECTOR pos);
 	virtual ~Aster();
 
 	//‰Šú‰»

@@ -4,7 +4,7 @@
 
 namespace {
 	//“ñŸŒ³”z—ñ‚ÌÅ‘åX
-	constexpr int max_X = 39 ;
+	constexpr int max_X = 25 ;
 	//“ñŸŒ³”z—ñ‚ÌÅ‘åZ
 	constexpr int max_Y = 14;
 
@@ -12,22 +12,14 @@ namespace {
 	constexpr int max_Index = max_X * max_Y;
 }
 
-Aster::Aster()
+Aster::Aster(VECTOR pos)
 {
 	for (int i = 0; i < max_Index;i++) {
-		masu_[i].centerPos = VGet((i % max_X) * 100.0f - 850.0f, 42.0f, (i / max_X) * 100.0f - 250.0f);
+		masu_[i].centerPos = VGet((i % max_X) * 100.0f + pos.x, pos.y, (i / max_X) * 100.0f - 250.0f);
 		masu_[i].masuMode = MasuMode::normalMode;
 		masu_[i].x = i % max_X;
 		masu_[i].z = i / max_X;
 	}
-
-	masu_[9].masuMode = MasuMode::blockadeMode;
-	masu_[48].masuMode = MasuMode::blockadeMode;
-	masu_[87].masuMode = MasuMode::blockadeMode;
-	masu_[126].masuMode = MasuMode::blockadeMode;
-//	masu_[165].masuMode = MasuMode::blockadeMode;
-	masu_[204].masuMode = MasuMode::blockadeMode;
-
 }
 
 Aster::~Aster()

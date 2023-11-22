@@ -14,7 +14,7 @@ namespace {
 	//敵がプレイヤーを視認できる範囲
 	constexpr float visible_range = 500.0f;
 	//敵のスピード
-	constexpr float move_speed = 3.0f;
+	constexpr float move_speed = 0.0f;
 
 	//オブジェクト認知範囲
 	constexpr float check_collition_radius = 200.0f;
@@ -25,7 +25,7 @@ namespace {
 	constexpr float model_height = 150.0f;
 
 	//リーチ
-	constexpr float within_reach = 50.0f;
+	constexpr float within_reach = 80.0f;
 }
 
 
@@ -36,7 +36,7 @@ EnemyBase::EnemyBase(const char* fileName, LoadObjectInfo objInfo):CharacterBase
 EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,objInfo)
 {
 	model_->SetAnimation(0, true, false);
-	Aster_ = std::make_shared<Aster>();
+	Aster_ = std::make_shared<Aster>(objInfo.pos);
 }
 
 void EnemyBase::Update(Player& player, const InputState& input)
@@ -70,7 +70,7 @@ void EnemyBase::Update(Player& player, const InputState& input)
 
 	float pushVecSize = VSize(pushVec_);
 
-	if (pushVecSize > 7.0f) {
+	if (pushVecSize > 5.0f) {
 		ThrustAway(player);
 	}
 
@@ -97,7 +97,7 @@ void EnemyBase::TrackingUpdate(VECTOR playerPos)
 	VECTOR moveVec = VScale(VNorm(distancePlayerAndEnemy), move_speed);
 
 	//回転行列の取得
-	MATRIX rotMtx = MGetRotVec2(init_rot, VSub(playerPos, pos_));
+	MATRIX rotMtx = MGetRotVec2(init_rot, distancePlayerAndEnemy);
 
 	//拡縮行列の取得
 	MATRIX scaleMtx = MGetScale(scale_);

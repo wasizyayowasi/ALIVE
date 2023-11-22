@@ -129,6 +129,8 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 		}
 	}
 
+	status_.situation.isGimmickCanBeOperated = false;
+
 	if (status_.situation.isInTransit) {
 		deadPersonModelPointer_->GetModelPointer()->SetAnimEndFrame(animType_[AnimType::dead]);
 		deadPersonModelPointer_->GetModelPointer()->SetRot(DegreesToRadians(status_.rot));
@@ -137,6 +139,8 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 	else {
 		status_.situation.isCanBeCarried = false;
 	}
+
+
 
 	ChangeAnimIdle();
 	MovingUpdate(input,objManager);
@@ -582,6 +586,7 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 
 	if (input.IsTriggered(InputType::carry)) {
 		status_.situation.isGimmickCanBeOperated = false;
+		crank_.reset();
 		updateFunc_ = &Player::IdleUpdate;
 	}
 
