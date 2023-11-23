@@ -36,15 +36,14 @@ public:
 	/// プレイヤーの追跡
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
-	void Tracking(VECTOR playerPos);
+	float TrackingPosX(VECTOR playerPos);
 
-	VECTOR GetPos() { return cameraPos_; }
-	VECTOR GetTarget() { return cameraTarget_; }
-
-	void DebugCamera(VECTOR playerPos);
+	float TrackingPosY(VECTOR playerPos, float playerHeight);
 
 	float TrackingPozZ(VECTOR playerPos);
 
+	VECTOR GetPos() { return cameraPos_; }
+	VECTOR GetTarget() { return cameraTarget_; }
 
 	void tempDraW();
 
@@ -53,6 +52,8 @@ private:
 	int i = 0;
 	float cameraTargetPosZ = 0.0f;
 	float moveVecZ = 0.0f;
+	float moveVecY = 0.0f;
+	float moveVecX = 0.0f;
 
 	DINPUT_JOYSTATE input_ = {};
 
