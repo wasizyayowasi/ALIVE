@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="gimmick\Elevator.cpp" />
+    <ClCompile Include="gimmick\CrankScaffold.cpp" />
     <ClCompile Include="gimmick\TransparentObject.cpp" />
     <ClCompile Include="gimmick\ManualCrank.cpp" />
     <ClCompile Include="util\Aster.cpp" />
@@ -188,6 +189,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gimmick\Elevator.h" />
+    <ClInclude Include="gimmick\CrankScaffold.h" />
     <ClInclude Include="gimmick\TransparentObject.h" />
     <ClInclude Include="gimmick\ManualCrank.h" />
     <ClInclude Include="util\Aster.h" />

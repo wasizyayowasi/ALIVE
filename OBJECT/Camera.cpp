@@ -24,7 +24,7 @@ namespace {
 	constexpr float border_range = 100.0f;
 }
 
-Camera::Camera()
+Camera::Camera():updateFunc_(&Camera::TrackingCameraUpdate)
 {
 
 	cameraPos_ = init_pos;
@@ -62,13 +62,32 @@ void Camera::Init()
 
 }
 
+void Camera::Update(VECTOR playerPos, float playerHeight)
+{
+
+	VECTOR fixedRangePos = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "FixedCameraRange").pos;
+
+	VECTOR distance = VSub(fixedRangePos, playerPos);
+	
+	float distanceSize = VSize(distance);
+
+	distanceSize = (std::max)(distanceSize, -distanceSize);
+
+	if (distanceSize < 1500.0f) {
+		updateFunc_ = &Camera::FixedPointCamera;
+	}
+	else {
+		updateFunc_ = &Camera::TrackingCameraUpdate;
+	}
+
+	(this->*updateFunc_)(playerPos, playerHeight);
+}
+
 //プレイヤーを追跡するカメラの更新
 void Camera::TrackingCameraUpdate(VECTOR playerPos,float playerHeight)
 {
 	
 	i = (std::max)(i, 0);
-
-//	Tracking(playerPos);
 
 	//カメラがプレイヤーを追いかける用にする
 	cameraPos_.x = TrackingPosX(playerPos);
@@ -84,39 +103,27 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos,float playerHeight)
 }
 
 //定点カメラの更新
-void Camera::FixedPointCamera(VECTOR playerPos)
+void Camera::FixedPointCamera(VECTOR playerPos, float playerHeight)
 {
-	//一定範囲を出たらカメラが次の場所へヌルっと動く
+	VECTOR fixedRangePos = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "FixedCameraRange").pos;
+	VECTOR fixedPos = ExternalFile::GetInstance().GetCameraGimmickInfo(fixedRangePos, "FixedCamera").pos;
 
-	//プレイヤーがいる部屋の番号を取得
-	int playerRoomNum = static_cast<int>((playerPos.x + horizonta_size_of_one_room / 2 ) / (horizonta_size_of_one_room));
-	//カメラがいる部屋の番号を取得する
-	int cameraRoomNum = static_cast<int>(fixedPointCameraDestinationPosX / (horizonta_size_of_one_room));
-	//プレイヤーとカメラがいる部屋の番号が違ったらカメラのX座標変数(仮)をプレイヤーがいる部屋の番号に変える
-	if (playerRoomNum != cameraRoomNum) {
-		fixedPointCameraDestinationPosX = horizonta_size_of_one_room * playerRoomNum;
-	}
+	VECTOR distance = VSub(fixedPos, cameraPos_);
 
-	//カメラの目標位置からカメラのポジションを引く
-	float sub = fixedPointCameraDestinationPosX - cameraPos_.x;
+	VECTOR normalise = VNorm(distance);
 
-	//カメラのポジションと目標位置が同じではなかったら
-	if (cameraPos_.x != fixedPointCameraDestinationPosX) {
-		//カメラのポジションを移動させる
-		if (sub > 0.0f) {
-			cameraPos_.x = (std::min)(cameraPos_.x + 20.0f, fixedPointCameraDestinationPosX);
-		}
-		else {
-			cameraPos_.x = (std::max)(cameraPos_.x - 20.0f, fixedPointCameraDestinationPosX);
-		}
+	VECTOR moveVec = VScale(VScale(normalise, 10.0f), 0.96f);
+
+	float distanceSize = VSize(distance);
+
+	if (distanceSize > 5.0f) {
+		cameraPos_ = VAdd(cameraPos_, moveVec);
 	}
 
 	//カメラが見る位置をプレイヤーから少しずらす
 	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
-	cameraTarget_.y = (cameraTarget_.y * 0.9f) + (playerPos.y * 0.1f);
-	cameraTarget_.z = 0;
-
-	DrawFormatString(0, 80, 0x448844, "x : %.2f,y : %.2f,z : %.2f", cameraPos_.x, cameraPos_.y, cameraPos_.z);
+	cameraTarget_.y = (cameraTarget_.y * 0.9f) + ((playerPos.y + playerHeight / 2) * 0.1f);
+	cameraTarget_.z = (cameraTarget_.z * 0.95f) + (playerPos.z * 0.05f);
 
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, cameraTarget_);
 }
@@ -149,10 +156,6 @@ float Camera::TrackingPosX(VECTOR playerPos)
 	float gimmickPosX = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "TrackingX").pos.x;
 	float distance = 0.0f;
 
-	if (boderlinePosX <= 0) {
-		return init_pos.x;
-	}
-
 	if (playerPos.x < gimmickPosX && playerPos.x > boderlinePosX - border_range) {
 		distance = gimmickPosX - cameraPos_.x;
 		moveVecX = distance / camera_moveY_speed;
@@ -172,10 +175,6 @@ float Camera::TrackingPosY(VECTOR playerPos, float playerHeight)
 	float gimmickPosY = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "TrackingY").pos.y;
 	float distance = 0.0f;
 	float playerHeadPosY = playerPos.y + playerHeight;
-
-	if (boderlinePos.y <= 0) {
-		return init_pos.y;
-	}
 
 	distance = boderlinePos.x - playerPos.x;
 
@@ -198,34 +197,45 @@ float Camera::TrackingPosY(VECTOR playerPos, float playerHeight)
 float Camera::TrackingPozZ(VECTOR playerPos)
 {
 	
-	float gimmickPosZ = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "TrackingZ").pos.z;
+	VECTOR gimmickPos = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "TrackingZ").pos;
 	float distance = 0.0f;
 
-	if (gimmickPosZ <= 0) {
+	if (gimmickPos.z <= 0) {
 		return init_pos.z;
 	}
 
-	if (playerPos.z < gimmickPosZ) {
-		distance = init_pos.z - cameraPos_.z;
-		moveVecZ = distance / camera_moveZ_speed;
-		moveVecZ = moveVecZ * 0.96f;
-		return cameraPos_.z + moveVecZ;
+	distance = gimmickPos.x - playerPos.x;
+
+	distance = (std::max)(distance, -distance);
+
+	if (distance < 1000.0f) {
+		if (playerPos.z > gimmickPos.z) {
+			float targetPosZ = (init_pos.z * 0.3f) + (playerPos.z * 0.7f);
+			distance = targetPosZ - cameraPos_.z;
+
+			distance = distance / camera_moveZ_speed;
+			moveVecZ = distance * 0.96f;
+
+			return cameraPos_.z + moveVecZ;
+		}
 	}
 
-	float targetPosZ = (init_pos.z * 0.3f) + (playerPos.z * 0.7f);
-	distance = targetPosZ - cameraPos_.z;
-
-	distance = distance / camera_moveZ_speed;
-	moveVecZ = distance * 0.96f;
-
+	distance = init_pos.z - cameraPos_.z;
+	moveVecZ = distance / camera_moveZ_speed;
+	moveVecZ = moveVecZ * 0.96f;
 	return cameraPos_.z + moveVecZ;
 
 }
 
-void Camera::tempDraW()
+void Camera::tempDraW(VECTOR playerPos)
 {
 	DrawLine3D(VGet(0, 500.0f, 0.0f), VGet(3000.0f, 500.0f, 0.0f), 0xff0000);
 	DrawFormatString(0, 16, 0x448844, "%.2f,%.2f,%.2f", cameraPos_.x, cameraPos_.y, cameraPos_.z);
+
+	VECTOR gimmickPos = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "TrackingZ").pos;
+
+//	DrawLine3D(gimmickPos, VGet(gimmickPos.x + 1000.0f, gimmickPos.y, gimmickPos.z), 0xff0000);
+//	DrawLine3D(gimmickPos, VGet(gimmickPos.x - 1000.0f, gimmickPos.y, gimmickPos.z), 0xff0000);
 }
 
 

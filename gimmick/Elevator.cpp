@@ -1,25 +1,30 @@
 #include "Elevator.h"
-#include "ManualCrank.h"
-#include "../util/Model.h"
-#include "../util/InputState.h"
+#include "Switch.h"
 #include "../util/ExternalFile.h"
-#include "../object/Player.h"
-
-namespace {
-	constexpr float ascent_limit = 200.0f;
-}
+#include "../util/Model.h"
 
 Elevator::Elevator(const char* const filename, LoadObjectInfo objInfo):GimmickBase(filename,objInfo)
 {
+	model_ = std::make_shared<Model>(filename);
+
+	pos_ = objInfo.pos;
+
+	for (int i = 0; i < 2; i++) {
+		switch_.push_back(std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo("Switch")));
+	}
+
 }
 
-Elevator::Elevator(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
+Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInfo)
 {
-	initPos_ = objInfo.pos;
+	pos_ = objInfo.pos;
 
-	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo("Crank");
-	crank_ = std::make_shared<ManualCrank>(info);
-	upVec_ = ascent_limit / crank_->GetMaxRotZ();
+	targetPos = pos_;
+
+	for (int i = 0; i < 2; i++) {
+		switch_.push_back(std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo("Switch")));
+	}
+
 }
 
 Elevator::~Elevator()
@@ -28,23 +33,81 @@ Elevator::~Elevator()
 
 void Elevator::Update(Player& player, const InputState& input)
 {
+	VECTOR distance = {};
+	float distanceSize = 0.0f;
 
-	if (crank_->HitCollPlayer(player)) {
-		player.SetGimmickModelPointer(crank_);
+	for (auto& bottan : switch_) {
+		bottan->Update(player);
 	}
 
-	pos_.y = crank_->GetRotZ()* upVec_ + initPos_.y;
+	int temp = static_cast<int>(targetPos.y);
+	int temp1 = static_cast<int>(pos_.y);
+
+	if (temp == temp1) {
+		TargetPosition(distance, distanceSize);
+	}
+
+	//ˆÚ“®
+	distance = VSub(targetPos, pos_);
+	distance.x = 0.0f;
+	distance.z = 0.0f;
+	moveVec= VScale(VScale(distance,0.01f), 1.0f);
+	distanceSize = VSize(distance);
+
+	if (distanceSize < 1.0f) {
+		pos_ = targetPos;
+	}
+	else {
+		pos_ = VAdd(pos_, moveVec);
+	}
 
 	model_->SetPos(pos_);
 
 }
+
 void Elevator::Draw()
 {
 	model_->Draw();
-	crank_->Draw();
+
+	for (auto& bottan : switch_) {
+		bottan->Draw();
+	}
+
+	DrawFormatString(0, 32, 0xff0000, "%.2f,%.2f,%.2f", pos_.x, pos_.y, pos_.z);
+	DrawFormatString(0, 48, 0xff0000, "%.2f,%.2f,%.2f", switch_[0]->GetPos().x, switch_[0]->GetPos().y, switch_[0]->GetPos().z);
+	DrawFormatString(0, 64, 0xff0000, "%.2f,%.2f,%.2f", switch_[1]->GetPos().x, switch_[1]->GetPos().y, switch_[1]->GetPos().z);
+
 }
 
-std::shared_ptr<Model> Elevator::AddCollModel()
+void Elevator::TargetPosition(VECTOR& distance, float distanceSize)
 {
-	return crank_->GetModelPointer();
+ 	if (switch_[0]->CollResult()) {
+		distance = VSub(switch_[0]->GetPos(), pos_);
+		distance.x = 0.0f;
+		distance.z = 0.0f;
+		distanceSize = VSize(distance);
+		if (distanceSize < 5.0f) {
+			targetPos = switch_[1]->GetPos();
+		}
+		else {
+			targetPos = switch_[0]->GetPos();
+		}
+	}
+
+	if (switch_[1]->CollResult()) {
+		distance = VSub(switch_[1]->GetPos(), pos_);
+		distance.x = 0.0f;
+		distance.z = 0.0f;
+		distanceSize = VSize(distance);
+		if (distanceSize < 5.0f) {
+			targetPos = switch_[0]->GetPos();
+		}
+		else {
+			targetPos = switch_[1]->GetPos();
+		}
+	}
+
+	targetPos.x = pos_.x;
+	targetPos.z = pos_.z;
+
 }

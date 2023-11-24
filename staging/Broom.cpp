@@ -36,7 +36,7 @@ void Broom::writingScreenUpdate(VECTOR playerPos)
 	//‰æ–Ê‚ÌƒNƒŠƒA
 	ClearDrawScreen();
 
-	camera_->FixedPointCamera(playerPos);
+//	camera_->FixedPointCamera(playerPos);
 }
 
 void Broom::graphFilterUpdate()

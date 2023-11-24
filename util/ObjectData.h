@@ -17,6 +17,7 @@ enum class ObjectType{
 	gimmickSwitch,
 	gimmickSteelyard,
 	trans,
+	CrankScaffold,
 	elevator,
 	BigBuildingA,
 	BigBuildingB,

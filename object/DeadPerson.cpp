@@ -5,7 +5,7 @@
 
 namespace {
 	//ƒ‚ƒfƒ‹ƒtƒŒ[ƒ€–¼
-	const char* const coll_frame_death = "body";
+	const char* const coll_frame_death = "Coll";
 }
 
 DeadPerson::DeadPerson(const char* const filename, LoadObjectInfo objInfo, int animNo) : CharacterBase(filename,objInfo)

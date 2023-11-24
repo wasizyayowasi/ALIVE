@@ -29,6 +29,14 @@ Switch::~Switch()
 void Switch::Update(Player& player)
 {
 
+	//衝突結果の削除
+	for (auto& result : hitDim_) {
+		MV1CollResultPolyDimTerminate(result);
+	}
+
+	//衝突結果を保持する配列の削除
+	hitDim_.clear();
+
 	//アニメーションの更新
 	model_->Update();
 
@@ -81,14 +89,6 @@ bool Switch::CollResult()
 			hitNum++;
 		}
 	}
-
-	//衝突結果の削除
-	for (auto& result : hitDim_) {
-		MV1CollResultPolyDimTerminate(result);
-	}
-
-	//衝突結果を保持する配列の削除
-	hitDim_.clear();
 
 	//当たっていなかったら
 	//アニメーションを変更し終了

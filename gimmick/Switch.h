@@ -29,6 +29,9 @@ public:
 	//衝突判定を行うモデルを追加する
 	std::shared_ptr<Model> GetModelPointer();
 
+	//ポジションの追加
+	VECTOR GetPos() { return pos_; }
+
 private:
 	//スイッチモデルとプレイヤーの衝突判定を行う
 	void HitCollPlayer(Player& player);

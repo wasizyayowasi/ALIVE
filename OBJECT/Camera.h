@@ -13,6 +13,8 @@ public:
 	//初期化用
 	void Init();
 
+	void Update(VECTOR playerPos, float playerHeight);
+
 	/// <summary>
 	/// プレイヤーを追跡するカメラの更新
 	/// </summary>
@@ -24,7 +26,7 @@ public:
 	/// 定点カメラ
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
-	void FixedPointCamera(VECTOR playerPos);
+	void FixedPointCamera(VECTOR playerPos, float playerHeight);
 
 	/// <summary>
 	/// カメラの注視点を逸らす
@@ -45,7 +47,7 @@ public:
 	VECTOR GetPos() { return cameraPos_; }
 	VECTOR GetTarget() { return cameraTarget_; }
 
-	void tempDraW();
+	void tempDraW(VECTOR playerPos);
 
 private:
 
@@ -63,6 +65,8 @@ private:
 
 	VECTOR cameraPos_;									//カメラのポジション
 	VECTOR cameraTarget_ = {0, 0, 0};					//カメラのターゲット
+
+	void(Camera::* updateFunc_)(VECTOR pos, float height);
 
 };
 

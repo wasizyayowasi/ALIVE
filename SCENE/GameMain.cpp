@@ -96,8 +96,10 @@ void GameMain::Draw()
 	//カメラの初期化
 	//SetDrawScreenを行うとカメラの情報がリセットされるために
 	camera_->Init();
-	camera_->TrackingCameraUpdate(player_->GetStatus().pos, player_->GetStatus().height);
-//	camera_->DebugCamera(player_->GetStatus().pos);
+	camera_->Update(player_->GetStatus().pos, player_->GetStatus().height);
+//	camera_->TrackingCameraUpdate(player_->GetStatus().pos, player_->GetStatus().height);
+//
+//	camera_->FixedPointCamera(player_->GetStatus().pos);
 
 //	broom_->writingScreenUpdate(player_->GetStatus().pos);
 	DrawString(0, 0, "GameMain", 0xffffff);
@@ -113,7 +115,7 @@ void GameMain::Draw()
 //	broom_->graphFilterUpdate();
 //	broom_->draw();
 
-	camera_->tempDraW();
+	camera_->tempDraW(player_->GetStatus().pos);
 
 	SetDrawScreen(DX_SCREEN_BACK);
 

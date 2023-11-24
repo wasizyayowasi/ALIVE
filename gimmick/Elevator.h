@@ -1,8 +1,11 @@
 #pragma once
 #include "GimmickBase.h"
+#include "DxLib.h"
 #include <memory>
+#include <vector>
 
-class ManualCrank;
+class Switch;
+class Model;
 
 class Elevator : public GimmickBase
 {
@@ -15,16 +18,16 @@ public:
 	void Update(Player& player, const InputState& input)override;
 	void Draw();
 
-	//衝突判定を行うモデルを追加する
-	virtual std::shared_ptr<Model> AddCollModel();
+	void TargetPosition(VECTOR& distance,float distanceSize);
 
+	//衝突判定を行うモデルを追加する
+//	virtual std::shared_ptr<Model> AddCollModel();
 private:
 
-	float upVec_ = 0.0f;
 
-	VECTOR initPos_ = {};
+	VECTOR targetPos = {};
+	VECTOR moveVec = {};
 
-	std::shared_ptr<ManualCrank> crank_;
-
+	std::vector<std::shared_ptr<Switch>> switch_;
 };
 

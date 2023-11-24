@@ -17,6 +17,8 @@ TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : Gimmi
 
 	isCollCheck_ = false;
 
+	MV1SetMaterialDifColor(model_->GetModelHandle(), 0, GetColorF(0.0f, 0.0f, 1.0f, 0.0f));
+
 }
 
 TransparentObject::~TransparentObject()

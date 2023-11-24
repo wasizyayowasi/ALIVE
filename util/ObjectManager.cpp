@@ -8,6 +8,7 @@
 
 #include "../gimmick/TransparentObject.h"
 #include "../gimmick/Steelyard.h"
+#include "../gimmick/CrankScaffold.h"
 #include "../gimmick/Elevator.h"
 
 #include "game.h"
@@ -259,6 +260,11 @@ void ObjectManager::ObjectGenerator()
 				SortingObject(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, objSecond);
 			}
 		}
+		else if (gimmick.first == "CrankScaffold") {
+			for (auto& objSecond : gimmick.second) {
+				SortingObject(ObjectBaseType::gimmickBase, ObjectType::CrankScaffold, objSecond);
+			}
+		}
 		else if (gimmick.first == "Elevator") {
 			for (auto& objSecond : gimmick.second) {
 				SortingObject(ObjectBaseType::gimmickBase, ObjectType::elevator, objSecond);
@@ -463,6 +469,9 @@ void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo ob
 		break;
 	case ObjectType::elevator:
 		objects_[objType].push_front(std::make_shared<Elevator>(elevatorHandle_, objInfo));
+		break;
+	case ObjectType::CrankScaffold:
+		objects_[objType].push_front(std::make_shared<CrankScaffold>(elevatorHandle_, objInfo));
 		break;
 	}
 }
