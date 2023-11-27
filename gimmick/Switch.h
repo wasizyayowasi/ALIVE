@@ -32,6 +32,9 @@ public:
 	//ポジションの追加
 	VECTOR GetPos() { return pos_; }
 
+	//衝突結果のクリア
+	void DeleteHitResult();
+
 private:
 	//スイッチモデルとプレイヤーの衝突判定を行う
 	void HitCollPlayer(Player& player);

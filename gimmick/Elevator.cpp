@@ -3,6 +3,10 @@
 #include "../util/ExternalFile.h"
 #include "../util/Model.h"
 
+namespace {
+	constexpr float move_speed = 10.0f;
+}
+
 Elevator::Elevator(const char* const filename, LoadObjectInfo objInfo):GimmickBase(filename,objInfo)
 {
 	model_ = std::make_shared<Model>(filename);
@@ -10,7 +14,7 @@ Elevator::Elevator(const char* const filename, LoadObjectInfo objInfo):GimmickBa
 	pos_ = objInfo.pos;
 
 	for (int i = 0; i < 2; i++) {
-		switch_.push_back(std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo("Switch")));
+		switch_.push_back(std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_,"Switch")));
 	}
 
 }
@@ -22,7 +26,7 @@ Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInf
 	targetPos = pos_;
 
 	for (int i = 0; i < 2; i++) {
-		switch_.push_back(std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo("Switch")));
+		switch_.push_back(std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, "Switch")));
 	}
 
 }
@@ -33,32 +37,41 @@ Elevator::~Elevator()
 
 void Elevator::Update(Player& player, const InputState& input)
 {
-	VECTOR distance = {};
-	float distanceSize = 0.0f;
+	float distance = 0.0f;
 
 	for (auto& bottan : switch_) {
 		bottan->Update(player);
 	}
 
-	int temp = static_cast<int>(targetPos.y);
-	int temp1 = static_cast<int>(pos_.y);
-
-	if (temp == temp1) {
-		TargetPosition(distance, distanceSize);
+	if (targetPos.y == pos_.y) {
+		TargetPosition(distance);
+	}
+	else {
+		for (auto& bottan : switch_) {
+			bottan->DeleteHitResult();
+		}
 	}
 
 	//ˆÚ“®
-	distance = VSub(targetPos, pos_);
-	distance.x = 0.0f;
-	distance.z = 0.0f;
-	moveVec= VScale(VScale(distance,0.01f), 1.0f);
-	distanceSize = VSize(distance);
+	distance = targetPos.y - pos_.y;
 
-	if (distanceSize < 1.0f) {
+	moveVecY = distance / 0.96f;
+
+	moveVecY = (std::max)(moveVecY, -moveVecY);
+
+	if (moveVecY > move_speed) {
+		float scale = move_speed / distance;
+		scale = (std::max)(scale, -scale);
+		moveVecY = distance * scale;
+	}
+
+	distance = (std::max)(distance, -distance);
+
+	if (distance < 3.0f) {
 		pos_ = targetPos;
 	}
 	else {
-		pos_ = VAdd(pos_, moveVec);
+		pos_.y += moveVecY;
 	}
 
 	model_->SetPos(pos_);
@@ -79,14 +92,12 @@ void Elevator::Draw()
 
 }
 
-void Elevator::TargetPosition(VECTOR& distance, float distanceSize)
+void Elevator::TargetPosition(float distanceY)
 {
  	if (switch_[0]->CollResult()) {
-		distance = VSub(switch_[0]->GetPos(), pos_);
-		distance.x = 0.0f;
-		distance.z = 0.0f;
-		distanceSize = VSize(distance);
-		if (distanceSize < 5.0f) {
+		distanceY = switch_[0]->GetPos().y - pos_.y;
+		distanceY = (std::max)(distanceY, -distanceY);
+		if (distanceY < 5.0f) {
 			targetPos = switch_[1]->GetPos();
 		}
 		else {
@@ -95,11 +106,9 @@ void Elevator::TargetPosition(VECTOR& distance, float distanceSize)
 	}
 
 	if (switch_[1]->CollResult()) {
-		distance = VSub(switch_[1]->GetPos(), pos_);
-		distance.x = 0.0f;
-		distance.z = 0.0f;
-		distanceSize = VSize(distance);
-		if (distanceSize < 5.0f) {
+		distanceY = switch_[1]->GetPos().y - pos_.y;
+		distanceY = (std::max)(distanceY, -distanceY);
+		if (distanceY < 5.0f) {
 			targetPos = switch_[0]->GetPos();
 		}
 		else {
@@ -107,7 +116,6 @@ void Elevator::TargetPosition(VECTOR& distance, float distanceSize)
 		}
 	}
 
-	targetPos.x = pos_.x;
 	targetPos.z = pos_.z;
 
 }

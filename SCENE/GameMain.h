@@ -47,8 +47,8 @@ private:
 
 	//Ç±Ç±Ç‡è¡Ç∑Ç©Ç‡ÇµÇÍÇ»Ç¢
 	static constexpr int fadeInterval_ = 60;
-	int fadeTimer_ = fadeInterval_;
-	int fadeValue_ = 255;
+	int fadeTimer_ = 0;
+	int fadeValue_ = 0;
 	int fadeColor_ = 0x000000;
 
 	VECTOR checkPoint_ = { 0.0f,0.0f, 0.0f };

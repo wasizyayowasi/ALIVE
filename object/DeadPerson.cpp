@@ -49,6 +49,8 @@ DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : Characte
 	//	break;
 	}
 
+	temp = pos_;
+
 }
 
 DeadPerson::~DeadPerson()
@@ -57,7 +59,15 @@ DeadPerson::~DeadPerson()
 
 void DeadPerson::Update(Player& player, const InputState& input)
 {
-	HitColl(player);
+
+	hitDim_ = MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), temp, VAdd(temp, VGet(0.0f, 50.0f, 0.0f)), 50.0f);
+
+	if (hitDim_.HitNum > 0) {
+		color = 0x0000ff;
+	}
+	else {
+		color = 0xff0000;
+	}
 
 	MV1CollResultPolyDimTerminate(hitDim_);
 
@@ -68,18 +78,17 @@ void DeadPerson::Draw()
 {
 	model_->Draw();
 	DrawSphere3D(pos_, 32, 32, 0xff0000, 0xff0000, true);
+	DrawCapsule3D(temp, VAdd(temp, VGet(0.0f, 50.0f, 0.0f)), 50, 32, color, color, true);
 }
 
 std::shared_ptr<Model> DeadPerson::AddCollModel()
 {
-	return std::shared_ptr<Model>();
+	return nullptr;
 }
 
 void DeadPerson::HitColl(Player& player)
 {
-	hitDim_ = MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), VAdd(player.GetStatus().pos, VGet(0.0f, 10.0f, 0.0f)), VAdd(player.GetStatus().pos, VGet(0.0f, 150.0f, 0.0f)), 20.0f);
-
-	if (hitDim_.HitNum < 1) return;
+	
 
 }
 

@@ -68,18 +68,12 @@ private:
 	//キャラクター生成機
 	void CharacterGenerator(ObjectType objType, LoadObjectInfo objInfo);
 
-	void EnemyGenerator(ObjectType objType, LoadObjectInfo objInfo);
+	void EnemyGenerator(int deathCount,VECTOR playerPos);
 	//置物生成機
 	void OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo);
 	//ギミック生成機
 	void GimmickObjectGenerator(ObjectType objType, LoadObjectInfo objInfo);
 private:
-
-	int playerHandle_ = -1;
-	int switchHandle_ = -1;
-	int steelyardHandle_ = -1;
-	int transObjHandle_ = -1;
-	int elevatorHandle_ = -1;
 
 	std::list<std::shared_ptr<Model>> checkCollList_;
 

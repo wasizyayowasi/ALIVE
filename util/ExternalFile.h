@@ -48,7 +48,7 @@ public:
 	/// </summary>
 	/// <param name="name">取得したいオブジェクトの名前</param>
 	/// <returns></returns>
-	LoadObjectInfo GetSpecifiedGimmickInfo(const char* const name);
+	LoadObjectInfo GetSpecifiedGimmickInfo(VECTOR objPos, const char* const name);
 
 	/// <summary>
 	/// オブジェクトの配置、回転率、拡縮率を取得する
@@ -69,6 +69,8 @@ public:
 	/// <param name="name">取得したいオブジェクトの名前</param>
 	/// <returns>オブジェクトのデータ</returns>
 	std::list<LoadObjectInfo> GetSpecifiedInfo(const char* const name);
+
+	LoadObjectInfo GetEnemyInfo(VECTOR playerPos);
 
 	/// <summary>
 	/// セーブデータの書き出し
@@ -111,6 +113,7 @@ private:
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadObjInfo_;
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadGimmickInfo_;
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadCameraGimmickInfo_;
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadEnemyInfo_;
 
 };
 

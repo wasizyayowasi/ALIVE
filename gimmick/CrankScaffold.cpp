@@ -17,7 +17,7 @@ CrankScaffold::CrankScaffold(int handle, LoadObjectInfo objInfo) : GimmickBase(h
 {
 	initPos_ = objInfo.pos;
 
-	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo("Crank");
+	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(initPos_,"Crank");
 	crank_ = std::make_shared<ManualCrank>(info);
 	upVec_ = ascent_limit / crank_->GetMaxRotZ();
 }

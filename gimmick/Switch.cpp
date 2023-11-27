@@ -28,15 +28,6 @@ Switch::~Switch()
 //更新
 void Switch::Update(Player& player)
 {
-
-	//衝突結果の削除
-	for (auto& result : hitDim_) {
-		MV1CollResultPolyDimTerminate(result);
-	}
-
-	//衝突結果を保持する配列の削除
-	hitDim_.clear();
-
 	//アニメーションの更新
 	model_->Update();
 
@@ -50,7 +41,19 @@ void Switch::Update(Player& player)
 void Switch::Draw()
 {
 	model_->Draw();
+	DrawCapsule3D(pos_, VAdd(pos_, VGet(0.0f, 50.0f, 0.0f)), 50, 32, 0x00ff00, 0x00ff00, true);
 //	DrawFormatString(0, 48, 0x448844, "%.2f,%.2f,%.2f", pos_.x, pos_.y, pos_.z);
+}
+
+void Switch::DeleteHitResult()
+{
+	//衝突結果の削除
+	for (auto& result : hitDim_) {
+		MV1CollResultPolyDimTerminate(result);
+	}
+
+	//衝突結果を保持する配列の削除
+	hitDim_.clear();
 }
 
 //衝突判定
@@ -71,6 +74,8 @@ void Switch::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 {
 	MV1RefreshCollInfo(deadPerson->GetModelPointer()->GetModelHandle(), deadPerson->GetModelPointer()->GetColFrameIndex());
 
+	int temp = deadPerson->GetModelPointer()->GetColFrameIndex();
+
 	//持ち運び中だったら以降の処理を行わない
 	if (deadPerson->IsTransit()) {
 		return;
@@ -89,6 +94,8 @@ bool Switch::CollResult()
 			hitNum++;
 		}
 	}
+
+	DeleteHitResult();
 
 	//当たっていなかったら
 	//アニメーションを変更し終了

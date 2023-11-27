@@ -25,6 +25,10 @@ private:
 
 private:
 
+	int color;
+
+	VECTOR temp;
+
 	MV1_COLL_RESULT_POLY_DIM hitDim_ = {};
 
 };

@@ -39,14 +39,32 @@ void ExternalFile::LoadFile(bool isLood)
 
 	LoadPlayerInfo("player");
 	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
+	LoadObjectData("data/objData/Enemy.pos",loadEnemyInfo_);
 	LoadObjectData("data/objData/gimmick.pos",loadGimmickInfo_);
 	LoadObjectData("data/objData/cameraGimmick.pos", loadCameraGimmickInfo_);
 }
 
-LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const char* const name)
+LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(VECTOR objPos, const char* const name)
 {
-	auto info = loadGimmickInfo_[name].front();
-	loadGimmickInfo_[name].pop_front();
+
+	LoadObjectInfo info = {};
+
+	float minDIstance = 10000.0f;
+	float distanceSize = 0.0f;
+
+	for (auto& specifiedObj : loadGimmickInfo_[name]) {
+		VECTOR distance = VSub(objPos, specifiedObj.pos);
+		distanceSize = VSize(distance);
+		if (minDIstance > distanceSize) {
+
+			minDIstance = distanceSize;
+			info = specifiedObj;
+
+		}
+	}
+
+	loadGimmickInfo_[name].remove_if([&info](LoadObjectInfo objInfo) {return VSize(objInfo.pos) == VSize(info.pos); });
+
 	return info;
 }
 
@@ -83,6 +101,30 @@ std::list<LoadObjectInfo> ExternalFile::GetSpecifiedInfo(const char* const name)
 	}
 
 	return std::list<LoadObjectInfo>();
+}
+
+LoadObjectInfo ExternalFile::GetEnemyInfo(VECTOR playerPos)
+{
+	LoadObjectInfo info = {};
+	VECTOR distance = {};
+	float distanceSize = 0.0f;
+	float minSize = 5000.0f;
+
+	for (auto& list : loadEnemyInfo_) {
+		for (auto& enemy : list.second) {
+
+			distance = VSub(enemy.pos, playerPos);
+			distanceSize = VSize(distance);
+
+			if (distanceSize < minSize) {
+				info = enemy;
+			}
+		}
+	}
+
+	loadEnemyInfo_[info.name].remove_if([&info](LoadObjectInfo objInfo) {return objInfo.pos.x == info.pos.x && objInfo.pos.y == info.pos.y && objInfo.pos.z == info.pos.z; });
+
+	return info;
 }
 
 //セーブデータの書き出し
@@ -242,7 +284,6 @@ void ExternalFile::RewritePlayerInfo()
 	   {"rotSpeed",15.0f},
 	   {"walkSpeed",3.0f},
 	   {"runningSpeed",7.0f},
-	   //{"animNo", json::array({ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15})},
 	   {"animNo", json::array({ 0,1,2,3,4,5,6,7,8,9})},
 	};
 

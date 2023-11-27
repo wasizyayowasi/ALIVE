@@ -18,15 +18,15 @@ public:
 	void Update(Player& player, const InputState& input)override;
 	void Draw();
 
-	void TargetPosition(VECTOR& distance,float distanceSize);
+	void TargetPosition(float distanceY);
 
 	//Õ“Ë”»’è‚ğs‚¤ƒ‚ƒfƒ‹‚ğ’Ç‰Á‚·‚é
 //	virtual std::shared_ptr<Model> AddCollModel();
 private:
 
+	float moveVecY = 0.0f;
 
 	VECTOR targetPos = {};
-	VECTOR moveVec = {};
 
 	std::vector<std::shared_ptr<Switch>> switch_;
 };

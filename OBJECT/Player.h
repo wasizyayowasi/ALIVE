@@ -105,6 +105,8 @@ public:
 	/// <param name="crank"></param>
 	void SetGimmickModelPointer(std::shared_ptr<ManualCrank> crank);
 
+	std::shared_ptr<Model> GetModelPointer() { return model_; }
+
 private:
 	//通常更新
 	void IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
@@ -212,7 +214,7 @@ private:
 	VECTOR deathPos_ = { 0.0f,0.0f,0.0f };						//死体のポジション
 
 	std::shared_ptr<ObjectBase> deadPersonModelPointer_;		//持ち運ぶ死体のモデルポインタ
-	std::shared_ptr<Model> player_;								//モデルクラスのポインタ
+	std::shared_ptr<Model> model_;								//モデルクラスのポインタ
 	std::shared_ptr<ManualCrank> crank_;						//クランククラスのポインタ
 
 	std::unordered_map<AnimType, int> animType_;				

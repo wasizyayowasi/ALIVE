@@ -358,6 +358,9 @@ void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player,
 			if (result.HitNum > 0) {
 				player->SetCarryInfo(true,obj);
 			}
+
+			MV1CollResultPolyDimTerminate(result);
+
 		}
 	}
 

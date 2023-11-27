@@ -5,6 +5,7 @@
 #include "../object/DeadPerson.h"
 #include "../object/tempEnemy.h"
 #include "../object/OrnamentBase.h"
+#include "../object/Player.h"
 
 #include "../gimmick/TransparentObject.h"
 #include "../gimmick/Steelyard.h"
@@ -23,29 +24,30 @@ namespace {
 	const char* const steelyard_filename = "data/model/steelyard.mv1";
 	const char* const transparent_obj_filename = "data/model/trans.mv1";
 	const char* const elevator_obj_filename = "data/model/elevator.mv1";
+	const char* const manualCrank_obj_filename = "data/model/manualCrank.mv1";
 
 	//実際に使う予定のモデルパス
 	//でかいビル
-	const char* const big_buildingA_filepath = "data/model/city/BigBuildingA.mv1";
-	const char* const big_buildingB_filepath = "data/model/city/BigBuildingB.mv1";
-	const char* const big_buildingC_filepath = "data/model/city/BigBuildingC.mv1";
-	const char* const big_buildingD_filepath = "data/model/city/BigBuildingD.mv1";
+	const char* const big_buildingA_filepath = "data/model/city/model/BigBuildingA.mv1";
+	const char* const big_buildingB_filepath = "data/model/city/model/BigBuildingB.mv1";
+	const char* const big_buildingC_filepath = "data/model/city/model/BigBuildingC.mv1";
+	const char* const big_buildingD_filepath = "data/model/city/model/BigBuildingD.mv1";
 	//Aみたいな形のビル
-	const char* const buildingA_filepath = "data/model/city/BuildingA.mv1";
-	const char* const buildingB_filepath = "data/model/city/BuildingB.mv1";
-	const char* const buildingC_filepath = "data/model/city/BuildingC.mv1";
+	const char* const buildingA_filepath = "data/model/city/model/BuildingA.mv1";
+	const char* const buildingB_filepath = "data/model/city/model/BuildingB.mv1";
+	const char* const buildingC_filepath = "data/model/city/model/BuildingC.mv1";
 	//長方形のビル
-	const char* const buildingA_type2_filepath = "data/model/city/Building2A.mv1";
-	const char* const buildingB_type2_filepath = "data/model/city/Building2B.mv1";
-	const char* const buildingC_type2_filepath = "data/model/city/Building2C.mv1";
+	const char* const buildingA_type2_filepath = "data/model/city/model/Building2A.mv1";
+	const char* const buildingB_type2_filepath = "data/model/city/model/Building2B.mv1";
+	const char* const buildingC_type2_filepath = "data/model/city/model/Building2C.mv1";
 	//海外で見るような飲食店
-	const char* const storeA_filepath = "data/model/city/StoreA.mv1";
-	const char* const storeB_filepath = "data/model/city/StoreB.mv1";
-	const char* const storeC_filepath = "data/model/city/StoreC.mv1";
+	const char* const storeA_filepath = "data/model/city/model/StoreA.mv1";
+	const char* const storeB_filepath = "data/model/city/model/StoreB.mv1";
+	const char* const storeC_filepath = "data/model/city/model/StoreC.mv1";
 	//道
-	const char* const street_filepath = "data/model/city/Street.mv1";
-	const char* const T_street_filepath = "data/model/city/TStreet.mv1";
-	const char* const Tile_filepath = "data/model/city/Tile.mv1";
+	const char* const street_filepath = "data/model/city/model/Street.mv1";
+	const char* const T_street_filepath = "data/model/city/model/TStreet.mv1";
+	const char* const Tile_filepath = "data/model/city/model/Tile.mv1";
 	const char* const scaffold_filepath = "data/model/city/others/Scaffold.mv1";
 	const char* const slopeScaffold_filepath = "data/model/city/others/SlopeScaffold.mv1";
 	const char* const slopeScaffold35_filepath = "data/model/city/others/SlopeScaffold35.mv1";
@@ -61,11 +63,13 @@ namespace {
 
 ObjectManager::ObjectManager()
 {
-	playerHandle_ = MV1LoadModel(player_Filename);
-	switchHandle_ = MV1LoadModel(switch_filename);
-	steelyardHandle_ = MV1LoadModel(steelyard_filename);
-	transObjHandle_ = MV1LoadModel(transparent_obj_filename);
-	elevatorHandle_ = MV1LoadModel(elevator_obj_filename);
+
+	modelHandle_[ObjectType::enemy] = MV1LoadModel(player_Filename);
+	modelHandle_[ObjectType::gimmickSwitch] = MV1LoadModel(switch_filename);
+	modelHandle_[ObjectType::gimmickSteelyard] = MV1LoadModel(steelyard_filename);
+	modelHandle_[ObjectType::trans] = MV1LoadModel(transparent_obj_filename);
+	modelHandle_[ObjectType::elevator] = MV1LoadModel(elevator_obj_filename);
+	modelHandle_[ObjectType::CrankScaffold] = MV1LoadModel(manualCrank_obj_filename);
 
 	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);
 	modelHandle_[ObjectType::BigBuildingB] = MV1LoadModel(big_buildingB_filepath);
@@ -101,12 +105,6 @@ ObjectManager::ObjectManager()
 
 ObjectManager::~ObjectManager()
 {
-	MV1DeleteModel(playerHandle_);
-	MV1DeleteModel(switchHandle_);
-	MV1DeleteModel(steelyardHandle_);
-	MV1DeleteModel(transObjHandle_);
-	MV1DeleteModel(elevatorHandle_);
-
 	for (auto& type : modelHandle_) {
 		MV1DeleteModel(type.second);
 	}
@@ -120,12 +118,7 @@ void ObjectManager::ObjectGenerator()
 
 	for (auto& objInfo : loadData.GetLoadObjectInfo()) {
 		//敵を作成
-		 if (objInfo.first == "Enemy") {
-			for (auto& objSecond : objInfo.second) {
- 				SortingObject(ObjectBaseType::enemyBase, ObjectType::enemy, objSecond);
-			}
-		}
-		else if (objInfo.first == "BigBuildingA") {
+		if (objInfo.first == "BigBuildingA") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingA, objSecond);
 			}
@@ -316,9 +309,13 @@ void ObjectManager::Update(Player& player, const InputState& input)
 	//更新
 	for (auto obj : objects_) {
 		for (auto objSecond : obj.second) {
-			objSecond->Update(player,input);
+			objSecond->Update(player, input);
 		}
 	}
+
+	
+	EnemyGenerator(player.GetDeathCount(),player.GetStatus().pos);
+
 }
 
 //描画
@@ -361,9 +358,9 @@ void ObjectManager::SortingObject(ObjectBaseType baseType, ObjectType objType, L
 		CharacterGenerator(objType, objInfo);
 		break;
 		//enemyを生成
-	case ObjectBaseType::enemyBase:
-		EnemyGenerator(objType, objInfo);
-		break;
+//	case ObjectBaseType::enemyBase:
+//		EnemyGenerator(objType, objInfo);
+//		break;
 		//置物を生成
 	case ObjectBaseType::ornamentBase:
 		OrnamentGenerator(objType, objInfo);
@@ -441,12 +438,21 @@ void ObjectManager::CharacterGenerator(ObjectType objType, LoadObjectInfo objInf
 }
 
 //敵生成機
-void ObjectManager::EnemyGenerator(ObjectType objType, LoadObjectInfo objInfo)
+void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 {
-	switch (objType) {
-	case ObjectType::enemy:
-		objects_[objType].push_front(std::make_shared<TempEnemy>(playerHandle_, objInfo));
-		break;
+
+	auto loadInfo = ExternalFile::GetInstance().GetEnemyInfo(playerPos);
+	
+	int size = loadInfo.name.size();
+
+	if (size > 0) {
+		auto temp = loadInfo.name.substr(size - 1, size - 1);
+
+		int num = atoi(temp.c_str());
+
+		if (num < deathCount) {
+			objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(modelHandle_[ObjectType::enemy], loadInfo));
+		}
 	}
 }
 
@@ -462,16 +468,16 @@ void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo ob
 {
 	switch (objType) {
 	case ObjectType::trans:
-		objects_[objType].push_front(std::make_shared<TransparentObject>(transObjHandle_, objInfo));
+		objects_[objType].push_front(std::make_shared<TransparentObject>(modelHandle_[objType], objInfo));
 		break;
 	case ObjectType::gimmickSteelyard:
-		objects_[objType].push_front(std::make_shared<Steelyard>(steelyardHandle_, objInfo));
+		objects_[objType].push_front(std::make_shared<Steelyard>(modelHandle_[objType], objInfo));
 		break;
 	case ObjectType::elevator:
-		objects_[objType].push_front(std::make_shared<Elevator>(elevatorHandle_, objInfo));
+		objects_[objType].push_front(std::make_shared<Elevator>(modelHandle_[objType], objInfo));
 		break;
 	case ObjectType::CrankScaffold:
-		objects_[objType].push_front(std::make_shared<CrankScaffold>(elevatorHandle_, objInfo));
+		objects_[objType].push_front(std::make_shared<CrankScaffold>(modelHandle_[objType], objInfo));
 		break;
 	}
 }

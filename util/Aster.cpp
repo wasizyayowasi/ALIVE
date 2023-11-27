@@ -298,6 +298,11 @@ void Aster::RouteSearch()
 
 VECTOR Aster::GetDestinationCoordinates(VECTOR playerPos,VECTOR enemyPos)
 {
+
+	if (route_.empty()) {
+		return enemyPos;
+	}
+
 	//エネミーとプレイヤーのインデックス座標を取得
 	int enemyIndex = SearchCurrentIndex(enemyPos);
 	int playerIndex = SearchCurrentIndex(playerPos);

@@ -10,7 +10,7 @@ TransparentObject::TransparentObject(const char* const filename, LoadObjectInfo 
 
 TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
 {
-	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo("Switch");
+	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(objInfo.pos,"Switch");
 	switch_ = std::make_shared<Switch>(info);
 	
 	InitialPosition_ = model_->GetPos();

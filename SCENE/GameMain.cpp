@@ -33,7 +33,7 @@ namespace {
 }
 
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),
-updateFunc_(&GameMain::FadeInUpdate)
+updateFunc_(&GameMain::NormalUpdate)
 {
 }
 
@@ -115,7 +115,7 @@ void GameMain::Draw()
 //	broom_->graphFilterUpdate();
 //	broom_->draw();
 
-	camera_->tempDraW(player_->GetStatus().pos);
+//	camera_->tempDraW(player_->GetStatus().pos);
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
@@ -127,8 +127,8 @@ void GameMain::Draw()
 	DrawGraph(0, 0, makeScreenHandle_, true);
 
 	//画面全体を真っ黒に塗りつぶす
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-//	DrawBox(0, 0, Game::screen_width, Game::screen_height, fadeColor_, true);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
+	DrawBox(0, 0, Game::screen_width, Game::screen_height, fadeColor_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
@@ -194,6 +194,17 @@ void GameMain::NormalUpdate(const InputState& input)
 		isFilterOn_ = true;
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
+
+	auto info = ExternalFile::GetInstance().GetSpecifiedInfo("GOAL");
+
+	auto result = MV1CollCheck_Capsule(player_->GetModelPointer()->GetModelHandle(), player_->GetModelPointer()->GetColFrameIndex(), VGet(info.front().pos.x, info.front().pos.y - info.front().scale.y, info.front().pos.z), VGet(info.front().pos.x, info.front().pos.y + info.front().scale.y, info.front().pos.z), 600);
+
+	if (result.HitNum > 0) {
+		updateFunc_ = &GameMain::FadeOutUpdate;
+	}
+
+	MV1CollResultPolyDimTerminate(result);
+
 }
 
 //TODO：別のフェードインが出来次第消去
@@ -201,7 +212,7 @@ void GameMain::FadeOutUpdate(const InputState& input)
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) {
-		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager_)));
 		return;
 	}
 }

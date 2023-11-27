@@ -65,13 +65,20 @@ void Camera::Init()
 void Camera::Update(VECTOR playerPos, float playerHeight)
 {
 
+	VECTOR distance = {};
+	float distanceSize = 2000.0f;
+
 	VECTOR fixedRangePos = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "FixedCameraRange").pos;
 
-	VECTOR distance = VSub(fixedRangePos, playerPos);
-	
-	float distanceSize = VSize(distance);
+	float fixedRangeSize = VSize(fixedRangePos);
 
-	distanceSize = (std::max)(distanceSize, -distanceSize);
+	if (fixedRangeSize > 0.0f) {
+		distance = VSub(fixedRangePos, playerPos);
+
+		distanceSize = VSize(distance);
+
+		distanceSize = (std::max)(distanceSize, -distanceSize);
+	}
 
 	if (distanceSize < 1500.0f) {
 		updateFunc_ = &Camera::FixedPointCamera;
@@ -198,30 +205,30 @@ float Camera::TrackingPozZ(VECTOR playerPos)
 {
 	
 	VECTOR gimmickPos = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "TrackingZ").pos;
-	float distance = 0.0f;
+	VECTOR distance = {};
 
 	if (gimmickPos.z <= 0) {
 		return init_pos.z;
 	}
 
-	distance = gimmickPos.x - playerPos.x;
+	distance = VSub(gimmickPos,playerPos);
+	float distanceSize = VSize(distance);
+	//distance = (std::max)(distance, -distance);
 
-	distance = (std::max)(distance, -distance);
-
-	if (distance < 1000.0f) {
+	if (distanceSize < 1500.0f) {
 		if (playerPos.z > gimmickPos.z) {
 			float targetPosZ = (init_pos.z * 0.3f) + (playerPos.z * 0.7f);
-			distance = targetPosZ - cameraPos_.z;
+			distance.x = targetPosZ - cameraPos_.z;
 
-			distance = distance / camera_moveZ_speed;
-			moveVecZ = distance * 0.96f;
+			distance.x = distance.x / camera_moveZ_speed;
+			moveVecZ = distance.x * 0.96f;
 
 			return cameraPos_.z + moveVecZ;
 		}
 	}
 
-	distance = init_pos.z - cameraPos_.z;
-	moveVecZ = distance / camera_moveZ_speed;
+	distance.z = init_pos.z - cameraPos_.z;
+	moveVecZ = distance.z / camera_moveZ_speed;
 	moveVecZ = moveVecZ * 0.96f;
 	return cameraPos_.z + moveVecZ;
 
