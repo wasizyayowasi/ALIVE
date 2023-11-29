@@ -10,6 +10,7 @@
 #include "../object/cube.h"
 #include "../object/Camera.h"
 #include "../object/CharacterBase.h"
+#include "../object/ShotManager.h"
 
 #include "../staging/Broom.h"
 #include "../staging/DepthOfField.h"
@@ -51,6 +52,7 @@ void GameMain::Init()
 
 	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
 	objManager_ = std::make_shared<ObjectManager>();
+	shotManager_ = std::make_shared<ShotManager>();
 
 	//オブジェクトを生成
 	ObjectGenerater();
@@ -84,10 +86,7 @@ void GameMain::End()
 //更新
 void GameMain::Update(const InputState& input)
 {
-	
-
 	(this->*updateFunc_)(input);
-
 }
 
 //描画
@@ -110,6 +109,8 @@ void GameMain::Draw()
 	player_->Draw();
 
 	checkCollisionModel_->tempdraw();
+
+	shotManager_->Draw();
 
 //	broom_->graphFilterUpdate();
 //	broom_->draw();
@@ -168,13 +169,15 @@ void GameMain::NormalUpdate(const InputState& input)
 	player_->Update(input, objManager_);
 
 	//オブジェクトの更新
-	objManager_->Update(*player_,input);
+	objManager_->Update(*player_,input,shotManager_);
 
 	//プレイヤーとその他オブジェクトとの衝突判定
 	checkCollisionModel_->CheckCollision(player_,objManager_);
 
 	//カメラの注視点を変更する
 	camera_->ChangeOfFocus(input);
+
+	shotManager_->Update();
 
 	//リスナーの位置と方向を設定
 	//今回は、プレイヤーではなくカメラの座標にしている

@@ -639,8 +639,8 @@ VECTOR Player::CenterFramPosition(const char* const LeftFramename, const char* c
 	VECTOR framePosition;
 
 	//指定フレームの座標を取得する。
-	framePosition = model_->GetAnimFrameLocalPosition(LeftFramename);
-	framePosition = VAdd(framePosition, model_->GetAnimFrameLocalPosition(RightFramename));
+	framePosition = model_->GetFrameLocalPosition(LeftFramename);
+	framePosition = VAdd(framePosition, model_->GetFrameLocalPosition(RightFramename));
 	//二つの座標を足し、2で割り中心を取得する
 	framePosition.x = framePosition.x / 2;
 	framePosition.y = framePosition.y / 2;
@@ -655,7 +655,7 @@ VECTOR Player::FramPosition(const char* const framename)
 	VECTOR framePosition;
 
 	//指定フレームの座標を取得する。
-	framePosition = model_->GetAnimFrameLocalPosition(framename);
+	framePosition = model_->GetFrameLocalPosition(framename);
 
 	return framePosition;
 }

@@ -41,7 +41,7 @@ void ShotManager::Draw()
 
 void ShotManager::Fire(VECTOR framePos, VECTOR playerPos,float height)
 {
-	VECTOR distance = VSub(VGet(playerPos.x, playerPos.y + height, playerPos.z), framePos);
+	VECTOR distance = VSub(VGet(playerPos.x, playerPos.y + height / 2, playerPos.z), framePos);
 
 	VECTOR moveVec = VScale(VNorm(distance), shot_speed);
 

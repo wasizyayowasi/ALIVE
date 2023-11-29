@@ -177,7 +177,7 @@ void Model::SetAnimEndFrame(int animNo)
 }
 
 //“Á’èƒtƒŒ[ƒ€‚ÌÀ•W‚ğæ“¾
-VECTOR Model::GetAnimFrameLocalPosition(const char* frameName)
+VECTOR Model::GetFrameLocalPosition(const char* frameName)
 {
 	int frameNo = MV1SearchFrame(modelHandle_, frameName);
 	auto name = MV1GetFrameName(modelHandle_, frameNo);

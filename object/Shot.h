@@ -23,6 +23,7 @@ private:
 
 	bool isEnable_ = false;						//存在しているか
 
+	VECTOR initialisePos_ = {};					//初期化時のポジション
 	VECTOR pos_ = {};							//ポジション
 	VECTOR moveVec_ = {};						//移動ベクトル
 

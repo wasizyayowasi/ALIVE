@@ -282,7 +282,7 @@ void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int 
 }
 
 //更新
-void ObjectManager::Update(Player& player, const InputState& input)
+void ObjectManager::Update(Player& player, const InputState& input, std::shared_ptr<ShotManager> shotManager)
 {
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
 	std::erase_if(objects_, [](const auto& obj) {return !obj.second.front()->IsEnabled(); });
@@ -308,13 +308,20 @@ void ObjectManager::Update(Player& player, const InputState& input)
 		}
 	}
 
+	for (auto list : objects_) {
+		for (auto obj : list.second) {
+			if (std::dynamic_pointer_cast<EnemyBase>(obj) != nullptr) {
+				std::dynamic_pointer_cast<EnemyBase>(obj)->Shot(shotManager,player.GetStatus().pos, player.GetStatus().height);
+			}
+		}
+	}
+
 	//更新
 	for (auto obj : objects_) {
 		for (auto objSecond : obj.second) {
 			objSecond->Update(player, input);
 		}
 	}
-
 	
 	EnemyGenerator(player.GetDeathCount(),player.GetStatus().pos);
 
@@ -355,10 +362,6 @@ void ObjectManager::SortingObject(ObjectBaseType baseType, ObjectType objType, L
 {
 	//objectBaseTypeを元にインスタンス化するクラスを決める
 	switch (baseType) {
-		//自我を持ったenemy以外のキャラクターを生成
-	case ObjectBaseType::characterBase:
-		CharacterGenerator(objType, objInfo);
-		break;
 		//置物を生成
 	case ObjectBaseType::ornamentBase:
 		OrnamentGenerator(objType, objInfo);
@@ -420,6 +423,7 @@ void ObjectManager::AddCheckCollModel()
 	}
 }
 
+//一定範囲内でランダムに召喚ポジションを取得する
 void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, VECTOR loadObjPos)
 {
 
@@ -436,6 +440,7 @@ void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, VECTOR loadObj
 
 }
 
+//エネミーを召喚させるポジションを角度によって取得する
 void ObjectManager::CircumferencePosition(float angle, VECTOR& infoPos, VECTOR playerPos)
 {
 	VECTOR pos = {};
@@ -456,49 +461,44 @@ void ObjectManager::CircumferencePosition(float angle, VECTOR& infoPos, VECTOR p
 	infoPos = pos;
 }
 
-//キャラクター生成機
-void ObjectManager::CharacterGenerator(ObjectType objType, LoadObjectInfo objInfo)
-{
-	switch (objType)
-	{
-	case ObjectType::player:
-		//objects_[objType].push_front(std::make_shared<Player>(filename));
-		break;
-	case ObjectType::deadPerson:
-		//objects_[objType].push_front(std::make_shared<DeadPerson>(filename,10));
-		break;
-	}
-	
-}
-
 //敵生成機
 void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 {
-
+	//外部ファイルから読み込んだ「エネミーオブジェクト」の情報を取得する
 	auto loadInfo = ExternalFile::GetInstance().GetEnemyInfo(playerPos);
 	
+	//文字列のサイズを取得する
 	int size = loadInfo.name.size();
 
+	//「.」以降の文字列によって
+	//エネミーの召喚パターンを変更する
 	if (size > 0) {
-
+		//「.」が文字列の何番目かを取得する
 		int dotNum = loadInfo.name.find(".");
-
+		//「.」以降から最後までの文字列を取得する
 		auto str = loadInfo.name.substr(dotNum + 1, size);
 
+		//文字列が「ALL」だったら
 		if (str == "ALL") {
 			float angle = 0.0f;
 			LoadObjectInfo info;
 			info = loadInfo;
 			for (int i = 0; i < deathCount; i++) {
+				//一定範囲の中でランダムにスポーンさせる
 				//RandomPositionGenerator(info, loadInfo.pos);
+				//プレイヤーを中心に円周上でスポーンさせる
 				CircumferencePosition(angle, info.pos, playerPos);
+				//インスタンス化
 				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(modelHandle_[ObjectType::enemy], info));
 				angle -= 15.0f;
 			}
 		}
 		else {
+			//最後の文字列をint型の数値に変換する
 			int num = atoi(str.c_str());
 
+			//文字列の最後の数よりもdeathCountが多ければ
+			//エネミーを召喚する
 			if (num <= deathCount) {
 				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(modelHandle_[ObjectType::enemy], loadInfo));
 			}
@@ -509,9 +509,7 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 //置物生成機
 void ObjectManager::OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
-
 	objects_[objType].push_front(std::make_shared<OrnamentBase>(modelHandle_[objType], objInfo));
-
 }
 
 void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo objInfo)

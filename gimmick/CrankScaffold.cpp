@@ -46,5 +46,6 @@ void CrankScaffold::Draw()
 
 std::shared_ptr<Model> CrankScaffold::AddCollModel()
 {
-	return crank_->GetModelPointer();
+	//return crank_->GetModelPointer();
+	return nullptr;
 }

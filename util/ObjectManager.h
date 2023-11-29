@@ -9,6 +9,7 @@ class ObjectBase;
 class Model;
 class Player;
 class InputState;
+class ShotManager;
 
 class ObjectManager
 {
@@ -34,7 +35,7 @@ public:
 	void DeadPersonGenerator(int handle, LoadObjectInfo objInfo,int animNo);
 
 	//更新
-	void Update(Player& player, const InputState& input);
+	void Update(Player& player, const InputState& input, std::shared_ptr<ShotManager> shotManager);
 
 	//描画
 	void Draw(VECTOR pos);
@@ -78,9 +79,6 @@ public:
 	void CircumferencePosition(float angle,VECTOR& infoPos, VECTOR playerPos);
 
 private:
-	//キャラクター生成機
-	void CharacterGenerator(ObjectType objType, LoadObjectInfo objInfo);
-
 	void EnemyGenerator(int deathCount,VECTOR playerPos);
 	//置物生成機
 	void OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo);

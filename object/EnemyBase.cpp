@@ -1,8 +1,11 @@
 #include "EnemyBase.h"
 #include "Player.h"
+#include "ShotManager.h"
 #include "../util/Model.h"
 #include "../util/ObjectManager.h"
 #include "../util/Aster.h"
+
+#include "../util/Util.h"
 
 namespace {
 	//モデルの初期回転ベクトル
@@ -84,7 +87,7 @@ void EnemyBase::Draw()
 {
 	model_->Draw();
 
-	Aster_->Draw();
+//	Aster_->Draw();
 }
 
 void EnemyBase::HitColl(std::shared_ptr<ObjectBase> pointer)
@@ -234,8 +237,18 @@ std::shared_ptr<Model> EnemyBase::AddCollModel()
 	return nullptr;
 }
 
-void EnemyBase::Shot(VECTOR playerPos,float height)
+void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos,float height)
 {
-	
+	static int time = 0;
+
+	VECTOR distance = VSub(playerPos, pos_);
+	float distanceSize = VSize(distance);
+
+	if (distanceSize > 600.0f) {
+		if (++time % 60 == 0) {
+			VECTOR framePos = model_->GetFrameLocalPosition(hand_framename);
+			shotManager->Fire(framePos, playerPos, height);
+		}
+	}
 }
 

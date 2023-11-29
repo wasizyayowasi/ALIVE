@@ -109,7 +109,7 @@ public:
 	/// <param name="animNo">アニメーション番号</param>
 	/// <param name="frameName">取得したいアニメーション名</param>
 	/// <returns>座標</returns>
-	VECTOR GetAnimFrameLocalPosition(const char* frameName);
+	VECTOR GetFrameLocalPosition(const char* frameName);
 
 private:
 	struct AnimData {

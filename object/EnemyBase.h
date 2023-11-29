@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 class Aster;
+class ShotManager;
 
 class EnemyBase : public CharacterBase
 {
@@ -64,7 +65,7 @@ public:
 	//Õ“Ë”»’è‚ğs‚¤ƒ‚ƒfƒ‹‚ğ’Ç‰Á‚·‚é
 	virtual std::shared_ptr<Model> AddCollModel();
 
-	void Shot(VECTOR playerPos, float height);
+	void Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos, float height);
 
 private:
 
