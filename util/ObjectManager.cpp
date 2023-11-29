@@ -357,10 +357,6 @@ void ObjectManager::SortingObject(ObjectBaseType baseType, ObjectType objType, L
 	case ObjectBaseType::characterBase:
 		CharacterGenerator(objType, objInfo);
 		break;
-		//enemy‚ð¶¬
-//	case ObjectBaseType::enemyBase:
-//		EnemyGenerator(objType, objInfo);
-//		break;
 		//’u•¨‚ð¶¬
 	case ObjectBaseType::ornamentBase:
 		OrnamentGenerator(objType, objInfo);
@@ -446,12 +442,26 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 	int size = loadInfo.name.size();
 
 	if (size > 0) {
-		auto temp = loadInfo.name.substr(size - 1, size - 1);
 
-		int num = atoi(temp.c_str());
+		int dotNum = loadInfo.name.find(".");
 
-		if (num < deathCount) {
-			objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(modelHandle_[ObjectType::enemy], loadInfo));
+		auto str = loadInfo.name.substr(dotNum + 1, size);
+
+		if (str == "ALL") {
+			LoadObjectInfo info;
+			info.name = loadInfo.name;
+			info.rot = loadInfo.rot;
+			info.scale = loadInfo.scale;
+			for (int i = 0; i < deathCount; i++) {
+
+			}
+		}
+		else {
+			int num = atoi(str.c_str());
+
+			if (num <= deathCount) {
+				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(modelHandle_[ObjectType::enemy], loadInfo));
+			}
 		}
 	}
 }

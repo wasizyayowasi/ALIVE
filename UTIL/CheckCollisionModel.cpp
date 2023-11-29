@@ -188,18 +188,21 @@ void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 				//データのコピー
 				auto hitPoly = floorHitDim_[i];
 				//衝突判定結果
-				hitLineResult = HitCheck_Line_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerState.height, 0.0f)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
+				hitLineResult_.push_back(HitCheck_Line_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerState.height, 0.0f)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]));
 
 				//衝突判定結果で衝突してなかったら以降の処理を行わない
-				if (hitLineResult.HitFlag == false) {
+				if (hitLineResult_.back().HitFlag == false) {
 					continue;
 				}
 				//衝突判定結果で衝突してなかったら以降の処理を行わない
-				if (hitFlag == true && minY < hitLineResult.Position.y) {
+				if (hitFlag == true && minY < hitLineResult_.back().Position.y) {
 					continue;
 				}
 				hitFlag = true;
-				minY = hitLineResult.Position.y;
+				minY = hitLineResult_.back().Position.y;
+
+				hitLineResult_.clear();
+
 			}
 			if (hitFlag) {
 				nowPos.y = minY - playerState.height;
@@ -209,27 +212,57 @@ void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 			}
 		}
 		else {
-			float maxY = 0.0f;
+			float maxY = nowPos.y + playerState.height;
+			float correction = 20.0f;
 			hitFlag = false;
 			for (int i = 0; i < hitFloorNum; i++) {
 				auto hitPoly = floorHitDim_[i];
 				if (isJump) {
-					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerState.height, 0)),nowPos, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
+					hitLineResult_.push_back(HitCheck_Line_Triangle(VAdd(nowPos, VGet(  0, playerState.height,   0)), nowPos, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]));
+					hitLineResult_.push_back(HitCheck_Line_Triangle(VAdd(nowPos, VGet( correction, playerState.height,   0)), VAdd(nowPos, VGet( correction, 0,   0)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]));
+					hitLineResult_.push_back(HitCheck_Line_Triangle(VAdd(nowPos, VGet(-correction, playerState.height,   0)), VAdd(nowPos, VGet(-correction, 0,   0)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]));
+					hitLineResult_.push_back(HitCheck_Line_Triangle(VAdd(nowPos, VGet(  0, playerState.height,  correction)), VAdd(nowPos, VGet(  0, 0,  correction)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]));
+					hitLineResult_.push_back(HitCheck_Line_Triangle(VAdd(nowPos, VGet(  0, playerState.height, -correction)), VAdd(nowPos, VGet(  0, 0, -correction)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]));
 				}
 				else {
-					hitLineResult = HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerState.height, 0)), nowPos, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]);
+					hitLineResult_.push_back(HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerState.height, 0)), nowPos, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]));
+					hitLineResult_.push_back(HitCheck_Line_Triangle(VAdd(nowPos, VGet(correction, playerState.height, 0)), VAdd(nowPos, VGet(correction, 0, 0)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]));
+					hitLineResult_.push_back(HitCheck_Line_Triangle(VAdd(nowPos, VGet(-correction, playerState.height, 0)), VAdd(nowPos, VGet(-correction, 0, 0)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]));
+					hitLineResult_.push_back(HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerState.height, correction)), VAdd(nowPos, VGet(0, 0, correction)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]));
+					hitLineResult_.push_back(HitCheck_Line_Triangle(VAdd(nowPos, VGet(0, playerState.height, -correction)), VAdd(nowPos, VGet(0, 0, -correction)), hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]));
 				}
-				if (hitLineResult.HitFlag == false) {
+
+				int hitCount = 0;
+				HITRESULT_LINE hitLine = {};
+
+				for (auto& result : hitLineResult_) {
+					if (result.HitFlag == true) {
+						hitCount++;
+						hitLine = result;
+					}
+				}
+				
+				if (hitCount < 1) {
+					hitLineResult_.clear();
 					continue;
 				}
-				if (hitFlag && maxY > hitLineResult.Position.y) {
+
+				int overCount = 0;
+
+				for (auto& result : hitLineResult_) {
+					if (maxY < result.Position.y) {
+						overCount++;
+					}
+				}
+				
+				if (overCount > 0) {
+					hitLineResult_.clear();
 					continue;
 				}
-				if (player->GetStatus().animNo == 11) {
-					continue;
-				}
+
 				hitFlag = true;
-				maxY = hitLineResult.Position.y;
+				maxY = hitLine.Position.y;
+				hitLineResult_.clear();
 			}
 			if (hitFlag) {
 				nowPos.y = maxY;
@@ -364,4 +397,9 @@ void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player,
 		}
 	}
 
+}
+
+void CheckCollisionModel::tempdraw()
+{
+	
 }

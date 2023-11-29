@@ -25,7 +25,7 @@ namespace {
 
 using namespace std;
 
-Player::Player(const char* const filename):updateFunc_(&Player::IdleUpdate),carryUpdateFunc_(&Player::CarryObjectUpdate)
+Player::Player(const char* const filename):updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObjectUpdate)
 {
 
 	//ジャンプ情報の初期
@@ -35,7 +35,7 @@ Player::Player(const char* const filename):updateFunc_(&Player::IdleUpdate),carr
 	status_.height = player_hegiht;
 }
 
-Player::Player(int handle) :updateFunc_(&Player::IdleUpdate)
+Player::Player(int handle) :updateFunc_(&Player::NormalUpdate)
 {
 }
 
@@ -94,6 +94,14 @@ void Player::Draw()
 {
 	model_->Draw();
 
+	float au = 20.0f;
+
+	DrawLine3D(status_.pos, VAdd(status_.pos, VGet(0, status_.height, 0)), 0xff0000);
+	DrawLine3D(VAdd(status_.pos, VGet( au, 0,   0)), VAdd(status_.pos, VGet( au, status_.height,   0)), 0xff0000);
+	DrawLine3D(VAdd(status_.pos, VGet(-au, 0,   0)), VAdd(status_.pos, VGet(-au, status_.height,   0)), 0xff0000);
+	DrawLine3D(VAdd(status_.pos, VGet(  0, 0,  au)), VAdd(status_.pos, VGet(  0, status_.height,  au)), 0xff0000);
+	DrawLine3D(VAdd(status_.pos, VGet(  0, 0, -au)), VAdd(status_.pos, VGet(  0, status_.height, -au)), 0xff0000);
+
 	//DrawSphere3D(VGet(status_.pos.x + 1000, status_.pos.y, status_.pos.z), 16, 32, 0xff0000, 0xff0000, true);
 
 //	DrawFormatString(0, 64, 0x448844, "%.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
@@ -119,7 +127,7 @@ void Player::SetJumpInfo(bool isJump, float jumpVec)
 /// アニメーションがidle状態の時に行われる
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
-void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 
 	if (input.IsTriggered(InputType::carry)) {
@@ -141,8 +149,6 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 	else {
 		status_.situation.isCanBeCarried = false;
 	}
-
-
 
 	ChangeAnimIdle();
 	MovingUpdate(input,objManager);
@@ -167,28 +173,12 @@ void Player::IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 	//メンバ関数ポインタをrunningJumpUpdate、
 	//jumpUpdateのどちらかに変更する
 	if (input.IsTriggered(InputType::space)) {
-
-		if (status_.situation.isClim) {
-			//アニメーションの変更
-			//ChangeAnimNo(AnimType::clim, false, 20);
-			//updateFunc_ = &Player::ClimUpdate;
-			return;
+		if (!status_.jump.isJump) {
+			PlayerJump(playerInfo_.jumpPower);
 		}
-		//ランニングジャンプの削除予定(未定)
-		/*else if (input.IsPressed(InputType::shift)) {
-			PlayerJump(playerInfo_.runningJumpPower);
-			ChangeAnimNo(AnimType::runningJump, false, 20);
-			updateFunc_ = &Player::RunningJumpUpdate;
-			return;
-		}*/
-		else {
-			if (!status_.jump.isJump) {
-				PlayerJump(playerInfo_.jumpPower);
-			}
-			ChangeAnimNo(AnimType::jump, false, 20);
-			updateFunc_ = &Player::JumpUpdate;
-			return;
-		}
+		ChangeAnimNo(AnimType::jump, false, 20);
+		updateFunc_ = &Player::JumpUpdate;
+		return;
 	}
 
 	//メンバ関数ポインタをsitUpdateに変更する
@@ -388,7 +378,7 @@ void Player::JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 		//ジャンプベクトルが0でジャンプ中ではなかったら
 		//idle状態のアップデートに変更する、アニメーションも変更する
 		if (!status_.jump.isJump) {
-			updateFunc_ = &Player::IdleUpdate;
+			updateFunc_ = &Player::NormalUpdate;
 			return;
 		}
 
@@ -425,7 +415,7 @@ void Player::RunningJumpUpdate(const InputState& input, std::shared_ptr<ObjectMa
 	//ジャンプベクトルが0でジャンプ中ではなかったら
 	//idle状態のアップデートに変更する、アニメーションも変更する
 	if (status_.jump.jumpVec == 0.0f && !status_.jump.isJump) {
-		updateFunc_ = &Player::IdleUpdate;
+		updateFunc_ = &Player::NormalUpdate;
 		return;
 	}
 }
@@ -457,7 +447,7 @@ void Player::DeathPersonPostProsessing(std::shared_ptr<ObjectManager> objManager
 
 	DeadPersonGenerater(objManager);			//死体を生成する関数
 
-	updateFunc_ = &Player::IdleUpdate;
+	updateFunc_ = &Player::NormalUpdate;
 }
 
 /// <summary>
@@ -487,7 +477,7 @@ void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> o
 	
 	//立つ家庭のアニメーションが終わったらidleupdateに変更する
 	if (status_.animNo == animType_[AnimType::situpToIdle] && model_->IsAnimEnd()) {
-		updateFunc_ = &Player::IdleUpdate;
+		updateFunc_ = &Player::NormalUpdate;
 		status_.situation.isSitting = false;
 		return;
 	}
@@ -498,7 +488,7 @@ void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> o
 	if (input.IsTriggered(InputType::death)) {
 		DeathUpdate(input,objManager);
 		status_.situation.isSitting = false;
-		updateFunc_ = &Player::IdleUpdate;
+		updateFunc_ = &Player::NormalUpdate;
 		return;
 	}
 
@@ -525,7 +515,7 @@ void Player::IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager>
 void Player::StandUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	if (model_->IsAnimEnd()) {
-		updateFunc_ = &Player::IdleUpdate;
+		updateFunc_ = &Player::NormalUpdate;
 		status_.situation.isClim = false;
 	}
 }
@@ -589,7 +579,7 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 	if (input.IsTriggered(InputType::carry)) {
 		status_.situation.isGimmickCanBeOperated = false;
 		crank_.reset();
-		updateFunc_ = &Player::IdleUpdate;
+		updateFunc_ = &Player::NormalUpdate;
 	}
 
 }

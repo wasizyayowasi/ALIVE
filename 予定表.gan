@@ -147,11 +147,11 @@
             <task id="74" name="企画の肉付け" color="#66cc00" meeting="false" start="2023-11-17" duration="3" complete="100" thirdDate="2023-11-03" thirdDate-constraint="0" priority="4" expand="true"/>
             <task id="71" name="ステージ" color="#66cc00" meeting="false" start="2023-11-20" duration="7" complete="80" thirdDate="2023-10-11" thirdDate-constraint="0" expand="false"/>
         </task>
-        <task id="2" name="ベータ" color="#8cb6ce" meeting="false" start="2023-11-22" duration="21" complete="2" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
+        <task id="2" name="ベータ" color="#8cb6ce" meeting="false" start="2023-11-22" duration="21" complete="12" thirdDate="2023-10-13" thirdDate-constraint="0" expand="true">
             <task id="72" name="シェーダーの実装" color="#8cb6ce" meeting="false" start="2023-11-22" duration="21" complete="0" thirdDate="2023-11-22" thirdDate-constraint="0" expand="true"/>
-            <task id="82" name="エネミーの生成" color="#8cb6ce" meeting="false" start="2023-11-27" duration="3" complete="30" thirdDate="2023-11-22" thirdDate-constraint="0" expand="true"/>
-            <task id="73" name="バグ取り" color="#8cb6ce" meeting="false" start="2023-11-28" duration="3" complete="0" thirdDate="2023-11-07" thirdDate-constraint="0" expand="true">
-                <task id="76" name="オブジェクトの端でジャンプできない" color="#8cb6ce" meeting="false" start="2023-11-28" duration="1" complete="0" thirdDate="2023-11-18" thirdDate-constraint="0" expand="true"/>
+            <task id="82" name="エネミーの生成" color="#8cb6ce" meeting="false" start="2023-11-27" duration="3" complete="100" thirdDate="2023-11-22" thirdDate-constraint="0" expand="true"/>
+            <task id="73" name="バグ取り" color="#8cb6ce" meeting="false" start="2023-11-28" duration="3" complete="33" thirdDate="2023-11-07" thirdDate-constraint="0" expand="true">
+                <task id="76" name="オブジェクトの端でジャンプできない" color="#8cb6ce" meeting="false" start="2023-11-28" duration="1" complete="100" thirdDate="2023-11-18" thirdDate-constraint="0" expand="true"/>
                 <task id="77" name="斜めの足場の上でジャンプすると貫通する" color="#8cb6ce" meeting="false" start="2023-11-29" duration="1" complete="0" thirdDate="2023-11-18" thirdDate-constraint="0" expand="true"/>
                 <task id="78" name="移動している足場の上でジャンプできない" color="#8cb6ce" meeting="false" start="2023-11-30" duration="1" complete="0" thirdDate="2023-11-18" thirdDate-constraint="0" expand="true"/>
             </task>

@@ -22,5 +22,8 @@ private:
 
 	bool isEnd_ = false;
 
+	int debugDrawTime_ = 0;
+	int debugUpdateTime_ = 0;
+
 };
 

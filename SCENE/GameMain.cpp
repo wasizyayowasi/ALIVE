@@ -84,7 +84,10 @@ void GameMain::End()
 //更新
 void GameMain::Update(const InputState& input)
 {
+	
+
 	(this->*updateFunc_)(input);
+
 }
 
 //描画
@@ -97,9 +100,6 @@ void GameMain::Draw()
 	//SetDrawScreenを行うとカメラの情報がリセットされるために
 	camera_->Init();
 	camera_->Update(player_->GetStatus().pos, player_->GetStatus().height);
-//	camera_->TrackingCameraUpdate(player_->GetStatus().pos, player_->GetStatus().height);
-//
-//	camera_->FixedPointCamera(player_->GetStatus().pos);
 
 //	broom_->writingScreenUpdate(player_->GetStatus().pos);
 	DrawString(0, 0, "GameMain", 0xffffff);
@@ -107,15 +107,13 @@ void GameMain::Draw()
 	//オブジェクトの描画
 	objManager_->Draw(player_->GetStatus().pos);
 
-//	DrawFormatString(0, 16, 0x448844, "%d", totalDeathNum_);
-
 	//プレイヤーの描画
 	player_->Draw();
 
+	checkCollisionModel_->tempdraw();
+
 //	broom_->graphFilterUpdate();
 //	broom_->draw();
-
-//	camera_->tempDraW(player_->GetStatus().pos);
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
@@ -130,6 +128,7 @@ void GameMain::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, fadeColor_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 }
 
 //オブジェクトの生成
@@ -177,8 +176,6 @@ void GameMain::NormalUpdate(const InputState& input)
 
 	//カメラの注視点を変更する
 	camera_->ChangeOfFocus(input);
-
-	//camera_->fixedPointCamera(player_->getPos());
 
 	//リスナーの位置と方向を設定
 	//今回は、プレイヤーではなくカメラの座標にしている

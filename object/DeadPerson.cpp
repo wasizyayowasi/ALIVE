@@ -77,8 +77,8 @@ void DeadPerson::Update(Player& player, const InputState& input)
 void DeadPerson::Draw()
 {
 	model_->Draw();
-	DrawSphere3D(pos_, 32, 32, 0xff0000, 0xff0000, true);
-	DrawCapsule3D(temp, VAdd(temp, VGet(0.0f, 50.0f, 0.0f)), 50, 32, color, color, true);
+//	DrawSphere3D(pos_, 32, 32, 0xff0000, 0xff0000, true);
+//	DrawCapsule3D(temp, VAdd(temp, VGet(0.0f, 50.0f, 0.0f)), 50, 32, color, color, true);
 }
 
 std::shared_ptr<Model> DeadPerson::AddCollModel()

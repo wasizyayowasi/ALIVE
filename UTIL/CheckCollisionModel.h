@@ -74,6 +74,7 @@ public:
 
 	void CheckCollSpecificModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
 
+	void tempdraw();
 private:
 
 	float objectHeightY = 0;		//衝突したオブジェクトの高さを保管する
@@ -91,6 +92,7 @@ private:
 	std::list<CollModelState> hitDim_;
 	CollResultPoly wallHitDim_[max_hit_coll] = {};
 	CollResultPoly floorHitDim_[max_hit_coll] = {};
-	HITRESULT_LINE hitLineResult = {};
+	std::list<HITRESULT_LINE> hitLineResult_ = {};
+	CollResultPoly result = {};
 };
 

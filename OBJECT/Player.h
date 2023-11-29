@@ -1,8 +1,8 @@
 #pragma once
-#include <DxLib.h>
 #include "CharacterBase.h"
 #include "util/PlayerData.h"
 #include "util/ObjectData.h"
+#include <DxLib.h>
 #include <list>
 #include <unordered_map>
 #include <memory>
@@ -109,7 +109,7 @@ public:
 
 private:
 	//’ÊíXV
-	void IdleUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	void NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//‘Ò‹@ˆ—
 	void ChangeAnimIdle();

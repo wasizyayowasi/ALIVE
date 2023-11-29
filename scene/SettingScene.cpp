@@ -225,11 +225,11 @@ void SettingScene::SEUpdate(const InputState& input)
 void SettingScene::ChangeWindowUpdate(const InputState& input)
 {
 	if (input.IsTriggered(InputType::left)) {
-		windowModeText_ = "≪  フルスクリーン  ≫";
+		windowModeText_ = "≪  ウィドウモード  ≫";
 		ChangeWindowMode(true);
 	}
 	if (input.IsTriggered(InputType::right)) {
-		windowModeText_ = "≪  ウィドウモード  ≫";
+		windowModeText_ = "≪  フルスクリーン  ≫";
 		ChangeWindowMode(false);
 	}
 }

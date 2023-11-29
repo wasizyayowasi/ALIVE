@@ -1,5 +1,7 @@
 #include "SceneManager.h"
 #include "SceneBase.h"
+#include "DxLib.h"
+#include "util/game.h"
 
 using namespace std;
 
@@ -54,14 +56,33 @@ void SceneManager::PopFrontScene()
 
 void SceneManager::Update(const InputState& input)
 {
+
+	LONGLONG start = GetNowHiPerformanceCount();
+	
 	//先頭にあるシーンの更新
 	scenes_.front()->Update(input);
+
+	debugUpdateTime_ = GetNowHiPerformanceCount() - start;
 }
 
 void SceneManager::Draw()
 {
+
+	LONGLONG start = GetNowHiPerformanceCount();
+
 	//シーンすべての描画
 	for (int i = scenes_.size() - 1; i >= 0; --i) {
 		scenes_[i]->Draw();
 	}
+
+	debugDrawTime_ = GetNowHiPerformanceCount() - start;
+
+	float rate = static_cast<float>(debugUpdateTime_ + debugDrawTime_) / 16666.6f;
+	int width = static_cast<int>(Game::screen_width * rate);
+	DrawBox(0, Game::screen_height - 16, width, Game::screen_height, 0xff0000, true);
+
+	rate = static_cast<float>(debugUpdateTime_) / 16666.6f;
+	width = static_cast<int>(Game::screen_width * rate);
+	DrawBox(0, Game::screen_height - 16, width, Game::screen_height, 0x0000ff, true);
+
 }
