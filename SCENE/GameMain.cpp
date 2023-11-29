@@ -102,7 +102,6 @@ void GameMain::Draw()
 	camera_->Update(player_->GetStatus().pos, player_->GetStatus().height);
 
 //	broom_->writingScreenUpdate(player_->GetStatus().pos);
-	DrawString(0, 0, "GameMain", 0xffffff);
 
 	//オブジェクトの描画
 	objManager_->Draw(player_->GetStatus().pos);

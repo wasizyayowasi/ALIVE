@@ -64,6 +64,8 @@ public:
 	//衝突判定を行うモデルを追加する
 	virtual std::shared_ptr<Model> AddCollModel();
 
+	void Shot(VECTOR playerPos, float height);
+
 private:
 
 	int time = 60;
@@ -73,8 +75,9 @@ private:
 
 	bool isMove_ = false;							//移動中フラグ
 
-	VECTOR frontVec_ = { 0.0f,0.0f ,-1.0f };		//敵の正面ベクトルを入れる
-	VECTOR pushVec_ = {0.0f,0.0f, 0.0f};
+	VECTOR frontVec_ = {};							//敵の正面ベクトルを入れる
+	VECTOR pushVec_ = {};
+	VECTOR shotMoveVec_ = {};
 
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 

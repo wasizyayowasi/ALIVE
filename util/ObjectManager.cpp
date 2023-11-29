@@ -17,6 +17,8 @@
 #include "InputState.h"
 #include "ExternalFile.h"
 
+#include <random>
+
 namespace {
 	const char* const player_Filename = "data/player/player16.mv1";
 	//仮モデルのファイルパス
@@ -418,6 +420,42 @@ void ObjectManager::AddCheckCollModel()
 	}
 }
 
+void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, VECTOR loadObjPos)
+{
+
+	float distance = 500.0f;
+
+	std::random_device random;
+	std::mt19937 value(random());
+
+	std::uniform_int_distribution<> randomPosX(loadObjPos.x - distance, loadObjPos.x);
+	std::uniform_int_distribution<> randomPosZ(loadObjPos.z - distance, loadObjPos.z + distance);
+
+	info.pos.x = randomPosX(value);
+	info.pos.z = randomPosZ(value);
+
+}
+
+void ObjectManager::CircumferencePosition(float angle, VECTOR& infoPos, VECTOR playerPos)
+{
+	VECTOR pos = {};
+	float radian = angle * DX_PI_F / 180.0f;
+
+	pos.x = sin(radian);
+	pos.z = cos(radian);
+	pos.y = 0.0f;
+
+	pos = VScale(pos,200.0f);
+
+	pos.y = infoPos.y;
+
+	pos = VAdd(playerPos, pos);
+
+	pos.y = infoPos.y;
+
+	infoPos = pos;
+}
+
 //キャラクター生成機
 void ObjectManager::CharacterGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
@@ -448,12 +486,14 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 		auto str = loadInfo.name.substr(dotNum + 1, size);
 
 		if (str == "ALL") {
+			float angle = 0.0f;
 			LoadObjectInfo info;
-			info.name = loadInfo.name;
-			info.rot = loadInfo.rot;
-			info.scale = loadInfo.scale;
+			info = loadInfo;
 			for (int i = 0; i < deathCount; i++) {
-
+				//RandomPositionGenerator(info, loadInfo.pos);
+				CircumferencePosition(angle, info.pos, playerPos);
+				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(modelHandle_[ObjectType::enemy], info));
+				angle -= 15.0f;
 			}
 		}
 		else {

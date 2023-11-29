@@ -4,7 +4,6 @@
 #include "../util/ObjectManager.h"
 #include "../util/Aster.h"
 
-
 namespace {
 	//モデルの初期回転ベクトル
 	const VECTOR init_rot = { 0.0f,0.0f,-1.0f };
@@ -14,18 +13,19 @@ namespace {
 	//敵がプレイヤーを視認できる範囲
 	constexpr float visible_range = 500.0f;
 	//敵のスピード
-	constexpr float move_speed = 0.0f;
+	constexpr float move_speed = 3.0f;
 
 	//オブジェクト認知範囲
 	constexpr float check_collition_radius = 200.0f;
-	//rayの長さ
-	constexpr float ray_radius = 200.0f;
 
 	//敵モデルの高さ
 	constexpr float model_height = 150.0f;
 
 	//リーチ
 	constexpr float within_reach = 80.0f;
+
+	//右手のフレーム名
+	const char* const hand_framename = "mixamorig:RightHandIndex2";
 }
 
 
@@ -37,6 +37,7 @@ EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,
 {
 	model_->SetAnimation(0, true, false);
 	Aster_ = std::make_shared<Aster>(objInfo.pos);
+	frontVec_ = init_rot;
 }
 
 void EnemyBase::Update(Player& player, const InputState& input)
@@ -45,10 +46,13 @@ void EnemyBase::Update(Player& player, const InputState& input)
 	VECTOR playerPos = player.GetStatus().pos;
 
 	//索敵
-	if (SearchForPlayer(playerPos)) {
-		if (!IsThereAnObject(playerPos)) {
+	if (!IsThereAnObject(playerPos)) {
+		if (SearchForPlayer(playerPos)) {
 			//プレイヤーを追跡する
 			TrackingUpdate(playerPos);
+		}
+		else {
+			model_->ChangeAnimation(0, true, true, 10);
 		}
 	}
 	else{
@@ -80,7 +84,7 @@ void EnemyBase::Draw()
 {
 	model_->Draw();
 
-//	Aster_->Draw();
+	Aster_->Draw();
 }
 
 void EnemyBase::HitColl(std::shared_ptr<ObjectBase> pointer)
@@ -89,7 +93,6 @@ void EnemyBase::HitColl(std::shared_ptr<ObjectBase> pointer)
 
 void EnemyBase::TrackingUpdate(VECTOR playerPos)
 {
-	model_->ChangeAnimation(7, true, false, 20);
 
 	//プレイヤーと自分の差を算出し、正規化し、スピードを掛ける
 	VECTOR distancePlayerAndEnemy = VSub(playerPos, pos_);
@@ -130,7 +133,7 @@ bool EnemyBase::SearchForPlayer(VECTOR playerPos)
 	float aiu = acos(innerProduct);
 	innerProduct = aiu / DX_PI_F * 180.0f;
 
-	if (DistanceIsWithinRange()) {
+	if (!DistanceIsWithinRange()) {
 		return false;
 	}
 
@@ -219,7 +222,7 @@ bool EnemyBase::DistanceIsWithinRange()
 {
 	//プレイヤーと敵の座標差を見て、
 	if (distance_ < visible_range) {
-		model_->ChangeAnimation(0, true, false, 20);
+		model_->ChangeAnimation(1, true, false, 20);
 		return true;
 	}
 
@@ -229,5 +232,10 @@ bool EnemyBase::DistanceIsWithinRange()
 std::shared_ptr<Model> EnemyBase::AddCollModel()
 {
 	return nullptr;
+}
+
+void EnemyBase::Shot(VECTOR playerPos,float height)
+{
+	
 }
 

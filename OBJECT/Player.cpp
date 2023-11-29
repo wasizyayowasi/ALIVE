@@ -96,11 +96,11 @@ void Player::Draw()
 
 	float au = 20.0f;
 
-	DrawLine3D(status_.pos, VAdd(status_.pos, VGet(0, status_.height, 0)), 0xff0000);
-	DrawLine3D(VAdd(status_.pos, VGet( au, 0,   0)), VAdd(status_.pos, VGet( au, status_.height,   0)), 0xff0000);
-	DrawLine3D(VAdd(status_.pos, VGet(-au, 0,   0)), VAdd(status_.pos, VGet(-au, status_.height,   0)), 0xff0000);
-	DrawLine3D(VAdd(status_.pos, VGet(  0, 0,  au)), VAdd(status_.pos, VGet(  0, status_.height,  au)), 0xff0000);
-	DrawLine3D(VAdd(status_.pos, VGet(  0, 0, -au)), VAdd(status_.pos, VGet(  0, status_.height, -au)), 0xff0000);
+//	DrawLine3D(status_.pos, VAdd(status_.pos, VGet(0, status_.height, 0)), 0xff0000);
+//	DrawLine3D(VAdd(status_.pos, VGet( au, 0,   0)), VAdd(status_.pos, VGet( au, status_.height,   0)), 0xff0000);
+//	DrawLine3D(VAdd(status_.pos, VGet(-au, 0,   0)), VAdd(status_.pos, VGet(-au, status_.height,   0)), 0xff0000);
+//	DrawLine3D(VAdd(status_.pos, VGet(  0, 0,  au)), VAdd(status_.pos, VGet(  0, status_.height,  au)), 0xff0000);
+//	DrawLine3D(VAdd(status_.pos, VGet(  0, 0, -au)), VAdd(status_.pos, VGet(  0, status_.height, -au)), 0xff0000);
 
 	//DrawSphere3D(VGet(status_.pos.x + 1000, status_.pos.y, status_.pos.z), 16, 32, 0xff0000, 0xff0000, true);
 

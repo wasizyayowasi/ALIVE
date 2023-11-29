@@ -64,6 +64,19 @@ public:
 	//衝突判定を行うモデルを追加する
 	void AddCheckCollModel();
 
+	/// <summary>
+	/// ランダムにポジションを生成する
+	/// </summary>
+	/// <param name="info">オブジェクト情報</param>
+	void RandomPositionGenerator(LoadObjectInfo& info,VECTOR loadObjPos);
+
+	/// <summary>
+	/// 円周上のポジションを取得する
+	/// </summary>
+	/// <param name="info"></param>
+	/// <param name="loadObjPos"></param>
+	void CircumferencePosition(float angle,VECTOR& infoPos, VECTOR playerPos);
+
 private:
 	//キャラクター生成機
 	void CharacterGenerator(ObjectType objType, LoadObjectInfo objInfo);
