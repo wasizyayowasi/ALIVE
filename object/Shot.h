@@ -3,6 +3,7 @@
 #include <memory>
 
 class Model;
+class Player;
 
 class Shot
 {
@@ -15,6 +16,9 @@ public:
 	void Update();
 	//•`‰æ
 	void Draw();
+
+	//Õ“Ë”»’è
+	void HitCheck(Player& player);
 
 	//‘¶İ‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©æ“¾‚·‚é
 	bool IsEnabled() { return isEnable_; }

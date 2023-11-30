@@ -70,6 +70,11 @@ void GameMain::Init()
 	//死亡回数
 	totalDeathNum_ = ExternalFile::GetInstance().GetSaveData().totalDeathNum;
 
+	skyHandle_ = MV1LoadModel("data/model/skyDorm/SkyDorm.mv1");
+	float scale = 30.0f;
+	MV1SetScale(skyHandle_, VGet(scale, scale, scale));
+	MV1SetPosition(skyHandle_, VGet(0, 200, 0));
+
 	//3Dリスナーの位置を設定する
 	SoundManager::GetInstance().Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
 	//3Dサウンドに関連する情報を設定する
@@ -111,6 +116,10 @@ void GameMain::Draw()
 	checkCollisionModel_->tempdraw();
 
 	shotManager_->Draw();
+
+	MV1SetPosition(skyHandle_, player_->GetStatus().pos);
+	MV1DrawModel(skyHandle_);
+//	DrawSphere3D(VGet(0, 200, 0), 100, 32, 0xff0000, 0xff0000, true);
 
 //	broom_->graphFilterUpdate();
 //	broom_->draw();
@@ -178,15 +187,11 @@ void GameMain::NormalUpdate(const InputState& input)
 	camera_->ChangeOfFocus(input);
 
 	shotManager_->Update();
+	shotManager_->Hit(*player_);
 
 	//リスナーの位置と方向を設定
 	//今回は、プレイヤーではなくカメラの座標にしている
 	SoundManager::GetInstance().Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
-
-	//いらないやつ
-	if (player_->GetStatus().pos.x > 1900) {
-		checkPoint_ = { 1900,0,0 };
-	}
 
 	//ポーズシーンを開く
 	if (input.IsTriggered(InputType::pause)) {

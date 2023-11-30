@@ -39,6 +39,8 @@ private:
 	int debugDrawTime_ = 0;
 	int debugUpdateTime_ = 0;
 
+	int skyHandle_ = -1;
+
 	int makeScreenHandle_ = -1;
 	int totalDeathNum_ = 0;					//ƒQ[ƒ€ŠJn‚©‚ç‚Ì‘€–S”
 

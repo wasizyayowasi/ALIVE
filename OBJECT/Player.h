@@ -107,6 +107,8 @@ public:
 
 	std::shared_ptr<Model> GetModelPointer() { return model_; }
 
+	void BulletHitMe(VECTOR moveVec);
+
 private:
 	//通常更新
 	void NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
@@ -159,6 +161,9 @@ private:
 	//クランクを回す
 	void CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 	void CrankRotatinUpdate(float rotZ,VECTOR pos);
+
+	void BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	
 private:
 	/// <summary>
 	/// プレイヤーの移動速度を設定する

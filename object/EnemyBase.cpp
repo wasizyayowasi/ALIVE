@@ -45,6 +45,9 @@ EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,
 
 void EnemyBase::Update(Player& player, const InputState& input)
 {
+
+	isDetection_ = false;
+
 	//プレイヤーの座標
 	VECTOR playerPos = player.GetStatus().pos;
 
@@ -71,7 +74,7 @@ void EnemyBase::Update(Player& player, const InputState& input)
 	//モデルの更新
 	model_->Update();
 
-	if (distance_ < within_reach) {
+	if (distanceSize_ < within_reach) {
 		pushVec_ = VScale(VNorm(frontVec_), 10);
 	}
 
@@ -127,23 +130,34 @@ void EnemyBase::TrackingUpdate(VECTOR playerPos)
 bool EnemyBase::SearchForPlayer(VECTOR playerPos)
 {
 	//敵からプレイヤーの直線距離
-	distance_ = VSize(VSub(playerPos, pos_));
+	distanceSize_ = VSize(VSub(playerPos, pos_));
 
 	//内積を取得する(返り値はコサイン)
 	innerProduct = VDot(frontVec_, VNorm(VSub(playerPos, pos_)));
 
 	//上記の結果から度数法に変える
-	float aiu = acos(innerProduct);
-	innerProduct = aiu / DX_PI_F * 180.0f;
+	float radian = acos(innerProduct);
+	innerProduct = radian / DX_PI_F * 180.0f;
 
-	if (!DistanceIsWithinRange()) {
-		return false;
+	if (innerProduct < viewing_angle) {
+		if (distanceSize_ < 700.0f) {
+			isDetection_ = true;
+		}
 	}
 
 	//敵の視野角よりも外側にいるまたは
 	//敵からプレイヤーの距離が指定範囲より大きかったらreturn
-	if (innerProduct > viewing_angle || distance_ > visible_range) {
-		model_->ChangeAnimation(0, true, false, 20);
+	if (innerProduct < viewing_angle) {
+		if (distanceSize_ > visible_range) {
+			model_->ChangeAnimation(0, true, false, 20);
+			return false;
+		}
+	}
+
+	
+		
+
+	if (!DistanceIsWithinRange()) {
 		return false;
 	}
 
@@ -224,7 +238,7 @@ bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 bool EnemyBase::DistanceIsWithinRange()
 {
 	//プレイヤーと敵の座標差を見て、
-	if (distance_ < visible_range) {
+	if (distanceSize_ < visible_range) {
 		model_->ChangeAnimation(1, true, false, 20);
 		return true;
 	}
@@ -239,15 +253,17 @@ std::shared_ptr<Model> EnemyBase::AddCollModel()
 
 void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos,float height)
 {
-	static int time = 0;
+
+	if (!isDetection_) return;
 
 	VECTOR distance = VSub(playerPos, pos_);
 	float distanceSize = VSize(distance);
 
-	if (distanceSize > 600.0f) {
-		if (++time % 60 == 0) {
+	if (distanceSize > 500.0f) {
+		if (++fireFrameCount / 60 == 1) {
 			VECTOR framePos = model_->GetFrameLocalPosition(hand_framename);
 			shotManager->Fire(framePos, playerPos, height);
+			fireFrameCount = 0;
 		}
 	}
 }

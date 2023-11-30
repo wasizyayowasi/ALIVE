@@ -5,6 +5,7 @@
 
 class Model;
 class Shot;
+class Player;
 
 class ShotManager
 {
@@ -16,6 +17,8 @@ public:
 	void Update();
 	//•`‰æ
 	void Draw();
+
+	void Hit(Player& player);
 
 	//ƒVƒ‡ƒbƒg‚ð•ú‚Â
 	void Fire(VECTOR framePos,VECTOR playerPos, float height);

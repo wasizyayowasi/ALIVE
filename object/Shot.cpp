@@ -1,5 +1,14 @@
 #include "Shot.h"
 #include "../util/Model.h"
+#include "Player.h"
+
+namespace {
+	//ÁŽ¸ƒ‰ƒCƒ“
+	constexpr float vanishing_line = 1000.0f;
+
+	//d—Í
+	constexpr float gravity = -1.0f;
+}
 
 Shot::Shot(int handle,VECTOR initPos, VECTOR moveVec)
 {
@@ -24,7 +33,7 @@ void Shot::Update()
 	VECTOR distance = VSub(initialisePos_, pos_);
 	float distanceSize = VSize(distance);
 
-	if (distanceSize > 600.0f) {
+	if (distanceSize > vanishing_line) {
 		isEnable_ = false;
 	}
 
@@ -34,4 +43,20 @@ void Shot::Update()
 void Shot::Draw()
 {
 	model_->Draw();
+}
+
+void Shot::HitCheck(Player& player)
+{
+
+	VECTOR playerPos = player.GetStatus().pos;
+	float playerHeight = player.GetStatus().height;
+
+	bool hit = HitCheck_Sphere_Capsule(pos_, 50.0f, playerPos, VGet(playerPos.x, playerPos.y + playerHeight, playerPos.z),20.0f);
+
+	if (hit) {
+		VECTOR nockBack = moveVec_;
+		player.BulletHitMe(nockBack);
+
+		isEnable_ = false;
+	}
 }

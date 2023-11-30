@@ -69,12 +69,13 @@ public:
 
 private:
 
-	int time = 60;
+	int fireFrameCount = 0;
 
-	float distance_ = 0.0f;							//敵からプレイヤーの距離
+	float distanceSize_ = 0.0f;							//敵からプレイヤーの距離
 	float innerProduct = 0.0f;						//内積の結果を入れる
 
 	bool isMove_ = false;							//移動中フラグ
+	bool isDetection_ = false;						//プレイヤーを検知したか
 
 	VECTOR frontVec_ = {};							//敵の正面ベクトルを入れる
 	VECTOR pushVec_ = {};

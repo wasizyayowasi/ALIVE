@@ -78,7 +78,7 @@ void Player::Init(LoadObjectInfo info)
 void Player::Update(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	//移動ベクトルのリセット
-	status_.moveVec = { 0.0f,0.0f,0.0f };
+	//status_.moveVec = { 0.0f,0.0f,0.0f };
 
 	//プレイヤーのアニメーション更新
 	model_->Update();
@@ -263,6 +263,8 @@ float Player::Move(const InputState& input) {
 	bool pressedRight = input.IsPressed(InputType::right);
 	bool pressedShift = input.IsPressed(InputType::shift);
 
+	status_.moveVec = { 0.0f,0.0f,0.0f };
+
 	status_.situation.isMoving = false;
 	float movingSpeed = 0.0f;
 
@@ -273,19 +275,19 @@ float Player::Move(const InputState& input) {
 
 	//HACK：汚い、リファクタリング必須
 	if (pressedUp) {
-		status_.moveVec.z += movingSpeed;
+		status_.moveVec.z = movingSpeed;
 		targetAngle_ = 180.0f;
 	}
 	if (pressedDown) {
-		status_.moveVec.z -= movingSpeed;
+		status_.moveVec.z = -movingSpeed;
 		targetAngle_ = 0.0f;
 	}
 	if (pressedLeft) {
-		status_.moveVec.x -= movingSpeed;
+		status_.moveVec.x = -movingSpeed;
 		targetAngle_ = 90.0f;
 	}
 	if (pressedRight) {
-		status_.moveVec.x += movingSpeed;
+		status_.moveVec.x = movingSpeed;
 		targetAngle_ = 270.0f;
 	}
 	if (pressedUp && pressedRight) {
@@ -496,6 +498,9 @@ void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> o
 
 void Player::IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
+
+	status_.moveVec = VGet(0.0f, 0.0f, 0.0f);
+
 	//アニメーションを座る過程のアニメーションに変更
 	//座っているフラグを立て、アニメーションループ変数を折る
 	if (!status_.situation.isSitting) {
@@ -562,7 +567,10 @@ void Player::DropOffObjectUpdate()
 
 }
 
-void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager) {
+void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager) 
+{
+
+	status_.moveVec = VGet(0, 0, 0);
 
 	VECTOR pos = crank_->GetModelPointer()->GetPos();
 	float rotZ = crank_->GetRotZ();
@@ -608,6 +616,34 @@ VECTOR Player::DegreesToRadians(VECTOR rot)
 	storageRot.z = rot.z * DX_PI_F / 180.0f;
 
 	return storageRot;
+}
+
+void Player::BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+{
+	//重力
+	status_.jump.jumpVec += gravity;
+	status_.moveVec.y = status_.jump.jumpVec;
+
+	//ノックバック
+	status_.moveVec = VScale(status_.moveVec, 0.96f);
+
+	status_.pos = VAdd(status_.pos, status_.moveVec);
+
+	model_->SetPos(status_.pos);
+
+	float moveVecSize = VSize(status_.moveVec);
+
+	if (moveVecSize < 2.0f) {
+		updateFunc_ = &Player::NormalUpdate;
+	}
+
+}
+
+void Player::BulletHitMe(VECTOR moveVec)
+{
+	status_.moveVec = moveVec;
+
+	updateFunc_ = &Player::BulletHitMeUpdate;
 }
 
 void Player::ChangeAnimNo(AnimType type, bool isAnimLoop, int changeTime)

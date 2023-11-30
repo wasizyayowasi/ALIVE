@@ -54,7 +54,7 @@ void Camera::Init()
 
 	//////////////// カメラの設定 //////////////////
 	// カメラからどれだけ離れたところ( Near )から、 どこまで( Far )のものを描画するかを設定
-	SetCameraNearFar(5.0f, 3300.0f);
+	SetCameraNearFar(5.0f, 5000.0f);
 	// カメラの位置、どこを見ているかを設定する
 	SetCameraPositionAndTarget_UpVecY(cameraPos_, VGet(0, 0, 0));
 	// カメラの視野角を設定(ラジアン)

@@ -308,18 +308,23 @@ void ObjectManager::Update(Player& player, const InputState& input, std::shared_
 		}
 	}
 
-	for (auto list : objects_) {
-		for (auto obj : list.second) {
+	for (auto& list : objects_) {
+		for (auto& obj : list.second) {
 			if (std::dynamic_pointer_cast<EnemyBase>(obj) != nullptr) {
 				std::dynamic_pointer_cast<EnemyBase>(obj)->Shot(shotManager,player.GetStatus().pos, player.GetStatus().height);
 			}
 		}
 	}
 
+	float distanceSize = 0.0f;
+	VECTOR playerPos = player.GetStatus().pos;
 	//XV
-	for (auto obj : objects_) {
-		for (auto objSecond : obj.second) {
-			objSecond->Update(player, input);
+	for (auto list : objects_) {
+		for (auto obj : list.second) {
+			distanceSize = VSize(VSub(obj->GetPos(), playerPos));
+			if (distanceSize < 5000.0f) {
+				obj->Update(player, input);
+			}
 		}
 	}
 	
