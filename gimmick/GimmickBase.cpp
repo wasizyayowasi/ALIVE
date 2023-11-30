@@ -5,10 +5,6 @@
 namespace {
 	constexpr float collition_radius = 200.0f;
 }
-//ファイルパスでモデルを作成するコンストラクタ
-GimmickBase::GimmickBase(const char* filename, LoadObjectInfo objInfo):OrnamentBase(filename,objInfo)
-{
-}
 
 //作成済みのモデルをコピーするコンストラクタ
 GimmickBase::GimmickBase(int handle, LoadObjectInfo objInfo): OrnamentBase(handle,objInfo)

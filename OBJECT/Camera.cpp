@@ -244,5 +244,3 @@ void Camera::tempDraW(VECTOR playerPos)
 //	DrawLine3D(gimmickPos, VGet(gimmickPos.x + 1000.0f, gimmickPos.y, gimmickPos.z), 0xff0000);
 //	DrawLine3D(gimmickPos, VGet(gimmickPos.x - 1000.0f, gimmickPos.y, gimmickPos.z), 0xff0000);
 }
-
-

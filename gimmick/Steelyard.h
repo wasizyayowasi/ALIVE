@@ -15,7 +15,6 @@ enum class HitState {
 class Steelyard : public GimmickBase
 {
 public:
-	Steelyard(const char* const filename, LoadObjectInfo objInfo);
 	Steelyard(int handle, LoadObjectInfo objInfo);
 	virtual ~Steelyard();
 

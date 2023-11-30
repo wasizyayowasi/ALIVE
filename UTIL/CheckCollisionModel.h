@@ -71,6 +71,7 @@ public:
 	/// </summary>
 	void CheckStepDifference(std::shared_ptr<Player> player);
 
+	void FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
 
 	void CheckCollSpecificModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
 

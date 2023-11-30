@@ -153,10 +153,7 @@
     <ClCompile Include="object\DeadPerson.cpp" />
     <ClCompile Include="util\ObjectManager.cpp" />
     <ClCompile Include="object\ObjectBase.cpp" />
-    <ClCompile Include="object\cube.cpp" />
-    <ClCompile Include="object\CarryObjectBase.cpp" />
     <ClCompile Include="object\OrnamentBase.cpp" />
-    <ClCompile Include="object\tempEnemy.cpp" />
     <ClCompile Include="util\Util.cpp" />
     <ClCompile Include="util\UIItemManager.cpp" />
     <ClCompile Include="util\UIItem.cpp" />
@@ -203,10 +200,7 @@
     <ClInclude Include="util\ObjectManager.h" />
     <ClInclude Include="util\ObjectData.h" />
     <ClInclude Include="object\ObjectBase.h" />
-    <ClInclude Include="object\cube.h" />
-    <ClInclude Include="object\CarryObjectBase.h" />
     <ClInclude Include="object\OrnamentBase.h" />
-    <ClInclude Include="object\tempEnemy.h" />
     <ClInclude Include="util\Util.h" />
     <ClInclude Include="util\UIItemManager.h" />
     <ClInclude Include="util\UIItem.h" />

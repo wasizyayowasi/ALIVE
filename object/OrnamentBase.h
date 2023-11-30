@@ -3,11 +3,8 @@
 class OrnamentBase : public ObjectBase
 {
 public:
-	OrnamentBase(const char* const filename, LoadObjectInfo objInfo);
 	OrnamentBase(int handle, LoadObjectInfo objInfo);
 	virtual ~OrnamentBase();
-
-	void temp(char aiu);
 
 	//çXêV
 	virtual void Update(Player& player, const InputState& input)override;

@@ -4,8 +4,6 @@
 class GimmickBase : public OrnamentBase
 {
 public:
-	//ファイルパスでモデルを作成するコンストラクタ
-	GimmickBase(const char* filename, LoadObjectInfo objInfo);
 	//作成済みのモデルをコピーするコンストラクタ
 	GimmickBase(int handle, LoadObjectInfo objInfo);
 	//デストラクタ

@@ -6,8 +6,6 @@
 class CharacterBase : public ObjectBase
 {
 public:
-	//ファイルパスでモデルクラスをインスタンス化するコンストラクタ
-	CharacterBase(const char* fileName, LoadObjectInfo objInfo);
 	//作成済みモデルでモデルクラスをインスタンス化するコンストラクタ
 	CharacterBase(int handle, LoadObjectInfo objInfo);
 	//デストラクタ

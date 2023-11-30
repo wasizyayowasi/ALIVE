@@ -3,7 +3,6 @@
 #include "../object/ObjectBase.h"
 #include "../object/EnemyBase.h"
 #include "../object/DeadPerson.h"
-#include "../object/tempEnemy.h"
 #include "../object/OrnamentBase.h"
 #include "../object/Player.h"
 
@@ -110,7 +109,6 @@ ObjectManager::~ObjectManager()
 	for (auto& type : modelHandle_) {
 		MV1DeleteModel(type.second);
 	}
-
 }
 
 void ObjectManager::ObjectGenerator()
@@ -285,49 +283,60 @@ void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int 
 void ObjectManager::Update(Player& player, const InputState& input, std::shared_ptr<ShotManager> shotManager)
 {
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
-	std::erase_if(objects_, [](const auto& obj) {return !obj.second.front()->IsEnabled(); });
-
-	//死体のポインターを収集する
-	std::list<std::shared_ptr<ObjectBase>> deadPerson = {};
-	for (auto obj : objects_) {
-		for (auto objSecond : obj.second) {
-			if (obj.first == ObjectType::deadPerson) {
-				deadPerson.push_back(objSecond);
-			}
-		}
+	for (auto& list : objects_) {
+		list.second.remove_if([](std::shared_ptr<ObjectBase> obj) {return !obj->IsEnabled(); });
 	}
 
+	float distanceSize = 0.0f;
+	VECTOR playerPos = player.GetStatus().pos;
+
 	//死体とその他のオブジェクトの衝突判定を行う
-	for (auto& obj : objects_) {
-		for (auto& objSecond : obj.second) {
-			if (obj.first != ObjectType::deadPerson) {
-				for (auto& dead : deadPerson) {
-					objSecond->HitColl(dead);
+	for (auto& list : objects_) {
+		for (auto& obj : list.second) {
+			if (list.first == ObjectType::deadPerson) {
+				continue;
+			}
+			for (auto& deadperson : objects_[ObjectType::deadPerson]) {
+				distanceSize = VSize(VSub(obj->GetPos(), playerPos));
+				if (distanceSize < 1000.0f) {
+					obj->HitColl(deadperson);
 				}
 			}
 		}
 	}
 
-	for (auto& list : objects_) {
-		for (auto& obj : list.second) {
-			if (std::dynamic_pointer_cast<EnemyBase>(obj) != nullptr) {
-				std::dynamic_pointer_cast<EnemyBase>(obj)->Shot(shotManager,player.GetStatus().pos, player.GetStatus().height);
-			}
+	//enemyのShot
+	for (auto obj : objects_[ObjectType::enemy]) {
+		if (std::dynamic_pointer_cast<EnemyBase>(obj) != nullptr) {
+			std::dynamic_pointer_cast<EnemyBase>(obj)->Shot(shotManager, player.GetStatus().pos, player.GetStatus().height);
 		}
 	}
 
-	float distanceSize = 0.0f;
-	VECTOR playerPos = player.GetStatus().pos;
+	
 	//更新
 	for (auto list : objects_) {
 		for (auto obj : list.second) {
 			distanceSize = VSize(VSub(obj->GetPos(), playerPos));
-			if (distanceSize < 5000.0f) {
+			if (distanceSize < 1000.0f) {
 				obj->Update(player, input);
 			}
 		}
 	}
 	
+	auto deleteBorderLineInfo = ExternalFile::GetInstance().GetDeleteObjInfo(playerPos, "DeleteBorderLine");
+
+	if (playerPos.x > deleteBorderLineInfo.pos.x) {
+		auto deletePointInfo = ExternalFile::GetInstance().GetDeleteObjInfo(deleteBorderLineInfo.pos, "DeletePoint");
+		for (auto list : objects_) {
+			for (auto obj : list.second) {
+				if (obj->GetPos().x < deletePointInfo.pos.x) {
+					obj->SetIsEnable(false);
+				}
+			}
+		}
+	}
+	
+
 	EnemyGenerator(player.GetDeathCount(),player.GetStatus().pos);
 
 }

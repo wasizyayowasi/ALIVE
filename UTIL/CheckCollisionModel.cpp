@@ -296,6 +296,8 @@ void CheckCollisionModel::CheckCollision(std::shared_ptr<Player> player, std::sh
 	//取得した衝突結果から床に当たった場合の処理
 	CheckCollisionFloor(player);
 
+	FindThePolygonBelowThePlayer(player, objManager);
+
 	//ポジションのセット
 	player->SetPos(nowPos);
 
@@ -361,6 +363,65 @@ void CheckCollisionModel::CheckStepDifference(std::shared_ptr<Player> player)
 	if (!overHeight) {
 		player->SetClim(false);
 	}
+
+}
+
+void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
+{
+	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim;
+	MV1_COLL_RESULT_POLY* floorHitDim[max_hit_coll] = {};
+	HITRESULT_LINE hitLineResult = {};
+	float distance = 0.0f;
+	int hitFloorNum = 0;
+
+	//カプセルとモデルの当たり判定でhitしたモデルのポリゴンを取得する
+	for (auto& model : objManager->GetAllCheckCollModel()) {
+		if (player->GetStatus().situation.isInTransit) {
+			if (player->GetDeadPersonModelPointer()->GetModelPointer() == model) {
+				continue;
+			}
+		}
+
+		MV1RefreshCollInfo(model->GetModelHandle(), model->GetColFrameIndex());
+		distance = model->GetPos().y - nowPos.y;
+		hitDim.push_back(MV1CollCheck_Capsule(model->GetModelHandle(), model->GetColFrameIndex(), nowPos, VGet(nowPos.x, nowPos.y - distance, nowPos.z), 20.0f));
+	}
+
+	int count = 0;
+
+	//hitしたポリゴンの中からYがプラス方向、真上に伸びている
+	//ポリゴンのみを取得する
+	for(auto result : hitDim){
+		for (count = 0; count < result.HitNum; count++) {
+			if (result.Dim->Normal.y > 0.99999f) {
+				floorHitDim[hitFloorNum] = result.Dim;
+				hitFloorNum++;
+			}
+		}
+	}
+
+	float nearPosY = 5000.0f;
+	float resultNearPosY = 0.0f;
+
+	//プレイヤーのposYに近いポリゴンのposYを取得する
+	for (int i = 0; i < hitFloorNum;i++) {
+		hitLineResult = HitCheck_Line_Triangle(nowPos, VGet(nowPos.x, nowPos.y - distance, nowPos.z), floorHitDim[i]->Position[0], floorHitDim[i]->Position[1], floorHitDim[i]->Position[2]);
+		distance = hitLineResult.Position.y - nowPos.y;
+		if (nearPosY > distance) {
+			nearPosY = distance;
+			resultNearPosY = hitLineResult.Position.y;
+		}
+	}
+	
+	if (hitLineResult.HitFlag) {
+		player->SetRoundShadowHeight(resultNearPosY);
+	}
+	
+	for (auto& hit : hitDim) {
+		MV1CollResultPolyDimTerminate(hit);
+	}
+
+	hitDim.clear();
 
 }
 

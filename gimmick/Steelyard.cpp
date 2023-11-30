@@ -9,12 +9,6 @@ namespace {
 
 }
 
-Steelyard::Steelyard(const char* const filename, LoadObjectInfo objInfo):GimmickBase(filename,objInfo)
-{
-	InitialPosition_ = pos_;
-	isCollCheck_ = true;
-}
-
 Steelyard::Steelyard(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInfo)
 {
 	//ç∂

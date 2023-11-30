@@ -8,7 +8,6 @@ class CrankScaffold : public GimmickBase
 {
 public:
 	//コンストラクタ
-	CrankScaffold(const char* const filename, LoadObjectInfo objInfo);
 	CrankScaffold(int handle, LoadObjectInfo objInfo);
 	virtual ~CrankScaffold();
 

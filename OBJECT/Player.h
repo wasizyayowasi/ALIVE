@@ -109,6 +109,8 @@ public:
 
 	void BulletHitMe(VECTOR moveVec);
 
+	void SetRoundShadowHeight(float height) { roundShadowHeight_ = height; }
+
 private:
 	//通常更新
 	void NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
@@ -163,7 +165,7 @@ private:
 	void CrankRotatinUpdate(float rotZ,VECTOR pos);
 
 	void BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
-	
+
 private:
 	/// <summary>
 	/// プレイヤーの移動速度を設定する
@@ -199,6 +201,10 @@ private:
 	/// <param name="rot">角度</param>
 	VECTOR DegreesToRadians(VECTOR rot);
 
+	void DrawPolygon3D();
+
+	VECTOR VertexPosition(float angle);
+
 private:
 
 	int deathCount_ = 0;					//死んだ回数を記録する
@@ -209,6 +215,7 @@ private:
 	float targetAngle_ = 0.0f;				//回転
 	float differenceAngle_ = 0.0f;			//目標の角度と現在の角度の差
 	float angle_ = 0.0f;
+	float roundShadowHeight_ = 0.0f;
 
 	PlayerInfo playerInfo_ = {};
 	PlayerStatus status_ = {};

@@ -7,7 +7,6 @@
 #include "../gimmick/Steelyard.h"
 
 #include "../object/Player.h"
-#include "../object/cube.h"
 #include "../object/Camera.h"
 #include "../object/CharacterBase.h"
 #include "../object/ShotManager.h"

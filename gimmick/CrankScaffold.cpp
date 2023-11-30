@@ -9,10 +9,6 @@ namespace {
 	constexpr float ascent_limit = 200.0f;
 }
 
-CrankScaffold::CrankScaffold(const char* const filename, LoadObjectInfo objInfo):GimmickBase(filename,objInfo)
-{
-}
-
 CrankScaffold::CrankScaffold(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
 {
 	initPos_ = objInfo.pos;

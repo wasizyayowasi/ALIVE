@@ -40,6 +40,7 @@ void ExternalFile::LoadFile(bool isLood)
 	LoadPlayerInfo("player");
 	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
 	LoadObjectData("data/objData/Enemy.pos",loadEnemyInfo_);
+	LoadObjectData("data/objData/delete.pos",loadDeleteObjInfo_);
 	LoadObjectData("data/objData/gimmick.pos",loadGimmickInfo_);
 	LoadObjectData("data/objData/cameraGimmick.pos", loadCameraGimmickInfo_);
 }
@@ -127,6 +128,32 @@ LoadObjectInfo ExternalFile::GetEnemyInfo(VECTOR playerPos)
 	return info;
 }
 
+LoadObjectInfo ExternalFile::GetDeleteObjInfo(VECTOR pos, const char* const name)
+{
+	LoadObjectInfo info = {};
+	VECTOR distance = {};
+	float distanceSize = 0.0f;
+	float min = 10000.0f;
+
+	for (auto deleteObj : loadDeleteObjInfo_[name]) {
+		distance = VSub(deleteObj.pos, pos);
+		distanceSize = VSize(distance);
+
+		if (min > distanceSize) {
+			min = distanceSize;
+			info = deleteObj;
+		}
+	}
+
+	if (info.name == "") {
+		info.pos.x = 10000000.0f;
+	}
+
+	//loadDeleteObjInfo_[info.name].remove_if([&info](LoadObjectInfo objInfo) {return objInfo.pos.x == info.pos.x && objInfo.pos.y == info.pos.y && objInfo.pos.z == info.pos.z; });
+
+	return info;
+}
+
 //セーブデータの書き出し
 void ExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 {
@@ -166,6 +193,12 @@ void ExternalFile::DeleteData()
 	}
 	if (!loadCameraGimmickInfo_.empty()) {
 		loadCameraGimmickInfo_.clear();
+	}
+	if (!loadEnemyInfo_.empty()) {
+		loadEnemyInfo_.clear();
+	}
+	if (!loadDeleteObjInfo_.empty()) {
+		loadDeleteObjInfo_.clear();
 	}
 }
 

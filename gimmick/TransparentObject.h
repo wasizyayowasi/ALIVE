@@ -8,7 +8,6 @@ class TransparentObject : public GimmickBase
 {
 public:
 	//コンストラクタ
-	TransparentObject(const char* const filename, LoadObjectInfo objInfo);
 	TransparentObject(int handle, LoadObjectInfo objInfo);
 	//デストラクタ
 	virtual ~TransparentObject();

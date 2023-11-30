@@ -94,7 +94,9 @@ void Player::Draw()
 {
 	model_->Draw();
 
-	float au = 20.0f;
+	DrawPolygon3D();
+
+//	float au = 20.0f;
 
 //	DrawLine3D(status_.pos, VAdd(status_.pos, VGet(0, status_.height, 0)), 0xff0000);
 //	DrawLine3D(VAdd(status_.pos, VGet( au, 0,   0)), VAdd(status_.pos, VGet( au, status_.height,   0)), 0xff0000);
@@ -694,4 +696,75 @@ VECTOR Player::FramPosition(const char* const framename)
 	framePosition = model_->GetFrameLocalPosition(framename);
 
 	return framePosition;
+}
+
+void Player::DrawPolygon3D()
+{
+	VERTEX3D vertex[7];
+	WORD index[18];
+
+	float angle = 0.0f;
+
+	vertex[0].pos = VGet(status_.pos.x, roundShadowHeight_, status_.pos.z);
+	vertex[0].norm = VGet(0.0f, 1.0f, 0.0f);
+	vertex[0].dif = GetColorU8(51, 51, 51, 125);
+	vertex[0].spc = GetColorU8(0, 0, 0, 0);
+	vertex[0].u = 0.0f;
+	vertex[0].v = 0.0f;
+	vertex[0].su = 0.0f;
+	vertex[0].sv = 0.0f;
+
+	for (int i = 1; i < 7; i++) {
+		vertex[i].pos = VertexPosition(angle);
+		vertex[i].norm = VGet(0.0f, 1.0f, 0.0f);
+		vertex[i].dif = GetColorU8(51, 51, 51, 125);
+		vertex[i].spc = GetColorU8(0, 0, 0, 0);
+		vertex[i].u = 0.0f;
+		vertex[i].v = 0.0f;
+		vertex[i].su = 0.0f;
+		vertex[i].sv = 0.0f;
+		angle += 60.0f;
+
+	}
+
+	index[0] = 0;
+	index[1] = 1;
+	index[2] = 2;
+	index[3] = 0;
+	index[4] = 2;
+	index[5] = 3;
+	index[6] = 0;
+	index[7] = 3;
+	index[8] = 4;
+	index[9] = 0;
+	index[10] = 4;
+	index[11] = 5;
+	index[12] = 0;
+	index[13] = 5;
+	index[14] = 6;
+	index[15] = 0;
+	index[16] = 6;
+	index[17] = 1;
+
+	DrawPolygonIndexed3D(vertex, 7, index, 6, DX_NONE_GRAPH, true);
+}
+
+VECTOR Player::VertexPosition(float angle)
+{
+
+	VECTOR pos = {};
+
+	float radian = angle * DX_PI_F / 180.0f;
+
+	pos.x = sin(radian);
+	pos.z = cos(radian);
+	pos.y = 0.0f;
+
+	pos = VScale(pos, 25.0f);
+
+	pos = VAdd(status_.pos, pos);
+
+	pos.y = roundShadowHeight_;
+
+	return pos;
 }

@@ -72,6 +72,8 @@ public:
 
 	LoadObjectInfo GetEnemyInfo(VECTOR playerPos);
 
+	LoadObjectInfo GetDeleteObjInfo(VECTOR pos, const char* const name);
+
 	/// <summary>
 	/// セーブデータの書き出し
 	/// </summary>
@@ -114,6 +116,7 @@ private:
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadGimmickInfo_;
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadCameraGimmickInfo_;
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadEnemyInfo_;
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadDeleteObjInfo_;
 
 };
 

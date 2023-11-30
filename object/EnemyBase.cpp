@@ -31,11 +31,6 @@ namespace {
 	const char* const hand_framename = "mixamorig:RightHandIndex2";
 }
 
-
-EnemyBase::EnemyBase(const char* fileName, LoadObjectInfo objInfo):CharacterBase(fileName,objInfo)
-{
-}
-
 EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,objInfo)
 {
 	model_->SetAnimation(0, true, false);

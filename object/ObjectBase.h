@@ -10,8 +10,6 @@ class InputState;
 class ObjectBase
 {
 public:
-	//ファイルパスでモデルクラスをインスタンス化するコンストラクタ
-	ObjectBase(const char* const filename, LoadObjectInfo objInfo);
 	//作成済みモデルでモデルクラスをインスタンス化するコンストラクタ
 	ObjectBase(int handle, LoadObjectInfo objInfo);
 	//デストラクタ
@@ -39,6 +37,9 @@ public:
 
 	//持ち運び中フラグの設定
 	void SetIsTransit(bool isTransit) { isTransit_ = isTransit; }
+
+	//有効なオブジェクト化無効なオブジェクト化を設定する
+	void SetIsEnable(bool isEnable) { isEnable_ = isEnable; }
 
 	//モデルのスマートポインタを取得する
 	std::shared_ptr<Model> GetModelPointer() { return model_; }

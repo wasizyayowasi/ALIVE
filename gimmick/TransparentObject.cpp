@@ -4,10 +4,6 @@
 #include "../util/ExternalFile.h"
 #include <algorithm>
 
-TransparentObject::TransparentObject(const char* const filename, LoadObjectInfo objInfo):GimmickBase(filename,objInfo)
-{
-}
-
 TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
 {
 	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(objInfo.pos,"Switch");

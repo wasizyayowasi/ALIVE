@@ -7,18 +7,6 @@ namespace {
 	constexpr float move_speed = 10.0f;
 }
 
-Elevator::Elevator(const char* const filename, LoadObjectInfo objInfo):GimmickBase(filename,objInfo)
-{
-	model_ = std::make_shared<Model>(filename);
-
-	pos_ = objInfo.pos;
-
-	for (int i = 0; i < 2; i++) {
-		switch_.push_back(std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_,"Switch")));
-	}
-
-}
-
 Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInfo)
 {
 	pos_ = objInfo.pos;

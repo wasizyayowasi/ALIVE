@@ -3,18 +3,6 @@
 #include "../util/Model.h"
 #include "../util/InputState.h"
 
-ObjectBase::ObjectBase(const char* const filename, LoadObjectInfo objInfo)
-{
-	model_ = std::make_shared<Model>(filename);
-	model_->SetScale(objInfo.scale);
-	model_->SetPos(objInfo.pos);
-	model_->SetRot(objInfo.rot);
-	model_->SetCollFrame("Coll");
-	pos_ = model_->GetPos();
-	isEnable_ = true;
-
-}
-
 ObjectBase::ObjectBase(int handle, LoadObjectInfo objInfo)
 {
 	model_ = std::make_shared<Model>(handle);
