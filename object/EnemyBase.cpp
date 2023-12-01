@@ -125,7 +125,7 @@ void EnemyBase::TrackingUpdate(VECTOR playerPos)
 bool EnemyBase::SearchForPlayer(VECTOR playerPos)
 {
 	//敵からプレイヤーの直線距離
-	distanceSize_ = VSize(VSub(playerPos, pos_));
+	distanceSize_ = MathUtil::GetSizeOfDistanceTwoPoints(playerPos,pos_);
 
 	//内積を取得する(返り値はコサイン)
 	innerProduct = VDot(frontVec_, VNorm(VSub(playerPos, pos_)));
@@ -251,8 +251,7 @@ void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos,f
 
 	if (!isDetection_) return;
 
-	VECTOR distance = VSub(playerPos, pos_);
-	float distanceSize = VSize(distance);
+	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
 
 	if (distanceSize > 500.0f) {
 		if (++fireFrameCount / 60 == 1) {

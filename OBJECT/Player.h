@@ -217,6 +217,8 @@ private:
 	float angle_ = 0.0f;
 	float roundShadowHeight_ = 0.0f;
 
+	bool debugCreativeMode = false;
+
 	PlayerInfo playerInfo_ = {};
 	PlayerStatus status_ = {};
 

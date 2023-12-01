@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
+#include "../util/Util.h"
 #include <algorithm>
 
 namespace {
@@ -15,7 +16,7 @@ namespace {
 	constexpr float add_focus = 30.0f;
 
 	//カメラの初期ポジション
-	const VECTOR init_pos = VGet(0, 300, -600);
+	const VECTOR init_pos = VGet(0, 400, -600);
 
 	//カメラのZ座標が移動する際、ボーダーライン
 	constexpr float tracking_Z_borderline = 1000.0f;
@@ -64,8 +65,6 @@ void Camera::Init()
 
 void Camera::Update(VECTOR playerPos, float playerHeight)
 {
-
-	VECTOR distance = {};
 	float distanceSize = 2000.0f;
 
 	VECTOR fixedRangePos = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "FixedCameraRange").pos;
@@ -73,9 +72,8 @@ void Camera::Update(VECTOR playerPos, float playerHeight)
 	float fixedRangeSize = VSize(fixedRangePos);
 
 	if (fixedRangeSize > 0.0f) {
-		distance = VSub(fixedRangePos, playerPos);
-
-		distanceSize = VSize(distance);
+		
+		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(fixedRangePos,playerPos);
 
 		distanceSize = (std::max)(distanceSize, -distanceSize);
 	}
@@ -213,7 +211,6 @@ float Camera::TrackingPozZ(VECTOR playerPos)
 
 	distance = VSub(gimmickPos,playerPos);
 	float distanceSize = VSize(distance);
-	//distance = (std::max)(distance, -distance);
 
 	if (distanceSize < 1500.0f) {
 		if (playerPos.z > gimmickPos.z) {

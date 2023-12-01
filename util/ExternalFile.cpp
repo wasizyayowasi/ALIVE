@@ -1,8 +1,9 @@
 #include "ExternalFile.h"
-#include "util/InputState.h"
-#include "util/ObjectData.h"
+#include "InputState.h"
+#include "ObjectData.h"
+#include "Util.h"
 
-#include<iostream>
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <cassert>
@@ -41,6 +42,7 @@ void ExternalFile::LoadFile(bool isLood)
 	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
 	LoadObjectData("data/objData/Enemy.pos",loadEnemyInfo_);
 	LoadObjectData("data/objData/delete.pos",loadDeleteObjInfo_);
+	LoadObjectData("data/objData/tutorial.pos", loadTutorialInfo_);
 	LoadObjectData("data/objData/gimmick.pos",loadGimmickInfo_);
 	LoadObjectData("data/objData/cameraGimmick.pos", loadCameraGimmickInfo_);
 }
@@ -53,18 +55,23 @@ LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(VECTOR objPos, const char* 
 	float minDIstance = 10000.0f;
 	float distanceSize = 0.0f;
 
-	for (auto& specifiedObj : loadGimmickInfo_[name]) {
-		VECTOR distance = VSub(objPos, specifiedObj.pos);
-		distanceSize = VSize(distance);
+	std::string key = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(name, ".");
+
+	for (auto& specifiedObj : loadGimmickInfo_[key]) {
+
+		if (specifiedObj.name != name) {
+			continue;
+		}
+
+		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(objPos, specifiedObj.pos);
 		if (minDIstance > distanceSize) {
 
 			minDIstance = distanceSize;
 			info = specifiedObj;
-
 		}
 	}
 
-	loadGimmickInfo_[name].remove_if([&info](LoadObjectInfo objInfo) {return VSize(objInfo.pos) == VSize(info.pos); });
+	loadGimmickInfo_[key].remove_if([&info](LoadObjectInfo objInfo) {return VSize(objInfo.pos) == VSize(info.pos); });
 
 	return info;
 }
@@ -76,8 +83,7 @@ LoadObjectInfo ExternalFile::GetCameraGimmickInfo(VECTOR playerPos, const char* 
 	LoadObjectInfo info = {};
 
 	for (auto& data : loadCameraGimmickInfo_[name]) {
-		VECTOR distance = VSub(data.pos, playerPos);
-		float distanceSize = VSize(distance);
+		float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(data.pos, playerPos);
 		if (minDistance > distanceSize) {
 			minDistance = distanceSize;
 			info = data;
@@ -107,15 +113,13 @@ std::list<LoadObjectInfo> ExternalFile::GetSpecifiedInfo(const char* const name)
 LoadObjectInfo ExternalFile::GetEnemyInfo(VECTOR playerPos)
 {
 	LoadObjectInfo info = {};
-	VECTOR distance = {};
 	float distanceSize = 0.0f;
 	float minSize = 5000.0f;
 
 	for (auto& list : loadEnemyInfo_) {
 		for (auto& enemy : list.second) {
 
-			distance = VSub(enemy.pos, playerPos);
-			distanceSize = VSize(distance);
+			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(enemy.pos, playerPos);
 
 			if (distanceSize < minSize) {
 				info = enemy;
@@ -123,7 +127,9 @@ LoadObjectInfo ExternalFile::GetEnemyInfo(VECTOR playerPos)
 		}
 	}
 
-	loadEnemyInfo_[info.name].remove_if([&info](LoadObjectInfo objInfo) {return objInfo.pos.x == info.pos.x && objInfo.pos.y == info.pos.y && objInfo.pos.z == info.pos.z; });
+	std::string key = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(info.name, ".");
+
+	loadEnemyInfo_[key].remove_if([&info](LoadObjectInfo objInfo) {return objInfo.pos.x == info.pos.x && objInfo.pos.y == info.pos.y && objInfo.pos.z == info.pos.z; });
 
 	return info;
 }
@@ -136,9 +142,7 @@ LoadObjectInfo ExternalFile::GetDeleteObjInfo(VECTOR pos, const char* const name
 	float min = 10000.0f;
 
 	for (auto deleteObj : loadDeleteObjInfo_[name]) {
-		distance = VSub(deleteObj.pos, pos);
-		distanceSize = VSize(distance);
-
+		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(deleteObj.pos, pos);
 		if (min > distanceSize) {
 			min = distanceSize;
 			info = deleteObj;
@@ -150,6 +154,27 @@ LoadObjectInfo ExternalFile::GetDeleteObjInfo(VECTOR pos, const char* const name
 	}
 
 	//loadDeleteObjInfo_[info.name].remove_if([&info](LoadObjectInfo objInfo) {return objInfo.pos.x == info.pos.x && objInfo.pos.y == info.pos.y && objInfo.pos.z == info.pos.z; });
+
+	return info;
+}
+
+LoadObjectInfo ExternalFile::GetTutorialObjInfo(VECTOR pos)
+{
+
+	LoadObjectInfo info = {};
+	float distanceSize = 0.0f;
+	float min = 10000.0f;
+
+	for (auto list : loadTutorialInfo_) {
+		for (auto tutorialObj : list.second) {
+			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorialObj.pos, pos);
+
+			if (min > distanceSize) {
+				min = distanceSize;
+				info = tutorialObj;
+			}
+		}
+	}
 
 	return info;
 }
@@ -290,8 +315,10 @@ void ExternalFile::LoadObjectData(const char* const filename, std::unordered_map
 		result = FileRead_read(&info.scale, sizeof(info.scale), dataHandle);
 		assert(result != -1);
 		
+		std::string keyName = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(info.name,".");
+
 		//’Ç‰Á
-		dataTable[info.name].push_back(info);
+		dataTable[keyName].push_back(info);
 
 	}
 

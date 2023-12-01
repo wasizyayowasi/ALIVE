@@ -106,7 +106,7 @@ void Player::Draw()
 
 	//DrawSphere3D(VGet(status_.pos.x + 1000, status_.pos.y, status_.pos.z), 16, 32, 0xff0000, 0xff0000, true);
 
-//	DrawFormatString(0, 64, 0x448844, "%.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
+	DrawFormatString(0, 64, 0x448844, "%.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
 
 }
 
@@ -132,12 +132,21 @@ void Player::SetJumpInfo(bool isJump, float jumpVec)
 void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 
-	if (input.IsTriggered(InputType::carry)) {
+	if (input.IsTriggered(InputType::creative)) {
+		debugCreativeMode = !debugCreativeMode;
+	}
+
+	if (input.IsTriggered(InputType::activate)) {
 		if (status_.situation.isCanBeCarried) {
 			(this->*carryUpdateFunc_)();
 		}
 		else if (status_.situation.isGimmickCanBeOperated) {
 			updateFunc_ = &Player::CrankUpdate;
+			return;
+		}
+		else {
+			updateFunc_ = &Player::IdleToSitup;
+			return;
 		}
 	}
 
@@ -157,14 +166,17 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 
 	//空中にいるとき
 	//重力をベクトルに足してポジションに足す
-	if (status_.jump.isJump) {
-		status_.jump.jumpVec += gravity;
-		status_.pos.y += status_.jump.jumpVec;
-		model_->SetPos(status_.pos);
+	if (!debugCreativeMode) {
+		if (status_.jump.isJump) {
+			status_.jump.jumpVec += gravity;
+			status_.pos.y += status_.jump.jumpVec;
+			model_->SetPos(status_.pos);
+		}
+		else {
+			status_.jump.jumpVec = 0.0f;
+		}
 	}
-	else {
-		status_.jump.jumpVec = 0.0f;
-	}
+	
 
 	//持ち運び中だったら
 	//以降の処理を行わない
@@ -174,25 +186,27 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 
 	//メンバ関数ポインタをrunningJumpUpdate、
 	//jumpUpdateのどちらかに変更する
-	if (input.IsTriggered(InputType::space)) {
-		if (!status_.jump.isJump) {
-			PlayerJump(playerInfo_.jumpPower);
+	if (!debugCreativeMode) {
+		if (input.IsTriggered(InputType::space)) {
+			if (!status_.jump.isJump) {
+				PlayerJump(playerInfo_.jumpPower);
+			}
+			ChangeAnimNo(AnimType::jump, false, 20);
+			updateFunc_ = &Player::JumpUpdate;
+			return;
 		}
-		ChangeAnimNo(AnimType::jump, false, 20);
-		updateFunc_ = &Player::JumpUpdate;
-		return;
 	}
-
-	//メンバ関数ポインタをsitUpdateに変更する
-	if (input.IsTriggered(InputType::ctrl)) {
-		updateFunc_ = &Player::IdleToSitup;
-		return;
+	else {
+		if (input.IsPressed(InputType::space)) {
+			status_.moveVec.y = 3.0;
+		}
 	}
 
 	//メンバ関数ポインタをDeathUpdateに変更する
 	if (input.IsTriggered(InputType::death)) {
 		deathCount_++;
 		updateFunc_ = &Player::DeathUpdate;
+		status_.moveVec = VGet(0, 0, 0);
 		return;
 	}
 
@@ -474,7 +488,7 @@ void Player::DeadPersonGenerater(std::shared_ptr<ObjectManager> objManager)
 void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	//立ち上がるためのコマンド
-	if (input.IsTriggered(InputType::ctrl)) {
+	if (input.IsTriggered(InputType::activate)) {
 		//アニメーションの変更
 		ChangeAnimNo(AnimType::situpToIdle, false, 20);
 	}
@@ -586,7 +600,7 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 		CrankRotatinUpdate(rotZ, pos);
 	}
 
-	if (input.IsTriggered(InputType::carry)) {
+	if (input.IsTriggered(InputType::activate)) {
 		status_.situation.isGimmickCanBeOperated = false;
 		crank_.reset();
 		updateFunc_ = &Player::NormalUpdate;
@@ -658,7 +672,12 @@ void Player::ChangeAnimNo(AnimType type, bool isAnimLoop, int changeTime)
 //プレイヤーの速度設定
 float Player::PlayerSpeed(bool pressedShift)
 {
-	if (pressedShift) return playerInfo_.runningSpeed;
+	if (pressedShift) {
+		if (debugCreativeMode) {
+			return playerInfo_.runningSpeed * 2;
+		}
+		return playerInfo_.runningSpeed;
+	} 
 	
 	return playerInfo_.walkSpeed;
 }

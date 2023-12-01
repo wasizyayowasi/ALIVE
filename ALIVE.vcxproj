@@ -149,6 +149,7 @@
     <ClCompile Include="gimmick\ManualCrank.cpp" />
     <ClCompile Include="object\Shot.cpp" />
     <ClCompile Include="object\ShotManager.cpp" />
+    <ClCompile Include="util\Tutorial.cpp" />
     <ClCompile Include="util\Aster.cpp" />
     <ClCompile Include="object\DeadPerson.cpp" />
     <ClCompile Include="util\ObjectManager.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="gimmick\ManualCrank.h" />
     <ClInclude Include="object\Shot.h" />
     <ClInclude Include="object\ShotManager.h" />
+    <ClInclude Include="util\Tutorial.h" />
     <ClInclude Include="util\Aster.h" />
     <ClInclude Include="util\StatePattern.h" />
     <ClInclude Include="util\PlayerData.h" />

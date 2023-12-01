@@ -2,11 +2,16 @@
 #include "Switch.h"
 #include "../util/Model.h"
 #include "../util/ExternalFile.h"
+#include "../util/Util.h"
 #include <algorithm>
 
 TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
 {
-	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(objInfo.pos,"Switch");
+	
+	int num = StrUtil::GetNumberFromString(objInfo.name, ".");
+	std::string name = StrUtil::GetConcatenateNumAndStrings("TransSwitch", ".", num);
+
+	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(objInfo.pos, name.c_str());
 	switch_ = std::make_shared<Switch>(info);
 	
 	InitialPosition_ = model_->GetPos();

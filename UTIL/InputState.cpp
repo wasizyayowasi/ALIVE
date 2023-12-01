@@ -44,16 +44,16 @@ InputState::InputState()
 												{InputCategory::pad,PAD_INPUT_1} };
 	//€–S
 	defaultMapTable_[InputType::death] =		{ {InputCategory::keybd,KEY_INPUT_Z},
-												{InputCategory::pad,PAD_INPUT_6} };
+												{InputCategory::pad,PAD_INPUT_4} };
 	//shift
 	defaultMapTable_[InputType::shift] =		{ {InputCategory::keybd,KEY_INPUT_LSHIFT},
 												{InputCategory::pad,PAD_INPUT_3} };
-	//ctrl
-	defaultMapTable_[InputType::ctrl] =			{ {InputCategory::keybd,KEY_INPUT_LCONTROL},
-												{InputCategory::pad,PAD_INPUT_4} };
-	//ctrl
-	defaultMapTable_[InputType::carry] =		{ {InputCategory::keybd,KEY_INPUT_F},
+	//activate
+	defaultMapTable_[InputType::activate] =		{ {InputCategory::keybd,KEY_INPUT_F},
 												{InputCategory::pad,PAD_INPUT_2} };
+
+	defaultMapTable_[InputType::creative] =		{ {InputCategory::keybd,KEY_INPUT_Q},
+												{InputCategory::pad,PAD_INPUT_5} };
 
 	inputMapTable_ = defaultMapTable_;
 
@@ -76,8 +76,7 @@ InputState::InputState()
 	inputNameTable_[InputType::space] = "Œˆ’è/ƒWƒƒƒ“ƒv";
 	inputNameTable_[InputType::death] = "€–S";
 	inputNameTable_[InputType::shift] = "‘–‚é";
-	inputNameTable_[InputType::ctrl] = "À‚é";
-	inputNameTable_[InputType::carry] = "‰^‚Ô";
+	inputNameTable_[InputType::activate] = "ƒAƒNƒVƒ‡ƒ“";
 
 
 	currentInput_.resize(static_cast<int>(InputType::max));

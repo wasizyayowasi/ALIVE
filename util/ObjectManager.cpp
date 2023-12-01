@@ -12,6 +12,7 @@
 #include "../gimmick/Elevator.h"
 
 #include "game.h"
+#include "Util.h"
 
 #include "InputState.h"
 #include "ExternalFile.h"
@@ -50,9 +51,6 @@ namespace {
 	const char* const T_street_filepath = "data/model/city/model/TStreet.mv1";
 	const char* const Tile_filepath = "data/model/city/model/Tile.mv1";
 	const char* const scaffold_filepath = "data/model/city/others/Scaffold.mv1";
-	const char* const slopeScaffold_filepath = "data/model/city/others/SlopeScaffold.mv1";
-	const char* const slopeScaffold35_filepath = "data/model/city/others/SlopeScaffold35.mv1";
-	const char* const fence_filepath = "data/model/city/others/Fence.mv1";
 	//建物
 	const char* const BlueContainer_filepath = "data/model/city/container/mv1/BlueContainer.mv1";
 	const char* const RedContainer_filepath = "data/model/city/container/mv1/RedContainer.mv1";
@@ -93,9 +91,6 @@ ObjectManager::ObjectManager()
 	modelHandle_[ObjectType::TStreet] = MV1LoadModel(T_street_filepath);
 	modelHandle_[ObjectType::Tile] = MV1LoadModel(Tile_filepath);
 	modelHandle_[ObjectType::Scaffold] = MV1LoadModel(scaffold_filepath);
-	modelHandle_[ObjectType::SlopeScaffold ] = MV1LoadModel(slopeScaffold_filepath);
-	modelHandle_[ObjectType::SlopeScaffold35 ] = MV1LoadModel(slopeScaffold35_filepath);
-	modelHandle_[ObjectType::Fence] = MV1LoadModel(fence_filepath);
 
 	modelHandle_[ObjectType::BlueContainer] = MV1LoadModel(BlueContainer_filepath);
 	modelHandle_[ObjectType::RedContainer] = MV1LoadModel(RedContainer_filepath);
@@ -203,21 +198,6 @@ void ObjectManager::ObjectGenerator()
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Scaffold, objSecond);
 			}
 		}
-		else if (objInfo.first == "SlopeScaffold") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::SlopeScaffold, objSecond);
-			}
-		}
-		else if (objInfo.first == "SlopeScaffold35") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::SlopeScaffold35, objSecond);
-			}
-		}
-		else if (objInfo.first == "Fence") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Fence, objSecond);
-			}
-		}
 		else if (objInfo.first == "BlueContainer") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BlueContainer, objSecond);
@@ -297,7 +277,7 @@ void ObjectManager::Update(Player& player, const InputState& input, std::shared_
 				continue;
 			}
 			for (auto& deadperson : objects_[ObjectType::deadPerson]) {
-				distanceSize = VSize(VSub(obj->GetPos(), playerPos));
+				distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
 				if (distanceSize < 1000.0f) {
 					obj->HitColl(deadperson);
 				}
@@ -316,7 +296,7 @@ void ObjectManager::Update(Player& player, const InputState& input, std::shared_
 	//更新
 	for (auto list : objects_) {
 		for (auto obj : list.second) {
-			distanceSize = VSize(VSub(obj->GetPos(), playerPos));
+			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
 			if (distanceSize < 1000.0f) {
 				obj->Update(player, input);
 			}
@@ -335,7 +315,6 @@ void ObjectManager::Update(Player& player, const InputState& input, std::shared_
 			}
 		}
 	}
-	
 
 	EnemyGenerator(player.GetDeathCount(),player.GetStatus().pos);
 
@@ -349,7 +328,7 @@ void ObjectManager::Draw(VECTOR PlayerPos)
 	for (auto& objs : objects_) {
 		for (auto& obj : objs.second) {
 			//オブジェクトからプレイヤーまでの距離をとりサイズ変換する
-			distance = VSize(VSub(obj->GetPos(), PlayerPos));
+			distance = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), PlayerPos);
 			//プレイヤーから距離が5000.0f未満だったら描画する
 			if (distance < 5000.0f) {
 				obj->Draw();
@@ -487,10 +466,7 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 	//「.」以降の文字列によって
 	//エネミーの召喚パターンを変更する
 	if (size > 0) {
-		//「.」が文字列の何番目かを取得する
-		int dotNum = loadInfo.name.find(".");
-		//「.」以降から最後までの文字列を取得する
-		auto str = loadInfo.name.substr(dotNum + 1, size);
+		std::string str = StrUtil::GetStringAfterSign(loadInfo.name, ".");
 
 		//文字列が「ALL」だったら
 		if (str == "ALL") {

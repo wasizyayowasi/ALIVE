@@ -12,6 +12,7 @@ class DepthOfField;
 class CheckCollisionModel;
 class ObjectManager;
 class ShotManager;
+class Tutorial;
 
 class GameMain : public SceneBase
 {
@@ -65,6 +66,7 @@ private:
 	std::shared_ptr<DepthOfField> depthOfField_;
 	std::shared_ptr<ObjectManager> objManager_;
 	std::shared_ptr<ShotManager> shotManager_;
+	std::shared_ptr<Tutorial> tutorial_;
 	
 	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
 

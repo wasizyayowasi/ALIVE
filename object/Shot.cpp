@@ -1,5 +1,6 @@
 #include "Shot.h"
 #include "../util/Model.h"
+#include "../util/Util.h"
 #include "Player.h"
 
 namespace {
@@ -30,8 +31,7 @@ void Shot::Update()
 
 	model_->SetPos(pos_);
 
-	VECTOR distance = VSub(initialisePos_, pos_);
-	float distanceSize = VSize(distance);
+	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(initialisePos_, pos_);
 
 	if (distanceSize > vanishing_line) {
 		isEnable_ = false;

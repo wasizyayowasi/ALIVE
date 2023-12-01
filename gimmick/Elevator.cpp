@@ -2,6 +2,7 @@
 #include "Switch.h"
 #include "../util/ExternalFile.h"
 #include "../util/Model.h"
+#include "../util/Util.h"
 
 namespace {
 	constexpr float move_speed = 10.0f;
@@ -13,8 +14,11 @@ Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInf
 
 	targetPos = pos_;
 
+	int num = StrUtil::GetNumberFromString(objInfo.name, ".");
+	std::string name = StrUtil::GetConcatenateNumAndStrings("ElevatorSwitch", ".", num);
+
 	for (int i = 0; i < 2; i++) {
-		switch_.push_back(std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, "Switch")));
+		switch_.push_back(std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, name.c_str())));
 	}
 
 }

@@ -22,6 +22,7 @@
 #include "../util/model.h"
 #include "../util/ExternalFile.h"
 #include "../util/CheckCollisionModel.h"
+#include "../util/Tutorial.h"
 
 #include "../util/ObjectManager.h"
 #include "../util/ObjectData.h"
@@ -52,6 +53,7 @@ void GameMain::Init()
 	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
 	objManager_ = std::make_shared<ObjectManager>();
 	shotManager_ = std::make_shared<ShotManager>();
+	tutorial_ = std::make_shared<Tutorial>();
 
 	//オブジェクトを生成
 	ObjectGenerater();
@@ -109,6 +111,9 @@ void GameMain::Draw()
 	//オブジェクトの描画
 	objManager_->Draw(player_->GetStatus().pos);
 
+	MV1SetPosition(skyHandle_, player_->GetStatus().pos);
+	MV1DrawModel(skyHandle_);
+
 	//プレイヤーの描画
 	player_->Draw();
 
@@ -116,8 +121,8 @@ void GameMain::Draw()
 
 	shotManager_->Draw();
 
-	MV1SetPosition(skyHandle_, player_->GetStatus().pos);
-	MV1DrawModel(skyHandle_);
+	tutorial_->Draw();
+
 //	DrawSphere3D(VGet(0, 200, 0), 100, 32, 0xff0000, 0xff0000, true);
 
 //	broom_->graphFilterUpdate();
@@ -187,6 +192,8 @@ void GameMain::NormalUpdate(const InputState& input)
 
 	shotManager_->Update();
 	shotManager_->Hit(*player_);
+
+	tutorial_->Update(player_->GetStatus().pos);
 
 	//リスナーの位置と方向を設定
 	//今回は、プレイヤーではなくカメラの座標にしている

@@ -1,5 +1,6 @@
 #include "Aster.h"
-#include "../util/ObjectManager.h"
+#include "ObjectManager.h"
+#include "Util.h"
 #include <algorithm>
 
 namespace {
@@ -196,9 +197,9 @@ void Aster::ScoreCaluculation(Direction direction, int index)
 
 bool Aster::StraightLineDistanceSearch(VECTOR playerPos, VECTOR enemyPos)
 {
-	VECTOR distance = VSub(playerPos, enemyPos);
+	VECTOR distance = {};
 
-	float size = VSize(distance);
+	float size = MathUtil::GetSizeOfDistanceTwoPoints(playerPos,enemyPos);
 	int num = static_cast<int>(size / 100);
 	bool isBlockade = false;
 
@@ -234,13 +235,11 @@ int Aster::SearchCurrentIndex(VECTOR pos)
 	int index = 0;
 	float min = 1000.0f;
 	float size = 0.0f;
-	VECTOR distance = {};
 
 	//座標から一番近いマスの中心を見つけindex番号を取得する
 	for (int i = 0; i < max_Index; i++) {
 		//中心から敵のポジションの距離をとる
-		distance = VSub(masu_[i].centerPos, pos);
-		size = VSize(distance);
+		size = MathUtil::GetSizeOfDistanceTwoPoints(masu_[i].centerPos, pos);
 		//過去最短に近い結果と比べる
 		if (min > size) {
 			//過去最短を更新

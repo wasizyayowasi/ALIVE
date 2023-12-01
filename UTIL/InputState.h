@@ -19,8 +19,8 @@ enum class InputType
 	space,			//space
 	death,			//死亡入力
 	shift,			//shift
-	ctrl,			//ctrl
-	carry,			//運ぶ
+	activate,			//運ぶ
+	creative,		//デバッグ用
 	max,			//最大入力インデックス
 };
 
