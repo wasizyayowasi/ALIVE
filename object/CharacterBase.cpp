@@ -13,12 +13,3 @@ void CharacterBase::Update(Player& player, const InputState& input)
 void CharacterBase::Draw()
 {
 }
-
-void CharacterBase::HitColl(std::shared_ptr<ObjectBase> pointer)
-{
-}
-
-std::shared_ptr<Model> CharacterBase::AddCollModel()
-{
-    return nullptr;
-}

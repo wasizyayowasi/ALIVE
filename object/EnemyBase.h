@@ -20,9 +20,6 @@ public:
 	//描画
 	void Draw()override;
 
-	//衝突判定
-	virtual void HitColl(std::shared_ptr<ObjectBase> pointer);
-
 	/// <summary>
 	/// プレイヤーを追跡する
 	/// </summary>
@@ -59,9 +56,6 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool DistanceIsWithinRange();
-
-	//衝突判定を行うモデルを追加する
-	virtual std::shared_ptr<Model> AddCollModel();
 
 	void Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos, float height);
 

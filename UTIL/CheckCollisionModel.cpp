@@ -2,6 +2,7 @@
 #include "../object/Player.h"
 #include "../util/ObjectManager.h"
 #include "Model.h"
+#include "Util.h"
 #include <algorithm>
 
 namespace {
@@ -34,6 +35,12 @@ void CheckCollisionModel::CheckCollisionPersonalArea(std::shared_ptr<Player> pla
 				continue;
 			}
 		}
+
+		float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(model->GetPos(), oldPos);
+		if (distanceSize > 1000.0f) {
+			continue;
+		}
+
 		MV1RefreshCollInfo(model->GetModelHandle(), model->GetColFrameIndex());
 		CollModelState state;
 		state.hitDim = MV1CollCheck_Sphere(model->GetModelHandle(), model->GetColFrameIndex(), oldPos, collition_radius + VSize(playerState.moveVec));

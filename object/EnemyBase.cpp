@@ -88,10 +88,6 @@ void EnemyBase::Draw()
 //	Aster_->Draw();
 }
 
-void EnemyBase::HitColl(std::shared_ptr<ObjectBase> pointer)
-{
-}
-
 void EnemyBase::TrackingUpdate(VECTOR playerPos)
 {
 
@@ -239,11 +235,6 @@ bool EnemyBase::DistanceIsWithinRange()
 	}
 
 	return false;
-}
-
-std::shared_ptr<Model> EnemyBase::AddCollModel()
-{
-	return nullptr;
 }
 
 void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos,float height)

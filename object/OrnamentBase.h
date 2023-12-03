@@ -11,12 +11,6 @@ public:
 	//•`‰æ
 	virtual void Draw();
 
-	//Õ“Ë”»’è
-	virtual void HitColl(std::shared_ptr<ObjectBase> pointer);
-
-	//Õ“Ë”»’è‚ğs‚¤ƒ‚ƒfƒ‹‚ğ’Ç‰Á‚·‚é
-	virtual std::shared_ptr<Model> AddCollModel();
-
 private:
 
 };

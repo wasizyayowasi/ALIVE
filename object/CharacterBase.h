@@ -16,12 +16,6 @@ public:
 	//描画
 	virtual void Draw();
 
-	//衝突判定
-	virtual void HitColl(std::shared_ptr<ObjectBase> pointer);
-
-	//衝突判定を行うモデルを追加する
-	virtual std::shared_ptr<Model> AddCollModel();
-
 protected:
 
 	int animNo_ = 0;				//アニメーション番号
