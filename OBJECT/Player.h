@@ -162,7 +162,7 @@ private:
 
 	//ƒNƒ‰ƒ“ƒN‚ð‰ñ‚·
 	void CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
-	void CrankRotatinUpdate(float rotZ,VECTOR pos);
+	void CrankRotatinUpdate(float rotZ);
 
 	void BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 

@@ -123,8 +123,6 @@ void GameMain::Draw()
 
 	tutorial_->Draw();
 
-//	DrawSphere3D(VGet(0, 200, 0), 100, 32, 0xff0000, 0xff0000, true);
-
 //	broom_->graphFilterUpdate();
 //	broom_->draw();
 

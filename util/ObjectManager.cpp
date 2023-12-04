@@ -22,11 +22,11 @@
 namespace {
 	const char* const player_Filename = "data/player/player16.mv1";
 	//仮モデルのファイルパス
-	const char* const switch_filename = "data/model/switch.mv1";
-	const char* const steelyard_filename = "data/model/steelyard.mv1";
-	const char* const transparent_obj_filename = "data/model/trans.mv1";
-	const char* const elevator_obj_filename = "data/model/elevator.mv1";
-	const char* const manualCrank_obj_filename = "data/model/manualCrank.mv1";
+	const char* const switch_filepath = "data/model/switch.mv1";
+	const char* const steelyardfilepath = "data/model/steelyard.mv1";
+	const char* const transparent_filepath = "data/model/trans.mv1";
+	const char* const elevator_filepath = "data/model/other/mv1/Elevator.mv1";
+	const char* const crank_filepath = "data/model/manualCrank.mv1";
 
 	//実際に使う予定のモデルパス
 	//でかいビル
@@ -64,11 +64,11 @@ ObjectManager::ObjectManager()
 {
 
 	modelHandle_[ObjectType::enemy] = MV1LoadModel(player_Filename);
-	modelHandle_[ObjectType::gimmickSwitch] = MV1LoadModel(switch_filename);
-	modelHandle_[ObjectType::gimmickSteelyard] = MV1LoadModel(steelyard_filename);
-	modelHandle_[ObjectType::trans] = MV1LoadModel(transparent_obj_filename);
-	modelHandle_[ObjectType::elevator] = MV1LoadModel(elevator_obj_filename);
-	modelHandle_[ObjectType::CrankScaffold] = MV1LoadModel(manualCrank_obj_filename);
+	modelHandle_[ObjectType::gimmickSwitch] = MV1LoadModel(switch_filepath);
+	modelHandle_[ObjectType::gimmickSteelyard] = MV1LoadModel(steelyardfilepath);
+	modelHandle_[ObjectType::trans] = MV1LoadModel(transparent_filepath);
+	modelHandle_[ObjectType::elevator] = MV1LoadModel(elevator_filepath);
+	modelHandle_[ObjectType::CrankScaffold] = MV1LoadModel(crank_filepath);
 
 	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);
 	modelHandle_[ObjectType::BigBuildingB] = MV1LoadModel(big_buildingB_filepath);
@@ -296,10 +296,10 @@ void ObjectManager::Update(Player& player, const InputState& input, std::shared_
 	//更新
 	for (auto list : objects_) {
 		for (auto obj : list.second) {
-			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
-			if (distanceSize < 1000.0f) {
+			//distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
+			//if (distanceSize < 1000.0f) {
 				obj->Update(player, input);
-			}
+			//}
 		}
 	}
 	

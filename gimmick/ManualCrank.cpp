@@ -7,32 +7,19 @@
 
 
 namespace {
-	const char* const box_filename = "data/model/box.mv1";
+	const char* const crank_filename = "data/model/other/mv1/Crank.mv1";
 
-	const VECTOR center_point = VGet(-200, 100, 0);
-
-	constexpr float max_rot_Z = 630.0f;
+	constexpr float max_rot_Z = -630.0f;
 }
 
 ManualCrank::ManualCrank(LoadObjectInfo objInfo)
 {
-	model_ = std::make_shared<Model>(box_filename);
+	model_ = std::make_shared<Model>(crank_filename);
+	model_->SetCollFrame();
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
-	model_->SetCollFrame();
 
 	pos_ = objInfo.pos;
-	initPos_ = objInfo.pos;
-
-	float radian = 0.0f * DX_PI_F / 180.0f;
-	float x = sin(radian);
-	float y = cos(radian);
-
-	pos_.x = pos_.x + x * 40;
-	pos_.y = pos_.y + y * 40;
-
-	model_->SetPos(pos_);
-
 }
 
 ManualCrank::~ManualCrank()
@@ -52,6 +39,7 @@ bool ManualCrank::HitCollPlayer(Player& player)
 
 	VECTOR playerPos = player.GetStatus().pos;
 
+	MV1RefreshCollInfo(model_->GetModelHandle(), model_->GetColFrameIndex());
 	result = MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, VAdd(playerPos, VGet(0, player.GetStatus().height, 0)),30.0f);
 
 	if (result.HitNum < 1) {

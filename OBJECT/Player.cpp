@@ -588,16 +588,16 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 
 	status_.moveVec = VGet(0, 0, 0);
 
-	VECTOR pos = crank_->GetModelPointer()->GetPos();
+	//VECTOR pos = crank_->GetModelPointer()->GetPos();
 	float rotZ = crank_->GetRotZ();
 
-	if (input.IsPressed(InputType::up)) {
-		rotZ = (std::max)(rotZ - 3.0f, 0.0f);
-		CrankRotatinUpdate(rotZ, pos);
+	if (input.IsPressed(InputType::down)) {
+		rotZ = (std::max)(rotZ - 3.0f, -630.0f);
+		CrankRotatinUpdate(rotZ);
 	}
-	else if (input.IsPressed(InputType::down)) {
-		rotZ = (std::min)(rotZ + 3.0f, 630.0f);
-		CrankRotatinUpdate(rotZ, pos);
+	else if (input.IsPressed(InputType::up)) {
+		rotZ = (std::min)(rotZ + 3.0f, 0.0f);
+		CrankRotatinUpdate(rotZ);
 	}
 
 	if (input.IsTriggered(InputType::activate)) {
@@ -608,17 +608,31 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 
 }
 
-void Player::CrankRotatinUpdate(float rotZ, VECTOR pos) {
+void Player::CrankRotatinUpdate(float rotZ) {
 
 	float radian = rotZ * DX_PI_F / 180.0f;
 
-	float x = sin(radian);
-	float z = cos(radian);
+	int frameNo = MV1SearchFrame(crank_->GetModelPointer()->GetModelHandle(), "Crank");
 
-	pos.x = crank_->GetInitPos().x + x * 40;
-	pos.y = crank_->GetInitPos().y + z * 40;
+	VECTOR pos = MV1GetFramePosition(crank_->GetModelPointer()->GetModelHandle(), frameNo);
+	//クランクのポジションからオブジェクト全体のポジションを引いた距離
+	VECTOR distance = { 0,2.0f,0 };
 
-	crank_->GetModelPointer()->SetPos(pos);
+	MATRIX mat = {};
+
+	float x = 90 * DX_PI_F / 180.0f;
+
+	//平行移動行列
+	MATRIX posMat = MGetTranslate(distance);
+	//回転行列
+	MATRIX rotMatZ = MGetRotZ(radian);
+	MATRIX rotMatX = MGetRotX(x);
+
+	mat = MMult(rotMatX, rotMatZ);
+	mat = MMult(mat, posMat);
+
+	MV1SetFrameUserLocalMatrix(crank_->GetModelPointer()->GetModelHandle(), frameNo, mat);
+
 	crank_->SetRotZ(rotZ);
 }
 

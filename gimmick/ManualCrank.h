@@ -36,6 +36,7 @@ public:
 private:
 
 	float rotZ_ = 0.0f;
+	float radian_ = 0.0f;
 
 	VECTOR pos_ = {};
 	VECTOR initPos_ = {};
