@@ -78,6 +78,8 @@ public:
 	/// <param name="jumpVec">ジャンプベクトル</param>
 	void SetJumpInfo(bool isJump, float jumpVec);
 
+	void SetMoveVec(VECTOR vector) { status_.moveVec = vector; }
+
 	/// <summary>
 	/// 登れるかの情報を受け取る
 	/// </summary>

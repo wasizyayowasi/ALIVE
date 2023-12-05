@@ -17,16 +17,21 @@ public:
 	void Update(Player& player, const InputState& input)override;
 	void Draw();
 
-	void TargetPosition(float distanceY);
+	void PlayerTracking(VECTOR playerPos);
+	void TargetPosition();
 
 	//衝突判定を行うモデルを追加する
-//	virtual std::shared_ptr<Model> AddCollModel();
+	virtual std::shared_ptr<Model> AddCollModel();
 private:
 
-	float moveVecY = 0.0f;
+	float moveVecY_ = 0.0f;							//Y軸の移動ヴェクトル
 
-	VECTOR targetPos = {};
+	bool isDeparture_ = false;						//エレベーターが出発しているかどうか
 
-	std::vector<std::shared_ptr<Switch>> switch_;
+	VECTOR targetPos_ = {};							//現在向かっているポジション
+
+	std::vector<VECTOR> destinationPos_;			//目的地のポジション
+
+	std::shared_ptr<Switch> switch_;
 };
 

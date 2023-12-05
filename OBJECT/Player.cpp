@@ -198,7 +198,7 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 	}
 	else {
 		if (input.IsPressed(InputType::space)) {
-			status_.moveVec.y = 3.0;
+			status_.moveVec.y = 10.0;
 		}
 	}
 
@@ -269,6 +269,10 @@ void Player::MovingUpdate(const InputState& input, std::shared_ptr<ObjectManager
 	//移動ベクトルを用意する
 	status_.moveVec = VScale(VNorm(status_.moveVec), movingSpeed);
 
+	VECTOR destination = VAdd(status_.pos, status_.moveVec);
+	if (destination.z < -250.0f) {
+		status_.moveVec.z = 0.0f;
+	}
 }
 
 float Player::Move(const InputState& input) {
@@ -688,7 +692,7 @@ float Player::PlayerSpeed(bool pressedShift)
 {
 	if (pressedShift) {
 		if (debugCreativeMode) {
-			return playerInfo_.runningSpeed * 2;
+			return playerInfo_.runningSpeed * 3;
 		}
 		return playerInfo_.runningSpeed;
 	} 

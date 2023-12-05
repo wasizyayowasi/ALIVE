@@ -4,6 +4,8 @@
 #include "../util/Model.h"
 #include "../util/Util.h"
 
+#include "../object/Player.h"
+
 namespace {
 	constexpr float move_speed = 10.0f;
 }
@@ -12,13 +14,18 @@ Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInf
 {
 	pos_ = objInfo.pos;
 
-	targetPos = pos_;
+	targetPos_ = pos_;
 
-	int num = StrUtil::GetNumberFromString(objInfo.name, ".");
-	std::string name = StrUtil::GetConcatenateNumAndStrings("ElevatorSwitch", ".", num);
+	int switchNum = StrUtil::GetNumberFromString(objInfo.name, ".");
+	std::string switchName = StrUtil::GetConcatenateNumAndStrings("ElevatorSwitch", ".", switchNum);
+
+	switch_ = std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, switchName.c_str()));
+
+	int pointNum = StrUtil::GetNumberFromString(objInfo.name, ".");
+	std::string pointName = StrUtil::GetConcatenateNumAndStrings("ElevatorPoint", ".", pointNum);
 
 	for (int i = 0; i < 2; i++) {
-		switch_.push_back(std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, name.c_str())));
+		destinationPos_.push_back(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, pointName.c_str()).pos);
 	}
 
 }
@@ -31,42 +38,41 @@ void Elevator::Update(Player& player, const InputState& input)
 {
 	float distance = 0.0f;
 
-	for (auto& bottan : switch_) {
-		bottan->Update(player);
-	}
+	switch_->Update(player);
 
-	if (targetPos.y == pos_.y) {
-		TargetPosition(distance);
+	if (targetPos_.y == pos_.y) {
+		PlayerTracking(player.GetStatus().pos);
+		TargetPosition();
 	}
 	else {
-		for (auto& bottan : switch_) {
-			bottan->DeleteHitResult();
-		}
+		switch_->DeleteHitResult();
 	}
 
 	//ˆÚ“®
-	distance = targetPos.y - pos_.y;
+	distance = targetPos_.y - pos_.y;
 
-	moveVecY = distance / 0.96f;
+	moveVecY_ = distance / 0.96f;
 
-	moveVecY = (std::max)(moveVecY, -moveVecY);
+	moveVecY_ = (std::max)(moveVecY_, -moveVecY_);
 
-	if (moveVecY > move_speed) {
+	if (moveVecY_ > move_speed) {
 		float scale = move_speed / distance;
 		scale = (std::max)(scale, -scale);
-		moveVecY = distance * scale;
+		moveVecY_ = distance * scale;
 	}
 
 	distance = (std::max)(distance, -distance);
 
 	if (distance < 3.0f) {
-		pos_ = targetPos;
+		pos_ = targetPos_;
 	}
 	else {
-		pos_.y += moveVecY;
+		pos_.y += moveVecY_;
 	}
 
 	model_->SetPos(pos_);
+
+	switch_->GetModelPointer()->SetPos(VGet(pos_.x, pos_.y + 8.0f, pos_.z));
 
 }
 
@@ -74,9 +80,7 @@ void Elevator::Draw()
 {
 	model_->Draw();
 
-	for (auto& bottan : switch_) {
-		bottan->Draw();
-	}
+	switch_->Draw();
 
 //	DrawFormatString(0, 32, 0xff0000, "%.2f,%.2f,%.2f", pos_.x, pos_.y, pos_.z);
 //	DrawFormatString(0, 48, 0xff0000, "%.2f,%.2f,%.2f", switch_[0]->GetPos().x, switch_[0]->GetPos().y, switch_[0]->GetPos().z);
@@ -84,30 +88,40 @@ void Elevator::Draw()
 
 }
 
-void Elevator::TargetPosition(float distanceY)
+void Elevator::PlayerTracking(VECTOR playerPos)
 {
- 	if (switch_[0]->CollResult()) {
-		distanceY = switch_[0]->GetPos().y - pos_.y;
-		distanceY = (std::max)(distanceY, -distanceY);
-		if (distanceY < 5.0f) {
-			targetPos = switch_[1]->GetPos();
-		}
-		else {
-			targetPos = switch_[0]->GetPos();
+
+	float min = 10000.0f;
+
+	for (auto pos : destinationPos_) {
+		float size = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos);
+		if (min > size) {
+			min = size;
+			targetPos_ = pos;
 		}
 	}
+}
 
-	if (switch_[1]->CollResult()) {
-		distanceY = switch_[1]->GetPos().y - pos_.y;
-		distanceY = (std::max)(distanceY, -distanceY);
-		if (distanceY < 5.0f) {
-			targetPos = switch_[0]->GetPos();
+void Elevator::TargetPosition()
+{
+	float distanceSize = {};
+	float maxSize = 0.0f;
+
+	if (switch_->CollResult()) {
+		for (auto pos : destinationPos_) {
+			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(pos_, pos);
+			if (maxSize < distanceSize) {
+				maxSize = distanceSize;
+				targetPos_ = pos;
+			}
 		}
-		else {
-			targetPos = switch_[1]->GetPos();
-		}
+		isDeparture_ = true;
 	}
 
-	targetPos.z = pos_.z;
+	targetPos_.z = pos_.z;
+}
 
+std::shared_ptr<Model> Elevator::AddCollModel()
+{
+	return switch_->GetModelPointer();
 }

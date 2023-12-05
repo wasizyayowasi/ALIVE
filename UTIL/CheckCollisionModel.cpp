@@ -122,6 +122,7 @@ void CheckCollisionModel::CheckCollisionWall(std::shared_ptr<Player> player)
 					for (j = 0; j < hitWallNum; j++) {
 						hitPoly = wallHitDim_[j];
 						if (HitCheck_Capsule_Triangle(nowPos, VAdd(nowPos, VGet(0.0f, playerState.height, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2])) {
+							player->SetMoveVec(VGet(0, 0, 0));
 							break;
 						}
 					}

@@ -18,7 +18,15 @@ TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : Gimmi
 
 	isCollCheck_ = false;
 
-	MV1SetMaterialDifColor(model_->GetModelHandle(), 0, GetColorF(0.0f, 0.0f, 1.0f, 0.0f));
+	materialNum_ = MV1GetMaterialNum(model_->GetModelHandle());
+
+	COLOR_F color = {};
+
+	for (int i = 0; i < materialNum_;i++) {
+		color = MV1GetMaterialDifColor(model_->GetModelHandle(), i);
+		color.a = 0.0f;
+		MV1SetMaterialDifColor(model_->GetModelHandle(), i, color);
+	}
 
 }
 
@@ -44,7 +52,14 @@ void TransparentObject::Update(Player& player, const InputState& input)
 		alphaValue_ = (std::max)(alphaValue_ - 0.1f, 0.0f);
 	}
 
-	MV1SetMaterialDifColor(model_->GetModelHandle(), 0, GetColorF(0.0f, 0.0f, 1.0f, alphaValue_));
+
+	COLOR_F color = {};
+
+	for (int i = 0; i < materialNum_; i++) {
+		color = MV1GetMaterialDifColor(model_->GetModelHandle(), i);
+		color.a = alphaValue_;
+		MV1SetMaterialDifColor(model_->GetModelHandle(), i, color);
+	}
 
 }
 

@@ -24,7 +24,7 @@ namespace {
 	//仮モデルのファイルパス
 	const char* const switch_filepath = "data/model/switch.mv1";
 	const char* const steelyardfilepath = "data/model/steelyard.mv1";
-	const char* const transparent_filepath = "data/model/trans.mv1";
+	const char* const transparent_filepath = "data/model/other/mv1/ElevatingMovableScaffolding.mv1";
 	const char* const elevator_filepath = "data/model/other/mv1/Elevator.mv1";
 	const char* const crank_filepath = "data/model/manualCrank.mv1";
 
@@ -296,10 +296,7 @@ void ObjectManager::Update(Player& player, const InputState& input, std::shared_
 	//更新
 	for (auto list : objects_) {
 		for (auto obj : list.second) {
-			//distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
-			//if (distanceSize < 1000.0f) {
-				obj->Update(player, input);
-			//}
+			obj->Update(player, input);
 		}
 	}
 	

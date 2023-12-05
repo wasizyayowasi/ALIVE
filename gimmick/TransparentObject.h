@@ -25,7 +25,9 @@ public:
 
 private:
 
-	float alphaValue_ = 0.0f;
+	int materialNum_ = 0;								//このクラスでインスタンス化される3Dモデルのマテリアルの数を保管する
+
+	float alphaValue_ = 0.0f;							//透過値を保管する
 
 	VECTOR InitialPosition_ = {};						//初期の高さを取得する
 

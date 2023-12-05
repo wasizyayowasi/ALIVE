@@ -196,7 +196,7 @@ float Camera::TrackingPosY(VECTOR playerPos, float playerHeight)
 	}
 	
 
-	return (cameraPos_.y * 0.9f) + ((playerHeadPosY + playerHeight) * 0.1f);
+	return (cameraPos_.y * 0.9f) + ((playerHeadPosY + playerHeight * 2) * 0.1f);
 }
 
 float Camera::TrackingPozZ(VECTOR playerPos)

@@ -75,7 +75,7 @@ void EnemyBase::Update(Player& player, const InputState& input)
 
 	float pushVecSize = VSize(pushVec_);
 
-	if (pushVecSize > 5.0f) {
+	if (pushVecSize > 1.0f) {
 		ThrustAway(player);
 	}
 
@@ -145,9 +145,6 @@ bool EnemyBase::SearchForPlayer(VECTOR playerPos)
 		}
 	}
 
-	
-		
-
 	if (!DistanceIsWithinRange()) {
 		return false;
 	}
@@ -162,7 +159,11 @@ void EnemyBase::ThrustAway(Player& player)
 	float size = VSize(pushVec_);
 	VECTOR nockback = VAdd(player.GetStatus().pos,pushVec_);
 
-	player.SetPos(nockback);
+	if (nockback.z < -250.0f) {
+		pushVec_.z = 0.0f;
+	}
+
+	player.SetMoveVec(VAdd(player.GetStatus().moveVec, pushVec_));
 }
 
 void EnemyBase::RoutingUpdate(Player& player)
