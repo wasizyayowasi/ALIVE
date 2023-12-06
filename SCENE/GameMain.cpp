@@ -117,8 +117,6 @@ void GameMain::Draw()
 	//ƒvƒŒƒCƒ„[‚Ì•`‰æ
 	player_->Draw();
 
-	checkCollisionModel_->tempdraw();
-
 	shotManager_->Draw();
 
 	tutorial_->Draw();

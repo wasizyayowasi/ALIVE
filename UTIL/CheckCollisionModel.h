@@ -74,8 +74,6 @@ public:
 	void FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
 
 	void CheckCollSpecificModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
-
-	void tempdraw();
 private:
 
 	float objectHeightY = 0;		//衝突したオブジェクトの高さを保管する

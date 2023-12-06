@@ -48,7 +48,7 @@ bool ManualCrank::HitCollPlayer(Player& player)
 	VECTOR playerPos = player.GetStatus().pos;
 
 	MV1RefreshCollInfo(model_->GetModelHandle(), model_->GetColFrameIndex());
-	result = MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, VAdd(playerPos, VGet(0, player.GetStatus().height, 0)),30.0f);
+	result = MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, VAdd(playerPos, VGet(0, player.GetStatus().height, 0)),80.0f);
 
 	if (result.HitNum < 1) {
 		MV1CollResultPolyDimTerminate(result);

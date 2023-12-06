@@ -41,10 +41,6 @@ Player::Player(const char* const filename):updateFunc_(&Player::NormalUpdate),ca
 	status_.height = player_hegiht;
 }
 
-Player::Player(int handle) :updateFunc_(&Player::NormalUpdate)
-{
-}
-
 /// <summary>
 /// デストラクタ
 /// </summary>

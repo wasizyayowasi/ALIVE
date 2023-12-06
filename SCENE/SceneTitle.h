@@ -18,16 +18,19 @@ public:
 	void Update(const InputState& input);
 	void Draw();
 
-	void SceneChange();
 
 private:
 
-	int fontHandle_ = -1;
-	int titleWidth = 0;
+	void SceneChange();
 
 	void fadeInUpdate(const InputState& input);
 	void normalUpdate(const InputState& input);
 	void fadeOutUpdate(const InputState& input);
+
+private:
+	int fontHandle_ = -1;
+	int titleWidth = 0;
+
 
 	static constexpr int fadeInterval_ = 30;
 	int fadeTimer_ = 0;

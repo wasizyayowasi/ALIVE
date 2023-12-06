@@ -461,10 +461,3 @@ void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player,
 	}
 
 }
-
-void CheckCollisionModel::tempdraw()
-{
-	if (hitFlag) {
-		//DrawTriangle3D(result.hitDim->Position[0], result.hitDim->Position[1], result.hitDim->Position[2], 0xff0000, true);
-	}
-}

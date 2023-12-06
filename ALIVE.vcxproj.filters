@@ -138,41 +138,41 @@
     <ClCompile Include="gimmick\GimmickBase.cpp">
       <Filter>ソース ファイル\gimmick</Filter>
     </ClCompile>
-    <ClCompile Include="object\ObjectBase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="util\ObjectManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="object\OrnamentBase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="object\DeadPerson.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="util\Aster.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="gimmick\TransparentObject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="gimmick\ManualCrank.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="gimmick\CrankScaffold.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="gimmick\Elevator.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\util</Filter>
     </ClCompile>
     <ClCompile Include="object\ShotManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\util</Filter>
+    </ClCompile>
+    <ClCompile Include="gimmick\TransparentObject.cpp">
+      <Filter>ソース ファイル\gimmick</Filter>
+    </ClCompile>
+    <ClCompile Include="gimmick\Elevator.cpp">
+      <Filter>ソース ファイル\gimmick</Filter>
+    </ClCompile>
+    <ClCompile Include="gimmick\CrankScaffold.cpp">
+      <Filter>ソース ファイル\gimmick</Filter>
+    </ClCompile>
+    <ClCompile Include="gimmick\ManualCrank.cpp">
+      <Filter>ソース ファイル\gimmick</Filter>
+    </ClCompile>
+    <ClCompile Include="object\DeadPerson.cpp">
+      <Filter>ソース ファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="object\ObjectBase.cpp">
+      <Filter>ソース ファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="object\OrnamentBase.cpp">
+      <Filter>ソース ファイル\object</Filter>
     </ClCompile>
     <ClCompile Include="object\Shot.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="util\ObjectManager.cpp">
+      <Filter>ソース ファイル\util</Filter>
     </ClCompile>
     <ClCompile Include="util\Tutorial.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -269,50 +269,50 @@
     <ClInclude Include="scene\SettingScene.h">
       <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
-    <ClInclude Include="object\ObjectBase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="util\ObjectManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="util\ObjectData.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="object\OrnamentBase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="object\DeadPerson.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="util\PlayerData.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="util\StatePattern.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="util\Aster.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="gimmick\TransparentObject.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="gimmick\ManualCrank.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="gimmick\CrankScaffold.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\gimmick</Filter>
     </ClInclude>
     <ClInclude Include="gimmick\Elevator.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="gimmick\ManualCrank.h">
+      <Filter>ヘッダー ファイル\gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="gimmick\TransparentObject.h">
+      <Filter>ヘッダー ファイル\gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="object\DeadPerson.h">
+      <Filter>ヘッダー ファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="object\ObjectBase.h">
+      <Filter>ヘッダー ファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="object\OrnamentBase.h">
+      <Filter>ヘッダー ファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="util\Aster.h">
+      <Filter>ヘッダー ファイル\util</Filter>
+    </ClInclude>
+    <ClInclude Include="util\ObjectData.h">
+      <Filter>ヘッダー ファイル\util</Filter>
+    </ClInclude>
+    <ClInclude Include="util\ObjectManager.h">
+      <Filter>ヘッダー ファイル\util</Filter>
+    </ClInclude>
+    <ClInclude Include="util\PlayerData.h">
+      <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
     <ClInclude Include="object\ShotManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
-    <ClInclude Include="object\Shot.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="util\StatePattern.h">
+      <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
     <ClInclude Include="util\Tutorial.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\util</Filter>
+    </ClInclude>
+    <ClInclude Include="object\Shot.h">
+      <Filter>ヘッダー ファイル\object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

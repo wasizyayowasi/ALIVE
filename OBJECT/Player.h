@@ -43,7 +43,6 @@ class Player
 public:
 
 	Player(const char* const filename);
-	Player(int handle);
 	virtual ~Player();
 
 	void Init(LoadObjectInfo info);
@@ -156,8 +155,14 @@ private:
 	//クランクを回す
 	void GoCrankRotationPosition(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 	void CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	/// <summary>
+	/// クランクを回転させるアップデート
+	/// </summary>
 	void CrankRotatinUpdate(float rotZ);
 
+	/// <summary>
+	/// 投擲物との衝突アップデート
+	/// </summary>
 	void BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 private:
@@ -176,11 +181,13 @@ private:
 	/// <summary>
 	/// 指定した2フレームの中心座標を算出する
 	/// </summary>
+	/// <returns>ポジション</returns>
 	VECTOR CenterFramPosition(const char* const LeftFramename, const char* const RightFramename);
 
 	/// <summary>
 	/// 指定したフレームの中心座標を算出する
 	/// </summary>
+	/// <returns>ポジション</returns>
 	VECTOR FramPosition(const char* const framename);
 
 	/// <summary>
@@ -193,10 +200,19 @@ private:
 	/// 度数法から弧度法に変換して返す
 	/// </summary>
 	/// <param name="rot">角度</param>
+	/// /// <returns>ポジション</returns>
 	VECTOR DegreesToRadians(VECTOR rot);
 
+	/// <summary>
+	/// 落ち影の描画
+	/// </summary>
 	void DrawPolygon3D();
 
+	/// <summary>
+	/// 落ち影の頂点のポジションを取得する
+	/// </summary>
+	/// <param name="angle">角度</param>
+	/// <returns>ポジション</returns>
 	VECTOR VertexPosition(float angle);
 
 private:
