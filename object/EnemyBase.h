@@ -7,6 +7,15 @@
 class Aster;
 class ShotManager;
 
+enum class EnemyAnimType {
+	Idle,
+	Walk,
+	Run,
+	Death,
+	Throw,
+	max,
+};
+
 class EnemyBase : public CharacterBase
 {
 public:
@@ -61,13 +70,13 @@ public:
 
 private:
 
-	int fireFrameCount = 0;
-
-	float distanceSize_ = 0.0f;							//敵からプレイヤーの距離
+	float distanceSize_ = 0.0f;						//敵からプレイヤーの距離
 	float innerProduct = 0.0f;						//内積の結果を入れる
 
 	bool isMove_ = false;							//移動中フラグ
 	bool isDetection_ = false;						//プレイヤーを検知したか
+	bool isShot_ = false;
+	bool isThrow_ = false;
 
 	VECTOR frontVec_ = {};							//敵の正面ベクトルを入れる
 	VECTOR pushVec_ = {};

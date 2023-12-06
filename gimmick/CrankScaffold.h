@@ -17,11 +17,13 @@ public:
 	//Õ“Ë”»’è‚ğs‚¤ƒ‚ƒfƒ‹‚ğ’Ç‰Á‚·‚é
 	virtual std::shared_ptr<Model> AddCollModel();
 
+
 private:
 
 	float upVec_ = 0.0f;
 
 	VECTOR initPos_ = {};
+
 
 	std::shared_ptr<ManualCrank> crank_;
 

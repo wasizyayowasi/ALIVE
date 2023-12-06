@@ -186,6 +186,23 @@ VECTOR Model::GetFrameLocalPosition(const char* frameName)
 	return localPos;
 }
 
+void Model::SetAnimationFrame(float value)
+{
+	MV1SetAttachAnimTime(modelHandle_, animNext_.attachNo, value);
+}
+
+bool Model::GetSpecifiedAnimTime(int specifiedTime)
+{
+
+	float currentAnimTime = MV1GetAttachAnimTime(modelHandle_, animNext_.attachNo);
+
+	if (currentAnimTime == specifiedTime) {
+		return true;
+	}
+
+	return false;
+}
+
 //アニメーション情報の初期化
 void Model::ClearAnimData(AnimData& anim)
 {

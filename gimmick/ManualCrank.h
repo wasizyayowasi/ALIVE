@@ -33,6 +33,9 @@ public:
 	//âÒì]ó¶Çê›íËÇ∑ÇÈ
 	void SetRotZ(float rotZ) { rotZ_ = rotZ; }
 
+
+	VECTOR GetStandingPosition() { return standingPos_; }
+
 private:
 
 	float rotZ_ = 0.0f;
@@ -40,6 +43,7 @@ private:
 
 	VECTOR pos_ = {};
 	VECTOR initPos_ = {};
+	VECTOR standingPos_ = {};
 
 	std::shared_ptr<Model> model_;
 

@@ -14,7 +14,8 @@ namespace {
 Shot::Shot(int handle,VECTOR initPos, VECTOR moveVec)
 {
 	model_ = std::make_shared<Model>(handle);
-	model_->SetScale(VGet(50.0f, 50.0f, 50.0f));
+	float scale = 10.0f;
+	model_->SetScale(VGet(scale, scale, scale));
 	pos_ = initPos;
 	initialisePos_ = initPos;
 	moveVec_ = moveVec;
@@ -54,7 +55,7 @@ void Shot::HitCheck(Player& player)
 	bool hit = HitCheck_Sphere_Capsule(pos_, 50.0f, playerPos, VGet(playerPos.x, playerPos.y + playerHeight, playerPos.z),20.0f);
 
 	if (hit) {
-		VECTOR nockBack = moveVec_;
+		VECTOR nockBack = VScale(VNorm(moveVec_),5.0f);
 		player.BulletHitMe(nockBack);
 
 		isEnable_ = false;

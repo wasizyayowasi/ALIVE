@@ -3,10 +3,10 @@
 
 
 namespace {
-	const char* const shot_filename = "data/model/box.mv1";
+	const char* const shot_filename = "data/model/other/mv1/rock.mv1";
 
 	//ìäù±ï®ÇÃë¨ìx
-	constexpr float shot_speed = 5.0f;
+	constexpr float shot_speed = 20.0f;
 }
 
 ShotManager::ShotManager()

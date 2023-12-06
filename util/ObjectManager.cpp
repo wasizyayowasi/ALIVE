@@ -20,10 +20,9 @@
 #include <random>
 
 namespace {
-	const char* const player_Filename = "data/player/player16.mv1";
+	const char* const enemy_Filename = "data/enemy/mv1/enemy.mv1";
 	//仮モデルのファイルパス
 	const char* const switch_filepath = "data/model/switch.mv1";
-	const char* const steelyardfilepath = "data/model/steelyard.mv1";
 	const char* const transparent_filepath = "data/model/other/mv1/ElevatingMovableScaffolding.mv1";
 	const char* const elevator_filepath = "data/model/other/mv1/Elevator.mv1";
 	const char* const crank_filepath = "data/model/manualCrank.mv1";
@@ -63,9 +62,8 @@ namespace {
 ObjectManager::ObjectManager()
 {
 
-	modelHandle_[ObjectType::enemy] = MV1LoadModel(player_Filename);
+	modelHandle_[ObjectType::enemy] = MV1LoadModel(enemy_Filename);
 	modelHandle_[ObjectType::gimmickSwitch] = MV1LoadModel(switch_filepath);
-	modelHandle_[ObjectType::gimmickSteelyard] = MV1LoadModel(steelyardfilepath);
 	modelHandle_[ObjectType::trans] = MV1LoadModel(transparent_filepath);
 	modelHandle_[ObjectType::elevator] = MV1LoadModel(elevator_filepath);
 	modelHandle_[ObjectType::CrankScaffold] = MV1LoadModel(crank_filepath);

@@ -1,6 +1,8 @@
 #include "ManualCrank.h"
 #include "../util/Model.h"
 #include "../util/InputState.h"
+#include "../util/ExternalFile.h"
+#include "../util/Util.h"
 #include "../object/Player.h"
 #include <algorithm>
 #include <math.h>
@@ -20,6 +22,12 @@ ManualCrank::ManualCrank(LoadObjectInfo objInfo)
 	model_->SetPos(objInfo.pos);
 
 	pos_ = objInfo.pos;
+
+	int standingNum = StrUtil::GetNumberFromString(objInfo.name, ".");
+	std::string standingName = StrUtil::GetConcatenateNumAndStrings("StandingPosition", ".", standingNum);
+
+	standingPos_ = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, standingName.c_str()).pos;
+
 }
 
 ManualCrank::~ManualCrank()

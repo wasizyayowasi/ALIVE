@@ -9,6 +9,9 @@ public:
 	DeadPerson(int handle, LoadObjectInfo objInfo, int animNo);
 	virtual ~DeadPerson();
 
+	//‰Šú‰»
+	void Init();
+
 	//XV
 	void Update(Player& player, const InputState& input)override;
 	//•`‰æ
@@ -23,7 +26,8 @@ private:
 
 private:
 
-	int color;
+	int color_ = 0;
+	int animNo_ = 0;
 
 	MV1_COLL_RESULT_POLY_DIM hitDim_ = {};
 

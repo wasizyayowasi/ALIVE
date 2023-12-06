@@ -36,9 +36,6 @@ void CrankScaffold::Update(Player& player, const InputState& input)
 	pos_.y = crank_->GetRotZ()* upVec_ + initPos_.y;
 
 	model_->SetPos(pos_);
-
-
-
 }
 void CrankScaffold::Draw()
 {

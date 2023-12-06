@@ -1,10 +1,16 @@
 #include "Player.h"
+
+#include "../object/DeadPerson.h"
+
 #include "../gimmick/ManualCrank.h"
+
 #include "../util/InputState.h"
 #include "../util/Model.h"
 #include "../util/ExternalFile.h"
 #include "../util/SoundManager.h"
 #include "../util/ObjectManager.h"
+#include "../util/Util.h"
+
 #include<algorithm>
 #include<string>
 
@@ -13,7 +19,7 @@ namespace {
 	constexpr float gravity = -0.4f;
 
 	//ファイルパス
-	const char* const player_Filename = "data/player/temp.mv1";
+	const char* const enemy_Filename = "data/player/mv1/player.mv1";
 
 	//フレームの名前
 	const char* const frame_name = "foot.L";
@@ -52,15 +58,10 @@ void Player::Init(LoadObjectInfo info)
 	//プレイヤー情報の初期化
 	playerInfo_ = ExternalFile::GetInstance().GetPlayerInfo();
 	
-	for (int i = 0; i < static_cast<int>(AnimType::max); i++)
-	{
-		animType_[static_cast<AnimType>(i)] = playerInfo_.animNo_[i];
-	}
-
 	//プレイヤーモデルの生成
-	model_ = make_shared<Model>(player_Filename);
+	model_ = make_shared<Model>(enemy_Filename);
 	//アニメーションの設定
-	model_->SetAnimation(animType_[AnimType::idle], true, false);
+	model_->SetAnimation(static_cast<int>(PlayerAnimType::Idle), true, false);
 	//プレイヤーの大きさの調整
 	model_->SetScale(info.scale);
 	//ポジションの設定
@@ -77,16 +78,10 @@ void Player::Init(LoadObjectInfo info)
 
 void Player::Update(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
-	//移動ベクトルのリセット
-	//status_.moveVec = { 0.0f,0.0f,0.0f };
-
 	//プレイヤーのアニメーション更新
 	model_->Update();
 	
-	MV1RefreshCollInfo(model_->GetModelHandle(), model_->GetColFrameIndex());
-
 	(this->*updateFunc_)(input,objManager);
-
 }
 
 
@@ -104,9 +99,10 @@ void Player::Draw()
 //	DrawLine3D(VAdd(status_.pos, VGet(  0, 0,  au)), VAdd(status_.pos, VGet(  0, status_.height,  au)), 0xff0000);
 //	DrawLine3D(VAdd(status_.pos, VGet(  0, 0, -au)), VAdd(status_.pos, VGet(  0, status_.height, -au)), 0xff0000);
 
-	//DrawSphere3D(VGet(status_.pos.x + 1000, status_.pos.y, status_.pos.z), 16, 32, 0xff0000, 0xff0000, true);
+//	DrawSphere3D(VGet(status_.pos.x + 1000, status_.pos.y, status_.pos.z), 16, 32, 0xff0000, 0xff0000, true);
 
-	DrawFormatString(0, 64, 0x448844, "%.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
+//	DrawFormatString(0, 64, 0x448844, "normal %.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
+//	DrawFormatString(0, 80, 0x448844, "model  %.2f,%.2f,%.2f", model_->GetPos().x, model_->GetPos().y, model_->GetPos().z);
 
 }
 
@@ -135,13 +131,13 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 	if (input.IsTriggered(InputType::creative)) {
 		debugCreativeMode = !debugCreativeMode;
 	}
-
+	
 	if (input.IsTriggered(InputType::activate)) {
 		if (status_.situation.isCanBeCarried) {
 			(this->*carryUpdateFunc_)();
 		}
 		else if (status_.situation.isGimmickCanBeOperated) {
-			updateFunc_ = &Player::CrankUpdate;
+			updateFunc_ = &Player::GoCrankRotationPosition;
 			return;
 		}
 		else {
@@ -153,7 +149,7 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 	status_.situation.isGimmickCanBeOperated = false;
 
 	if (status_.situation.isInTransit) {
-		deadPersonModelPointer_->GetModelPointer()->SetAnimEndFrame(animType_[AnimType::dead]);
+		dynamic_pointer_cast<DeadPerson>(deadPersonModelPointer_)->Init();
 		deadPersonModelPointer_->GetModelPointer()->SetRot(DegreesToRadians(status_.rot));
 		deadPersonModelPointer_->GetModelPointer()->SetPos(FramPosition("hand.R_end"));
 	}
@@ -191,7 +187,7 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 			if (!status_.jump.isJump) {
 				PlayerJump(playerInfo_.jumpPower);
 			}
-			ChangeAnimNo(AnimType::jump, false, 20);
+			ChangeAnimNo(PlayerAnimType::jump, false, 20);
 			updateFunc_ = &Player::JumpUpdate;
 			return;
 		}
@@ -219,13 +215,7 @@ void Player::ChangeAnimIdle()
 {
 	//待機アニメーションに戻す
 	if (!status_.situation.isMoving) {
-
-		if (status_.situation.isInTransit) {
-			ChangeAnimNo(AnimType::carryIdle, true, 20);
-		}
-		else {
-			ChangeAnimNo(AnimType::idle, true, 20);
-		}
+		ChangeAnimNo(PlayerAnimType::Idle, true, 20);
 	}
 }
 
@@ -238,26 +228,16 @@ void Player::MovingUpdate(const InputState& input, std::shared_ptr<ObjectManager
 {
 	
 	float movingSpeed = Move(input);
-
+	
 	//HACK：もっといいアニメーション番号変更があるはず
 	if (movingSpeed != 0.0f) {
 		if (movingSpeed > playerInfo_.walkSpeed) {
 			//アニメーションの変更
-			if (status_.situation.isInTransit) {
-				ChangeAnimNo(AnimType::carryRunning, true, 20);
-			}
-			else {
-				ChangeAnimNo(AnimType::run, true, 20);
-			}
+			ChangeAnimNo(PlayerAnimType::Run, true, 20);
 		}
 		else if (movingSpeed <= playerInfo_.walkSpeed) {
 			//アニメーションの変更
-			if (status_.situation.isInTransit) {
-				ChangeAnimNo(AnimType::carryWalking, true, 20);
-			}
-			else {
-				ChangeAnimNo(AnimType::walk, true, 20);
-			}
+			ChangeAnimNo(PlayerAnimType::Walk, true, 20);
 		}
 	}
 
@@ -371,20 +351,6 @@ void Player::RotationUpdate()
 	model_->SetRot(DegreesToRadians(status_.rot));
 }
 
-//オブジェクトを登る
-void Player::ClimUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
-{
-	if (model_->IsAnimEnd()) {
-		status_.pos = CenterFramPosition("mixamorig:LeftToeBase", "mixamorig:RightToeBase");
-		model_->SetPos(status_.pos);
-
-		status_.animNo = animType_[AnimType::stand];
-		status_.isAnimLoop = false;
-		model_->SetAnimation(status_.animNo, status_.isAnimLoop, true);
-		updateFunc_ = &Player::StandUpdate;
-	}
-}
-
 //HACK:↓汚い、気に食わない
 /// <summary>
 /// 走りジャンプではないときのジャンプ
@@ -411,49 +377,16 @@ void Player::JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 	}
 }
 
-
-//HACK:↓汚い、気に食わない
-/// <summary>
-/// プレイヤーが走っているときのジャンプ
-/// </summary>
-/// <param name="input">外部装置の入力情報を参照する</param>
-void Player::RunningJumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
-{
-	//プレイヤー移動関数
-	Move(input);
-
-	//HACK：変数が仮のまま　+　どうするか悩んでいる
-	//アニメーションの総時間によって、重力を変更する
-	totalAnimFrame_ = model_->GetAnimTotalTime() + 2;
-	runJumpGravity = -(playerInfo_.runningJumpPower * 2 / totalAnimFrame_);
-
-	//空中にいるとき
-	//重力をベクトルに足してポジションに足す
-	if (status_.jump.isJump) {
-		status_.jump.jumpVec += runJumpGravity;
-		status_.pos.y += status_.jump.jumpVec;
-	}
-
-	//ジャンプベクトルが0でジャンプ中ではなかったら
-	//idle状態のアップデートに変更する、アニメーションも変更する
-	if (status_.jump.jumpVec == 0.0f && !status_.jump.isJump) {
-		updateFunc_ = &Player::NormalUpdate;
-		return;
-	}
-}
-
 /// <summary>
 /// プレイヤーの死体に与える情報を作る関数
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
 void Player::DeathUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
-	deathPos_ = status_.pos;				//死んだ場所を残す
-
 	//座るアニメーション以外だったら死ぬアニメーションに変える
-	if (status_.animNo != animType_[AnimType::idleToSitup]) {
+	if (status_.animNo != static_cast<int>(PlayerAnimType::idleToSitup)) {
 		//アニメーションの変更
-		ChangeAnimNo(AnimType::death, false, 20);
+		ChangeAnimNo(PlayerAnimType::Death, false, 20);
 	}
 
 	if (model_->IsAnimEnd()) {
@@ -479,8 +412,11 @@ void Player::DeadPersonGenerater(std::shared_ptr<ObjectManager> objManager)
 {
 	LoadObjectInfo info;
 	info.rot = DegreesToRadians(status_.rot);
-	info.pos = deathPos_;
 	info.scale = scale_;
+
+	int frameNo = MV1SearchFrame(model_->GetModelHandle(), "PlaceToPutTheCorpse");
+	VECTOR putPos = MV1GetFramePosition(model_->GetModelHandle(), frameNo);
+	info.pos = putPos;
 
 	objManager->DeadPersonGenerator(model_->GetModelHandle(),info, status_.animNo);
 }
@@ -494,17 +430,17 @@ void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> o
 	//立ち上がるためのコマンド
 	if (input.IsTriggered(InputType::activate)) {
 		//アニメーションの変更
-		ChangeAnimNo(AnimType::situpToIdle, false, 20);
+		ChangeAnimNo(PlayerAnimType::situpToIdle, false, 20);
 	}
 	
 	//立つ家庭のアニメーションが終わったらidleupdateに変更する
-	if (status_.animNo == animType_[AnimType::situpToIdle] && model_->IsAnimEnd()) {
+	if (status_.animNo == static_cast<int>(PlayerAnimType::situpToIdle) && model_->IsAnimEnd()) {
 		updateFunc_ = &Player::NormalUpdate;
 		status_.situation.isSitting = false;
 		return;
 	}
 
-	if (status_.animNo == animType_[AnimType::situpToIdle]) return;
+	if (status_.animNo == static_cast<int>(PlayerAnimType::situpToIdle)) return;
 
 	//死ぬコマンド
 	if (input.IsTriggered(InputType::death)) {
@@ -525,24 +461,15 @@ void Player::IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager>
 	//座っているフラグを立て、アニメーションループ変数を折る
 	if (!status_.situation.isSitting) {
 		status_.situation.isSitting = true;
-		ChangeAnimNo(AnimType::idleToSitup, false, 20);
+		ChangeAnimNo(PlayerAnimType::idleToSitup, false, 20);
 	}
 
 	//座る過程のアニメーションが終わったら三角座りにする
-	if (status_.animNo == animType_[AnimType::idleToSitup] && model_->IsAnimEnd()) {
+	if (status_.animNo == static_cast<int>(PlayerAnimType::idleToSitup) && model_->IsAnimEnd()) {
 		model_->SetAnimEndFrame(status_.animNo);
 		updateFunc_ = &Player::SitUpdate;
 	}
 
-}
-
-//立ち上がる処理
-void Player::StandUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
-{
-	if (model_->IsAnimEnd()) {
-		updateFunc_ = &Player::NormalUpdate;
-		status_.situation.isClim = false;
-	}
 }
 
 void Player::SetCarryInfo(bool isCarry, shared_ptr<ObjectBase>model) {
@@ -571,12 +498,12 @@ void Player::CarryObjectUpdate()
 //運んでいたオブジェクトを下ろす処理
 void Player::DropOffObjectUpdate()
 {
-	bool isCarryWalking = status_.animNo == animType_[AnimType::carryWalking];
-	bool isCarry = status_.animNo == animType_[AnimType::carryIdle];
-	if ((isCarryWalking || isCarry) && status_.situation.isCanBeCarried) {
+	if (status_.situation.isCanBeCarried) {
 		status_.situation.isCanBeCarried = false;
 		deadPersonModelPointer_->SetIsTransit(false);
-		deadPersonModelPointer_->GetModelPointer()->SetPos(CenterFramPosition("foot.L", "foot.R"));
+		int frameNo = MV1SearchFrame(model_->GetModelHandle(), "PlaceToPutTheCorpse");
+		VECTOR putPos = MV1GetFramePosition(model_->GetModelHandle(), frameNo);
+		deadPersonModelPointer_->GetModelPointer()->SetPos(putPos);
 		deadPersonModelPointer_.reset();
 	}
 
@@ -592,7 +519,6 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 
 	status_.moveVec = VGet(0, 0, 0);
 
-	//VECTOR pos = crank_->GetModelPointer()->GetPos();
 	float rotZ = crank_->GetRotZ();
 
 	if (input.IsPressed(InputType::down)) {
@@ -603,6 +529,11 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 		rotZ = (std::min)(rotZ + 3.0f, 0.0f);
 		CrankRotatinUpdate(rotZ);
 	}
+
+	int naturalNumber = (std::max)(rotZ, -rotZ);
+	int animTime = (naturalNumber % 360) / 3;
+
+	model_->SetAnimationFrame(animTime);
 
 	if (input.IsTriggered(InputType::activate)) {
 		status_.situation.isGimmickCanBeOperated = false;
@@ -620,7 +551,7 @@ void Player::CrankRotatinUpdate(float rotZ) {
 
 	VECTOR pos = MV1GetFramePosition(crank_->GetModelPointer()->GetModelHandle(), frameNo);
 	//クランクのポジションからオブジェクト全体のポジションを引いた距離
-	VECTOR distance = { 0,2.0f,0 };
+	VECTOR distance = { 0,1.8f,0 };
 
 	MATRIX mat = {};
 
@@ -638,6 +569,7 @@ void Player::CrankRotatinUpdate(float rotZ) {
 	MV1SetFrameUserLocalMatrix(crank_->GetModelPointer()->GetModelHandle(), frameNo, mat);
 
 	crank_->SetRotZ(rotZ);
+
 }
 
 //度数法から弧度法に変換した角度を返す
@@ -673,6 +605,28 @@ void Player::BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectMa
 
 }
 
+void Player::GoCrankRotationPosition(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+{
+	VECTOR standPos = crank_->GetStandingPosition();
+	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(status_.pos, standPos);
+
+	if (distanceSize > 3.0f) {
+		VECTOR distance = VNorm(VSub(standPos, status_.pos));
+		VECTOR moveVec = VScale(distance, playerInfo_.walkSpeed);
+		status_.pos = VAdd(status_.pos, moveVec);
+		model_->SetPos(status_.pos);
+	}
+	else {
+		model_->SetPos(standPos);
+		angle_ = -90.0f;
+		status_.rot = VGet(0, angle_, 0);
+		model_->SetRot(DegreesToRadians(status_.rot));
+		ChangeAnimNo(PlayerAnimType::crank, false, 20);
+		updateFunc_ = &Player::CrankUpdate;
+	}
+
+}
+
 void Player::BulletHitMe(VECTOR moveVec)
 {
 	status_.moveVec = moveVec;
@@ -680,9 +634,9 @@ void Player::BulletHitMe(VECTOR moveVec)
 	updateFunc_ = &Player::BulletHitMeUpdate;
 }
 
-void Player::ChangeAnimNo(AnimType type, bool isAnimLoop, int changeTime)
+void Player::ChangeAnimNo(PlayerAnimType type, bool isAnimLoop, int changeTime)
 {
-	status_.animNo = animType_[type];
+	status_.animNo = static_cast<int>(type);
 	status_.isAnimLoop = isAnimLoop;
 	model_->ChangeAnimation(status_.animNo, status_.isAnimLoop, false, changeTime);
 }
@@ -711,7 +665,7 @@ void Player::PlayerJump(float jumpPower) {
 VECTOR Player::CenterFramPosition(const char* const LeftFramename, const char* const RightFramename)
 {
 
-	VECTOR framePosition;
+	VECTOR framePosition = {};
 
 	//指定フレームの座標を取得する。
 	framePosition = model_->GetFrameLocalPosition(LeftFramename);

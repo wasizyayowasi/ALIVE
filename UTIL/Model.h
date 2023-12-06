@@ -111,6 +111,11 @@ public:
 	/// <returns>ç¿ïW</returns>
 	VECTOR GetFrameLocalPosition(const char* frameName);
 
+
+	void SetAnimationFrame(float value);
+
+
+	bool GetSpecifiedAnimTime(int specifiedTime);
 private:
 	struct AnimData {
 		int animNo;

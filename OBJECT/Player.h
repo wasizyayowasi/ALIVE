@@ -129,14 +129,8 @@ private:
 	//回転処理
 	void RotationUpdate();
 
-	//オブジェクトを登る
-	void ClimUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
-
 	//ジャンプ処理
 	void JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
-
-	//走りジャンプ処理
-	void RunningJumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//死亡処理
 	void DeathUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
@@ -153,9 +147,6 @@ private:
 	//座っている途中
 	void IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
-	//立ち上がる
-	void StandUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
-
 	//持ち運ぶ
 	void CarryObjectUpdate();
 
@@ -163,6 +154,7 @@ private:
 	void DropOffObjectUpdate();
 
 	//クランクを回す
+	void GoCrankRotationPosition(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 	void CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 	void CrankRotatinUpdate(float rotZ);
 
@@ -195,7 +187,7 @@ private:
 	/// アニメーションの変更を行う
 	/// </summary>
 	/// <param name="type">アニメーションのタイプ</param>
-	void ChangeAnimNo(AnimType type,bool isAnimLoop,int changeTime);
+	void ChangeAnimNo(PlayerAnimType type,bool isAnimLoop,int changeTime);
 
 	/// <summary>
 	/// 度数法から弧度法に変換して返す
@@ -227,13 +219,9 @@ private:
 	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};						//中間ポイント
 	VECTOR scale_ = {0.0f,0.0f, 0.0f};							//拡縮率
 
-	VECTOR deathPos_ = { 0.0f,0.0f,0.0f };						//死体のポジション
-
-	std::shared_ptr<ObjectBase> deadPersonModelPointer_;		//持ち運ぶ死体のモデルポインタ
 	std::shared_ptr<Model> model_;								//モデルクラスのポインタ
 	std::shared_ptr<ManualCrank> crank_;						//クランククラスのポインタ
-
-	std::unordered_map<AnimType, int> animType_;				
+	std::shared_ptr<ObjectBase> deadPersonModelPointer_;		//持ち運ぶ死体のモデルポインタ
 
 	void(Player::* updateFunc_)(const InputState& input, std::shared_ptr<ObjectManager> objManager);		//メンバ関数ポインタ
 	void(Player::* carryUpdateFunc_)();		//メンバ関数ポインタ

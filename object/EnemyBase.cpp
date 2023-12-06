@@ -29,6 +29,9 @@ namespace {
 
 	//右手のフレーム名
 	const char* const hand_framename = "mixamorig:RightHandIndex2";
+
+	//物を投げているときのアニメーションフレーム
+	constexpr int throw_frame_time = 73;
 }
 
 EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,objInfo)
@@ -41,6 +44,13 @@ EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,
 void EnemyBase::Update(Player& player, const InputState& input)
 {
 
+	//モデルの更新
+	model_->Update();
+
+	if (isThrow_) {
+		return;
+	}
+
 	isDetection_ = false;
 
 	//プレイヤーの座標
@@ -49,11 +59,15 @@ void EnemyBase::Update(Player& player, const InputState& input)
 	//索敵
 	if (!IsThereAnObject(playerPos)) {
 		if (SearchForPlayer(playerPos)) {
-			//プレイヤーを追跡する
-			TrackingUpdate(playerPos);
+			//if (!isThrow_) {
+				//プレイヤーを追跡する
+				TrackingUpdate(playerPos);
+			//}
 		}
 		else {
-			model_->ChangeAnimation(0, true, true, 10);
+			//if (!isThrow_) {
+				model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, true, 10);
+			//}
 		}
 	}
 	else{
@@ -65,9 +79,6 @@ void EnemyBase::Update(Player& player, const InputState& input)
 			RoutingUpdate(player);
 		}
 	}
-
-	//モデルの更新
-	model_->Update();
 
 	if (distanceSize_ < within_reach) {
 		pushVec_ = VScale(VNorm(frontVec_), 10);
@@ -140,7 +151,9 @@ bool EnemyBase::SearchForPlayer(VECTOR playerPos)
 	//敵からプレイヤーの距離が指定範囲より大きかったらreturn
 	if (innerProduct < viewing_angle) {
 		if (distanceSize_ > visible_range) {
-			model_->ChangeAnimation(0, true, false, 20);
+			//if (!isThrow_) {
+				model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, false, 20);
+			//}
 			return false;
 		}
 	}
@@ -231,7 +244,9 @@ bool EnemyBase::DistanceIsWithinRange()
 {
 	//プレイヤーと敵の座標差を見て、
 	if (distanceSize_ < visible_range) {
-		model_->ChangeAnimation(1, true, false, 20);
+		//if (!isThrow_) {
+			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Walk), true, false, 20);
+		//}
 		return true;
 	}
 
@@ -246,11 +261,21 @@ void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos,f
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
 
 	if (distanceSize > 500.0f) {
-		if (++fireFrameCount / 60 == 1) {
-			VECTOR framePos = model_->GetFrameLocalPosition(hand_framename);
-			shotManager->Fire(framePos, playerPos, height);
-			fireFrameCount = 0;
+		if (!isThrow_) {
+			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Throw), false, false, 5);
+			isThrow_ = true;
 		}
 	}
+
+	if (model_->IsAnimEnd()) {
+		isThrow_ = false;
+	}
+
+	if (model_->GetSpecifiedAnimTime(throw_frame_time)) {
+		VECTOR framePos = model_->GetFrameLocalPosition(hand_framename);
+		shotManager->Fire(framePos, playerPos, height);
+		isShot_ = true;
+	}
+
 }
 

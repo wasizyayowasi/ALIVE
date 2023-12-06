@@ -30,7 +30,7 @@
 using namespace std;
 
 namespace {
-	const char* const player_Filename = "data/player/player16.mv1";
+	const char* const enemy_Filename = "data/player/player16.mv1";
 }
 
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),
@@ -149,7 +149,7 @@ void GameMain::ObjectGenerater()
 	auto& loadData = ExternalFile::GetInstance();
 
 	//プレイヤーのインスタンス化
-	player_ = make_shared<Player>(player_Filename);
+	player_ = make_shared<Player>(enemy_Filename);
 	//プレイヤーの初期化
 	player_->Init(loadData.GetSpecifiedInfo("Player").front());
 	//ゲームオブジェクトの生成

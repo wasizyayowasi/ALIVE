@@ -58,14 +58,11 @@ LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(VECTOR objPos, const char* 
 	std::string key = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(name, ".");
 
 	for (auto& specifiedObj : loadGimmickInfo_[key]) {
-
 		if (specifiedObj.name != name) {
 			continue;
 		}
-
 		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(objPos, specifiedObj.pos);
 		if (minDIstance > distanceSize) {
-
 			minDIstance = distanceSize;
 			info = specifiedObj;
 		}
@@ -246,12 +243,6 @@ void ExternalFile::LoadPlayerInfo(const char* const filename)
 	player_.walkSpeed = json_["walkSpeed"];
 	player_.runningSpeed = json_["runningSpeed"];
 
-	int i = 0;
-	for (auto& animNo : json_["animNo"]) {
-		player_.animNo_[i] = animNo;
-		i++;
-	}
-
 	ifs.close();
 
 }
@@ -344,7 +335,6 @@ void ExternalFile::RewritePlayerInfo()
 	   {"rotSpeed",15.0f},
 	   {"walkSpeed",3.0f},
 	   {"runningSpeed",7.0f},
-	   {"animNo", json::array({ 0,1,2,3,4,5,6,7,8,9})},
 	};
 
 	string filename = player["name"];

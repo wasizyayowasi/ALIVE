@@ -5,7 +5,8 @@
 
 namespace {
 	//ƒ‚ƒfƒ‹ƒtƒŒ[ƒ€–¼
-	const char* const coll_frame_death = "Coll";
+	const char* const coll_frame_death = "CollDown";
+	const char* const coll_frame_Sit = "CollSit";
 }
 
 DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : CharacterBase(handle,objInfo)
@@ -14,24 +15,29 @@ DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : Characte
 	model_->SetRot(objInfo.rot);
 	model_->SetScale(objInfo.scale);
 	MV1SetMaterialDifColor(model_->GetModelHandle(), 8, GetColorF(1.0f,0.0f,0.0f,1.0f));
-	model_->SetAnimation(animNo, false, true);
-	model_->SetAnimEndFrame(animNo);
 
 	isCollCheck_ = true;
 
-	switch (static_cast<AnimType>(animNo)) {
-	case AnimType::death:
-		model_->SetCollFrame(coll_frame_death);
-		break;
-	//case AnimType::sit:
-	//	model_->SetCollFrame(coll_frame_Sit);
-	//	break;
-	}
-
+	animNo_ = animNo;
+	Init();
 }
 
 DeadPerson::~DeadPerson()
 {
+}
+
+void DeadPerson::Init()
+{
+	model_->SetAnimation(animNo_, false, true);
+	model_->SetAnimEndFrame(animNo_);
+	switch (static_cast<PlayerAnimType>(animNo_)) {
+	case PlayerAnimType::Death:
+		model_->SetCollFrame(coll_frame_death);
+		break;
+	case PlayerAnimType::idleToSitup:
+		model_->SetCollFrame(coll_frame_Sit);
+		break;
+	}
 }
 
 void DeadPerson::Update(Player& player, const InputState& input)
