@@ -22,7 +22,7 @@ namespace {
 	const char* const enemy_Filename = "data/player/mv1/player.mv1";
 
 	//フレームの名前
-	const char* const frame_name = "foot.L";
+	const char* const frame_name = "hand.R_end";
 
 	//プレイヤーの高さ
 	constexpr float player_hegiht = 130.0f;
@@ -87,6 +87,11 @@ void Player::Draw()
 
 	DrawPolygon3D();
 
+	DrawFormatString(0, 16, 0xffffff, "tar %.2f", targetAngle_);
+	DrawFormatString(0, 32, 0xffffff, "ang %.2f", angle_);
+	DrawFormatString(0, 48, 0xffffff, "dif %.2f", differenceAngle_);
+	DrawFormatString(0, 64, 0xffffff, "rot %.2f,%.2f,%.2f", status_.rot.x, status_.rot.y, status_.rot.z);
+
 //	float au = 20.0f;
 
 //	DrawLine3D(status_.pos, VAdd(status_.pos, VGet(0, status_.height, 0)), 0xff0000);
@@ -108,13 +113,11 @@ void Player::SetPos(VECTOR pos)
 	model_->SetPos(status_.pos);
 }
 
-
 void Player::SetJumpInfo(bool isJump, float jumpVec)
 {
 	status_.jump.isJump = isJump;
 	status_.jump.jumpVec = jumpVec;
 }
-
 
 //HACK:↓汚い、気に食わない
 /// <summary>
@@ -146,8 +149,9 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 
 	if (status_.situation.isInTransit) {
 		dynamic_pointer_cast<DeadPerson>(deadPersonModelPointer_)->Init();
-		deadPersonModelPointer_->GetModelPointer()->SetRot(DegreesToRadians(status_.rot));
-		deadPersonModelPointer_->GetModelPointer()->SetPos(FramPosition("hand.R_end"));
+		deadPersonModelPointer_->GetModelPointer()->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
+		VECTOR framePos = model_->GetFrameLocalPosition(frame_name);
+		deadPersonModelPointer_->GetModelPointer()->SetPos(framePos);
 	}
 	else {
 		status_.situation.isCanBeCarried = false;
@@ -244,11 +248,6 @@ void Player::MovingUpdate(const InputState& input, std::shared_ptr<ObjectManager
 
 	//移動ベクトルを用意する
 	status_.moveVec = VScale(VNorm(status_.moveVec), movingSpeed);
-
-	VECTOR destination = VAdd(status_.pos, status_.moveVec);
-	if (destination.z < -250.0f) {
-		status_.moveVec.z = 0.0f;
-	}
 }
 
 float Player::Move(const InputState& input) {
@@ -302,6 +301,11 @@ float Player::Move(const InputState& input) {
 	//回転処理
 	RotationUpdate();
 
+	VECTOR destination = VAdd(status_.pos, status_.moveVec);
+	if (destination.z < -250.0f) {
+		status_.moveVec.z = 0.0f;
+	}
+
 	return movingSpeed;
 
 }
@@ -344,14 +348,11 @@ void Player::RotationUpdate()
 	}
 
 	//結果をモデルの回転情報として送る
-	model_->SetRot(DegreesToRadians(status_.rot));
+	model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 }
 
 //HACK:↓汚い、気に食わない
-/// <summary>
 /// 走りジャンプではないときのジャンプ
-/// </summary>
-/// <param name="input">外部装置の入力情報を参照する</param>
 void Player::JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	//プレイヤー移動関数
@@ -373,10 +374,7 @@ void Player::JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 	}
 }
 
-/// <summary>
-/// プレイヤーの死体に与える情報を作る関数
-/// </summary>
-/// <param name="input">外部装置の入力情報を参照する</param>
+// プレイヤーの死体に与える情報を作る関数
 void Player::DeathUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	//座るアニメーション以外だったら死ぬアニメーションに変える
@@ -401,13 +399,11 @@ void Player::DeathPersonPostProsessing(std::shared_ptr<ObjectManager> objManager
 	updateFunc_ = &Player::NormalUpdate;
 }
 
-/// <summary>
-/// プレイヤーの死体をvector配列で管理する関数
-/// </summary>
+// プレイヤーの死体をvector配列で管理する関数
 void Player::DeadPersonGenerater(std::shared_ptr<ObjectManager> objManager)
 {
 	LoadObjectInfo info;
-	info.rot = DegreesToRadians(status_.rot);
+	info.rot = MathUtil::VECTORDegreeToRadian(status_.rot);
 	info.scale = scale_;
 
 	int frameNo = MV1SearchFrame(model_->GetModelHandle(), "PlaceToPutTheCorpse");
@@ -417,10 +413,7 @@ void Player::DeadPersonGenerater(std::shared_ptr<ObjectManager> objManager)
 	objManager->DeadPersonGenerator(model_->GetModelHandle(),info, status_.animNo);
 }
 
-/// <summary>
-/// プレイヤーに座るアニメーションをさせる関数
-/// </summary>
-/// <param name="input">外部装置の入力情報を参照する</param>
+// プレイヤーに座るアニメーションをさせる関数
 void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	//立ち上がるためのコマンド
@@ -568,18 +561,6 @@ void Player::CrankRotatinUpdate(float rotZ) {
 
 }
 
-//度数法から弧度法に変換した角度を返す
-VECTOR Player::DegreesToRadians(VECTOR rot)
-{
-	VECTOR storageRot;
-
-	storageRot.x = rot.x * DX_PI_F / 180.0f;
-	storageRot.y = rot.y * DX_PI_F / 180.0f;
-	storageRot.z = rot.z * DX_PI_F / 180.0f;
-
-	return storageRot;
-}
-
 void Player::BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	//重力
@@ -601,22 +582,29 @@ void Player::BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectMa
 
 }
 
+//クランクを回すためにクランクを回すポジションへと移動する
 void Player::GoCrankRotationPosition(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
+	//クランクの立ってほしいポジションを取得する
 	VECTOR standPos = crank_->GetStandingPosition();
+	//立ってほしいポジションとプレイヤーの距離のサイズを取得する
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(status_.pos, standPos);
 
+	//distanceSizeが一定の範囲外だったら
+	//一定の速度で立ってほしいポジションに向かう
 	if (distanceSize > 3.0f) {
 		VECTOR distance = VNorm(VSub(standPos, status_.pos));
 		VECTOR moveVec = VScale(distance, playerInfo_.walkSpeed);
 		status_.pos = VAdd(status_.pos, moveVec);
 		model_->SetPos(status_.pos);
 	}
+	//distanceSizeが一定の範囲内に入ったら
+	//立ってほしいポジションをプレイヤーのポジションとする
 	else {
 		model_->SetPos(standPos);
 		angle_ = -90.0f;
 		status_.rot = VGet(0, angle_, 0);
-		model_->SetRot(DegreesToRadians(status_.rot));
+		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 		ChangeAnimNo(PlayerAnimType::crank, false, 20);
 		updateFunc_ = &Player::CrankUpdate;
 	}
@@ -640,6 +628,7 @@ void Player::ChangeAnimNo(PlayerAnimType type, bool isAnimLoop, int changeTime)
 //プレイヤーの速度設定
 float Player::PlayerSpeed(bool pressedShift)
 {
+	//シフトが押されているかどうか
 	if (pressedShift) {
 		if (debugCreativeMode) {
 			return playerInfo_.runningSpeed * 3;
@@ -657,63 +646,48 @@ void Player::PlayerJump(float jumpPower) {
 	status_.jump.isJump = true;
 }
 
-//二つのフレーム座標の中心を取得する
-VECTOR Player::CenterFramPosition(const char* const LeftFramename, const char* const RightFramename)
-{
-
-	VECTOR framePosition = {};
-
-	//指定フレームの座標を取得する。
-	framePosition = model_->GetFrameLocalPosition(LeftFramename);
-	framePosition = VAdd(framePosition, model_->GetFrameLocalPosition(RightFramename));
-	//二つの座標を足し、2で割り中心を取得する
-	framePosition.x = framePosition.x / 2;
-	framePosition.y = framePosition.y / 2;
-	framePosition.z = framePosition.z / 2;
-
-	return framePosition;
-}
-
-VECTOR Player::FramPosition(const char* const framename)
-{
-
-	VECTOR framePosition;
-
-	//指定フレームの座標を取得する。
-	framePosition = model_->GetFrameLocalPosition(framename);
-
-	return framePosition;
-}
-
+//落ち影を作成、描画
 void Player::DrawPolygon3D()
 {
+	//頂点の数分配列を作る
 	VERTEX3D vertex[7];
+	//三角形を作成する順番を保存する配列
 	WORD index[18];
 
+	//カラー
+	COLOR_U8 difColor = GetColorU8(51, 51, 51, 125);
+	COLOR_U8 spcColor = GetColorU8(0, 0, 0, 0);
+
+	//法線ベクトル
+	VECTOR norm = VGet(0.0f, 1.0f, 0.0f);
+
+	//角度に寄って頂点の位置を変更する
 	float angle = 0.0f;
 
+	//六角形の中心座標を取得
 	vertex[0].pos = VGet(status_.pos.x, roundShadowHeight_, status_.pos.z);
-	vertex[0].norm = VGet(0.0f, 1.0f, 0.0f);
-	vertex[0].dif = GetColorU8(51, 51, 51, 125);
+	vertex[0].norm = norm;
+	vertex[0].dif = difColor;
 	vertex[0].spc = GetColorU8(0, 0, 0, 0);
 	vertex[0].u = 0.0f;
 	vertex[0].v = 0.0f;
 	vertex[0].su = 0.0f;
 	vertex[0].sv = 0.0f;
 
+	//角度ごとの頂点を取得
 	for (int i = 1; i < 7; i++) {
 		vertex[i].pos = VertexPosition(angle);
-		vertex[i].norm = VGet(0.0f, 1.0f, 0.0f);
-		vertex[i].dif = GetColorU8(51, 51, 51, 125);
-		vertex[i].spc = GetColorU8(0, 0, 0, 0);
+		vertex[i].norm = norm;
+		vertex[i].dif = difColor;
+		vertex[i].spc = spcColor;
 		vertex[i].u = 0.0f;
 		vertex[i].v = 0.0f;
 		vertex[i].su = 0.0f;
 		vertex[i].sv = 0.0f;
 		angle += 60.0f;
-
 	}
 
+	//三角形を作成する順番
 	index[0] = 0;
 	index[1] = 1;
 	index[2] = 2;
@@ -736,21 +710,28 @@ void Player::DrawPolygon3D()
 	DrawPolygonIndexed3D(vertex, 7, index, 6, DX_NONE_GRAPH, true);
 }
 
+//プレイヤーの落ち影に使用する頂点を取得
 VECTOR Player::VertexPosition(float angle)
 {
 
 	VECTOR pos = {};
 
+	//度数法を弧度法に変換する
 	float radian = angle * DX_PI_F / 180.0f;
 
+	//角度による座標を取得する
 	pos.x = sin(radian);
 	pos.z = cos(radian);
 	pos.y = 0.0f;
 
+	//ポジションを25倍する(サイズ調整)
 	pos = VScale(pos, 25.0f);
 
+	//プレイヤーのポジションと上記で取得したポジションを足す
 	pos = VAdd(status_.pos, pos);
 
+	//Y座標は線とポリゴンの当たり判定で取得した
+	//一番近いポリゴンのY座標を代入する
 	pos.y = roundShadowHeight_;
 
 	return pos;

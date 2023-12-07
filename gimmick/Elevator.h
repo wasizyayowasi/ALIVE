@@ -24,6 +24,8 @@ public:
 	virtual std::shared_ptr<Model> AddCollModel();
 private:
 
+	int departureTime_ = 0;
+
 	float moveVecY_ = 0.0f;							//Y軸の移動ヴェクトル
 
 	bool isDeparture_ = false;						//エレベーターが出発しているかどうか

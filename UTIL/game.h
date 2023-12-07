@@ -1,5 +1,5 @@
 #pragma once
-#include "DxLib.h"
+#include <DxLib.h>
 
 //ƒQ[ƒ€‘S”Ê‚Ìİ’è
 namespace Game {

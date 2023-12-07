@@ -25,7 +25,7 @@ namespace {
 	const char* const switch_filepath = "data/model/switch.mv1";
 	const char* const transparent_filepath = "data/model/other/mv1/ElevatingMovableScaffolding.mv1";
 	const char* const elevator_filepath = "data/model/other/mv1/Elevator.mv1";
-	const char* const crank_filepath = "data/model/manualCrank.mv1";
+	const char* const crank_filepath = "data/model/other/mv1/crankScaffold.mv1";
 
 	//実際に使う予定のモデルパス
 	//でかいビル
@@ -94,6 +94,10 @@ ObjectManager::ObjectManager()
 	modelHandle_[ObjectType::RedContainer] = MV1LoadModel(RedContainer_filepath);
 	modelHandle_[ObjectType::YellowContainer] = MV1LoadModel(YellowContainer_filepath);
 	modelHandle_[ObjectType::OrangeContainer] = MV1LoadModel(OrangeContainer_filepath);
+
+	for (auto model : modelHandle_) {
+		duplicateModelHandle_[model.first] = MV1DuplicateModel(model.second);
+	}
 
 }
 
@@ -474,7 +478,7 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 				//プレイヤーを中心に円周上でスポーンさせる
 				CircumferencePosition(angle, info.pos, playerPos);
 				//インスタンス化
-				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(modelHandle_[ObjectType::enemy], info));
+				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(duplicateModelHandle_[ObjectType::enemy], info));
 				angle -= 15.0f;
 			}
 		}
@@ -485,7 +489,7 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 			//文字列の最後の数よりもdeathCountが多ければ
 			//エネミーを召喚する
 			if (num <= deathCount) {
-				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(modelHandle_[ObjectType::enemy], loadInfo));
+				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(duplicateModelHandle_[ObjectType::enemy], loadInfo));
 			}
 		}
 	}
@@ -494,23 +498,23 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 //置物生成機
 void ObjectManager::OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
-	objects_[objType].push_front(std::make_shared<OrnamentBase>(modelHandle_[objType], objInfo));
+	objects_[objType].push_front(std::make_shared<OrnamentBase>(duplicateModelHandle_[objType], objInfo));
 }
 
 void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
 	switch (objType) {
 	case ObjectType::trans:
-		objects_[objType].push_front(std::make_shared<TransparentObject>(modelHandle_[objType], objInfo));
+		objects_[objType].push_front(std::make_shared<TransparentObject>(duplicateModelHandle_[objType], objInfo));
 		break;
 	case ObjectType::gimmickSteelyard:
-		objects_[objType].push_front(std::make_shared<Steelyard>(modelHandle_[objType], objInfo));
+		objects_[objType].push_front(std::make_shared<Steelyard>(duplicateModelHandle_[objType], objInfo));
 		break;
 	case ObjectType::elevator:
-		objects_[objType].push_front(std::make_shared<Elevator>(modelHandle_[objType], objInfo));
+		objects_[objType].push_front(std::make_shared<Elevator>(duplicateModelHandle_[objType], objInfo));
 		break;
 	case ObjectType::CrankScaffold:
-		objects_[objType].push_front(std::make_shared<CrankScaffold>(modelHandle_[objType], objInfo));
+		objects_[objType].push_front(std::make_shared<CrankScaffold>(duplicateModelHandle_[objType], objInfo));
 		break;
 	}
 }

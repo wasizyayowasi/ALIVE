@@ -80,12 +80,6 @@ public:
 	void SetMoveVec(VECTOR vector) { status_.moveVec = vector; }
 
 	/// <summary>
-	/// 登れるかの情報を受け取る
-	/// </summary>
-	/// <returns>登れるかのフラグ</returns>
-	void SetClim(bool isClim) { status_.situation.isClim = isClim; }
-
-	/// <summary>
 	/// 持ち運ぶ事が出来るフラグと持ち運ぶモデルのポインタを受け取る
 	/// </summary>
 	void SetCarryInfo(bool isCarry, std::shared_ptr<ObjectBase> model);
@@ -128,19 +122,30 @@ private:
 	//回転処理
 	void RotationUpdate();
 
-	//ジャンプ処理
+	/// <summary>
+	/// 走りジャンプではないときのジャンプ
+	/// </summary>
+	/// <param name="input">外部装置の入力情報を参照する</param>
 	void JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
-	//死亡処理
+	/// <summary>
+	/// プレイヤーの死体に与える情報を作る関数
+	/// </summary>
+	/// <param name="input">外部装置の入力情報を参照する</param>
 	void DeathUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//死体の後処理
 	void DeathPersonPostProsessing(std::shared_ptr<ObjectManager> objManager);
 
-	//死人生成
+	/// <summary>
+	/// プレイヤーの死体をvector配列で管理する関数
+	/// </summary>
 	void DeadPersonGenerater(std::shared_ptr<ObjectManager> objManager);
 
-	//座る
+	/// <summary>
+	/// プレイヤーに座るアニメーションをさせる関数
+	/// </summary>
+	/// <param name="input">外部装置の入力情報を参照する</param>
 	void SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//座っている途中
@@ -179,29 +184,10 @@ private:
 	void PlayerJump(float jumpPower);
 
 	/// <summary>
-	/// 指定した2フレームの中心座標を算出する
-	/// </summary>
-	/// <returns>ポジション</returns>
-	VECTOR CenterFramPosition(const char* const LeftFramename, const char* const RightFramename);
-
-	/// <summary>
-	/// 指定したフレームの中心座標を算出する
-	/// </summary>
-	/// <returns>ポジション</returns>
-	VECTOR FramPosition(const char* const framename);
-
-	/// <summary>
 	/// アニメーションの変更を行う
 	/// </summary>
 	/// <param name="type">アニメーションのタイプ</param>
 	void ChangeAnimNo(PlayerAnimType type,bool isAnimLoop,int changeTime);
-
-	/// <summary>
-	/// 度数法から弧度法に変換して返す
-	/// </summary>
-	/// <param name="rot">角度</param>
-	/// /// <returns>ポジション</returns>
-	VECTOR DegreesToRadians(VECTOR rot);
 
 	/// <summary>
 	/// 落ち影の描画

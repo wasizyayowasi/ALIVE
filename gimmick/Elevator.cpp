@@ -7,7 +7,11 @@
 #include "../object/Player.h"
 
 namespace {
+	//エレベーターが移動する速度
 	constexpr float move_speed = 10.0f;
+
+	//出発する時間
+	constexpr int max_departure_time = 60;
 }
 
 Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInfo)
@@ -16,14 +20,20 @@ Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInf
 
 	targetPos_ = pos_;
 
+	//このエレベーターが何番目のエレベーターかを名前の末尾から取得する
 	int switchNum = StrUtil::GetNumberFromString(objInfo.name, ".");
+	//上記で取得した番号と文字列を連結させた文字列を取得する
 	std::string switchName = StrUtil::GetConcatenateNumAndStrings("ElevatorSwitch", ".", switchNum);
 
+	//上記で連結した名前を持つデータを取得してインスタンス化する
 	switch_ = std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, switchName.c_str()));
 
+	//このエレベーターが何番目のエレベーターかを名前の末尾から取得する
 	int pointNum = StrUtil::GetNumberFromString(objInfo.name, ".");
+	//上記で取得した番号と文字列を連結させた文字列を取得する
 	std::string pointName = StrUtil::GetConcatenateNumAndStrings("ElevatorPoint", ".", pointNum);
 
+	//エレベーターが移動するポジションを取得する
 	for (int i = 0; i < 2; i++) {
 		destinationPos_.push_back(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, pointName.c_str()).pos);
 	}
@@ -37,14 +47,20 @@ Elevator::~Elevator()
 void Elevator::Update(Player& player, const InputState& input)
 {
 	float distance = 0.0f;
+	VECTOR playerPos = player.GetStatus().pos;
 
+	//スイッチの更新
 	switch_->Update(player);
 
-	if (targetPos_.y == pos_.y) {
-		PlayerTracking(player.GetStatus().pos);
+	//
+	if (targetPos_.y == pos_.y && !isDeparture_) {
+		PlayerTracking(playerPos);
 		TargetPosition();
 	}
 	else {
+		if (!switch_->CollResult()) {
+			isDeparture_ = false;
+		}
 		switch_->DeleteHitResult();
 	}
 

@@ -35,17 +35,15 @@ private:
 
 	int makeScreenHandle_ = -1;
 
-	int BGMBarHandle_ = -1;
-	int SEBarHandle_ = -1;
-	int afterProcessingBGMBarGraph_ = -1;
-	int afterProcessingSEBarGraph_ = -1;
+	int circleWhiteHandle_ = -1;
+	int circleGrayHandle_ = -1;
 	int pictogramGraph_ = -1;
 
 	int volumeBGM_ = 0;
 	int volumeSE_ = 0;
 
-	int barHandleWidth_ = 0;
-	int barHandleHeight_ = 0;
+	int circleWhiteHandleWidth_ = 0;
+	int circleWhiteHandleHeight_ = 0;
 
 	int selectNum_ = 0;
 	int time_ = 0;
@@ -58,7 +56,7 @@ private:
 
 	bool BGMPictogramTransInversion_ = false;	//BGMピクトグラム画像のの反転
 	bool SEPictogramTransInversion_ = false;	//SEピクトグラム画像のの反転
-
+	bool windowMode_ = true;					//ウィンドウモード
 
 	//ここも消すかもしれない
 	static constexpr int fadeInterval_ = 30;
@@ -68,7 +66,7 @@ private:
 
 	std::shared_ptr<SceneBase> nextScene_;
 
-	std::string windowModeText_ = "≪  ウィンドモード  ≫";
+	std::string windowModeText_ = "≪  ウィンドウモード  ≫";
 
 	std::shared_ptr<UIItemManager> UIManager_;
 

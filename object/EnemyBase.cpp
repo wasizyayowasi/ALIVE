@@ -59,15 +59,11 @@ void EnemyBase::Update(Player& player, const InputState& input)
 	//索敵
 	if (!IsThereAnObject(playerPos)) {
 		if (SearchForPlayer(playerPos)) {
-			//if (!isThrow_) {
-				//プレイヤーを追跡する
-				TrackingUpdate(playerPos);
-			//}
+			//プレイヤーを追跡する
+			TrackingUpdate(playerPos);
 		}
 		else {
-			//if (!isThrow_) {
-				model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, true, 10);
-			//}
+			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, true, 10);
 		}
 	}
 	else{
@@ -151,9 +147,7 @@ bool EnemyBase::SearchForPlayer(VECTOR playerPos)
 	//敵からプレイヤーの距離が指定範囲より大きかったらreturn
 	if (innerProduct < viewing_angle) {
 		if (distanceSize_ > visible_range) {
-			//if (!isThrow_) {
-				model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, false, 20);
-			//}
+			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, false, 20);
 			return false;
 		}
 	}
@@ -244,9 +238,7 @@ bool EnemyBase::DistanceIsWithinRange()
 {
 	//プレイヤーと敵の座標差を見て、
 	if (distanceSize_ < visible_range) {
-		//if (!isThrow_) {
-			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Walk), true, false, 20);
-		//}
+		model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Walk), true, false, 20);
 		return true;
 	}
 
@@ -255,26 +247,33 @@ bool EnemyBase::DistanceIsWithinRange()
 
 void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos,float height)
 {
-
+	//プレイヤーを検知しているかどうか
+	//検知していなかったらreturn
 	if (!isDetection_) return;
 
+	//プレイヤーのポジションとエネミーの距離のサイズを取得
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
 
-	if (distanceSize > 500.0f) {
+	//距離のサイズがプレイヤーを視認できる距離よりも大きかったら
+	//アニメーションを投げるアニメーションに変更する
+	if (distanceSize > visible_range) {
 		if (!isThrow_) {
 			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Throw), false, false, 5);
 			isThrow_ = true;
 		}
 	}
 
+	//投げるアニメーションが終わったら
+	//投げているという変数をfalseにする
 	if (model_->IsAnimEnd()) {
 		isThrow_ = false;
 	}
 
+	//投げているアニメーションの特定フレームで
+	//弾を発射する
 	if (model_->GetSpecifiedAnimTime(throw_frame_time)) {
 		VECTOR framePos = model_->GetFrameLocalPosition(hand_framename);
 		shotManager->Fire(framePos, playerPos, height);
-		isShot_ = true;
 	}
 
 }

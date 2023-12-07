@@ -338,12 +338,6 @@ void CheckCollisionModel::CheckStepDifference(std::shared_ptr<Player> player)
 			for (int i = 0; i < 3; i++) {
 				if (nowPos.y + 60 < hitPoly.hitDim->Position[i].y) {
 					overHeight = true;
-					if (nowPos.y + playerState.height > hitPoly.hitDim->Position[i].y) {
-						player->SetClim(overHeight);
-					}
-				}
-				else {
-					player->SetClim(false);
 				}
 			}
 
@@ -363,11 +357,6 @@ void CheckCollisionModel::CheckStepDifference(std::shared_ptr<Player> player)
 	if (objectHeightY > 0.0f) {
 		nowPos.y = objectHeightY;
 	}
-
-	if (!overHeight) {
-		player->SetClim(false);
-	}
-
 }
 
 void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)

@@ -66,6 +66,12 @@ public:
 	/// <returns></returns>
 	bool DistanceIsWithinRange();
 
+	/// <summary>
+	/// 敵が弾を撃つ処理
+	/// </summary>
+	/// <param name="shotManager">弾を管理するクラスのポインタ</param>
+	/// <param name="playerPos">プレイヤーのポジション</param>
+	/// <param name="height">プレイヤーの高さ</param>
 	void Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos, float height);
 
 private:
@@ -75,12 +81,10 @@ private:
 
 	bool isMove_ = false;							//移動中フラグ
 	bool isDetection_ = false;						//プレイヤーを検知したか
-	bool isShot_ = false;
-	bool isThrow_ = false;
+	bool isThrow_ = false;							//投げるモーション中か
 
 	VECTOR frontVec_ = {};							//敵の正面ベクトルを入れる
-	VECTOR pushVec_ = {};
-	VECTOR shotMoveVec_ = {};
+	VECTOR pushVec_ = {};							//プレイヤーが敵にぶつかったときに押すベクトル
 
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 

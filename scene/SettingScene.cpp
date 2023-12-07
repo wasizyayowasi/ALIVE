@@ -16,9 +16,8 @@ using namespace std;
 namespace {
 	//フォントの名前
 	const char* const pigumo42_font_name = "ピグモ 0042";
-	const char* const pigumo21_font_name = "ピグモ 0021";
 	//画像ファイルパス
-	const char* const bar_graph_path = "data/graph/bar2.png";
+	const char* const bar_graph_path = "data/graph/circleWhite.png";
 	//移動距離
 	constexpr float pictgram_move_distance = 58.4f;
 
@@ -36,28 +35,16 @@ SettingScene::~SettingScene()
 void SettingScene::Init()
 {
 	//画像の読み込み
-	BGMBarHandle_ = LoadGraph(bar_graph_path);
-	SEBarHandle_ = LoadGraph(bar_graph_path);
+	circleWhiteHandle_ = LoadGraph(bar_graph_path);
+	circleGrayHandle_ = LoadGraph(bar_graph_path);
 	pictogramGraph_ = LoadGraph("data/graph/pict.png");
 
 	//barHandleの画像サイズを取得
-	GetGraphSize(BGMBarHandle_, &barHandleWidth_, &barHandleHeight_);
-
-	afterProcessingBGMBarGraph_ = MakeGraph(barHandleWidth_, barHandleHeight_);
-	afterProcessingSEBarGraph_ = MakeGraph(barHandleWidth_, barHandleHeight_);
-
-	//barHandleの加工後画像を作成
-	GraphFilterRectBlt(BGMBarHandle_, afterProcessingBGMBarGraph_, 0, 0, barHandleWidth_, barHandleHeight_, 0, 0, DX_GRAPH_FILTER_HSB, 0, 0, 0, 0);
-	GraphFilterRectBlt(SEBarHandle_, afterProcessingSEBarGraph_, 0, 0, barHandleWidth_, barHandleHeight_, 0, 0, DX_GRAPH_FILTER_HSB, 0, 0, 0, 0);
-
-	barHandleWidth_ = barHandleWidth_ * 0.8f;
-	barHandleHeight_ = barHandleHeight_ * 0.8f;
+	GetGraphSize(circleWhiteHandle_, &circleWhiteHandleWidth_, &circleWhiteHandleHeight_);
 
 	//現在のボリュームの取得
 	volumeBGM_ = SoundManager::GetInstance().GetBGMVolume();
 	volumeSE_ = SoundManager::GetInstance().GetSEVolume();
-
-	UIManager_ = std::make_shared<UIItemManager>();
 
 	int BGMPictPos = static_cast<int>((static_cast<float>(volumeBGM_) / 250.0f) * 10);
 	int SEPictPos = static_cast<int>((static_cast<float>(volumeSE_) / 250.0f) * 10);
@@ -65,33 +52,38 @@ void SettingScene::Init()
 	BGMPictogramPosX_ = Game::screen_width / 4 + pictgram_move_distance + BGMPictPos * pictgram_move_distance;
 	SEPictogramPosX_ = Game::screen_width / 4 + pictgram_move_distance + SEPictPos * pictgram_move_distance;
 
+	UIManager_ = std::make_shared<UIItemManager>();
+
 	//UI画像の作成
 	//フォントの取得
 	int pigumo42Font = FontsManager::getInstance().GetFontHandle(pigumo42_font_name);
-	int pigumo21Font = FontsManager::getInstance().GetFontHandle(pigumo21_font_name);
 	//フォントを適用した文字列のサイズ取得
-	int windowFontSize = FontsManager::getInstance().GetStringSize("ウィンドウモード", pigumo42_font_name);
+	int windowFontSize = FontsManager::getInstance().GetStringSize("モード", pigumo42_font_name);
 	int BGMFontSize = FontsManager::getInstance().GetStringSize("BGM", pigumo42_font_name);
 	int SEFontSize = FontsManager::getInstance().GetStringSize("SE", pigumo42_font_name);
 
 	//UI画像の作成
-	UIManager_->AddMenu(Game::screen_width / 4, Game::screen_height / 3, 320, 100, "ウィンドウモード", pigumo42Font);
+	UIManager_->AddMenu(Game::screen_width / 4, Game::screen_height / 3, 320, 100, "モード", pigumo42Font);
 	UIManager_->AddMenu(Game::screen_width / 4, Game::screen_height / 2 - 20, 320, 100, "BGM", pigumo42Font);
 	UIManager_->AddMenu(Game::screen_width / 4, Game::screen_height / 3 * 2 - 20, 320, 100, "SE", pigumo42Font);
 	UIManager_->AddMenu(Game::screen_width / 2, Game::screen_height / 4 * 3, 320, 100, "操作設定", pigumo42Font);
 	UIManager_->AddMenu(Game::screen_width / 2, Game::screen_height / 4 * 3 + 40, 320, 100, "戻る", pigumo42Font);
 
-
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
+
+	if (manager_.GetWindowMode()) {
+		windowModeText_ = "≪  ウィンドウモード  ≫";
+	}
+	else {
+		windowModeText_ = "≪  フルスクリーン  ≫";
+	}
 
 }
 
 void SettingScene::End()
 {
-	DeleteGraph(BGMBarHandle_);
-	DeleteGraph(SEBarHandle_);
-	DeleteGraph(afterProcessingBGMBarGraph_);
-	DeleteGraph(afterProcessingSEBarGraph_);
+	DeleteGraph(circleWhiteHandle_);
+	DeleteGraph(circleGrayHandle_);
 	DeleteGraph(pictogramGraph_);
 	DeleteGraph(makeScreenHandle_);
 }
@@ -116,8 +108,11 @@ void SettingScene::Draw()
 	UIManager_->AlphaChangeDraw(selectNum_,fadeValue_);
 
 	//音量バー画像
-	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 2, 1.0f, 0.0f, afterProcessingBGMBarGraph_, true);
-	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3 * 2, 1.0f, 0.0f, afterProcessingSEBarGraph_, true);
+	for (int i = 0; i < 10; i++) {
+		//DrawGraph(i * 72, 360, circleGrayHandle_, true);
+		DrawRotaGraph(365 + i * 29, 360, 1.0, 0, circleGrayHandle_, true, false);
+	}
+
 
 	time_++;
 
@@ -128,13 +123,21 @@ void SettingScene::Draw()
 	DrawRotaGraph(BGMPictogramPosX_, Game::screen_height / 2, 0.3f, BGMPictogramRot_, pictogramGraph_, true, BGMPictogramTransInversion_);
 	DrawRotaGraph(SEPictogramPosX_, Game::screen_height / 3 * 2, 0.3f, SEPictogramRot_, pictogramGraph_, true, SEPictogramTransInversion_);
 
-	DrawFormatString(Game::screen_width / 2, Game::screen_height / 2, 0x00ff00, "%d", selectNum_);
-
 	//現在の画面モードを表示
 	int pigumo42 = FontsManager::getInstance().GetFontHandle(pigumo42_font_name);
 	int windowModeFontSize = FontsManager::getInstance().GetStringSize(windowModeText_.c_str(), pigumo42_font_name);
 
+	int alpha = 150;
+
+	if (selectNum_ == 0) {
+		alpha = 250;
+	}
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 	DrawStringFToHandle(Game::screen_width / 2 - windowModeFontSize / 2, Game::screen_height / 3, windowModeText_.c_str(), 0xffffff, pigumo42);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	DrawLine(Game::screen_width / 2, 0, Game::screen_width / 2, Game::screen_height, 0xff0000);
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
@@ -197,8 +200,6 @@ void SettingScene::BGMUpdate(const InputState& input)
 
 	int BGMPictPos = static_cast<int>((static_cast<float>(volumeBGM_) / 250.0f) * 10);
 
-	GraphFilterRectBlt(BGMBarHandle_, afterProcessingBGMBarGraph_, 0, 0, BGMPictPos * 73, barHandleHeight_, 0, 0, DX_GRAPH_FILTER_HSB, 0, 100, 100, 255);
-
 	//音量の変更
 	SoundManager::GetInstance().SetBGMVolume(volumeBGM_);
 	
@@ -215,7 +216,6 @@ void SettingScene::SEUpdate(const InputState& input)
 	}
 
 	int SEPictPos = static_cast<int>((static_cast<float>(volumeSE_) / 250.0f) * 10);
-	GraphFilterRectBlt(SEBarHandle_, afterProcessingSEBarGraph_, 0, 0, SEPictPos * 73, barHandleHeight_, 0, 0, DX_GRAPH_FILTER_HSB, 0, 100, 100, 255);
 
 	//音量の変更
 	SoundManager::GetInstance().SetSEVolume(volumeSE_);
@@ -225,12 +225,12 @@ void SettingScene::SEUpdate(const InputState& input)
 void SettingScene::ChangeWindowUpdate(const InputState& input)
 {
 	if (input.IsTriggered(InputType::left)) {
-		windowModeText_ = "≪  ウィドウモード  ≫";
-		ChangeWindowMode(true);
+		windowModeText_ = "≪  ウィンドウモード  ≫";
+		manager_.ChangeWindowMode(true);
 	}
 	if (input.IsTriggered(InputType::right)) {
 		windowModeText_ = "≪  フルスクリーン  ≫";
-		ChangeWindowMode(false);
+		manager_.ChangeWindowMode(false);
 	}
 }
 

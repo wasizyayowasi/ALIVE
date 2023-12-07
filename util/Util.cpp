@@ -13,6 +13,24 @@ namespace MathUtil
 		return VSize(distance);
 	}
 
+	//VECTOR型、度数法を弧度法に変換する
+	VECTOR VECTORDegreeToRadian(VECTOR rot)
+	{
+		rot.x = rot.x * DX_PI_F / 180.0f;
+		rot.y = rot.y * DX_PI_F / 180.0f;
+		rot.z = rot.z * DX_PI_F / 180.0f;
+
+		return rot;
+	}
+
+	//float型、度数法を弧度法に変換する
+	float DegreeToRadian(float angle)
+	{
+		angle = angle * DX_PI_F / 180.0f;
+
+		return angle;
+	}
+
 }
 
 namespace StrUtil

@@ -6,6 +6,12 @@ namespace MathUtil
 {
 	//二点間の距離のサイズを取得する
 	float GetSizeOfDistanceTwoPoints(VECTOR pos, VECTOR targetPos);
+
+	//VECTOR型、度数法を弧度法に変換する
+	VECTOR VECTORDegreeToRadian(VECTOR rot);
+
+	//float型、度数法を弧度法に変換する
+	float DegreeToRadian(float angle);
 }
 
 namespace StrUtil 
