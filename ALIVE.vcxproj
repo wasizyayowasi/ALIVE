@@ -147,6 +147,7 @@
     <ClCompile Include="gimmick\CrankScaffold.cpp" />
     <ClCompile Include="gimmick\TransparentObject.cpp" />
     <ClCompile Include="gimmick\ManualCrank.cpp" />
+    <ClCompile Include="gimmick\Lever.cpp" />
     <ClCompile Include="object\Shot.cpp" />
     <ClCompile Include="object\ShotManager.cpp" />
     <ClCompile Include="util\Tutorial.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="gimmick\CrankScaffold.h" />
     <ClInclude Include="gimmick\TransparentObject.h" />
     <ClInclude Include="gimmick\ManualCrank.h" />
+    <ClInclude Include="gimmick\Lever.h" />
     <ClInclude Include="object\Shot.h" />
     <ClInclude Include="object\ShotManager.h" />
     <ClInclude Include="util\Tutorial.h" />

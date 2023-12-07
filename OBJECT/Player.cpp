@@ -87,10 +87,10 @@ void Player::Draw()
 
 	DrawPolygon3D();
 
-	DrawFormatString(0, 16, 0xffffff, "tar %.2f", targetAngle_);
-	DrawFormatString(0, 32, 0xffffff, "ang %.2f", angle_);
-	DrawFormatString(0, 48, 0xffffff, "dif %.2f", differenceAngle_);
-	DrawFormatString(0, 64, 0xffffff, "rot %.2f,%.2f,%.2f", status_.rot.x, status_.rot.y, status_.rot.z);
+//	DrawFormatString(0, 16, 0xffffff, "tar %.2f", targetAngle_);
+//	DrawFormatString(0, 32, 0xffffff, "ang %.2f", angle_);
+//	DrawFormatString(0, 48, 0xffffff, "dif %.2f", differenceAngle_);
+//	DrawFormatString(0, 64, 0xffffff, "rot %.2f,%.2f,%.2f", status_.rot.x, status_.rot.y, status_.rot.z);
 
 //	float au = 20.0f;
 
@@ -102,7 +102,7 @@ void Player::Draw()
 
 //	DrawSphere3D(VGet(status_.pos.x + 1000, status_.pos.y, status_.pos.z), 16, 32, 0xff0000, 0xff0000, true);
 
-//	DrawFormatString(0, 64, 0x448844, "normal %.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
+	DrawFormatString(0, 64, 0xffffff, "normal %.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
 //	DrawFormatString(0, 80, 0x448844, "model  %.2f,%.2f,%.2f", model_->GetPos().x, model_->GetPos().y, model_->GetPos().z);
 
 }

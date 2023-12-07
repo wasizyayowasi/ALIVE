@@ -5,6 +5,7 @@
 #include <vector>
 
 class Switch;
+class Lever;
 class Model;
 
 class Elevator : public GimmickBase
@@ -17,7 +18,8 @@ public:
 	void Update(Player& player, const InputState& input)override;
 	void Draw();
 
-	void PlayerTracking(VECTOR playerPos);
+	void Move();
+
 	void TargetPosition();
 
 	//衝突判定を行うモデルを追加する
@@ -32,8 +34,8 @@ private:
 
 	VECTOR targetPos_ = {};							//現在向かっているポジション
 
-	std::vector<VECTOR> destinationPos_;			//目的地のポジション
-
 	std::shared_ptr<Switch> switch_;
+
+	std::vector<std::shared_ptr<Lever>> levers_;
 };
 
