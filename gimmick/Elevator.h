@@ -8,6 +8,14 @@ class Switch;
 class Lever;
 class Model;
 
+enum class ElevatorAnimType {
+	openIdle,
+	closeIdle,
+	open,
+	close,
+	max,
+};
+
 class Elevator : public GimmickBase
 {
 public:

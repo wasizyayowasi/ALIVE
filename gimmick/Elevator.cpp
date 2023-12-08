@@ -42,6 +42,9 @@ Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInf
 		VECTOR stopPoint = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, pointName.c_str()).pos;
 		levers_.push_back(std::make_shared<Lever>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, leverName.c_str()), stopPoint));
 	}
+
+	model_->SetAnimation(static_cast<int>(ElevatorAnimType::openIdle), true, false);
+
 }
 
 Elevator::~Elevator()
@@ -52,6 +55,8 @@ void Elevator::Update(Player& player, const InputState& input)
 {
 	VECTOR playerPos = player.GetStatus().pos;
 
+	model_->Update();
+
 	//スイッチの更新
 	switch_->Update(player);
 
@@ -60,10 +65,15 @@ void Elevator::Update(Player& player, const InputState& input)
 	}
 
 	for (auto lever : levers_) {
-		if (input.IsTriggered(InputType::activate)) {
-			if (lever->CollCheck(playerPos)) {
-				targetPos_ = lever->GetElevatorStopPoint();
-			}
+		if (lever->CollCheck(playerPos)) {
+			player.SetLeverPointer(lever);
+		}
+	}
+
+	for (auto lever : levers_) {
+		if (lever->GetRotZ() == lever->GetMaxRotZ()) {
+			targetPos_ = lever->GetElevatorStopPoint();
+			model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 		}
 	}
 
@@ -78,7 +88,20 @@ void Elevator::Update(Player& player, const InputState& input)
 		switch_->DeleteHitResult();
 	}
 
-	Move();
+	if (model_->IsAnimEnd()) {
+		Move();
+	}
+
+	VECTOR playerTopPos = VGet(playerPos.x, playerPos.y + player.GetStatus().height, playerPos.z);
+	auto result = MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, playerTopPos, 30.0f);
+
+	if (result.HitNum > 0) {
+		playerPos.y = result.Dim->Position->y;
+		player.SetPos(playerPos);
+	}
+
+	MV1CollResultPolyDimTerminate(result);
+
 
 }
 
@@ -117,6 +140,7 @@ void Elevator::Move()
 
 	if (distance < 3.0f) {
 		pos_ = targetPos_;
+		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, 10);
 	}
 	else {
 		pos_.y += moveVecY_;
@@ -139,6 +163,7 @@ void Elevator::TargetPosition()
 			if (maxSize < distanceSize) {
 				maxSize = distanceSize;
 				targetPos_ = stopPos;
+				model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 			}
 		}
 		isDeparture_ = true;

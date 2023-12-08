@@ -19,7 +19,23 @@ public:
 
 	VECTOR GetElevatorStopPoint() { return elevatorStopPosition_; }
 
+	void UndoRotation(float rotZ);
+
+	std::shared_ptr<Model> GetModelPointer() { return model_; }
+
+	float GetRotZ() { return rotZ_; }
+
+	void SetRotZ(float rotZ) { rotZ_ = rotZ; }
+
+	float GetMaxRotZ();
+
+	void SetOperate(bool isOperate);
+
 private:
+
+	float rotZ_ = -40.0f;
+
+	bool isOperated_ = false;
 
 	VECTOR pos_ = {};
 	VECTOR elevatorStopPosition_ = {};

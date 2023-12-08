@@ -24,7 +24,7 @@ namespace {
 	//仮モデルのファイルパス
 	const char* const switch_filepath = "data/model/switch.mv1";
 	const char* const transparent_filepath = "data/model/other/mv1/ElevatingMovableScaffolding.mv1";
-	const char* const elevator_filepath = "data/model/other/mv1/Elevator.mv1";
+	const char* const elevator_filepath = "data/model/other/mv1/Elevator1.mv1";
 	const char* const crank_filepath = "data/model/other/mv1/crankScaffold.mv1";
 
 	//実際に使う予定のモデルパス

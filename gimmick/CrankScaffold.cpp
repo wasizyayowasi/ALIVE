@@ -30,7 +30,7 @@ void CrankScaffold::Update(Player& player, const InputState& input)
 {
 
 	if (crank_->HitCollPlayer(player)) {
-		player.SetGimmickModelPointer(crank_);
+		player.SetCrankPointer(crank_);
 	}
 
 	pos_.y = crank_->GetRotZ()* upVec_ + initPos_.y;

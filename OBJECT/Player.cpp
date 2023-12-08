@@ -3,6 +3,7 @@
 #include "../object/DeadPerson.h"
 
 #include "../gimmick/ManualCrank.h"
+#include "../gimmick/Lever.h"
 
 #include "../util/InputState.h"
 #include "../util/Model.h"
@@ -61,6 +62,9 @@ void Player::Init(LoadObjectInfo info)
 	//プレイヤーの大きさの調整
 	model_->SetScale(info.scale);
 	//ポジションの設定
+
+	info.pos = VGet(0, 41, 0);
+
 	model_->SetPos(info.pos);
 	status_.pos = info.pos;
 	//回転率の設定
@@ -136,7 +140,13 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 			(this->*carryUpdateFunc_)();
 		}
 		else if (status_.situation.isGimmickCanBeOperated) {
-			updateFunc_ = &Player::GoCrankRotationPosition;
+			if (crank_ != nullptr) {
+				updateFunc_ = &Player::GoCrankRotationPosition;
+			}
+			else if (lever_ != nullptr) {
+				updateFunc_ = &Player::LeverUpdate;
+				lever_->SetOperate(true);
+			}
 			return;
 		}
 		else {
@@ -466,8 +476,14 @@ void Player::SetCarryInfo(bool isCarry, shared_ptr<ObjectBase>model) {
 	deadPersonModelPointer_ = model;
 }
 
-void Player::SetGimmickModelPointer(std::shared_ptr<ManualCrank> crank) {
+void Player::SetCrankPointer(std::shared_ptr<ManualCrank> crank) {
 	crank_ = crank;
+	status_.situation.isGimmickCanBeOperated = true;
+}
+
+void Player::SetLeverPointer(std::shared_ptr<Lever> lever)
+{
+	lever_ = lever;
 	status_.situation.isGimmickCanBeOperated = true;
 }
 
@@ -511,12 +527,12 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 	float rotZ = crank_->GetRotZ();
 
 	if (input.IsPressed(InputType::down)) {
-		rotZ = (std::max)(rotZ - 3.0f, -630.0f);
-		CrankRotatinUpdate(rotZ);
+		rotZ = (std::max)(rotZ - 3.0f, crank_->GetMaxRotZ());
+		CrankRotationUpdate(rotZ);
 	}
 	else if (input.IsPressed(InputType::up)) {
 		rotZ = (std::min)(rotZ + 3.0f, 0.0f);
-		CrankRotatinUpdate(rotZ);
+		CrankRotationUpdate(rotZ);
 	}
 
 	int naturalNumber = (std::max)(rotZ, -rotZ);
@@ -532,7 +548,7 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 
 }
 
-void Player::CrankRotatinUpdate(float rotZ) {
+void Player::CrankRotationUpdate(float rotZ) {
 
 	float radian = rotZ * DX_PI_F / 180.0f;
 
@@ -580,6 +596,45 @@ void Player::BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectMa
 		updateFunc_ = &Player::NormalUpdate;
 	}
 
+}
+
+void Player::LeverUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+{
+
+	float rotZ = lever_->GetRotZ();
+
+	if (input.IsPressed(InputType::left)) {
+		rotZ = (std::max)(rotZ - 3.0f, -lever_->GetMaxRotZ());
+		LeverRotationUpdate(rotZ);
+	}
+	if (input.IsPressed(InputType::right)) {
+		rotZ = (std::min)(rotZ + 3.0f, lever_->GetMaxRotZ());
+		LeverRotationUpdate(rotZ);
+	}
+
+	if (input.IsTriggered(InputType::activate)) {
+		status_.situation.isGimmickCanBeOperated = false;
+		lever_->SetOperate(false);
+		lever_.reset();
+		updateFunc_ = &Player::NormalUpdate;
+	}
+}
+
+void Player::LeverRotationUpdate(float rotZ)
+{
+	float radian = rotZ * DX_PI_F / 180.0f;
+
+	int frameNo = MV1SearchFrame(lever_->GetModelPointer()->GetModelHandle(), "Lever");
+
+	VECTOR pos = MV1GetFramePosition(lever_->GetModelPointer()->GetModelHandle(), frameNo);
+
+	MATRIX mat = {};
+
+	mat = MGetRotX(radian);
+
+	MV1SetFrameUserLocalMatrix(lever_->GetModelPointer()->GetModelHandle(), frameNo, mat);
+
+	lever_->SetRotZ(rotZ);
 }
 
 //クランクを回すためにクランクを回すポジションへと移動する

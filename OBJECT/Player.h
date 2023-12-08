@@ -12,6 +12,7 @@ class Model;
 class ObjectManager;
 class ObjectBase;
 class ManualCrank;
+class Lever;
 
 struct JumpInfo {
 	float jumpVec = 0.0f;					//ジャンプベクトル
@@ -98,7 +99,9 @@ public:
 	/// ManualCrankのポインタを取得する
 	/// </summary>
 	/// <param name="crank"></param>
-	void SetGimmickModelPointer(std::shared_ptr<ManualCrank> crank);
+	void SetCrankPointer(std::shared_ptr<ManualCrank> crank);
+
+	void SetLeverPointer(std::shared_ptr<Lever> lever);
 
 	std::shared_ptr<Model> GetModelPointer() { return model_; }
 
@@ -163,12 +166,16 @@ private:
 	/// <summary>
 	/// クランクを回転させるアップデート
 	/// </summary>
-	void CrankRotatinUpdate(float rotZ);
+	void CrankRotationUpdate(float rotZ);
 
 	/// <summary>
 	/// 投擲物との衝突アップデート
 	/// </summary>
 	void BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+
+	//レバーを倒す
+	void LeverUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	void LeverRotationUpdate(float rotZ);
 
 private:
 	/// <summary>
@@ -223,6 +230,7 @@ private:
 
 	std::shared_ptr<Model> model_;								//モデルクラスのポインタ
 	std::shared_ptr<ManualCrank> crank_;						//クランククラスのポインタ
+	std::shared_ptr<Lever> lever_;								//クランククラスのポインタ
 	std::shared_ptr<ObjectBase> deadPersonModelPointer_;		//持ち運ぶ死体のモデルポインタ
 
 	void(Player::* updateFunc_)(const InputState& input, std::shared_ptr<ObjectManager> objManager);		//メンバ関数ポインタ
