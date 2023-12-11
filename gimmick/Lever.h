@@ -5,6 +5,12 @@
 
 class Model;
 
+enum class AnimType {
+	on,
+	off,
+	max,
+};
+
 class Lever
 {
 public:
@@ -19,23 +25,17 @@ public:
 
 	VECTOR GetElevatorStopPoint() { return elevatorStopPosition_; }
 
-	void UndoRotation(float rotZ);
-
 	std::shared_ptr<Model> GetModelPointer() { return model_; }
 
-	float GetRotZ() { return rotZ_; }
+	void OnAnimation();
 
-	void SetRotZ(float rotZ) { rotZ_ = rotZ; }
+	void OffAnimation();
 
-	float GetMaxRotZ();
-
-	void SetOperate(bool isOperate);
+	bool IsOn() { return isOn_; }
 
 private:
 
-	float rotZ_ = -40.0f;
-
-	bool isOperated_ = false;
+	bool isOn_ = false;
 
 	VECTOR pos_ = {};
 	VECTOR elevatorStopPosition_ = {};

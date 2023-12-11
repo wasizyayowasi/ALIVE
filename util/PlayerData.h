@@ -9,6 +9,7 @@ enum class PlayerAnimType {
 	Death,			//€‚Ê
 	idleToSitup,	//idleó‘Ô‚©‚çÀ‚é
 	situpToIdle,	//À‚Á‚Ä‚¢‚éó‘Ô‚©‚çidle
+	LeverOn,		//ƒŒƒo[‚ğ‹N“®‚·‚é
 	max
 };
 

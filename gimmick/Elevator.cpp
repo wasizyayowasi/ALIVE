@@ -71,9 +71,12 @@ void Elevator::Update(Player& player, const InputState& input)
 	}
 
 	for (auto lever : levers_) {
-		if (lever->GetRotZ() == lever->GetMaxRotZ()) {
-			targetPos_ = lever->GetElevatorStopPoint();
-			model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
+		float size = MathUtil::GetSizeOfDistanceTwoPoints(targetPos_, lever->GetElevatorStopPoint());
+		if (size != 0.0f) {
+			if (lever->IsOn()) {
+				targetPos_ = lever->GetElevatorStopPoint();
+				model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
+			}
 		}
 	}
 
@@ -101,7 +104,6 @@ void Elevator::Update(Player& player, const InputState& input)
 	}
 
 	MV1CollResultPolyDimTerminate(result);
-
 
 }
 

@@ -63,8 +63,6 @@ void Player::Init(LoadObjectInfo info)
 	model_->SetScale(info.scale);
 	//ポジションの設定
 
-	info.pos = VGet(0, 41, 0);
-
 	model_->SetPos(info.pos);
 	status_.pos = info.pos;
 	//回転率の設定
@@ -144,8 +142,9 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 				updateFunc_ = &Player::GoCrankRotationPosition;
 			}
 			else if (lever_ != nullptr) {
+				ChangeAnimNo(PlayerAnimType::LeverOn, false, 10);
+				lever_->OnAnimation();
 				updateFunc_ = &Player::LeverUpdate;
-				lever_->SetOperate(true);
 			}
 			return;
 		}
@@ -600,41 +599,9 @@ void Player::BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectMa
 
 void Player::LeverUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
-
-	float rotZ = lever_->GetRotZ();
-
-	if (input.IsPressed(InputType::left)) {
-		rotZ = (std::max)(rotZ - 3.0f, -lever_->GetMaxRotZ());
-		LeverRotationUpdate(rotZ);
-	}
-	if (input.IsPressed(InputType::right)) {
-		rotZ = (std::min)(rotZ + 3.0f, lever_->GetMaxRotZ());
-		LeverRotationUpdate(rotZ);
-	}
-
-	if (input.IsTriggered(InputType::activate)) {
-		status_.situation.isGimmickCanBeOperated = false;
-		lever_->SetOperate(false);
-		lever_.reset();
+	if (!lever_->IsOn()) {
 		updateFunc_ = &Player::NormalUpdate;
 	}
-}
-
-void Player::LeverRotationUpdate(float rotZ)
-{
-	float radian = rotZ * DX_PI_F / 180.0f;
-
-	int frameNo = MV1SearchFrame(lever_->GetModelPointer()->GetModelHandle(), "Lever");
-
-	VECTOR pos = MV1GetFramePosition(lever_->GetModelPointer()->GetModelHandle(), frameNo);
-
-	MATRIX mat = {};
-
-	mat = MGetRotX(radian);
-
-	MV1SetFrameUserLocalMatrix(lever_->GetModelPointer()->GetModelHandle(), frameNo, mat);
-
-	lever_->SetRotZ(rotZ);
 }
 
 //クランクを回すためにクランクを回すポジションへと移動する

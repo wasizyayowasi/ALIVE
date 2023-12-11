@@ -175,7 +175,6 @@ private:
 
 	//ƒŒƒo[‚ğ“|‚·
 	void LeverUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
-	void LeverRotationUpdate(float rotZ);
 
 private:
 	/// <summary>

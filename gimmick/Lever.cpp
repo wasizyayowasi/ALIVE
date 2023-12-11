@@ -3,8 +3,6 @@
 
 namespace {
 	const char* const filename = "data/model/other/mv1/Lever.mv1";
-
-	constexpr float max_rot_z = 40.0f;
 }
 
 Lever::Lever(LoadObjectInfo info, VECTOR stopPos)
@@ -29,11 +27,8 @@ void Lever::Update()
 {
 	model_->Update();
 
- 	if (!isOperated_) {
-		if (rotZ_ != -max_rot_z) {
-			rotZ_ = (std::max)(rotZ_ - 3.0f, -max_rot_z);
-			UndoRotation(rotZ_);
-		}
+	if (model_->IsAnimEnd()) {
+		OffAnimation();
 	}
 }
 
@@ -54,27 +49,14 @@ bool Lever::CollCheck(VECTOR playerPos)
 	return false;
 }
 
-void Lever::UndoRotation(float rotZ)
+void Lever::OnAnimation()
 {
-	float radian = rotZ * DX_PI_F / 180.0f;
-
-	int frameNo = MV1SearchFrame(model_->GetModelHandle(), "Lever");
-
-	VECTOR pos = MV1GetFramePosition(model_->GetModelHandle(), frameNo);
-
-	MATRIX mat = {};
-
-	mat = MGetRotX(radian);
-
-	MV1SetFrameUserLocalMatrix(model_->GetModelHandle(), frameNo, mat);
+	model_->ChangeAnimation(static_cast<int>(AnimType::on), false, false, 10);
+	isOn_ = true;
 }
 
-float Lever::GetMaxRotZ()
+void Lever::OffAnimation()
 {
-	return max_rot_z;
-}
-
-void Lever::SetOperate(bool isOperate)
-{
-	isOperated_ = isOperate;
+	model_->ChangeAnimation(static_cast<int>(AnimType::off), false, false, 10);
+	isOn_ = false;
 }
