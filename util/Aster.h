@@ -3,46 +3,50 @@
 #include <unordered_map>
 #include <list>
 
-enum class MasuMode {
-	normalMode,				//通常モード
-	doneMode,				//済みモード
-	blockadeMode,			//封鎖モード
-};
 
-enum class Direction {
-	left,					//左
-	topLeft,				//左上
-	top,					//上
-	topRight,				//右上
-	right,					//右
-	bottomRight,			//右下
-	bottom,					//下
-	bottomLeft,				//左下
-};
-
-struct MasuState {
-	VECTOR centerPos;		//中心座標
-	MasuMode masuMode;		//升のモード
-	int x;					//2次元配列のX
-	int z;					//2次元配列のY
-};
-
-struct Score {
-	int moveCost;			//移動コスト
-	int estimationCost;		//推定コスト
-	int score;				//プレイヤーを追跡するうえで得点を付ける
-	int currentIndex;	//移動先のインデックス
-	int destinationIndex;	//移動先のインデックス
-	Direction dir;			//方角
-};
-
-struct DesinationState {
-	int index;
-	int score;
-};
 
 class Aster
 {
+private:
+
+	enum class MasuMode {
+		normalMode,				//通常モード
+		doneMode,				//済みモード
+		blockadeMode,			//封鎖モード
+	};
+
+	enum class Direction {
+		left,					//左
+		topLeft,				//左上
+		top,					//上
+		topRight,				//右上
+		right,					//右
+		bottomRight,			//右下
+		bottom,					//下
+		bottomLeft,				//左下
+	};
+
+	struct MasuState {
+		VECTOR centerPos;		//中心座標
+		MasuMode masuMode;		//升のモード
+		int x;					//2次元配列のX
+		int z;					//2次元配列のY
+	};
+
+	struct Score {
+		int moveCost;			//移動コスト
+		int estimationCost;		//推定コスト
+		int score;				//プレイヤーを追跡するうえで得点を付ける
+		int currentIndex;		//移動先のインデックス
+		int destinationIndex;	//移動先のインデックス
+		Direction dir;			//方角
+	};
+
+	struct DesinationState {
+		int index;
+		int score;
+	};
+
 public:
 	Aster(VECTOR pos);
 	virtual ~Aster();

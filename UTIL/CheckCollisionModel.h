@@ -11,18 +11,20 @@ class ObjectManager;
 
 constexpr int max_hit_coll = 2048;
 
-struct CollModelState {
-	MV1_COLL_RESULT_POLY_DIM hitDim;
-	std::shared_ptr<Model> model;
-};
-
-struct CollResultPoly {
-	MV1_COLL_RESULT_POLY* hitDim;
-	std::shared_ptr<Model> model;
-};
-
 class CheckCollisionModel
 {
+private:
+
+	struct CollModelState {
+		MV1_COLL_RESULT_POLY_DIM hitDim;
+		std::shared_ptr<Model> model;
+	};
+
+	struct CollResultPoly {
+		MV1_COLL_RESULT_POLY* hitDim;
+		std::shared_ptr<Model> model;
+	};
+
 public:
 
 	//コンストラクタ

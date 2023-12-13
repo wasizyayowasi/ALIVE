@@ -8,16 +8,18 @@ class Switch;
 class Lever;
 class Model;
 
-enum class ElevatorAnimType {
-	openIdle,
-	closeIdle,
-	open,
-	close,
-	max,
-};
-
 class Elevator : public GimmickBase
 {
+private:
+
+	enum class ElevatorAnimType {
+		openIdle,
+		closeIdle,
+		open,
+		close,
+		max,
+	};
+
 public:
 	//コンストラクタ
 	Elevator(int handle, LoadObjectInfo objInfo);
@@ -29,6 +31,11 @@ public:
 	//描画
 	void Draw();
 
+	//衝突判定を行うモデルを追加する
+	virtual std::shared_ptr<Model> AddCollModel();
+
+private:
+
 	/// <summary>
 	/// エレベーターを移動させる
 	/// </summary>
@@ -39,8 +46,6 @@ public:
 	/// </summary>
 	void TargetPosition();
 
-	//衝突判定を行うモデルを追加する
-	virtual std::shared_ptr<Model> AddCollModel();
 private:
 
 	float moveVecY_ = 0.0f;							//Y軸の移動ヴェクトル

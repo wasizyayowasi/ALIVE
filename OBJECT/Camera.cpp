@@ -230,14 +230,3 @@ float Camera::TrackingPozZ(VECTOR playerPos)
 	return cameraPos_.z + moveVecZ;
 
 }
-
-void Camera::tempDraW(VECTOR playerPos)
-{
-	DrawLine3D(VGet(0, 500.0f, 0.0f), VGet(3000.0f, 500.0f, 0.0f), 0xff0000);
-	DrawFormatString(0, 16, 0x448844, "%.2f,%.2f,%.2f", cameraPos_.x, cameraPos_.y, cameraPos_.z);
-
-	VECTOR gimmickPos = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "TrackingZ").pos;
-
-//	DrawLine3D(gimmickPos, VGet(gimmickPos.x + 1000.0f, gimmickPos.y, gimmickPos.z), 0xff0000);
-//	DrawLine3D(gimmickPos, VGet(gimmickPos.x - 1000.0f, gimmickPos.y, gimmickPos.z), 0xff0000);
-}

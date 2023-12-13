@@ -5,14 +5,16 @@
 
 class Model;
 
-enum class AnimType {
-	on,
-	off,
-	max,
-};
-
 class Lever
 {
+private:
+
+	enum class AnimType {
+		on,
+		off,
+		max,
+	};
+
 public:
 	//コンストラクタ
 	Lever(LoadObjectInfo info,VECTOR stopPos);
@@ -41,7 +43,6 @@ public:
 
 	//レバーが起動しているかどうか取得
 	bool IsOn() { return isOn_; }
-
 private:
 
 	bool isOn_ = false;							//レバーが起動しているかどうか

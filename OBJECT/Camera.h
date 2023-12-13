@@ -6,13 +6,15 @@ class InputState;
 class Camera
 {
 public:
-
+	//コンストラクタ
 	Camera();
+	//デストラクタ
 	virtual ~Camera();
 
 	//初期化用
 	void Init();
 
+	//更新
 	void Update(VECTOR playerPos, float playerHeight);
 
 	/// <summary>
@@ -34,20 +36,28 @@ public:
 	/// <param name="input">入力情報</param>
 	void ChangeOfFocus(const InputState& input);
 
+	VECTOR GetPos() { return cameraPos_; }
+	VECTOR GetTarget() { return cameraTarget_; }
+
+private:
+
 	/// <summary>
-	/// プレイヤーの追跡
+	/// プレイヤーのX座標を追跡
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	float TrackingPosX(VECTOR playerPos);
 
+	/// <summary>
+	/// プレイヤーのY座標を追跡
+	/// </summary>
+	/// <param name="playerPos">プレイヤーのポジション</param>
 	float TrackingPosY(VECTOR playerPos, float playerHeight);
 
+	/// <summary>
+	/// プレイヤーのZ座標を追跡
+	/// </summary>
+	/// <param name="playerPos">プレイヤーのポジション</param>
 	float TrackingPozZ(VECTOR playerPos);
-
-	VECTOR GetPos() { return cameraPos_; }
-	VECTOR GetTarget() { return cameraTarget_; }
-
-	void tempDraW(VECTOR playerPos);
 
 private:
 
