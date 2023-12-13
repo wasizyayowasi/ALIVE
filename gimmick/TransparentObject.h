@@ -29,8 +29,6 @@ private:
 
 	float alphaValue_ = 0.0f;							//“§‰ß’l‚ğ•ÛŠÇ‚·‚é
 
-	VECTOR InitialPosition_ = {};						//‰Šú‚Ì‚‚³‚ğæ“¾‚·‚é
-
 	std::shared_ptr<Switch> switch_;
 
 };

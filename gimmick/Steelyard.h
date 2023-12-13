@@ -15,10 +15,14 @@ enum class HitState {
 class Steelyard : public GimmickBase
 {
 public:
+	//コンストラクタ
 	Steelyard(int handle, LoadObjectInfo objInfo);
+	//デストラクタ
 	virtual ~Steelyard();
 
+	//更新
 	void Update(Player& player, const InputState& input)override;
+	//描画
 	void Draw();
 
 	//天秤モデルとプレイヤーの衝突判定を行う

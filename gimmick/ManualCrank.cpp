@@ -9,37 +9,48 @@
 
 
 namespace {
+	//クランクモデルのファイルパス
 	const char* const crank_filename = "data/model/other/mv1/Crank.mv1";
 
+	//最大回転値
 	constexpr float max_rot_Z = -630.0f;
 }
 
+//コンストラクタ
 ManualCrank::ManualCrank(LoadObjectInfo objInfo)
 {
+	//モデルクラスの初期化
 	model_ = std::make_shared<Model>(crank_filename);
 	model_->SetCollFrame();
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 
+	//ポジションの初期化
 	pos_ = objInfo.pos;
 
+	//クランクを回す立ち位置を取得
 	int standingNum = StrUtil::GetNumberFromString(objInfo.name, ".");
 	std::string standingName = StrUtil::GetConcatenateNumAndStrings("StandingPosition", ".", standingNum);
 
+	//立つ位置の初期化
 	standingPos_ = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, standingName.c_str()).pos;
 
 }
 
+//デストラクタ
 ManualCrank::~ManualCrank()
 {
 	
 }
 
+//描画
 void ManualCrank::Draw()
 {
+	//描画
 	model_->Draw();
 }
 
+//プレイヤーとの衝突判定
 bool ManualCrank::HitCollPlayer(Player& player)
 {
 	
@@ -60,6 +71,7 @@ bool ManualCrank::HitCollPlayer(Player& player)
 	return true;
 }
 
+//Z軸の最大回転率を取得する
 float ManualCrank::GetMaxRotZ()
 {
 	return max_rot_Z;

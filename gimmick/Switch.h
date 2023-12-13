@@ -18,6 +18,7 @@ public:
 
 	//更新
 	void Update(Player& player);
+	//描画
 	void Draw();
 
 	//スイッチモデルと死体との衝突判定を行う
@@ -44,11 +45,11 @@ private:
 	void OffAnim();
 private:
 
-	bool isTransit_ = false;
+	bool isTransit_ = false;							//透過フラグ
 
-	VECTOR pos_ = {};
+	VECTOR pos_ = {};									//ポジション
 
-	std::shared_ptr<Model> model_;
-	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
+	std::shared_ptr<Model> model_;						//モデルクラスのスマートポインタ
+	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;		//衝突判定の配列
 };
 

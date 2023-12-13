@@ -35,15 +35,13 @@ private:
 
 	int makeScreenHandle_ = -1;
 
+	int circleTransWhiteHandle_ = -1;
 	int circleWhiteHandle_ = -1;
-	int circleGrayHandle_ = -1;
-	int pictogramGraph_ = -1;
+	int pictogramHandle_ = -1;
+	int houseHandle_ = -1;
 
 	int volumeBGM_ = 0;
 	int volumeSE_ = 0;
-
-	int circleWhiteHandleWidth_ = 0;
-	int circleWhiteHandleHeight_ = 0;
 
 	int selectNum_ = 0;
 	int time_ = 0;

@@ -17,9 +17,12 @@ namespace {
 	//フォントの名前
 	const char* const pigumo42_font_name = "ピグモ 0042";
 	//画像ファイルパス
-	const char* const bar_graph_path = "data/graph/circleWhite.png";
+	const char* const circle_white_graph_path = "data/graph/circleWhite.png";
+	const char* const circle_trans_white_graph_path = "data/graph/circleTransWhite.png";
+	const char* const pictgram_graph_path = "data/graph/pict.png";
+	const char* const house_graph_path = "data/graph/house.png";
 	//移動距離
-	constexpr float pictgram_move_distance = 58.4f;
+	constexpr float pictgram_move_distance = 53.5f;
 
 	constexpr float move_speed = 3.0f;
 }
@@ -35,12 +38,10 @@ SettingScene::~SettingScene()
 void SettingScene::Init()
 {
 	//画像の読み込み
-	circleWhiteHandle_ = LoadGraph(bar_graph_path);
-	circleGrayHandle_ = LoadGraph(bar_graph_path);
-	pictogramGraph_ = LoadGraph("data/graph/pict.png");
-
-	//barHandleの画像サイズを取得
-	GetGraphSize(circleWhiteHandle_, &circleWhiteHandleWidth_, &circleWhiteHandleHeight_);
+	circleWhiteHandle_ = LoadGraph(circle_white_graph_path);
+	circleTransWhiteHandle_ = LoadGraph(circle_trans_white_graph_path);
+	pictogramHandle_ = LoadGraph(pictgram_graph_path);
+	houseHandle_ = LoadGraph(house_graph_path);
 
 	//現在のボリュームの取得
 	volumeBGM_ = SoundManager::GetInstance().GetBGMVolume();
@@ -49,8 +50,8 @@ void SettingScene::Init()
 	int BGMPictPos = static_cast<int>((static_cast<float>(volumeBGM_) / 250.0f) * 10);
 	int SEPictPos = static_cast<int>((static_cast<float>(volumeSE_) / 250.0f) * 10);
 
-	BGMPictogramPosX_ = Game::screen_width / 4 + pictgram_move_distance + BGMPictPos * pictgram_move_distance;
-	SEPictogramPosX_ = Game::screen_width / 4 + pictgram_move_distance + SEPictPos * pictgram_move_distance;
+	BGMPictogramPosX_ = Game::screen_width / 3 + BGMPictPos * pictgram_move_distance;
+	SEPictogramPosX_ = Game::screen_width / 3 + SEPictPos * pictgram_move_distance;
 
 	UIManager_ = std::make_shared<UIItemManager>();
 
@@ -83,8 +84,8 @@ void SettingScene::Init()
 void SettingScene::End()
 {
 	DeleteGraph(circleWhiteHandle_);
-	DeleteGraph(circleGrayHandle_);
-	DeleteGraph(pictogramGraph_);
+	DeleteGraph(circleTransWhiteHandle_);
+	DeleteGraph(pictogramHandle_);
 	DeleteGraph(makeScreenHandle_);
 }
 
@@ -95,33 +96,23 @@ void SettingScene::Update(const InputState& input)
 
 void SettingScene::Draw()
 {
+	//少し透過した黒の背景を描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
+	//作成した画面サイズの画像に
+	//以降の内容を書き込む
 	SetDrawScreen(makeScreenHandle_);
 	ClearDrawScreen();
 
-	int BGMPictPos = static_cast<int>((static_cast<float>(volumeBGM_) / 250.0f) * 10);
-	int SEPictPos = static_cast<int>((static_cast<float>(volumeSE_) / 250.0f) * 10);
-
+	//UI文字列の描画
 	UIManager_->AlphaChangeDraw(selectNum_,fadeValue_);
-
-	//音量バー画像
-	for (int i = 0; i < 10; i++) {
-		//DrawGraph(i * 72, 360, circleGrayHandle_, true);
-		DrawRotaGraph(365 + i * 29, 360, 1.0, 0, circleGrayHandle_, true, false);
-	}
-
 
 	time_++;
 
-	MovePictogram(BGMPictPos, BGMPictogramPosX_,BGMPictogramRot_, BGMPictogramTransInversion_);
-	MovePictogram(SEPictPos, SEPictogramPosX_,SEPictogramRot_, SEPictogramTransInversion_);
-
-	//ピクトグラム
-	DrawRotaGraph(BGMPictogramPosX_, Game::screen_height / 2, 0.3f, BGMPictogramRot_, pictogramGraph_, true, BGMPictogramTransInversion_);
-	DrawRotaGraph(SEPictogramPosX_, Game::screen_height / 3 * 2, 0.3f, SEPictogramRot_, pictogramGraph_, true, SEPictogramTransInversion_);
+	DrawFormatString(0, 16, 0xffffff, "%.2f", BGMPictogramPosX_);
+	DrawFormatString(0, 32, 0xffffff, "%.2f", SEPictogramPosX_);
 
 	//現在の画面モードを表示
 	int pigumo42 = FontsManager::getInstance().GetFontHandle(pigumo42_font_name);
@@ -137,16 +128,63 @@ void SettingScene::Draw()
 	DrawStringFToHandle(Game::screen_width / 2 - windowModeFontSize / 2, Game::screen_height / 3, windowModeText_.c_str(), 0xffffff, pigumo42);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
+
+	if (selectNum_ == 1) {
+		alpha = 250;
+	}
+	else {
+		alpha = 150;
+	}
+	//BGMバー
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+	DrawRotaGraph(Game::screen_width / 3 - 13.0f, Game::screen_height / 2, 1.0f, 0.0f, houseHandle_, true, false);
+	int BGMPictPos = static_cast<int>((static_cast<float>(volumeBGM_) / 250.0f) * 10);
+	//音量バー画像
+	for (int i = 0; i < 10; i++) {
+		if (BGMPictPos > i) {
+			DrawRotaGraphF(Game::screen_width / 3 + pictgram_move_distance + i * 53.5f, Game::screen_height / 2, 1.0, 0, circleWhiteHandle_, true, false);
+		}
+		else {
+			DrawRotaGraphF(Game::screen_width / 3 + pictgram_move_distance + i * 53.5f, Game::screen_height / 2, 1.0, 0, circleTransWhiteHandle_, true, false);
+		}
+		
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+
+	if (selectNum_ == 2) {
+		alpha = 250;
+	}
+	else {
+		alpha = 150;
+	}
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+	DrawRotaGraph(Game::screen_width / 3 - 13.0f, Game::screen_height / 3 * 2.0f, 1.0f, 0.0f, houseHandle_, true, false);
+	int SEPictPos = static_cast<int>((static_cast<float>(volumeSE_) / 250.0f) * 10);
+	for (int i = 0; i < 10; i++) {
+		if (SEPictPos > i) {
+			DrawRotaGraphF(Game::screen_width / 3 + pictgram_move_distance + i * 53.5f, Game::screen_height / 3 * 2.0f, 1.0, 0, circleWhiteHandle_, true, false);
+		}
+		else {
+			DrawRotaGraphF(Game::screen_width / 3 + pictgram_move_distance + i * 53.5f, Game::screen_height / 3 * 2.0f, 1.0, 0, circleTransWhiteHandle_, true, false);
+		}
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	//ピクトグラム
+	DrawRotaGraph(BGMPictogramPosX_, Game::screen_height / 2, 0.3f, BGMPictogramRot_, pictogramHandle_, true, BGMPictogramTransInversion_);
+	DrawRotaGraph(SEPictogramPosX_, Game::screen_height / 3 * 2, 0.3f, SEPictogramRot_, pictogramHandle_, true, SEPictogramTransInversion_);
+
 	DrawLine(Game::screen_width / 2, 0, Game::screen_width / 2, Game::screen_height, 0xff0000);
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
+	//フェードの時、アルファ値を変更するとともにガウスぼかしを掛ける
 	GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 8, 255-fadeValue_);
-
+	//描画画像のアルファ値を変更する
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	DrawGraph(0, 0, makeScreenHandle_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
 }
 
 void SettingScene::NormalUpdate(const InputState& input)
@@ -189,7 +227,6 @@ void SettingScene::GaussFadeOutUpdate(const InputState& input)
 
 void SettingScene::BGMUpdate(const InputState& input)
 {
-
 	//BGM音量調整
 	if (input.IsTriggered(InputType::left)) {
 		volumeBGM_ = (max)(volumeBGM_ - 25, 0);
@@ -200,9 +237,10 @@ void SettingScene::BGMUpdate(const InputState& input)
 
 	int BGMPictPos = static_cast<int>((static_cast<float>(volumeBGM_) / 250.0f) * 10);
 
+	MovePictogram(BGMPictPos, BGMPictogramPosX_, BGMPictogramRot_, BGMPictogramTransInversion_);
+
 	//音量の変更
 	SoundManager::GetInstance().SetBGMVolume(volumeBGM_);
-	
 }
 
 void SettingScene::SEUpdate(const InputState& input)
@@ -217,9 +255,10 @@ void SettingScene::SEUpdate(const InputState& input)
 
 	int SEPictPos = static_cast<int>((static_cast<float>(volumeSE_) / 250.0f) * 10);
 
+	MovePictogram(SEPictPos, SEPictogramPosX_, SEPictogramRot_, SEPictogramTransInversion_);
+
 	//音量の変更
 	SoundManager::GetInstance().SetSEVolume(volumeSE_);
-
 }
 
 void SettingScene::ChangeWindowUpdate(const InputState& input)
@@ -236,7 +275,7 @@ void SettingScene::ChangeWindowUpdate(const InputState& input)
 
 void SettingScene::MovePictogram(int pictPos, float& pos, float& rot, bool& inversion)
 {
-	float targetPos = Game::screen_width / 3 + pictgram_move_distance + pictPos * pictgram_move_distance;
+	float targetPos = Game::screen_width / 3 + pictPos * pictgram_move_distance;
 	float distance = targetPos - pos;
 
 	if (distance > 0) {

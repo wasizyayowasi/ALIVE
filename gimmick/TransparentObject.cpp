@@ -5,19 +5,23 @@
 #include "../util/Util.h"
 #include <algorithm>
 
+//コンストラクタ
 TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
 {
-	
+	//文字列の末尾を数値として取得する
 	int num = StrUtil::GetNumberFromString(objInfo.name, ".");
+	//第一引数と数値を連結させた文字列を取得
 	std::string name = StrUtil::GetConcatenateNumAndStrings("TransSwitch", ".", num);
 
+	//データの取得
 	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(objInfo.pos, name.c_str());
+	//スイッチのインスタンス化
 	switch_ = std::make_shared<Switch>(info);
-	
-	InitialPosition_ = model_->GetPos();
 
+	//衝突判定を行わない状態で初期化
 	isCollCheck_ = false;
 
+	//モデルのマテリアルのアルファ値を0にして透過させる
 	materialNum_ = MV1GetMaterialNum(model_->GetModelHandle());
 
 	COLOR_F color = {};
@@ -30,14 +34,18 @@ TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : Gimmi
 
 }
 
+//デストラクタ
 TransparentObject::~TransparentObject()
 {
 }
 
+//更新
 void TransparentObject::Update(Player& player, const InputState& input)
 {
 	switch_->Update(player);
 
+	//スイッチが起動していたら
+	//モデルとの衝突判定を行うようにする
 	if (switch_->CollResult()) {
 		isCollCheck_ = true;
 	}
@@ -45,13 +53,13 @@ void TransparentObject::Update(Player& player, const InputState& input)
 		isCollCheck_ = false;
 	}
 
+	//アルファ値を変更する
 	if (isCollCheck_) {
 		alphaValue_ = (std::min)(alphaValue_ + 0.1f, 1.0f);
 	}
 	else {
 		alphaValue_ = (std::max)(alphaValue_ - 0.1f, 0.0f);
 	}
-
 
 	COLOR_F color = {};
 
@@ -63,6 +71,7 @@ void TransparentObject::Update(Player& player, const InputState& input)
 
 }
 
+//描画
 void TransparentObject::Draw()
 {
 	model_->Draw();
@@ -70,11 +79,13 @@ void TransparentObject::Draw()
 	switch_->Draw();
 }
 
+//スイッチの衝突判定
 void TransparentObject::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 {
 	switch_->HitColl(deadPerson);
 }
 
+//衝突判定を行うモデルの追加
 std::shared_ptr<Model> TransparentObject::AddCollModel()
 {
 	return switch_->GetModelPointer();

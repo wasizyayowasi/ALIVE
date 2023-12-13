@@ -3,24 +3,26 @@
 #include "../OBJECT/Player.h"
 
 namespace {
-
+	//モデルのファイルパス
 	const char* const switch_filename = "data/model/switch.mv1";
-
-	const VECTOR scale = { 0.5f,0.5f, 0.5f };
 }
 
+//コンストラクタ
 Switch::Switch(LoadObjectInfo objInfo)
 {
+	//モデルクラスの初期化
 	model_ = std::make_shared<Model>(switch_filename);
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
 	model_->SetCollFrame();
 
-	pos_ = model_->GetPos();
+	//ポジションの初期化
+	pos_ = objInfo.pos;
 
 }
 
+//デストラクタ
 Switch::~Switch()
 {
 }
@@ -38,6 +40,7 @@ void Switch::Update(Player& player)
 
 }
 
+//描画
 void Switch::Draw()
 {
 	model_->Draw();
@@ -85,6 +88,7 @@ void Switch::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 	hitDim_.push_back(MV1CollCheck_Capsule(deadPerson->GetModelPointer()->GetModelHandle(), deadPerson->GetModelPointer()->GetColFrameIndex(), pos_, VAdd(pos_, VGet(0.0f, 50.0f, 0.0f)), 50.0f));
 }
 
+//衝突判定結果の初期化
 bool Switch::CollResult()
 {
 	int hitNum = 0;
@@ -110,6 +114,7 @@ bool Switch::CollResult()
 	return true;
 }
 
+//衝突判定を行うモデルの追加
 std::shared_ptr<Model> Switch::GetModelPointer()
 {
 	return model_;
