@@ -1,5 +1,7 @@
 #include "Lever.h"
 #include "../util/Model.h"
+#include "../util/Util.h"
+#include "../util/ExternalFile.h"
 
 namespace {
 	const char* const filename = "data/model/other/mv1/Lever.mv1";
@@ -21,6 +23,13 @@ Lever::Lever(LoadObjectInfo info, VECTOR stopPos)
 	model_->SetPos(pos_);
 	model_->SetScale(info.scale);
 	model_->SetRot(info.rot);
+
+	//クランクを回す立ち位置を取得
+	int standingNum = StrUtil::GetNumberFromString(info.name, ".");
+	std::string standingName = StrUtil::GetConcatenateNumAndStrings("LeverStandingPos", ".", standingNum);
+
+	//立つ位置の初期化
+	standingPos_ = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, standingName.c_str()).pos;
 
 }
 

@@ -34,6 +34,9 @@ public:
 
 	//モデルポインターの取得
 	std::shared_ptr<Model> GetModelPointer() { return model_; }
+	
+	//レバーを引くポジションの取得
+	VECTOR GetStandingPosition() { return standingPos_; }
 
 	//レバーの起動
 	void OnAnimation();
@@ -49,6 +52,7 @@ private:
 
 	VECTOR pos_ = {};							//ポジション
 	VECTOR elevatorStopPosition_ = {};			//エレベータの停止ポジション
+	VECTOR standingPos_ = {};					//エレベータの停止ポジション
 
 	std::shared_ptr<Model> model_;				//モデルクラスのスマートポインタ
 

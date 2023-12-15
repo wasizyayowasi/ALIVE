@@ -34,7 +34,6 @@ using namespace std;
 
 Player::Player(const char* const filename):updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObjectUpdate)
 {
-
 	//ジャンプ情報の初期
 	status_.jump.isJump = false;
 	status_.jump.jumpVec = 0.0f;
@@ -134,6 +133,7 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 	}
 	
 	if (input.IsTriggered(InputType::activate)) {
+		status_.moveVec = VGet(0, 0, 0);
 		if (status_.situation.isCanBeCarried) {
 			(this->*carryUpdateFunc_)();
 		}
@@ -144,7 +144,7 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 			else if (lever_ != nullptr) {
 				ChangeAnimNo(PlayerAnimType::LeverOn, false, 10);
 				lever_->OnAnimation();
-				updateFunc_ = &Player::LeverUpdate;
+				updateFunc_ = &Player::GoLeverPullPosition;
 			}
 			return;
 		}
@@ -267,7 +267,7 @@ float Player::Move(const InputState& input) {
 	bool pressedRight = input.IsPressed(InputType::right);
 	bool pressedShift = input.IsPressed(InputType::shift);
 
-	status_.moveVec = { 0.0f,0.0f,0.0f };
+	status_.moveVec = VGet(0,0,0);
 
 	status_.situation.isMoving = false;
 	float movingSpeed = 0.0f;
@@ -595,6 +595,33 @@ void Player::BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectMa
 		updateFunc_ = &Player::NormalUpdate;
 	}
 
+}
+
+void Player::GoLeverPullPosition(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+{
+	//クランクの立ってほしいポジションを取得する
+	VECTOR standPos = lever_->GetStandingPosition();
+	//立ってほしいポジションとプレイヤーの距離のサイズを取得する
+	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(status_.pos, standPos);
+
+	//distanceSizeが一定の範囲外だったら
+	//一定の速度で立ってほしいポジションに向かう
+	if (distanceSize > 3.0f) {
+		VECTOR distance = VNorm(VSub(standPos, status_.pos));
+		VECTOR moveVec = VScale(distance, playerInfo_.walkSpeed);
+		status_.pos = VAdd(status_.pos, moveVec);
+		model_->SetPos(status_.pos);
+	}
+	//distanceSizeが一定の範囲内に入ったら
+	//立ってほしいポジションをプレイヤーのポジションとする
+	else {
+		model_->SetPos(standPos);
+		angle_ = 0.0f;
+		status_.rot = VGet(0, angle_, 0);
+		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
+		ChangeAnimNo(PlayerAnimType::LeverOn, false, 20);
+		updateFunc_ = &Player::LeverUpdate;
+	}
 }
 
 void Player::LeverUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)

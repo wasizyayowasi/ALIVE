@@ -1,5 +1,6 @@
 #include "Tutorial.h"
 #include "ExternalFile.h"
+#include "InputState.h"
 #include "Util.h"
 
 Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)

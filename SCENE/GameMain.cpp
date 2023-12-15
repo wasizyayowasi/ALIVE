@@ -201,15 +201,15 @@ void GameMain::NormalUpdate(const InputState& input)
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
 
-	auto info = ExternalFile::GetInstance().GetSpecifiedInfo("GOAL");
-
-	auto result = MV1CollCheck_Capsule(player_->GetModelPointer()->GetModelHandle(), player_->GetModelPointer()->GetColFrameIndex(), VGet(info.front().pos.x, info.front().pos.y - info.front().scale.y, info.front().pos.z), VGet(info.front().pos.x, info.front().pos.y + info.front().scale.y, info.front().pos.z), 600);
-
-	if (result.HitNum > 0) {
-		updateFunc_ = &GameMain::FadeOutUpdate;
-	}
-
-	MV1CollResultPolyDimTerminate(result);
+//	auto info = ExternalFile::GetInstance().GetSpecifiedInfo("GOAL");
+//
+//	auto result = MV1CollCheck_Capsule(player_->GetModelPointer()->GetModelHandle(), player_->GetModelPointer()->GetColFrameIndex(), VGet(info.front().pos.x, info.front().pos.y - info.front().scale.y, info.front().pos.z), VGet(info.front().pos.x, info.front().pos.y + info.front().scale.y, info.front().pos.z), 600);
+//
+//	if (result.HitNum > 0) {
+//		updateFunc_ = &GameMain::FadeOutUpdate;
+//	}
+//
+//	MV1CollResultPolyDimTerminate(result);
 
 }
 

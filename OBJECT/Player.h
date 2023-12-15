@@ -176,6 +176,7 @@ private:
 	void BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 	//ƒŒƒo[‚ğ“|‚·
+	void GoLeverPullPosition(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 	void LeverUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
 
 private:
