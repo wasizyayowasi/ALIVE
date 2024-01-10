@@ -1,6 +1,6 @@
 #include "CheckCollisionModel.h"
 #include "../object/Player.h"
-#include "../util/ObjectManager.h"
+#include "../object/ObjectManager.h"
 #include "Model.h"
 #include "Util.h"
 #include <algorithm>

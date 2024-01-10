@@ -3,8 +3,8 @@
 #include <list>
 #include <string>
 #include <DxLib.h>
-#include "PlayerData.h"
-#include "ObjectData.h"
+#include "../object/PlayerData.h"
+#include "../object/ObjectData.h"
 
 struct SaveData {
 	VECTOR checkPoint;

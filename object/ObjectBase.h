@@ -1,6 +1,6 @@
 #pragma once
 #include <DxLib.h>
-#include "../util/ObjectData.h"
+#include "ObjectData.h"
 #include <memory>
 
 class Model;

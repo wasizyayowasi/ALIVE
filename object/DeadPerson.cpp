@@ -1,7 +1,7 @@
 #include "DeadPerson.h"
 #include "Player.h"
 #include "../util/Model.h"
-#include "../util/PlayerData.h"
+#include "../object/PlayerData.h"
 
 namespace {
 	//ƒ‚ƒfƒ‹ƒtƒŒ[ƒ€–¼

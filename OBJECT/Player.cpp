@@ -9,7 +9,7 @@
 #include "../util/Model.h"
 #include "../util/ExternalFile.h"
 #include "../util/SoundManager.h"
-#include "../util/ObjectManager.h"
+#include "../object/ObjectManager.h"
 #include "../util/Util.h"
 
 #include<algorithm>
@@ -20,7 +20,7 @@ namespace {
 	constexpr float gravity = -0.4f;
 
 	//ファイルパス
-	const char* const enemy_Filename = "data/player/mv1/player.mv1";
+	const char* const player_model_Filename = "data/player/mv1/player.mv1";
 
 	//フレームの名前
 	const char* const frame_name = "hand.R_end";
@@ -55,7 +55,7 @@ void Player::Init(LoadObjectInfo info)
 	playerInfo_ = ExternalFile::GetInstance().GetPlayerInfo();
 	
 	//プレイヤーモデルの生成
-	model_ = make_shared<Model>(enemy_Filename);
+	model_ = make_shared<Model>(player_model_Filename);
 	//アニメーションの設定
 	model_->SetAnimation(static_cast<int>(PlayerAnimType::Idle), true, false);
 	//プレイヤーの大きさの調整
@@ -64,6 +64,7 @@ void Player::Init(LoadObjectInfo info)
 
 	model_->SetPos(info.pos);
 	status_.pos = info.pos;
+//	status_.pos = VGet(0,0,0);
 	//回転率の設定
 	model_->SetRot(info.rot);
 	//コリジョンフレームの設定
@@ -88,23 +89,7 @@ void Player::Draw()
 
 	DrawPolygon3D();
 
-//	DrawFormatString(0, 16, 0xffffff, "tar %.2f", targetAngle_);
-//	DrawFormatString(0, 32, 0xffffff, "ang %.2f", angle_);
-//	DrawFormatString(0, 48, 0xffffff, "dif %.2f", differenceAngle_);
-//	DrawFormatString(0, 64, 0xffffff, "rot %.2f,%.2f,%.2f", status_.rot.x, status_.rot.y, status_.rot.z);
-
-//	float au = 20.0f;
-
-//	DrawLine3D(status_.pos, VAdd(status_.pos, VGet(0, status_.height, 0)), 0xff0000);
-//	DrawLine3D(VAdd(status_.pos, VGet( au, 0,   0)), VAdd(status_.pos, VGet( au, status_.height,   0)), 0xff0000);
-//	DrawLine3D(VAdd(status_.pos, VGet(-au, 0,   0)), VAdd(status_.pos, VGet(-au, status_.height,   0)), 0xff0000);
-//	DrawLine3D(VAdd(status_.pos, VGet(  0, 0,  au)), VAdd(status_.pos, VGet(  0, status_.height,  au)), 0xff0000);
-//	DrawLine3D(VAdd(status_.pos, VGet(  0, 0, -au)), VAdd(status_.pos, VGet(  0, status_.height, -au)), 0xff0000);
-
-//	DrawSphere3D(VGet(status_.pos.x + 1000, status_.pos.y, status_.pos.z), 16, 32, 0xff0000, 0xff0000, true);
-
 	DrawFormatString(0, 64, 0xffffff, "normal %.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
-//	DrawFormatString(0, 80, 0x448844, "model  %.2f,%.2f,%.2f", model_->GetPos().x, model_->GetPos().y, model_->GetPos().z);
 
 }
 
@@ -127,11 +112,12 @@ void Player::SetJumpInfo(bool isJump, float jumpVec)
 /// <param name="input">外部装置の入力情報を参照する</param>
 void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
-
+	//削除予定
 	if (input.IsTriggered(InputType::creative)) {
 		debugCreativeMode = !debugCreativeMode;
 	}
 	
+	//オブジェクトに対してアクションを起こす
 	if (input.IsTriggered(InputType::activate)) {
 		status_.moveVec = VGet(0, 0, 0);
 		if (status_.situation.isCanBeCarried) {
@@ -139,9 +125,11 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 		}
 		else if (status_.situation.isGimmickCanBeOperated) {
 			if (crank_ != nullptr) {
+				//クランクを動かす準備をする
 				updateFunc_ = &Player::GoCrankRotationPosition;
 			}
 			else if (lever_ != nullptr) {
+				//レバーを動かす準備をする
 				ChangeAnimNo(PlayerAnimType::LeverOn, false, 10);
 				lever_->OnAnimation();
 				updateFunc_ = &Player::GoLeverPullPosition;
@@ -325,16 +313,19 @@ float Player::Move(const InputState& input) {
 /// </summary>
 void Player::RotationUpdate()
 {
+	//一回転の角度
+	float oneRevolution = 360.0f;
+
 	//目標の角度から現在の角度を引いて差を出している
 	differenceAngle_ = targetAngle_ - angle_;
 
 	//常にプレイヤーモデルを大周りさせたくないので
 	//181度又は-181度以上の場合、逆回りにしてあげる
-	if (differenceAngle_ >= 180.0f) {
-		differenceAngle_ = targetAngle_ - angle_ - 360.0f;
+	if (differenceAngle_ >= oneRevolution / 2) {
+		differenceAngle_ = targetAngle_ - angle_ - oneRevolution;
 	}
-	else if (differenceAngle_ <= -180.0f) {
-		differenceAngle_ = targetAngle_ - angle_ + 360.0f;
+	else if (differenceAngle_ <= -oneRevolution / 2) {
+		differenceAngle_ = targetAngle_ - angle_ + oneRevolution;
 	}
 
 	//滑らかに回転させるため
@@ -349,10 +340,10 @@ void Player::RotationUpdate()
 	}
 
 	//360度、一周したら0度に戻すようにしている
-	if (angle_ == 360.0f || angle_ == -360.0f) {
+	if (angle_ == oneRevolution || angle_ == -oneRevolution) {
 		angle_ = 0.0f;
 	}
-	if (status_.rot.y == 360.0f || status_.rot.y == -360.0f) {
+	if (status_.rot.y == oneRevolution || status_.rot.y == -oneRevolution) {
 		status_.rot.y = 0.0f;
 	}
 

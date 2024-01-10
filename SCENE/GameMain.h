@@ -7,8 +7,6 @@
 
 class Camera;
 class Player;
-class Broom;
-class DepthOfField;
 class CheckCollisionModel;
 class ObjectManager;
 class ShotManager;
@@ -62,8 +60,6 @@ private:
 
 	std::shared_ptr<Camera> camera_;			//カメラのシェアードポインタ
 	std::shared_ptr<Player> player_;			//プレイヤーのシェアードポインタ
-	std::shared_ptr<Broom> broom_;				//これも消すかもしれない
-	std::shared_ptr<DepthOfField> depthOfField_;
 	std::shared_ptr<ObjectManager> objManager_;
 	std::shared_ptr<ShotManager> shotManager_;
 	std::shared_ptr<Tutorial> tutorial_;

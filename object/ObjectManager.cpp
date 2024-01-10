@@ -11,16 +11,16 @@
 #include "../gimmick/CrankScaffold.h"
 #include "../gimmick/Elevator.h"
 
-#include "game.h"
-#include "Util.h"
+#include "../util/game.h"
+#include "../util/Util.h"
 
-#include "InputState.h"
-#include "ExternalFile.h"
+#include "../util/InputState.h"
+#include "../util/ExternalFile.h"
 
 #include <random>
 
 namespace {
-	const char* const enemy_Filename = "data/enemy/mv1/enemy.mv1";
+	const char* const player_model_Filename = "data/enemy/mv1/enemy.mv1";
 	//仮モデルのファイルパス
 	const char* const switch_filepath = "data/model/switch.mv1";
 	const char* const transparent_filepath = "data/model/other/mv1/ElevatingMovableScaffolding.mv1";
@@ -55,14 +55,12 @@ namespace {
 	const char* const RedContainer_filepath = "data/model/city/container/mv1/RedContainer.mv1";
 	const char* const YellowContainer_filepath = "data/model/city/container/mv1/YellowContainer.mv1";
 	const char* const OrangeContainer_filepath = "data/model/city/container/mv1/OrangeContainer.mv1";
-	const char* const PurpleContainer_filepath = "data/model/city/container/mv1/PurpleContainer.mv1";
-	const char* const GreenContainer_filepath = "data/model/city/container/mv1/GreenContainer.mv1";
 }
 
 ObjectManager::ObjectManager()
 {
 
-	modelHandle_[ObjectType::enemy] = MV1LoadModel(enemy_Filename);
+	modelHandle_[ObjectType::enemy] = MV1LoadModel(player_model_Filename);
 	modelHandle_[ObjectType::gimmickSwitch] = MV1LoadModel(switch_filepath);
 	modelHandle_[ObjectType::trans] = MV1LoadModel(transparent_filepath);
 	modelHandle_[ObjectType::elevator] = MV1LoadModel(elevator_filepath);

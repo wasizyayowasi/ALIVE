@@ -4,7 +4,7 @@
 
 namespace {
 	//モデルのファイルパス
-	const char* const switch_filename = "data/model/switch.mv1";
+	const char* const switch_filename = "data/model/other/mv1/switch.mv1";
 }
 
 //コンストラクタ
@@ -123,11 +123,13 @@ std::shared_ptr<Model> Switch::GetModelPointer()
 //スイッチオンアニメーション
 void Switch::OnAnim()
 {
+	model_->ChangeAnimation(0, false, false, 10);
 	MV1SetMaterialDifColor(model_->GetModelHandle(), 1, GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
 }
 
 //スイッチオフアニメーション
 void Switch::OffAnim()
 {
+	model_->ChangeAnimation(1, false, false, 10);
 	MV1SetMaterialDifColor(model_->GetModelHandle(), 1, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 }

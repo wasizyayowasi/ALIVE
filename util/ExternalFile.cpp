@@ -1,6 +1,6 @@
 #include "ExternalFile.h"
 #include "InputState.h"
-#include "ObjectData.h"
+#include "../object/ObjectData.h"
 #include "Util.h"
 
 #include <iostream>

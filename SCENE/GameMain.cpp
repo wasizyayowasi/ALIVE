@@ -24,13 +24,13 @@
 #include "../util/CheckCollisionModel.h"
 #include "../util/Tutorial.h"
 
-#include "../util/ObjectManager.h"
-#include "../util/ObjectData.h"
+#include "../object/ObjectManager.h"
+#include "../object/ObjectData.h"
 
 using namespace std;
 
 namespace {
-	const char* const enemy_Filename = "data/player/player16.mv1";
+	const char* const player_model_Filename = "data/player/player16.mv1";
 }
 
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),
@@ -57,9 +57,6 @@ void GameMain::Init()
 
 	//オブジェクトを生成
 	ObjectGenerater();
-
-	//broom_ = make_shared<Broom>();
-	//depthOfField_ = make_shared<DepthOfField>();
 
 	//仮でライト処理を消している
 	SetUseLighting(false);
@@ -106,8 +103,6 @@ void GameMain::Draw()
 	camera_->Init();
 	camera_->Update(player_->GetStatus().pos, player_->GetStatus().height);
 
-//	broom_->writingScreenUpdate(player_->GetStatus().pos);
-
 	//オブジェクトの描画
 	objManager_->Draw(player_->GetStatus().pos);
 
@@ -120,9 +115,6 @@ void GameMain::Draw()
 	shotManager_->Draw();
 
 	tutorial_->Draw();
-
-//	broom_->graphFilterUpdate();
-//	broom_->draw();
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
@@ -147,7 +139,7 @@ void GameMain::ObjectGenerater()
 	auto& loadData = ExternalFile::GetInstance();
 
 	//プレイヤーのインスタンス化
-	player_ = make_shared<Player>(enemy_Filename);
+	player_ = make_shared<Player>(player_model_Filename);
 	//プレイヤーの初期化
 	player_->Init(loadData.GetSpecifiedInfo("Player").front());
 	//ゲームオブジェクトの生成

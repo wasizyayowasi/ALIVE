@@ -1,5 +1,5 @@
 #include "Aster.h"
-#include "ObjectManager.h"
+#include "../object/ObjectManager.h"
 #include "Util.h"
 #include <algorithm>
 

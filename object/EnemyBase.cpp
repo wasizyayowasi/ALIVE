@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "ShotManager.h"
 #include "../util/Model.h"
-#include "../util/ObjectManager.h"
+#include "../object/ObjectManager.h"
 #include "../util/Aster.h"
 
 #include "../util/Util.h"

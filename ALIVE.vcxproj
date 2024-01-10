@@ -153,7 +153,7 @@
     <ClCompile Include="util\Tutorial.cpp" />
     <ClCompile Include="util\Aster.cpp" />
     <ClCompile Include="object\DeadPerson.cpp" />
-    <ClCompile Include="util\ObjectManager.cpp" />
+    <ClCompile Include="object\ObjectManager.cpp" />
     <ClCompile Include="object\ObjectBase.cpp" />
     <ClCompile Include="object\OrnamentBase.cpp" />
     <ClCompile Include="util\Util.cpp" />
@@ -199,10 +199,10 @@
     <ClInclude Include="util\Tutorial.h" />
     <ClInclude Include="util\Aster.h" />
     <ClInclude Include="util\StatePattern.h" />
-    <ClInclude Include="util\PlayerData.h" />
+    <ClInclude Include="object\PlayerData.h" />
     <ClInclude Include="object\DeadPerson.h" />
-    <ClInclude Include="util\ObjectManager.h" />
-    <ClInclude Include="util\ObjectData.h" />
+    <ClInclude Include="object\ObjectManager.h" />
+    <ClInclude Include="object\ObjectData.h" />
     <ClInclude Include="object\ObjectBase.h" />
     <ClInclude Include="object\OrnamentBase.h" />
     <ClInclude Include="util\Util.h" />

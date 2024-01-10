@@ -168,7 +168,7 @@
     <ClCompile Include="object\Shot.cpp">
       <Filter>ソース ファイル\object</Filter>
     </ClCompile>
-    <ClCompile Include="util\ObjectManager.cpp">
+    <ClCompile Include="object\ObjectManager.cpp">
       <Filter>ソース ファイル\util</Filter>
     </ClCompile>
     <ClCompile Include="util\Tutorial.cpp">
@@ -296,13 +296,13 @@
     <ClInclude Include="util\Aster.h">
       <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
-    <ClInclude Include="util\ObjectData.h">
+    <ClInclude Include="object\ObjectData.h">
       <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
-    <ClInclude Include="util\ObjectManager.h">
+    <ClInclude Include="object\ObjectManager.h">
       <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
-    <ClInclude Include="util\PlayerData.h">
+    <ClInclude Include="object\PlayerData.h">
       <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
     <ClInclude Include="object\ShotManager.h">

@@ -16,7 +16,8 @@ namespace {
 	constexpr float add_focus = 30.0f;
 
 	//カメラの初期ポジション
-	const VECTOR init_pos = VGet(0, 400, -600);
+	//const VECTOR init_pos = VGet(0, 400, -600);
+	const VECTOR init_pos = VGet(0, 50, -600);
 
 	//カメラのZ座標が移動する際、ボーダーライン
 	constexpr float tracking_Z_borderline = 1000.0f;
@@ -29,12 +30,6 @@ Camera::Camera():updateFunc_(&Camera::TrackingCameraUpdate)
 {
 
 	cameraPos_ = init_pos;
-
-	tempRoom[0] = 1000;
-	tempRoom[1] = 1500;
-	tempRoom[2] = 2000;
-
-	threshold = tempRoom[0];
 
 	cameraTargetPosZ = -600;
 }
@@ -96,7 +91,8 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos,float playerHeight)
 
 	//カメラがプレイヤーを追いかける用にする
 	cameraPos_.x = TrackingPosX(playerPos);
-	cameraPos_.y = TrackingPosY(playerPos,playerHeight);
+//	cameraPos_.y = TrackingPosY(playerPos,playerHeight);
+	cameraPos_.y = playerPos.y;
 	cameraPos_.z = TrackingPozZ(playerPos);
 
 	//プレイヤーがいた位置を見るようにする

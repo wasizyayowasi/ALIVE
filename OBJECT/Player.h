@@ -1,7 +1,7 @@
 #pragma once
 #include "CharacterBase.h"
-#include "util/PlayerData.h"
-#include "util/ObjectData.h"
+#include "PlayerData.h"
+#include "ObjectData.h"
 #include <DxLib.h>
 #include <list>
 #include <unordered_map>
@@ -213,9 +213,6 @@ private:
 private:
 
 	int deathCount_ = 0;					//€‚ñ‚¾‰ñ”‚ğ‹L˜^‚·‚é
-
-	float totalAnimFrame_ = 0;
-	float runJumpGravity = 0.0f;
 
 	float targetAngle_ = 0.0f;				//‰ñ“]
 	float differenceAngle_ = 0.0f;			//–Ú•W‚ÌŠp“x‚ÆŒ»İ‚ÌŠp“x‚Ì·
