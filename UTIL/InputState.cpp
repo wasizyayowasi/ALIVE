@@ -113,9 +113,15 @@ void InputState::Update()
 
 			if (input.cat == InputCategory::keybd) {
 				currentInput_[static_cast<int>(keymap.first)] = keystate[input.id];
+				if (currentInput_[static_cast<int>(keymap.first)]) {
+					currentInputDevice_ = true;
+				}
 			}
 			else if (input.cat == InputCategory::pad) {
 				currentInput_[static_cast<int>(keymap.first)] = padState & input.id;
+				if (currentInput_[static_cast<int>(keymap.first)]) {
+					currentInputDevice_ = false;
+				}
 			}
 			//2つの入力のうちどれかがtrueだったらもう「入力されてる」
 			//とみなして、breakする。
@@ -362,7 +368,7 @@ void InputState::LoadKeyInfo2(const char* filename)
 	ifs.close();
 }
 
-bool InputState::LastInput()
+bool InputState::LastInputDevice() const
 {
-	return false;
+	return currentInputDevice_;
 }

@@ -44,8 +44,6 @@ void Switch::Update(Player& player)
 void Switch::Draw()
 {
 	model_->Draw();
-//	DrawCapsule3D(pos_, VAdd(pos_, VGet(0.0f, 50.0f, 0.0f)), 50, 32, 0x00ff00, 0x00ff00, true);
-//	DrawFormatString(0, 48, 0x448844, "%.2f,%.2f,%.2f", pos_.x, pos_.y, pos_.z);
 }
 
 void Switch::DeleteHitResult()

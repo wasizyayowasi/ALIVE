@@ -35,21 +35,31 @@ void Tutorial::Update(VECTOR pos)
 	}
 }
 
-void Tutorial::Draw()
+void Tutorial::Draw(bool inputDevice)
 {
-	(this->*drawFunc_)();
+	(this->*drawFunc_)(inputDevice);
 }
 
-void Tutorial::NoneDraw()
+void Tutorial::NoneDraw(bool inputDevice)
 {
 }
 
-void Tutorial::SwitchTutorialDraw()
+void Tutorial::SwitchTutorialDraw(bool inputDevice)
 {
-	DrawSphere3D(tutorialDrawPos_, 32, 32, 0xff0000, 0xff0000, true);
+	if (inputDevice) {
+		DrawSphere3D(tutorialDrawPos_, 32, 32, 0xff0000, 0xff0000, true);
+	}
+	else {
+		DrawSphere3D(tutorialDrawPos_, 32, 32, 0x0000ff, 0x0000ff, true);
+	}
 }
 
-void Tutorial::CranckTutorialDraw()
+void Tutorial::CranckTutorialDraw(bool inputDevice)
 {
-	DrawSphere3D(tutorialDrawPos_, 32, 32, 0x0000ff, 0x0000ff, true);
+	if (inputDevice) {
+		DrawSphere3D(tutorialDrawPos_, 32, 32, 0xff0000, 0xff0000, true);
+	}
+	else {
+		DrawSphere3D(tutorialDrawPos_, 32, 32, 0x0000ff, 0x0000ff, true);
+	}
 }

@@ -10,17 +10,17 @@ public:
 	virtual ~Tutorial();
 
 	void Update(VECTOR pos);
-	void Draw();
+	void Draw(bool inputDevice);
 
-	void NoneDraw();
-	void SwitchTutorialDraw();
-	void CranckTutorialDraw();
+	void NoneDraw(bool inputDevice);
+	void SwitchTutorialDraw(bool inputDevice);
+	void CranckTutorialDraw(bool inputDevice);
 
 private:
 
 	VECTOR tutorialDrawPos_ = {};
 
-	void(Tutorial::* drawFunc_)();
+	void(Tutorial::* drawFunc_)(bool inputDevice);
 
 };
 

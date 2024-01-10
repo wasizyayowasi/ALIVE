@@ -35,15 +35,13 @@ public:
 
 private:
 
-	int debugDrawTime_ = 0;
-	int debugUpdateTime_ = 0;
-
 	int skyHandle_ = -1;
 
 	int makeScreenHandle_ = -1;
 	int totalDeathNum_ = 0;					//ゲーム開始からの総死亡数
 
 	bool isFilterOn_ = false;				//フィルターを使用するか
+	bool currentInputDevice_ = false;		//true:キーボード　false:パッド
 
 	//消すかもしれない
 	void FadeInUpdate(const InputState& input);

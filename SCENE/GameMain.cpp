@@ -90,6 +90,8 @@ void GameMain::End()
 void GameMain::Update(const InputState& input)
 {
 	(this->*updateFunc_)(input);
+
+	currentInputDevice_ = input.LastInputDevice();
 }
 
 //•`‰æ
@@ -114,7 +116,7 @@ void GameMain::Draw()
 
 	shotManager_->Draw();
 
-	tutorial_->Draw();
+	tutorial_->Draw(currentInputDevice_);
 
 	SetDrawScreen(DX_SCREEN_BACK);
 

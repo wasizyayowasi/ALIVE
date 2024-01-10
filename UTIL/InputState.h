@@ -66,9 +66,11 @@ public:
 
 	void LoadKeyInfo2(const char* filename);
 
-	bool LastInput();
+	bool LastInputDevice() const;
 
 private:
+
+	bool currentInputDevice_ = false;			//true:キーボード　false:パッド
 
 	using InputMap_t = std::map<InputType, std::vector<InputInfo>>;
 	InputMap_t inputMapTable_;
