@@ -23,7 +23,8 @@ namespace {
 KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):SceneBase(manager),
 updateFunc_(&KeyConfigScene::FadeInUpdate),
 changeKeyUpdateFunc_(&KeyConfigScene::SelectChangeKeyUpdate),
-drawFunc_(&KeyConfigScene::KeyStateDraw), inputState_(input)
+drawFunc_(&KeyConfigScene::KeyStateDraw), 
+inputState_(input)
 {
 }
 
@@ -34,6 +35,9 @@ KeyConfigScene::~KeyConfigScene()
 
 void KeyConfigScene::Init()
 {
+	//画像の読み込み
+	controllerHandle_ = LoadGraph("data/graph/controller.png");
+
 	//フォントの作成
 	fontHandleSize21_ = FontsManager::getInstance().GetFontHandle("ピグモ 0021");
 	fontHandleSize42_ = FontsManager::getInstance().GetFontHandle("ピグモ 0042");
@@ -78,6 +82,7 @@ void KeyConfigScene::End()
 	inputState_.SavekeyInfo2();
 	DeleteGraph(makeScreenHandle_);
 	DeleteGraph(keyTypeHandle_);
+	DeleteGraph(controllerHandle_);
 }
 
 //メンバ関数ポインタの更新
@@ -179,6 +184,19 @@ void KeyConfigScene::KeyGraphDraw()
 	}
 }
 
+void KeyConfigScene::ControllerDraw()
+{
+
+	//書き込みスクリーンの変更
+	SetDrawScreen(makeScreenHandle_);
+	//スクリーンのクリア
+	ClearDrawScreen();
+
+	DrawGraph(0, 0, controllerHandle_, true);
+
+	SetDrawScreen(DX_SCREEN_BACK);
+}
+
 void KeyConfigScene::ChangeKeyPopUpText()
 {
 	//背景の黒描画
@@ -265,7 +283,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	if (inputState_.IsTriggered(InputType::space)) {
 		isEditing_ = !isEditing_;
 		drawFunc_ = &KeyConfigScene::ChangeKeyPopUpText;
-		changeKeyUpdateFunc_ = &KeyConfigScene::ChangeKeyUpdate;
+		changeKeyUpdateFunc_ = &KeyConfigScene::ChangeKeyborardUpdate;
 		GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 32, 800);
 		return;
 	}
@@ -277,10 +295,17 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 		return;
 	}
 
+	//コントローラーの入力が入ったときに
+	//コントローラー用の描画と更新用クラスに変更する
+	if (!inputState_.LastInputDevice()) {
+		changeKeyUpdateFunc_ = &KeyConfigScene::ControllerUpdate;
+		drawFunc_ = &KeyConfigScene::ControllerDraw;
+	}
+
 }
 
 //変更したいキーをどのキーに変更するのか
-void KeyConfigScene::ChangeKeyUpdate()
+void KeyConfigScene::ChangeKeyborardUpdate()
 {
 	//一フレーム前の入力情報が残っていたらリターンする
 	for (const auto& key : inputState_.lastInput_) {
@@ -329,6 +354,36 @@ void KeyConfigScene::ChangeKeyUpdate()
 	if (padState != 0) {
 		configInput.RewriteInputInfo(currentType, InputCategory::pad, padState);
 		isEditing_ = !isEditing_;
+		changeKeyUpdateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
+		drawFunc_ = &KeyConfigScene::KeyStateDraw;
+	}
+
+}
+
+void KeyConfigScene::ControllerUpdate()
+{
+	//短縮化
+	auto& configInput = const_cast<InputState&>(inputState_);
+
+	//仮キー情報を消去してポーズシーンに戻る
+	if (selectNum_ == 0) {
+		if (inputState_.IsTriggered(InputType::space)) {
+			configInput.ResetInputInfo();
+			updateFunc_ = &KeyConfigScene::FadeOutUpdate;
+			return;
+		}
+	}
+
+	//ひとつ前のシーンに戻る
+	if (inputState_.IsTriggered(InputType::pause)) {
+		updateFunc_ = &KeyConfigScene::FadeOutUpdate;
+		configInput.RollbackChangedInputInfo();
+		return;
+	}
+
+	//キーボードの入力が入ったときに
+	//キーボード用の描画と更新用クラスに変更する
+	if (inputState_.LastInputDevice()) {
 		changeKeyUpdateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
 		drawFunc_ = &KeyConfigScene::KeyStateDraw;
 	}
@@ -420,6 +475,10 @@ void KeyConfigScene::FadeInUpdate(const InputState& input)
 	if (++fadeTimer_ == fadeInterval_) {
 		updateFunc_ = &KeyConfigScene::NormalUpdate;
 		fadeValue_ = 255;
+		if (!input.LastInputDevice()) {
+			changeKeyUpdateFunc_ = &KeyConfigScene::ControllerUpdate;
+			drawFunc_ = &KeyConfigScene::ControllerDraw;
+		}
 	}
 }
 

@@ -33,13 +33,18 @@ public:
 	//keyの画像を描画
 	void KeyGraphDraw();
 
+	//コントローラーが使用されている場合の描画
+	void ControllerDraw();
+
 	//変更したいkeyを入力させるためのポップアップ描画
 	void ChangeKeyPopUpText();
 
 	//どの入力装置のキーを変更するかを選択する
 	void SelectChangeKeyUpdate();
 	//変更するキーをどのキーに変更するのかを決定する
-	void ChangeKeyUpdate();
+	void ChangeKeyborardUpdate();
+	//コントローラーの場合の更新
+	void ControllerUpdate();
 
 	//形だけある今のところ
 	int GetKeyName(int num);
@@ -53,6 +58,7 @@ private:
 
 private:
 
+	int controllerHandle_ = -1;				//コントローラー画像
 	int fontHandleSize21_ = -1;				//フォント16サイズを保管する変数
 	int fontHandleSize42_ = -1;				//フォント32サイズを保管する変数
 	int makeScreenHandle_ = -1;				//作成したハンドルを保管する変数
