@@ -35,10 +35,12 @@ struct InputInfo {
 };
 
 class KeyConfigScene;
+class Tutorial;
 
 class InputState
 {
 	friend KeyConfigScene;
+	friend Tutorial;
 public:
 	InputState();
 

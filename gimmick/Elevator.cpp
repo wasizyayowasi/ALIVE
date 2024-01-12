@@ -42,8 +42,10 @@ Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInf
 
 	//レバーのインスタンス化
 	for (int i = 0; i < 2; i++) {
-		VECTOR stopPoint = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, pointName.c_str()).pos;
-		levers_.push_back(std::make_shared<Lever>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, leverName.c_str()), stopPoint));
+		std::string specificPointName = StrUtil::GetConcatenateNumAndStrings(pointName, "-", i);
+		std::string specificLeverName = StrUtil::GetConcatenateNumAndStrings(leverName, "-", i);
+		VECTOR stopPoint = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, specificPointName.c_str()).pos;
+		levers_.push_back(std::make_shared<Lever>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, specificLeverName.c_str()), stopPoint));
 	}
 
 	//アニメーションの設定

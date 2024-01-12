@@ -16,15 +16,6 @@ ExternalFile::ExternalFile()
 	LoadFile(true);
 }
 
-VECTOR ExternalFile::DegreesToRadians(VECTOR rot)
-{
-	rot.x = rot.x * DX_PI_F / 180.0f;
-	rot.y = rot.y * DX_PI_F / 180.0f;
-	rot.z = rot.z * DX_PI_F / 180.0f;
-
-	return rot;
-}
-
 ExternalFile::~ExternalFile()
 {
 	RewritePlayerInfo();
@@ -68,7 +59,7 @@ LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(VECTOR objPos, const char* 
 		}
 	}
 
-	loadGimmickInfo_[key].remove_if([&info](LoadObjectInfo objInfo) {return VSize(objInfo.pos) == VSize(info.pos); });
+//	loadGimmickInfo_[key].remove_if([&info](LoadObjectInfo objInfo) {return VSize(objInfo.pos) == VSize(info.pos); });
 
 	return info;
 }
@@ -319,7 +310,7 @@ void ExternalFile::LoadObjectData(const char* const filename, std::unordered_map
 	//読み取ったデータの回転率を度数法から弧度法へと変換する
 	for (auto& obj : dataTable) {
 		for (auto& objSecond : obj.second) {
-			objSecond.rot = DegreesToRadians(objSecond.rot);
+			objSecond.rot = MathUtil::VECTORDegreeToRadian(objSecond.rot);
 		}
 	}
 

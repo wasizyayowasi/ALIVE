@@ -103,9 +103,6 @@ private:
 
 	ExternalFile();
 
-	//度数法から弧度法
-	VECTOR DegreesToRadians(VECTOR rot);
-
 private:
 
 	PlayerInfo player_ = {};

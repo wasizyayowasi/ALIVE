@@ -64,7 +64,7 @@ void Player::Init(LoadObjectInfo info)
 
 	model_->SetPos(info.pos);
 //	status_.pos = info.pos;
-	status_.pos = VGet(0,0,0);
+	status_.pos = VGet(0,41,0);
 	//回転率の設定
 	model_->SetRot(info.rot);
 	//コリジョンフレームの設定
@@ -140,6 +140,10 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 			updateFunc_ = &Player::IdleToSitup;
 			return;
 		}
+	}
+	else {
+		crank_.reset();
+		lever_.reset();
 	}
 
 	status_.situation.isGimmickCanBeOperated = false;
@@ -540,7 +544,7 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 
 void Player::CrankRotationUpdate(float rotZ) {
 
-	float radian = rotZ * DX_PI_F / 180.0f;
+	float radian = MathUtil::DegreeToRadian(rotZ);
 
 	int frameNo = MV1SearchFrame(crank_->GetModelPointer()->GetModelHandle(), "Crank");
 
@@ -550,7 +554,7 @@ void Player::CrankRotationUpdate(float rotZ) {
 
 	MATRIX mat = {};
 
-	float x = 90 * DX_PI_F / 180.0f;
+	float x = MathUtil::DegreeToRadian(90.0f);
 
 	//平行移動行列
 	MATRIX posMat = MGetTranslate(distance);
@@ -757,8 +761,8 @@ VECTOR Player::VertexPosition(float angle)
 	VECTOR pos = {};
 
 	//度数法を弧度法に変換する
-	float radian = angle * DX_PI_F / 180.0f;
-
+	float radian = MathUtil::DegreeToRadian(angle);
+	
 	//角度による座標を取得する
 	pos.x = sin(radian);
 	pos.z = cos(radian);

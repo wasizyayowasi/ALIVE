@@ -24,9 +24,12 @@ Lever::Lever(LoadObjectInfo info, VECTOR stopPos)
 	model_->SetScale(info.scale);
 	model_->SetRot(info.rot);
 
-	//クランクを回す立ち位置を取得
+	//レバーがどのエレベーターグループに属しているか取得する
 	int standingNum = StrUtil::GetNumberFromString(info.name, ".");
 	std::string standingName = StrUtil::GetConcatenateNumAndStrings("LeverStandingPos", ".", standingNum);
+	//取得したグループの何番目のレバーかを取得する
+	int num = StrUtil::GetNumberFromString(info.name, "-");
+	standingName = StrUtil::GetConcatenateNumAndStrings(standingName, "-", num);
 
 	//立つ位置の初期化
 	standingPos_ = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, standingName.c_str()).pos;

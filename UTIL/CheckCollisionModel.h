@@ -82,8 +82,8 @@ private:
 
 	bool isGoUpStep_ = false;	//段差を上ることが出来る
 
-	VECTOR oldPos;				//現在のプレイヤーの座標
-	VECTOR nowPos;				//プレイヤーの移動量と現在の座標を足して結果
+	VECTOR oldPos = {};			//現在のプレイヤーの座標
+	VECTOR nowPos = {};			//プレイヤーの移動量と現在の座標を足して結果
 	int hitWallNum = 0;			//壁と衝突したポリゴンの数
 	int hitFloorNum = 0;		//床と衝突したポリゴンの数
 	bool moveFlag = false;		//現在移動しているかのフラグ

@@ -28,17 +28,17 @@ InputState::InputState()
 	defaultMapTable_[InputType::right] =		{ {InputCategory::keybd,KEY_INPUT_D},
 												{InputCategory::pad,PAD_INPUT_RIGHT} };
 	//ã–îˆó
-	defaultMapTable_[InputType::upArrow] =		{ {InputCategory::keybd,KEY_INPUT_UP},
-												/*{InputCategory::pad,PAD_INPUT_UP}*/ };
+	defaultMapTable_[InputType::upArrow] =		{ {InputCategory::keybd,KEY_INPUT_UP}};
+
 	//‰º–îˆó
-	defaultMapTable_[InputType::downArrow] =	{ {InputCategory::keybd,KEY_INPUT_DOWN},
-												/*{InputCategory::pad,PAD_INPUT_DOWN}*/ };
+	defaultMapTable_[InputType::downArrow] =	{ {InputCategory::keybd,KEY_INPUT_DOWN}};
+
 	//¶–îˆó
-	defaultMapTable_[InputType::leftArrow] =	{ {InputCategory::keybd,KEY_INPUT_LEFT},
-												/*{InputCategory::pad,PAD_INPUT_LEFT}*/ };
+	defaultMapTable_[InputType::leftArrow] =	{ {InputCategory::keybd,KEY_INPUT_LEFT}};
+
 	//‰E–îˆó
-	defaultMapTable_[InputType::rightArrow] =	{ {InputCategory::keybd,KEY_INPUT_RIGHT},
-												 /*{InputCategory::pad,PAD_INPUT_RIGHT}*/ };
+	defaultMapTable_[InputType::rightArrow] =	{ {InputCategory::keybd,KEY_INPUT_RIGHT}};
+
 	//Space
 	defaultMapTable_[InputType::space] =		{ {InputCategory::keybd,KEY_INPUT_SPACE},
 												{InputCategory::pad,PAD_INPUT_1} };

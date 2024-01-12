@@ -296,7 +296,10 @@ void ObjectManager::Update(Player& player, const InputState& input, std::shared_
 	//XV
 	for (auto list : objects_) {
 		for (auto obj : list.second) {
-			obj->Update(player, input);
+			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
+			if (distanceSize < 1000) {
+				obj->Update(player, input);
+			}
 		}
 	}
 	
