@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include "ObjectData.h"
 #include <memory>
+#include <string>
 
 class Model;
 class Player;
@@ -47,6 +48,9 @@ public:
 	//衝突判定を行うモデルを追加する
 	virtual std::shared_ptr<Model> AddCollModel();
 
+	//名前を取得する
+	std::string GetName() { return name_; }
+
 protected:
 
 	bool isEnable_ = false;						//有効か無効か
@@ -56,6 +60,8 @@ protected:
 	VECTOR pos_ = { 0.0f,0.0f,0.0f };			//ポジション
 	VECTOR rot_ = { 0.0f,0.0f,0.0f };			//回転率
 	VECTOR scale_ = { 0.5f,0.5f,0.5f };			//拡縮率
+
+	std::string name_;							//名前
 
 	std::shared_ptr<Model> model_;				//モデルクラスのスマートポインタ
 

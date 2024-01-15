@@ -335,6 +335,9 @@ void ObjectManager::Draw(VECTOR PlayerPos)
 			}
 		}
 	}
+
+	int size = objects_[ObjectType::enemy].size();
+	DrawFormatString(0, 32, 0xffffff, "%d", size);
 }
 
 std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
@@ -437,7 +440,7 @@ void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, VECTOR loadObj
 void ObjectManager::CircumferencePosition(float angle, VECTOR& infoPos, VECTOR playerPos)
 {
 	VECTOR pos = {};
-	float radian = angle * DX_PI_F / 180.0f;
+	float radian = MathUtil::DegreeToRadian(angle);
 
 	pos.x = sin(radian);
 	pos.z = cos(radian);
@@ -463,6 +466,12 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 	//文字列のサイズを取得する
 	int size = loadInfo.name.size();
 
+	for (auto& enemy : objects_[ObjectType::enemy]) {
+		if (enemy.get()->GetName() == loadInfo.name) {
+			return;
+		}
+	}
+
 	//「.」以降の文字列によって
 	//エネミーの召喚パターンを変更する
 	if (size > 0) {
@@ -471,15 +480,16 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 		//文字列が「ALL」だったら
 		if (str == "ALL") {
 			float angle = 0.0f;
-			LoadObjectInfo info;
-			info = loadInfo;
 			for (int i = 0; i < deathCount; i++) {
 				//一定範囲の中でランダムにスポーンさせる
 				//RandomPositionGenerator(info, loadInfo.pos);
+				
 				//プレイヤーを中心に円周上でスポーンさせる
-				CircumferencePosition(angle, info.pos, playerPos);
+				//CircumferencePosition(angle, loadInfo.pos, playerPos);
+				CircumferencePosition(angle, loadInfo.pos, loadInfo.pos);
+
 				//インスタンス化
-				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(duplicateModelHandle_[ObjectType::enemy], info));
+				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(duplicateModelHandle_[ObjectType::enemy], loadInfo));
 				angle -= 15.0f;
 			}
 		}

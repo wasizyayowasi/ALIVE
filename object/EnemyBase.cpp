@@ -60,7 +60,7 @@ void EnemyBase::Update(Player& player, const InputState& input)
 	if (!IsThereAnObject(playerPos)) {
 		if (SearchForPlayer(playerPos)) {
 			//ƒvƒŒƒCƒ„[‚ð’ÇÕ‚·‚é
-			TrackingUpdate(playerPos);
+			//TrackingUpdate(playerPos);
 		}
 		else {
 			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, true, 10);
@@ -91,7 +91,7 @@ void EnemyBase::Update(Player& player, const InputState& input)
 void EnemyBase::Draw()
 {
 	model_->Draw();
-
+	DrawSphere3D(pos_, 32, 16, 0xff0000, 0xff0000, true);
 //	Aster_->Draw();
 }
 

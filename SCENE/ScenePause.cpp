@@ -72,7 +72,7 @@ void ScenePause::Update(const InputState& input)
 			 break;
 		//タイトルシーンへの遷移
 		case 2:
-			ExternalFile::GetInstance().LoadFile(false);
+//			ExternalFile::GetInstance().LoadFile(false);
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
 			break;
 		//デバッグシーンに戻る

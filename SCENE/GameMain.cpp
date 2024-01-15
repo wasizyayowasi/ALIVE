@@ -78,7 +78,7 @@ void GameMain::Init()
 	//3Dサウンドに関連する情報を設定する
 	SoundManager::GetInstance().Set3DSoundInfo(VGet(575, 120, -60), 1000, "cafe");
 	//仮でcafeという音楽を流している
-	SoundManager::GetInstance().Play("cafe");
+	SoundManager::GetInstance().PlayBGM("cafe");
 }
 
 void GameMain::End()
@@ -131,7 +131,6 @@ void GameMain::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, fadeColor_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
 }
 
 //オブジェクトの生成

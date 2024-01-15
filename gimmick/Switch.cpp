@@ -1,6 +1,7 @@
 #include "Switch.h"
 #include "../util/Model.h"
 #include "../OBJECT/Player.h"
+#include "../util/SoundManager.h"
 
 namespace {
 	//モデルのファイルパス
@@ -60,7 +61,6 @@ void Switch::DeleteHitResult()
 //衝突判定
 void Switch::HitCollPlayer(Player& player)
 {
-
 	VECTOR playerPos = player.GetStatus().pos;
 
 	MV1RefreshCollInfo(model_->GetModelHandle(), model_->GetColFrameIndex());
@@ -123,6 +123,8 @@ void Switch::OnAnim()
 {
 	model_->ChangeAnimation(0, false, false, 10);
 	MV1SetMaterialDifColor(model_->GetModelHandle(), 1, GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
+	SoundManager::GetInstance().Set3DSoundInfo(pos_, 1000, "openTheDoor");
+	SoundManager::GetInstance().Play("openTheDoor");
 }
 
 //スイッチオフアニメーション

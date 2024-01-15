@@ -117,6 +117,5 @@ private:
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadEnemyInfo_;
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadTutorialInfo_;
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadDeleteObjInfo_;
-
 };
 

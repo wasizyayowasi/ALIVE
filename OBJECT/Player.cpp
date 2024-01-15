@@ -39,6 +39,7 @@ Player::Player(const char* const filename):updateFunc_(&Player::NormalUpdate),ca
 	status_.jump.jumpVec = 0.0f;
 	//プレイヤーの高さの設定
 	status_.height = player_hegiht;
+	deathCount_ = 3;
 }
 
 /// <summary>
@@ -63,8 +64,8 @@ void Player::Init(LoadObjectInfo info)
 	//ポジションの設定
 
 	model_->SetPos(info.pos);
-//	status_.pos = info.pos;
-	status_.pos = VGet(0,41,0);
+	status_.pos = info.pos;
+//	status_.pos = VGet(0,41,0);
 	//回転率の設定
 	model_->SetRot(info.rot);
 	//コリジョンフレームの設定
@@ -87,8 +88,10 @@ void Player::Draw()
 {
 	model_->Draw();
 
+	//影もどきの描画
 	DrawPolygon3D();
 
+	DrawFormatString(0, 16, 0xffffff, "%d", deathCount_);
 	DrawFormatString(0, 64, 0xffffff, "normal %.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
 
 }

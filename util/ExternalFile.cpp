@@ -43,20 +43,13 @@ LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(VECTOR objPos, const char* 
 
 	LoadObjectInfo info = {};
 
-	float minDIstance = 10000.0f;
-	float distanceSize = 0.0f;
-
 	std::string key = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(name, ".");
 
 	for (auto& specifiedObj : loadGimmickInfo_[key]) {
 		if (specifiedObj.name != name) {
 			continue;
 		}
-		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(objPos, specifiedObj.pos);
-		if (minDIstance > distanceSize) {
-			minDIstance = distanceSize;
-			info = specifiedObj;
-		}
+		info = specifiedObj;
 	}
 
 //	loadGimmickInfo_[key].remove_if([&info](LoadObjectInfo objInfo) {return VSize(objInfo.pos) == VSize(info.pos); });
@@ -115,9 +108,9 @@ LoadObjectInfo ExternalFile::GetEnemyInfo(VECTOR playerPos)
 		}
 	}
 
-	std::string key = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(info.name, ".");
+//	std::string key = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(info.name, ".");
 
-	loadEnemyInfo_[key].remove_if([&info](LoadObjectInfo objInfo) {return objInfo.pos.x == info.pos.x && objInfo.pos.y == info.pos.y && objInfo.pos.z == info.pos.z; });
+//	loadEnemyInfo_[key].remove_if([&info](LoadObjectInfo objInfo) {return objInfo.pos.x == info.pos.x && objInfo.pos.y == info.pos.y && objInfo.pos.z == info.pos.z; });
 
 	return info;
 }

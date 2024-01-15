@@ -13,6 +13,7 @@ ObjectBase::ObjectBase(int handle, LoadObjectInfo objInfo)
 	pos_ = model_->GetPos();
 	scale_ = objInfo.scale;
 	isEnable_ = true;
+	name_ = objInfo.name;
 }
 
 ObjectBase::~ObjectBase()

@@ -12,6 +12,9 @@ using namespace std;
 SoundManager::SoundManager() {
     //loadSoundConfig();
     Load3DSoundBGMFile("cafe");
+    Load3DSoundSEFile("openTheDoor");
+    Load3DSoundSEFile("pullLever");
+    Load3DSoundSEFile("switchOn");
     SetSEVolume(volumeSE_);
     SetBGMVolume(volumeBGM_);
 }
