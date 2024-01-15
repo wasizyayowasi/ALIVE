@@ -26,6 +26,118 @@ changeKeyUpdateFunc_(&KeyConfigScene::SelectChangeKeyUpdate),
 drawFunc_(&KeyConfigScene::KeyStateDraw), 
 inputState_(input)
 {
+	keyNum_[0] = Key::ESC;
+	keyNum_[1] = Key::Key_1;
+	keyNum_[2] = Key::Key_2;
+	keyNum_[3] = Key::Key_3;
+	keyNum_[4] = Key::Key_4;
+	keyNum_[5] = Key::Key_5;
+	keyNum_[6] = Key::Key_6;
+	keyNum_[7] = Key::Key_7;
+	keyNum_[8] = Key::Key_8;
+	keyNum_[9] = Key::Key_9;
+	keyNum_[10] = Key::Key_0;
+	keyNum_[11] = Key::Key_equal;
+
+	keyNum_[14] = Key::Back;
+	keyNum_[15] = Key::Tab;
+	keyNum_[16] = Key::Q;
+	keyNum_[17] = Key::W;
+	keyNum_[18] = Key::E;
+	keyNum_[19] = Key::R;
+	keyNum_[20] = Key::T;
+	keyNum_[21] = Key::Y;
+	keyNum_[22] = Key::U;
+	keyNum_[23] = Key::I;
+	keyNum_[24] = Key::O;
+	keyNum_[25] = Key::P;
+	keyNum_[26] = Key::Left_parenthesis_key;
+	keyNum_[27] = Key::Right_parenthesis_key;
+	keyNum_[28] = Key::Big_enter;
+	keyNum_[29] = Key::L_ctrl;
+	keyNum_[30] = Key::A;
+	keyNum_[31] = Key::S;
+	keyNum_[32] = Key::D;
+	keyNum_[33] = Key::F;
+	keyNum_[34] = Key::G;
+	keyNum_[35] = Key::H;
+	keyNum_[36] = Key::J;
+	keyNum_[37] = Key::K;
+	keyNum_[38] = Key::L;
+	keyNum_[39] = Key::Semicolon;
+
+	keyNum_[42] = Key::L_shift;
+	keyNum_[43] = Key::Backslash;
+	keyNum_[44] = Key::Z;
+	keyNum_[45] = Key::X;
+	keyNum_[46] = Key::C;
+	keyNum_[47] = Key::V;
+	keyNum_[48] = Key::B;
+	keyNum_[49] = Key::N;
+	keyNum_[50] = Key::M;
+	keyNum_[51] = Key::Comma;
+	keyNum_[52] = Key::Period;
+	keyNum_[53] = Key::Slash;
+	keyNum_[54] = Key::R_shift;
+	keyNum_[55] = Key::Asterisk;
+	keyNum_[56] = Key::L_alt;
+	keyNum_[57] = Key::Space;
+	keyNum_[58] = Key::CaspLock;
+	keyNum_[59] = Key::F1;
+	keyNum_[60] = Key::F2;
+	keyNum_[61] = Key::F3;
+	keyNum_[62] = Key::F4;
+	keyNum_[63] = Key::F5;
+	keyNum_[64] = Key::F6;
+	keyNum_[65] = Key::F7;
+	keyNum_[66] = Key::F8;
+	keyNum_[67] = Key::F9;
+	keyNum_[68] = Key::F10;
+	keyNum_[69] = Key::NumLock;
+	keyNum_[70] = Key::ScrollLock;
+	keyNum_[71] = Key::Key10_7;
+	keyNum_[72] = Key::Key10_8;
+	keyNum_[73] = Key::Key10_9;
+	keyNum_[74] = Key::Key10_minus;
+	keyNum_[75] = Key::Key10_4;
+	keyNum_[76] = Key::Key10_5;
+	keyNum_[77] = Key::Key10_6;
+	keyNum_[78] = Key::Key10_plus;
+	keyNum_[79] = Key::Key10_1;
+	keyNum_[80] = Key::Key10_2;
+	keyNum_[81] = Key::Key10_3;
+	keyNum_[82] = Key::Key10_0;
+	keyNum_[83] = Key::Key10_period;
+
+	keyNum_[87] = Key::F11;
+	keyNum_[88] = Key::F12;
+	keyNum_[112] = Key::カナ;
+	keyNum_[121] = Key::変換;
+	keyNum_[123] = Key::無変換;
+	keyNum_[125] = Key::YEN_mark;
+	keyNum_[144] = Key::Caret;
+	keyNum_[145] = Key::At_mark;
+	keyNum_[146] = Key::Colon;
+	keyNum_[148] = Key::漢字;
+	keyNum_[156] = Key::Key10_enter;
+	keyNum_[157] = Key::R_ctrl;
+	keyNum_[181] = Key::Key10_slash;
+	keyNum_[183] = Key::Print;
+	keyNum_[184] = Key::Ralt;
+	keyNum_[197] = Key::Pause;
+	keyNum_[199] = Key::Home;
+	keyNum_[200] = Key::Up_Arrow;
+	keyNum_[201] = Key::Page_up;
+	keyNum_[203] = Key::Left_Arrow;
+	keyNum_[205] = Key::Right_Arrow;
+	keyNum_[207] = Key::END;
+	keyNum_[208] = Key::Down_Arrow;
+	keyNum_[209] = Key::Page_Down;
+	keyNum_[210] = Key::Insert;
+	keyNum_[211] = Key::Delete;
+	keyNum_[219] = Key::L_win;
+	keyNum_[220] = Key::Rwin;
+	keyNum_[221] = Key::App;
 }
 
 //デストラクタ
@@ -149,7 +261,7 @@ void KeyConfigScene::KeyGraphDraw()
 
 	for (auto& key : inputState_.tempMapTable_) {
 		//key番号を取得する
-		keyNum = GetKeyName(key.second.begin()->id);
+		keyNum = static_cast<int>(keyNum_[key.second.begin()->id]);
 		//画像を分割するための配列番号を取得する
 		int graphArrayX = keyNum % 9;
 		int graphArrayY = keyNum / 9;
@@ -212,7 +324,7 @@ void KeyConfigScene::ChangeKeyPopUpText()
 	DrawStringToHandle(Game::screen_width / 6 + strWidth / 2 , Game::screen_height / 5 - graph_chip_size / 2 - 8, text, 0xffffff, fontHandleSize21_);
 
 	//選択したキーのidを取得して画像を分割する
-	int num = GetKeyName(inputState_.tempMapTable_.find(static_cast<InputType>(selectNum_))->second.begin()->id);
+	int num = static_cast<int>(keyNum_[inputState_.tempMapTable_.find(static_cast<InputType>(selectNum_))->second.begin()->id]);
 	int x = num % 9;
 	int y = num / 9;
 	//選択したキーの画像を出力
@@ -388,84 +500,6 @@ void KeyConfigScene::ControllerUpdate()
 		drawFunc_ = &KeyConfigScene::KeyStateDraw;
 	}
 
-}
-
-int KeyConfigScene::GetKeyName(int num)
-{
-	if (num < 12 && num > 0) {
-		return num - 1;
-	}
-	
-	if (num >= 14 && num <= 39) {
-		return num - 2;
-	}
-
-	if (num >= 42 && num <= 83) {
-		return num - 4;
-	}
-
-	switch (num) {
-	case 87:
-		return 80;
-	case 88:
-		return 81;
-	case 112:
-		return 82;
-	case 121:
-		return 83;
-	case 123:
-		return 84;
-	case 125:
-		return 85;
-	case 144:
-		return 86;
-	case 145:
-		return 87;
-	case 146:
-		return 88;
-	case 148:
-		return 89;
-	case 156:
-		return 90;
-	case 157:
-		return 91;
-	case 181:
-		return 92;
-	case 183:
-		return 93;
-	case 184:
-		return 94;
-	case 197:
-		return 95;
-	case 199:
-		return 96;
-	case 200:
-		return 97;
-	case 201:
-		return 98;
-	case 203:
-		return 99;
-	case 205:
-		return 100;
-	case 207:
-		return 101;
-	case 208:
-		return 102;
-	case 209:
-		return 103;
-	case 210:
-		return 104;
-	case 211:
-		return 105;
-	case 219:
-		return 106;
-	case 220:
-		return 107;
-	case 221:
-		return 108;
-	}
-
-	return num;
 }
 
 void KeyConfigScene::FadeInUpdate(const InputState& input)

@@ -136,7 +136,6 @@ void GameMain::Draw()
 //オブジェクトの生成
 void GameMain::ObjectGenerater()
 {
-
 	auto& loadData = ExternalFile::GetInstance();
 
 	//プレイヤーのインスタンス化
