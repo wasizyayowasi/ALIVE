@@ -20,10 +20,11 @@ namespace {
 }
 
 //コンストラクタ
-KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):SceneBase(manager),
-updateFunc_(&KeyConfigScene::FadeInUpdate),
-inputState_(input)
+KeyConfigScene::KeyConfigScene(SceneManager& manager):SceneBase(manager),
+updateFunc_(&KeyConfigScene::FadeInUpdate)
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
 
 	if (!input.LastInputDevice()) {
 		changeKeyUpdateFunc_ = &KeyConfigScene::ControllerUpdate;
@@ -159,18 +160,21 @@ void KeyConfigScene::Init()
 	controllerHandle_ = LoadGraph("data/graph/controller.png");
 
 	//フォントの作成
-	fontHandleSize21_ = FontsManager::getInstance().GetFontHandle("ピグモ 0021");
-	fontHandleSize42_ = FontsManager::getInstance().GetFontHandle("ピグモ 0042");
+	fontHandleSize21_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0021");
+	fontHandleSize42_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
 	//インスタンス化
 	KeyUI_ = std::make_shared<UIItemManager>();
 	PadUI_ = std::make_shared<UIItemManager>();
+
+	//短縮化
+	auto& input = InputState::GetInstance();
 
 	//キーの役割の一つ目の座標
 	int namePosX = Game::screen_width / 4;
 	int namePosY = Game::screen_height / 2 - (graph_chip_size * 4 + 45);
 
 	int nameNo = 0;
-	for (auto& table : inputState_.inputNameTable_) {
+	for (auto& table : input.inputNameTable_) {
 		//メニューの追加
 		KeyUI_->AddMenu(namePosX, namePosY, 320, 100, table.second.c_str(), fontHandleSize21_);
 
@@ -178,7 +182,7 @@ void KeyConfigScene::Init()
 		namePosY += graph_chip_size + graph_gap_size;
 
 		//inputstate.tempmaptableの半分を超えたら折り返す
-		if (nameNo == inputState_.tempMapTable_.size() / 2 - 1) {
+		if (nameNo == input.tempMapTable_.size() / 2 - 1) {
 			namePosY = Game::screen_height / 2 - (graph_chip_size * 4 + 30);
 			namePosX += Game::screen_width / 4 * 1.5f;
 		}
@@ -199,18 +203,21 @@ void KeyConfigScene::Init()
 
 void KeyConfigScene::End()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//現在のキー入力情報を外部データとして書き出す
-	//inputState_.savekeyInfo();
-	inputState_.SavekeyInfo2();
+	//input.savekeyInfo();
+	input.SavekeyInfo();
 	DeleteGraph(makeScreenHandle_);
 	DeleteGraph(keyTypeHandle_);
 	DeleteGraph(controllerHandle_);
 }
 
 //メンバ関数ポインタの更新
-void KeyConfigScene::Update(const InputState& input)
+void KeyConfigScene::Update()
 {
-	(this->*updateFunc_)(input);
+	(this->*updateFunc_)();
 }
 
 //描画
@@ -257,6 +264,9 @@ void KeyConfigScene::KeyStateDraw()
 
 void KeyConfigScene::KeyGraphDraw()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//ポジション設定
 	float graphPosX = Game::screen_width / 4 * 1.5f;
 	float graphPosY = Game::screen_height / 2 - (graph_chip_size * 4 + 30.0f);
@@ -269,7 +279,7 @@ void KeyConfigScene::KeyGraphDraw()
 	//画像の拡縮率
 	float graphScale = 1.0f;
 
-	for (auto& key : inputState_.tempMapTable_) {
+	for (auto& key : input.tempMapTable_) {
 		//key番号を取得する
 		keyNum = static_cast<int>(keyNum_[key.second.begin()->id]);
 		//画像を分割するための配列番号を取得する
@@ -297,7 +307,7 @@ void KeyConfigScene::KeyGraphDraw()
 
 		//半分を超えたら折り返す処理
 		graphPosY += graph_chip_size + 10;
-		if (keyNo == inputState_.tempMapTable_.size() / 2 - 1) {
+		if (keyNo == input.tempMapTable_.size() / 2 - 1) {
 			graphPosY = Game::screen_height / 2 - (graph_chip_size * 4 + 30);
 			graphPosX += Game::screen_width / 4 * 1.5f;
 		}
@@ -322,20 +332,23 @@ void KeyConfigScene::ControllerDraw()
 
 void KeyConfigScene::ChangeKeyPopUpText()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//背景の黒描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
 	DrawBox(Game::screen_width / 6, Game::screen_height / 5, Game::screen_width / 6 * 5, Game::screen_height / 5 * 4, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	//文字列
-	const char* text = inputState_.inputNameTable_.find(static_cast<InputType>(selectNum_))->second.c_str();
+	const char* text = input.inputNameTable_.find(static_cast<InputType>(selectNum_))->second.c_str();
 	//文字列の横幅
 	int strWidth = GetDrawStringWidthToHandle(text, strlen(text), fontHandleSize21_);
 	//選択したキーの名前を出力
 	DrawStringToHandle(Game::screen_width / 6 + strWidth / 2 , Game::screen_height / 5 - graph_chip_size / 2 - 8, text, 0xffffff, fontHandleSize21_);
 
 	//選択したキーのidを取得して画像を分割する
-	int num = static_cast<int>(keyNum_[inputState_.tempMapTable_.find(static_cast<InputType>(selectNum_))->second.begin()->id]);
+	int num = static_cast<int>(keyNum_[input.tempMapTable_.find(static_cast<InputType>(selectNum_))->second.begin()->id]);
 	int x = num % 9;
 	int y = num / 9;
 	//選択したキーの画像を出力
@@ -354,16 +367,18 @@ void KeyConfigScene::ChangeKeyPopUpText()
 void KeyConfigScene::SelectChangeKeyUpdate()
 {
 	//短縮化
-	auto& configInput = const_cast<InputState&>(inputState_);
+	auto& input = InputState::GetInstance();
+	//短縮化
+	auto& configInput = const_cast<InputState&>(input);
 	//現在のキーの数を取得する
-	const int keyNum = static_cast<int>(inputState_.inputNameTable_.size() + 2);
+	const int keyNum = static_cast<int>(input.inputNameTable_.size() + 2);
 
 	int lastSelectNum = selectNum_;
 
 	//TODO:まとめる
 	//選択操作
 	{
-		if (inputState_.IsTriggered(InputType::up)) {
+		if (input.IsTriggered(InputType::up)) {
 			if (selectNum_ == (keyNum - 1) / 2) {
 				selectNum_ += keyNum / 2;
 			}
@@ -371,7 +386,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 				selectNum_ = ((selectNum_ - 1) + keyNum) % keyNum;
 			}
 		}
-		if (inputState_.IsTriggered(InputType::down)) {
+		if (input.IsTriggered(InputType::down)) {
 			if (selectNum_ + 1 == (keyNum - 1) / 2) {
 				selectNum_ += keyNum / 2;
 			}
@@ -379,14 +394,14 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 				selectNum_ = (selectNum_ + 1) % keyNum;
 			}
 		}
-		if (inputState_.IsTriggered(InputType::left) || inputState_.IsTriggered(InputType::right)) {
+		if (input.IsTriggered(InputType::left) || input.IsTriggered(InputType::right)) {
 			selectNum_ = (selectNum_ + (keyNum / 2 - 1)) % (keyNum - 2);
 		}
 	}
 
 	//キーの変更を保存する
-	if (selectNum_ == inputState_.inputNameTable_.size()) {
-		if (inputState_.IsTriggered(InputType::space)) {
+	if (selectNum_ == input.inputNameTable_.size()) {
+		if (input.IsTriggered(InputType::space)) {
 			configInput.CommitChangedInputInfo();		//仮のキー情報を実際に参照しているキー情報に代入する
 			manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<PopUpTextScene>(manager_)));		//シーンをポップアップテキストを描画するシーンに変更する
 			return;
@@ -394,8 +409,8 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	}
 
 	//仮キー情報を消去してポーズシーンに戻る
-	if (selectNum_ == inputState_.inputNameTable_.size() + 1) {
-		if (inputState_.IsTriggered(InputType::space)) {
+	if (selectNum_ == input.inputNameTable_.size() + 1) {
+		if (input.IsTriggered(InputType::space)) {
 			configInput.ResetInputInfo();
 			updateFunc_ = &KeyConfigScene::FadeOutUpdate;
 			return;
@@ -403,7 +418,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	}
 	
 	//どのキーを変更するかを仮決定
-	if (inputState_.IsTriggered(InputType::space)) {
+	if (input.IsTriggered(InputType::space)) {
 		isEditing_ = !isEditing_;
 		drawFunc_ = &KeyConfigScene::ChangeKeyPopUpText;
 		changeKeyUpdateFunc_ = &KeyConfigScene::ChangeKeyborardUpdate;
@@ -412,7 +427,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	}
 
 	//ひとつ前のシーンに戻る
-	if (inputState_.IsTriggered(InputType::pause)) {
+	if (input.IsTriggered(InputType::pause)) {
 		updateFunc_ = &KeyConfigScene::FadeOutUpdate;
 		configInput.RollbackChangedInputInfo();
 		return;
@@ -420,7 +435,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 
 	//コントローラーの入力が入ったときに
 	//コントローラー用の描画と更新用クラスに変更する
-	if (!inputState_.LastInputDevice()) {
+	if (!input.LastInputDevice()) {
 		changeKeyUpdateFunc_ = &KeyConfigScene::ControllerUpdate;
 		drawFunc_ = &KeyConfigScene::ControllerDraw;
 	}
@@ -430,16 +445,19 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 //変更したいキーをどのキーに変更するのか
 void KeyConfigScene::ChangeKeyborardUpdate()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//一フレーム前の入力情報が残っていたらリターンする
-	for (const auto& key : inputState_.lastInput_) {
+	for (const auto& key : input.lastInput_) {
 		if (key == true) return;
 	}
 
 	//短縮化
-	auto& configInput = const_cast<InputState&>(inputState_);
+	auto& configInput = const_cast<InputState&>(input);
 
 	//メンバ関数ポインタを変更するキーを選択する関数に変更する
-	if (inputState_.IsTriggered(InputType::pause)) {
+	if (input.IsTriggered(InputType::pause)) {
 		changeKeyUpdateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
 		drawFunc_ = &KeyConfigScene::KeyStateDraw;
 		isEditing_ = !isEditing_;
@@ -455,7 +473,7 @@ void KeyConfigScene::ChangeKeyborardUpdate()
 	int idx = 0;
 	InputType currentType = InputType::max;
 	//現在の選択inputNameTableを取得する
-	for (const auto& name : inputState_.inputNameTable_) {
+	for (const auto& name : input.inputNameTable_) {
 		if (selectNum_ == idx) {
 			currentType = name.first;
 			break;
@@ -486,11 +504,13 @@ void KeyConfigScene::ChangeKeyborardUpdate()
 void KeyConfigScene::ControllerUpdate()
 {
 	//短縮化
-	auto& configInput = const_cast<InputState&>(inputState_);
+	auto& input = InputState::GetInstance();
+	//短縮化
+	auto& configInput = const_cast<InputState&>(input);
 
 	//仮キー情報を消去してポーズシーンに戻る
 	if (selectNum_ == 0) {
-		if (inputState_.IsTriggered(InputType::space)) {
+		if (input.IsTriggered(InputType::space)) {
 			configInput.ResetInputInfo();
 			updateFunc_ = &KeyConfigScene::FadeOutUpdate;
 			return;
@@ -498,7 +518,7 @@ void KeyConfigScene::ControllerUpdate()
 	}
 
 	//ひとつ前のシーンに戻る
-	if (inputState_.IsTriggered(InputType::pause)) {
+	if (input.IsTriggered(InputType::pause)) {
 		updateFunc_ = &KeyConfigScene::FadeOutUpdate;
 		configInput.RollbackChangedInputInfo();
 		return;
@@ -506,14 +526,14 @@ void KeyConfigScene::ControllerUpdate()
 
 	//キーボードの入力が入ったときに
 	//キーボード用の描画と更新用クラスに変更する
-	if (inputState_.LastInputDevice()) {
+	if (input.LastInputDevice()) {
 		changeKeyUpdateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
 		drawFunc_ = &KeyConfigScene::KeyStateDraw;
 	}
 
 }
 
-void KeyConfigScene::FadeInUpdate(const InputState& input)
+void KeyConfigScene::FadeInUpdate()
 {
 	float timer = static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_);
 	fadeValue_ = static_cast <int>(255 * timer);
@@ -523,12 +543,12 @@ void KeyConfigScene::FadeInUpdate(const InputState& input)
 	}
 }
 
-void KeyConfigScene::NormalUpdate(const InputState& input)
+void KeyConfigScene::NormalUpdate()
 {
 	(this->*changeKeyUpdateFunc_)();
 }
 
-void KeyConfigScene::FadeOutUpdate(const InputState& input)
+void KeyConfigScene::FadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) {

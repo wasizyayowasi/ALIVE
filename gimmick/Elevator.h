@@ -8,7 +8,7 @@ class Switch;
 class Lever;
 class Model;
 
-class Elevator : public GimmickBase
+class Elevator final : public GimmickBase
 {
 private:
 

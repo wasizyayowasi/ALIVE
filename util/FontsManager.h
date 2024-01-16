@@ -8,7 +8,7 @@ public:
 
 	~FontsManager();
 
-	static FontsManager& getInstance() {
+	static FontsManager& GetInstance() {
 		static FontsManager instance;
 		return instance;
 	}

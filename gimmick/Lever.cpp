@@ -34,7 +34,6 @@ Lever::Lever(LoadObjectInfo info, VECTOR stopPos)
 
 	//立つ位置の初期化
 	standingPos_ = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, standingName.c_str()).pos;
-
 }
 
 //デストラクタ

@@ -54,13 +54,13 @@ void SceneManager::PopFrontScene()
 	}
 }
 
-void SceneManager::Update(const InputState& input)
+void SceneManager::Update()
 {
 
 	LONGLONG start = GetNowHiPerformanceCount();
 	
 	//先頭にあるシーンの更新
-	scenes_.front()->Update(input);
+	scenes_.front()->Update();
 
 	debugUpdateTime_ = GetNowHiPerformanceCount() - start;
 }

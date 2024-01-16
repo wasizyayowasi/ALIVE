@@ -87,11 +87,11 @@ void GameMain::End()
 }
 
 //更新
-void GameMain::Update(const InputState& input)
+void GameMain::Update()
 {
-	(this->*updateFunc_)(input);
+	(this->*updateFunc_)();
 
-	currentInputDevice_ = input.LastInputDevice();
+	currentInputDevice_ = InputState::GetInstance().LastInputDevice();
 }
 
 //描画
@@ -117,6 +117,8 @@ void GameMain::Draw()
 	shotManager_->Draw();
 
 	tutorial_->Draw(currentInputDevice_);
+
+	
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
@@ -150,7 +152,7 @@ void GameMain::ObjectGenerater()
 }
 
 //TODO：別のフェードインが出来次第消去
-void GameMain::FadeInUpdate(const InputState& input)
+void GameMain::FadeInUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) {
@@ -160,9 +162,11 @@ void GameMain::FadeInUpdate(const InputState& input)
 }
 
 //更新
-void GameMain::NormalUpdate(const InputState& input)
+void GameMain::NormalUpdate()
 {
-	
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//フィルター処理を行わない用にする
 	isFilterOn_ = false;
 
@@ -206,7 +210,7 @@ void GameMain::NormalUpdate(const InputState& input)
 }
 
 //TODO：別のフェードインが出来次第消去
-void GameMain::FadeOutUpdate(const InputState& input)
+void GameMain::FadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) {

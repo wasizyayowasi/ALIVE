@@ -35,7 +35,7 @@ void UIItem::CreateUIGraph(int fontHandle)
 {
 	assert(fontHandle != -1);
 
-	auto& fontManager = FontsManager::getInstance();
+	auto& fontManager = FontsManager::GetInstance();
 
 	SetDrawScreen(makeScreenHandle_);
 

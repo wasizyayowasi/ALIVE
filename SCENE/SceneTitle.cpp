@@ -39,7 +39,7 @@ void SceneTitle::Init()
 	menuName_.push_back("終了");
 
 	//UI画像の作成
-	int font = FontsManager::getInstance().GetFontHandle("ピグモ 0042");
+	int font = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
 	float y = 120.0f;
 	for (auto& menu : menuName_) {
 		UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 2 + y, 320, 100, menu.c_str(), font);
@@ -52,9 +52,9 @@ void SceneTitle::End()
 	DeleteGraph(titleHandle_);
 }
 
-void SceneTitle::Update(const InputState& input)
+void SceneTitle::Update()
 {
-	(this->*updateFunc_)(input);
+	(this->*updateFunc_)();
 }
 
 void SceneTitle::Draw()
@@ -72,7 +72,7 @@ void SceneTitle::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void SceneTitle::fadeInUpdate(const InputState& input)
+void SceneTitle::fadeInUpdate()
 {
 	float timer = (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_));
 	fadeValue_ = static_cast <int>(255 * timer);
@@ -85,8 +85,10 @@ void SceneTitle::fadeInUpdate(const InputState& input)
 
 }
 
-void SceneTitle::normalUpdate(const InputState& input)
+void SceneTitle::normalUpdate()
 {		
+	//短縮化
+	auto& input = InputState::GetInstance();
 
 	//選択
 	if (input.IsTriggered(InputType::up)) {
@@ -103,7 +105,7 @@ void SceneTitle::normalUpdate(const InputState& input)
 
 }
 
-void SceneTitle::fadeOutUpdate(const InputState& input)
+void SceneTitle::fadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) {

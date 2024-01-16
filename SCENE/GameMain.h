@@ -26,7 +26,7 @@ public:
 	void End();
 
 	//更新
-	void Update(const InputState& input);
+	void Update();
 	//描画
 	void Draw();
 
@@ -44,9 +44,9 @@ private:
 	bool currentInputDevice_ = false;		//true:キーボード　false:パッド
 
 	//消すかもしれない
-	void FadeInUpdate(const InputState& input);
-	void NormalUpdate(const InputState& input);
-	void FadeOutUpdate(const InputState& input);
+	void FadeInUpdate();
+	void NormalUpdate();
+	void FadeOutUpdate();
 
 	//ここも消すかもしれない
 	static constexpr int fadeInterval_ = 60;
@@ -64,7 +64,7 @@ private:
 	
 	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
 
-	void (GameMain::* updateFunc_)(const InputState& input);		//メンバ関数ポインタ
+	void (GameMain::* updateFunc_)();		//メンバ関数ポインタ
 
 };
 

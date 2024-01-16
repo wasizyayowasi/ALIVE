@@ -29,8 +29,11 @@ void DebugScene::End()
 {
 }
 
-void DebugScene::Update(const InputState& input)
+void DebugScene::Update()
 {
+	//íZèkâª
+	auto& input = InputState::GetInstance();
+
 	//TODO:Ç‹Ç∆ÇﬂÇÈ
 	if (input.IsTriggered(InputType::up)) {
 		selectNum_ = (std::max)(selectNum_ - 1, 0);

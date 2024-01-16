@@ -108,7 +108,7 @@ public:
 	/// </summary>
 	/// <param name="manager">managerを参照し、シーンベースに引数として渡す</param>
 	/// <param name="input">inputの情報を参照する</param>
-	KeyConfigScene(SceneManager& manager, const InputState& input);
+	KeyConfigScene(SceneManager& manager);
 	//デストラクタ
 	virtual ~KeyConfigScene();
 
@@ -118,7 +118,7 @@ public:
 	void End();
 
 	//更新
-	void Update(const InputState& input);
+	void Update();
 	//描画
 	void Draw();
 
@@ -144,9 +144,9 @@ public:
 private:
 
 	//消すかもしれない
-	void FadeInUpdate(const InputState& input);
-	void NormalUpdate(const InputState& input);
-	void FadeOutUpdate(const InputState& input);
+	void FadeInUpdate();
+	void NormalUpdate();
+	void FadeOutUpdate();
 
 private:
 
@@ -166,14 +166,14 @@ private:
 
 	bool isEditing_ = false;							//編集中フラグ
 
-	const InputState& inputState_;						//コンストラクタの引数input参照を受け取る
+	//State_;						//コンストラクタの引数input参照を受け取る
 
 	std::shared_ptr<UIItemManager> KeyUI_;				//UIマネージャーのスマートポインタ
 	std::shared_ptr<UIItemManager> PadUI_;				//UIマネージャーのスマートポインタ
 
 	std::map<int, Key> keyNum_;
 
-	void (KeyConfigScene::* updateFunc_)(const InputState& input);
+	void (KeyConfigScene::* updateFunc_)();
 	void (KeyConfigScene::* changeKeyUpdateFunc_)();	//メンバ関数ポインタ
 	void (KeyConfigScene::* drawFunc_)();				//メンバ関数ポインタ
 
