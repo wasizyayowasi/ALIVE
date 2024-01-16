@@ -22,10 +22,18 @@ namespace {
 //コンストラクタ
 KeyConfigScene::KeyConfigScene(SceneManager& manager, const InputState& input):SceneBase(manager),
 updateFunc_(&KeyConfigScene::FadeInUpdate),
-changeKeyUpdateFunc_(&KeyConfigScene::SelectChangeKeyUpdate),
-drawFunc_(&KeyConfigScene::KeyStateDraw), 
 inputState_(input)
 {
+
+	if (!input.LastInputDevice()) {
+		changeKeyUpdateFunc_ = &KeyConfigScene::ControllerUpdate;
+		drawFunc_ = &KeyConfigScene::ControllerDraw;
+	}
+	else {
+		changeKeyUpdateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
+		drawFunc_ = &KeyConfigScene::KeyStateDraw;
+	}
+
 	keyNum_[0] = Key::ESC;
 	keyNum_[1] = Key::Key_1;
 	keyNum_[2] = Key::Key_2;
@@ -154,7 +162,8 @@ void KeyConfigScene::Init()
 	fontHandleSize21_ = FontsManager::getInstance().GetFontHandle("ピグモ 0021");
 	fontHandleSize42_ = FontsManager::getInstance().GetFontHandle("ピグモ 0042");
 	//インスタンス化
-	UI_ = std::make_shared<UIItemManager>();
+	KeyUI_ = std::make_shared<UIItemManager>();
+	PadUI_ = std::make_shared<UIItemManager>();
 
 	//キーの役割の一つ目の座標
 	int namePosX = Game::screen_width / 4;
@@ -163,7 +172,7 @@ void KeyConfigScene::Init()
 	int nameNo = 0;
 	for (auto& table : inputState_.inputNameTable_) {
 		//メニューの追加
-		UI_->AddMenu(namePosX, namePosY, 320, 100, table.second.c_str(), fontHandleSize21_);
+		KeyUI_->AddMenu(namePosX, namePosY, 320, 100, table.second.c_str(), fontHandleSize21_);
 
 		//ポジション調整
 		namePosY += graph_chip_size + graph_gap_size;
@@ -178,8 +187,9 @@ void KeyConfigScene::Init()
 	}
 
 	//メニューの追加
-	UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 5 * 4, 320, 100, "変更", fontHandleSize42_);
-	UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 5 * 4 + 32, 320, 100, "キャンセル", fontHandleSize42_);
+	KeyUI_->AddMenu(Game::screen_width / 2, Game::screen_height / 5 * 4, 320, 100, "変更", fontHandleSize42_);
+	KeyUI_->AddMenu(Game::screen_width / 2, Game::screen_height / 5 * 4 + 32, 320, 100, "キャンセル", fontHandleSize42_);
+	PadUI_->AddMenu(Game::screen_width / 2, Game::screen_height / 5 * 4 + 32, 320, 100, "キャンセル", fontHandleSize42_);
 
 	//スクリーンサイズのハンドルを作成
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
@@ -236,7 +246,7 @@ void KeyConfigScene::KeyStateDraw()
 	ClearDrawScreen();
 
 	//キーの役割を描画する
-	UI_->AlphaChangeDraw(selectNum_,fadeValue_);
+	KeyUI_->AlphaChangeDraw(selectNum_,fadeValue_);
 
 	//キーに対応する画像を描画する
 	KeyGraphDraw();
@@ -298,11 +308,12 @@ void KeyConfigScene::KeyGraphDraw()
 
 void KeyConfigScene::ControllerDraw()
 {
-
 	//書き込みスクリーンの変更
 	SetDrawScreen(makeScreenHandle_);
 	//スクリーンのクリア
 	ClearDrawScreen();
+
+	PadUI_->AlphaChangeDraw(selectNum_, fadeValue_);
 
 	DrawGraph(0, 0, controllerHandle_, true);
 
@@ -509,10 +520,6 @@ void KeyConfigScene::FadeInUpdate(const InputState& input)
 	if (++fadeTimer_ == fadeInterval_) {
 		updateFunc_ = &KeyConfigScene::NormalUpdate;
 		fadeValue_ = 255;
-		if (!input.LastInputDevice()) {
-			changeKeyUpdateFunc_ = &KeyConfigScene::ControllerUpdate;
-			drawFunc_ = &KeyConfigScene::ControllerDraw;
-		}
 	}
 }
 

@@ -1,10 +1,7 @@
 #pragma once
-#include "CharacterBase.h"
 #include "PlayerData.h"
 #include "ObjectData.h"
 #include <DxLib.h>
-#include <list>
-#include <unordered_map>
 #include <memory>
 
 class InputState;
@@ -119,7 +116,7 @@ private:
 	void ChangeAnimIdle();
 
 	//ˆÚ“®ˆ—
-	void MovingUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	void MovingUpdate(const InputState& input);
 
 	//ˆÚ“®
 	float Move(const InputState& input);

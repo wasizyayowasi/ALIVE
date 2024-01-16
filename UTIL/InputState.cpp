@@ -64,19 +64,19 @@ InputState::InputState()
 	tempMapTable_ = inputMapTable_;
 
 	//入力タイプの名前のテーブルを作る
-	inputNameTable_[InputType::pause] = "ポーズ";
-	inputNameTable_[InputType::up] = "上へ移動";
-	inputNameTable_[InputType::down] = "下へ移動";
-	inputNameTable_[InputType::left] = "左へ移動";
-	inputNameTable_[InputType::right] = "右へ移動";
-	inputNameTable_[InputType::upArrow] = "上を見る";
-	inputNameTable_[InputType::downArrow] = "下を見る";
-	inputNameTable_[InputType::leftArrow] = "左を見る";
-	inputNameTable_[InputType::rightArrow] = "右を見る";
-	inputNameTable_[InputType::space] = "決定/ジャンプ";
-	inputNameTable_[InputType::death] = "死亡";
-	inputNameTable_[InputType::shift] = "走る";
-	inputNameTable_[InputType::activate] = "アクション";
+	inputNameTable_[InputType::pause]		= "ポーズ";
+	inputNameTable_[InputType::up]			= "上へ移動";
+	inputNameTable_[InputType::down]		= "下へ移動";
+	inputNameTable_[InputType::left]		= "左へ移動";
+	inputNameTable_[InputType::right]		= "右へ移動";
+	inputNameTable_[InputType::upArrow]		= "上を見る";
+	inputNameTable_[InputType::downArrow]	= "下を見る";
+	inputNameTable_[InputType::leftArrow]	= "左を見る";
+	inputNameTable_[InputType::rightArrow]	= "右を見る";
+	inputNameTable_[InputType::space]		= "決定/ジャンプ";
+	inputNameTable_[InputType::death]		= "死亡";
+	inputNameTable_[InputType::shift]		= "走る";
+	inputNameTable_[InputType::activate]	= "アクション";
 
 
 	currentInput_.resize(static_cast<int>(InputType::max));

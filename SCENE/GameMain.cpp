@@ -181,7 +181,7 @@ void GameMain::NormalUpdate(const InputState& input)
 	shotManager_->Update();
 	shotManager_->Hit(*player_);
 
-	tutorial_->Update(player_->GetStatus().pos);
+	tutorial_->Update(input,player_->GetStatus().pos);
 
 	//リスナーの位置と方向を設定
 	//今回は、プレイヤーではなくカメラの座標にしている

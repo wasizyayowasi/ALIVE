@@ -2,6 +2,7 @@
 #include "../util/Model.h"
 #include "../util/Util.h"
 #include "../util/ExternalFile.h"
+#include "../util/SoundManager.h"
 
 namespace {
 	const char* const filename = "data/model/other/mv1/Lever.mv1";
@@ -79,6 +80,8 @@ void Lever::OnAnimation()
 {
 	model_->ChangeAnimation(static_cast<int>(AnimType::on), false, false, 10);
 	isOn_ = true;
+	SoundManager::GetInstance().Set3DSoundInfo(pos_, 500, "pullLever");
+	SoundManager::GetInstance().Play("pullLever");
 }
 
 //ƒŒƒo[‚Ì’â~

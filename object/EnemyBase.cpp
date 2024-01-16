@@ -60,7 +60,7 @@ void EnemyBase::Update(Player& player, const InputState& input)
 	if (!IsThereAnObject(playerPos)) {
 		if (SearchForPlayer(playerPos)) {
 			//ƒvƒŒƒCƒ„[‚ð’ÇÕ‚·‚é
-			//TrackingUpdate(playerPos);
+			TrackingUpdate(playerPos);
 		}
 		else {
 			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, true, 10);

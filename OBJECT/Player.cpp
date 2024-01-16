@@ -162,7 +162,7 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 	}
 
 	ChangeAnimIdle();
-	MovingUpdate(input,objManager);
+	MovingUpdate(input);
 
 	//空中にいるとき
 	//重力をベクトルに足してポジションに足す
@@ -228,7 +228,7 @@ void Player::ChangeAnimIdle()
 /// プレイヤーを移動させるための関数
 /// </summary>
 /// <param name="input">外部装置の入力情報を参照する</param>
-void Player::MovingUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+void Player::MovingUpdate(const InputState& input)
 {
 	
 	float movingSpeed = Move(input);

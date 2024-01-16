@@ -168,7 +168,8 @@ private:
 
 	const InputState& inputState_;						//コンストラクタの引数input参照を受け取る
 
-	std::shared_ptr<UIItemManager> UI_;					//UIマネージャーのスマートポインタ
+	std::shared_ptr<UIItemManager> KeyUI_;				//UIマネージャーのスマートポインタ
+	std::shared_ptr<UIItemManager> PadUI_;				//UIマネージャーのスマートポインタ
 
 	std::map<int, Key> keyNum_;
 
