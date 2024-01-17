@@ -96,9 +96,6 @@
     <ClCompile Include="gimmick\Switch.cpp">
       <Filter>ソース ファイル\gimmick</Filter>
     </ClCompile>
-    <ClCompile Include="gimmick\Steelyard.cpp">
-      <Filter>ソース ファイル\gimmick</Filter>
-    </ClCompile>
     <ClCompile Include="util\Util.cpp">
       <Filter>ソース ファイル\util</Filter>
     </ClCompile>
@@ -222,9 +219,6 @@
       <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
     <ClInclude Include="gimmick\Switch.h">
-      <Filter>ヘッダー ファイル\gimmick</Filter>
-    </ClInclude>
-    <ClInclude Include="gimmick\Steelyard.h">
       <Filter>ヘッダー ファイル\gimmick</Filter>
     </ClInclude>
     <ClInclude Include="gimmick\GimmickBase.h">

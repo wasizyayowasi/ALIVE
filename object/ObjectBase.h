@@ -6,7 +6,6 @@
 
 class Model;
 class Player;
-class InputState;
 
 class ObjectBase
 {
@@ -17,7 +16,7 @@ public:
 	virtual ~ObjectBase();
 
 	//XV
-	virtual void Update(Player& player,const InputState& input);
+	virtual void Update(Player& player);
 	//•`‰æ
 	virtual void Draw();
 

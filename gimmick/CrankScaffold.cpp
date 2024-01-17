@@ -38,7 +38,7 @@ CrankScaffold::~CrankScaffold()
 }
 
 //更新
-void CrankScaffold::Update(Player& player, const InputState& input)
+void CrankScaffold::Update(Player& player)
 {
 	//クランクとプレイヤーの衝突判定を行い
 	//当たっていた場合プレイヤーに当たっていたクラスのポインターを

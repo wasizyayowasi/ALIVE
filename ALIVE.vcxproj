@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(dxlib);$(json);$(Dxlib)</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -129,7 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(dxlib);$(json);$(Dxlib)</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -163,7 +163,6 @@
     <ClCompile Include="util\FontsManager.cpp" />
     <ClCompile Include="gimmick\GimmickBase.cpp" />
     <ClCompile Include="gimmick\Switch.cpp" />
-    <ClCompile Include="gimmick\Steelyard.cpp" />
     <ClCompile Include="util\EffekseerManager.cpp" />
     <ClCompile Include="object\EnemyBase.cpp" />
     <ClCompile Include="scene\DebugScene.cpp" />
@@ -213,7 +212,6 @@
     <ClInclude Include="util\FontsManager.h" />
     <ClInclude Include="gimmick\GimmickBase.h" />
     <ClInclude Include="gimmick\Switch.h" />
-    <ClInclude Include="gimmick\Steelyard.h" />
     <ClInclude Include="util\EffekseerManager.h" />
     <ClInclude Include="object\EnemyBase.h" />
     <ClInclude Include="scene\DebugScene.h" />

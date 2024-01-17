@@ -10,7 +10,7 @@ OrnamentBase::~OrnamentBase()
 {
 }
 
-void OrnamentBase::Update(Player& player, const InputState& input)
+void OrnamentBase::Update(Player& player)
 {
 }
 

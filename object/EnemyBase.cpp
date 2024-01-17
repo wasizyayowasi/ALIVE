@@ -13,13 +13,12 @@ namespace {
 
 	//敵の視野角
 	constexpr float viewing_angle = 30.0f;
+
 	//敵がプレイヤーを視認できる範囲
 	constexpr float visible_range = 500.0f;
+
 	//敵のスピード
 	constexpr float move_speed = 3.0f;
-
-	//オブジェクト認知範囲
-	constexpr float check_collition_radius = 200.0f;
 
 	//敵モデルの高さ
 	constexpr float model_height = 150.0f;
@@ -41,7 +40,7 @@ EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,
 	frontVec_ = init_rot;
 }
 
-void EnemyBase::Update(Player& player, const InputState& input)
+void EnemyBase::Update(Player& player)
 {
 
 	//モデルの更新
@@ -67,12 +66,15 @@ void EnemyBase::Update(Player& player, const InputState& input)
 		}
 	}
 	else{
-		if (DistanceIsWithinRange()) {
+		if (DistanceIsWithinRange(playerPos)) {
 			//目標マスの中心座標を取得
 			Aster_->LocationInformation(playerPos, pos_);
 
 			//経路探索
 			RoutingUpdate(player);
+		}
+		else {
+			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, true, 10);
 		}
 	}
 
@@ -103,17 +105,8 @@ void EnemyBase::TrackingUpdate(VECTOR playerPos)
 	distancePlayerAndEnemy.y = 0;
 	VECTOR moveVec = VScale(VNorm(distancePlayerAndEnemy), move_speed);
 
-	//回転行列の取得
-	MATRIX rotMtx = MGetRotVec2(init_rot, distancePlayerAndEnemy);
-
-	//拡縮行列の取得
-	MATRIX scaleMtx = MGetScale(scale_);
-
-	//正面ベクトルを取得する
-	frontVec_ = VTransformSR(init_rot, rotMtx);
-
-	//回転行列と拡縮行列の掛け算
-	MATRIX mtx = MMult(rotMtx, scaleMtx);
+	//回転行列と拡縮行列の合成行列
+	MATRIX mtx = CombiningRotAndScallMat(distancePlayerAndEnemy);
 
 	//ポジションの移動
 	pos_ = VAdd(pos_, moveVec);
@@ -152,7 +145,7 @@ bool EnemyBase::SearchForPlayer(VECTOR playerPos)
 		}
 	}
 
-	if (!DistanceIsWithinRange()) {
+	if (!DistanceIsWithinRange(playerPos)) {
 		return false;
 	}
 
@@ -178,27 +171,21 @@ void EnemyBase::RoutingUpdate(Player& player)
 	//プレイヤーの座標
 	VECTOR playerPos = player.GetStatus().pos;
 
+	//エネミーが次に目指す升の中心座標
 	VECTOR targetPos = Aster_->GetDestinationCoordinates(playerPos,pos_);
 
 	//目標地点とポジションの距離を取得
 	VECTOR distance = VSub(targetPos, pos_);
 
+	//エネミーと目指す升の中心座標との距離のベクトルサイズ
 	float size = VSize(distance);
 
+	//回転行列と拡縮行列の合成行列
+	MATRIX mtx = CombiningRotAndScallMat(distance);
 
-	//回転行列の取得
-	MATRIX rotMtx = MGetRotVec2(init_rot, VSub(targetPos, pos_));
-
-	//正面ベクトルを取得する
-	frontVec_ = VTransformSR(init_rot, rotMtx);
-
-	//拡縮行列の取得
-	MATRIX scaleMtx = MGetScale(scale_);
-
-	//回転行列と拡縮行列の掛け算
-	MATRIX mtx = MMult(rotMtx, scaleMtx);
 	//回転行列と拡縮行列を掛けた行列に平行移動行列を書ける
 	mtx = MMult(mtx, MGetTranslate(pos_));
+
 	//行列をモデルにセットする
 	MV1SetMatrix(model_->GetModelHandle(), mtx);
 
@@ -216,8 +203,13 @@ void EnemyBase::RoutingUpdate(Player& player)
 
 bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 {
+	//エネミーとプレイヤーの距離
 	VECTOR distance = VSub(playerPos, pos_);
-	int size = VSize(distance) / 50;
+
+	//エネミーとプレイヤーの距離のベクトルサイズ
+	int size = static_cast<int>(VSize(distance) / 50);
+
+	//エネミーとプレイヤーの距離の正規化
 	VECTOR norm = VNorm(distance);
 	
 	bool noObject = false;
@@ -225,7 +217,7 @@ bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 	for (int i = 0; i < size; i++) {
 		VECTOR PointPos = VScale(norm, 50.0f * i);
 		PointPos = VAdd(pos_, PointPos);
-		noObject = Aster_->temp(PointPos);
+		noObject = Aster_->SearchBlockadeMode(PointPos);
 		if (noObject) {
 			break;
 		}
@@ -234,9 +226,13 @@ bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 	return noObject;
 }
 
-bool EnemyBase::DistanceIsWithinRange()
+bool EnemyBase::DistanceIsWithinRange(VECTOR playerPos)
 {
-	//プレイヤーと敵の座標差を見て、
+	//プレイヤーとエネミーの距離を取得
+	distanceSize_ = VSize(VSub(playerPos, pos_));
+
+	//プレイヤーと敵の座標差を見て、エネミーが見える範囲内だったら
+	//アニメーションを歩きに変更して、trueを返す
 	if (distanceSize_ < visible_range) {
 		model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Walk), true, false, 20);
 		return true;
@@ -275,6 +271,22 @@ void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos,f
 		VECTOR framePos = model_->GetFrameLocalPosition(hand_framename);
 		shotManager->Fire(framePos, playerPos, height);
 	}
+}
 
+MATRIX EnemyBase::CombiningRotAndScallMat(VECTOR distance)
+{
+	//回転行列の取得
+	MATRIX rotMtx = MGetRotVec2(init_rot, distance);
+
+	//正面ベクトルを取得する
+	frontVec_ = VTransformSR(init_rot, rotMtx);
+
+	//拡縮行列の取得
+	MATRIX scaleMtx = MGetScale(scale_);
+
+	//回転行列と拡縮行列の掛け算
+	MATRIX mtx = MMult(rotMtx, scaleMtx);
+
+	return mtx;
 }
 

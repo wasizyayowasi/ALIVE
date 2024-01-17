@@ -1,5 +1,6 @@
 #pragma once
 #include "ObjectBase.h"
+
 class OrnamentBase : public ObjectBase
 {
 public:
@@ -7,7 +8,7 @@ public:
 	virtual ~OrnamentBase();
 
 	//XV
-	virtual void Update(Player& player, const InputState& input)override;
+	virtual void Update(Player& player)override;
 	//•`‰æ
 	virtual void Draw();
 

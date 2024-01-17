@@ -4,7 +4,6 @@
 
 #include "../gimmick/GimmickBase.h"
 #include "../gimmick/Switch.h"
-#include "../gimmick/Steelyard.h"
 
 #include "../object/Player.h"
 #include "../object/Camera.h"
@@ -174,18 +173,18 @@ void GameMain::NormalUpdate()
 	player_->Update(input, objManager_);
 
 	//オブジェクトの更新
-	objManager_->Update(*player_,input,shotManager_);
+	objManager_->Update(*player_,shotManager_);
 
 	//プレイヤーとその他オブジェクトとの衝突判定
 	checkCollisionModel_->CheckCollision(player_,objManager_);
 
 	//カメラの注視点を変更する
-	camera_->ChangeOfFocus(input);
+	camera_->ChangeOfFocus();
 
 	shotManager_->Update();
 	shotManager_->Hit(*player_);
 
-	tutorial_->Update(input,player_->GetStatus().pos);
+	tutorial_->Update(player_->GetStatus().pos);
 
 	//リスナーの位置と方向を設定
 	//今回は、プレイヤーではなくカメラの座標にしている

@@ -8,7 +8,6 @@
 class ObjectBase;
 class Model;
 class Player;
-class InputState;
 class ShotManager;
 
 class ObjectManager
@@ -35,7 +34,7 @@ public:
 	void DeadPersonGenerator(int handle, LoadObjectInfo objInfo,int animNo);
 
 	//çXêV
-	void Update(Player& player, const InputState& input, std::shared_ptr<ShotManager> shotManager);
+	void Update(Player& player, std::shared_ptr<ShotManager> shotManager);
 
 	//ï`âÊ
 	void Draw(VECTOR pos);

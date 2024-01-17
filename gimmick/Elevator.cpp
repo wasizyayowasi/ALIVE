@@ -59,7 +59,7 @@ Elevator::~Elevator()
 }
 
 //更新
-void Elevator::Update(Player& player, const InputState& input)
+void Elevator::Update(Player& player)
 {
 	//プレイヤーのポジションの取得
 	VECTOR playerPos = player.GetStatus().pos;

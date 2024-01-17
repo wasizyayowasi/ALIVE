@@ -25,7 +25,7 @@ public:
 	virtual ~EnemyBase() {};
 
 	//更新
-	void Update(Player& player, const InputState& input) override;
+	void Update(Player& player) override;
 	//描画
 	void Draw()override;
 
@@ -64,7 +64,7 @@ public:
 	/// 距離が範囲内だったら
 	/// </summary>
 	/// <returns></returns>
-	bool DistanceIsWithinRange();
+	bool DistanceIsWithinRange(VECTOR playerPos);
 
 	/// <summary>
 	/// 敵が弾を撃つ処理
@@ -73,6 +73,12 @@ public:
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <param name="height">プレイヤーの高さ</param>
 	void Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos, float height);
+
+	/// <summary>
+	/// 回転行列と拡縮行列の合成
+	/// </summary>
+	/// <returns>回転行列と拡縮行列を合成した結果</returns>
+	MATRIX CombiningRotAndScallMat(VECTOR distance);
 
 private:
 

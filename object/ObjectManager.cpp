@@ -7,7 +7,6 @@
 #include "../object/Player.h"
 
 #include "../gimmick/TransparentObject.h"
-#include "../gimmick/Steelyard.h"
 #include "../gimmick/CrankScaffold.h"
 #include "../gimmick/Elevator.h"
 
@@ -260,7 +259,7 @@ void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int 
 }
 
 //更新
-void ObjectManager::Update(Player& player, const InputState& input, std::shared_ptr<ShotManager> shotManager)
+void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManager)
 {
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
 	for (auto& list : objects_) {
@@ -298,7 +297,7 @@ void ObjectManager::Update(Player& player, const InputState& input, std::shared_
 		for (auto obj : list.second) {
 			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
 			if (distanceSize < 1000) {
-				obj->Update(player, input);
+				obj->Update(player);
 			}
 		}
 	}
@@ -336,7 +335,7 @@ void ObjectManager::Draw(VECTOR PlayerPos)
 		}
 	}
 
-	int size = objects_[ObjectType::enemy].size();
+	int size = static_cast<int>(objects_[ObjectType::enemy].size());
 	DrawFormatString(0, 32, 0xffffff, "%d", size);
 }
 
@@ -431,8 +430,8 @@ void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, VECTOR loadObj
 	std::uniform_int_distribution<> randomPosX(loadObjPos.x - distance, loadObjPos.x);
 	std::uniform_int_distribution<> randomPosZ(loadObjPos.z - distance, loadObjPos.z + distance);
 
-	info.pos.x = randomPosX(value);
-	info.pos.z = randomPosZ(value);
+	info.pos.x = static_cast<float>(randomPosX(value));
+	info.pos.z = static_cast<float>(randomPosZ(value));
 
 }
 
@@ -464,7 +463,7 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 	auto loadInfo = ExternalFile::GetInstance().GetEnemyInfo(playerPos);
 	
 	//文字列のサイズを取得する
-	int size = loadInfo.name.size();
+	int size = static_cast<int>(loadInfo.name.size());
 
 	for (auto& enemy : objects_[ObjectType::enemy]) {
 		if (enemy.get()->GetName() == loadInfo.name) {
@@ -517,9 +516,6 @@ void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo ob
 	switch (objType) {
 	case ObjectType::trans:
 		objects_[objType].push_front(std::make_shared<TransparentObject>(duplicateModelHandle_[objType], objInfo));
-		break;
-	case ObjectType::gimmickSteelyard:
-		objects_[objType].push_front(std::make_shared<Steelyard>(duplicateModelHandle_[objType], objInfo));
 		break;
 	case ObjectType::elevator:
 		objects_[objType].push_front(std::make_shared<Elevator>(duplicateModelHandle_[objType], objInfo));

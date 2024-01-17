@@ -63,7 +63,7 @@ enum class Key
 	Key10_period,
 	F11,
 	F12,
-	ƒJƒi,
+	KANA,
 	•ÏŠ·,
 	–³•ÏŠ·,
 	YEN_mark,

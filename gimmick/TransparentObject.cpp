@@ -40,7 +40,7 @@ TransparentObject::~TransparentObject()
 }
 
 //XV
-void TransparentObject::Update(Player& player, const InputState& input)
+void TransparentObject::Update(Player& player)
 {
 	switch_->Update(player);
 

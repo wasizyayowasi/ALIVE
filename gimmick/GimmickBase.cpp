@@ -17,7 +17,7 @@ GimmickBase::~GimmickBase()
 }
 
 //XV
-void GimmickBase::Update(Player& player, const InputState& input)
+void GimmickBase::Update(Player& player)
 {
 }
 

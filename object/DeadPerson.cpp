@@ -40,7 +40,7 @@ void DeadPerson::Init()
 	}
 }
 
-void DeadPerson::Update(Player& player, const InputState& input)
+void DeadPerson::Update(Player& player)
 {
 	pos_ = model_->GetPos();
 }

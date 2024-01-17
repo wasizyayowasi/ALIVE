@@ -13,7 +13,7 @@ public:
 	virtual ~TransparentObject();
 
 	//XV
-	void Update(Player& player, const InputState& input)override;
+	void Update(Player& player)override;
 	//•`‰æ
 	void Draw();
 

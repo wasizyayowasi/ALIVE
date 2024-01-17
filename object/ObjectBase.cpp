@@ -20,7 +20,7 @@ ObjectBase::~ObjectBase()
 {
 }
 
-void ObjectBase::Update(Player& player, const InputState& input)
+void ObjectBase::Update(Player& player)
 {
 	model_->Update();
 }

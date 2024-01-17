@@ -1,8 +1,6 @@
 #pragma once
 #include <DxLib.h>
 
-class InputState;
-
 class Camera
 {
 public:
@@ -33,8 +31,7 @@ public:
 	/// <summary>
 	/// ƒJƒƒ‰‚Ì’‹“_‚ğˆí‚ç‚·
 	/// </summary>
-	/// <param name="input">“ü—Íî•ñ</param>
-	void ChangeOfFocus(const InputState& input);
+	void ChangeOfFocus();
 
 	VECTOR GetPos() { return cameraPos_; }
 	VECTOR GetTarget() { return cameraTarget_; }

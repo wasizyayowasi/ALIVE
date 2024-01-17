@@ -67,14 +67,19 @@ public:
 	void LocationInformation(VECTOR playerPos,VECTOR enemyPos);
 
 	/// <summary>
-	/// 周囲の升を検索する
+	/// 経路探索
 	/// </summary>
-	void SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight, bool skipCheckTop, bool skipCheckBottom);
+	void RouteSearch();
 
 	/// <summary>
 	/// 周囲の升が存在するか探す
 	/// </summary>
 	void SearchAroundSquares();
+
+	/// <summary>
+	/// 周囲の升を検索する
+	/// </summary>
+	void SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight, bool skipCheckTop, bool skipCheckBottom);
 
 	/// <summary>
 	/// 升のスコアを取得する
@@ -84,24 +89,11 @@ public:
 	void ScoreCaluculation(Direction direction,int index);
 
 	/// <summary>
-	/// プレイヤーから敵までの直線距離の升にオブジェクトがあるか
-	/// </summary>
-	/// <param name="playerPos">プレイヤーの座標</param>
-	/// <param name="enemyPos">敵の座標</param>
-	/// <returns>直線距離にオブジェクトがあるか</returns>
-	bool StraightLineDistanceSearch(VECTOR playerPos, VECTOR enemyPos);
-
-	/// <summary>
 	/// 座標から升のインデックスを取得する
 	/// </summary>
 	/// <param name="pos"></param>
 	/// <returns></returns>
 	int SearchCurrentIndex(VECTOR pos);
-
-	/// <summary>
-	/// 経路探索
-	/// </summary>
-	void RouteSearch();
 
 	/// <summary>
 	/// 目的地の座標を取得する
@@ -110,11 +102,7 @@ public:
 	VECTOR GetDestinationCoordinates(VECTOR playerPos, VECTOR enemyPos);
 
 
-	bool temp(VECTOR pos);
-
-
-	bool EndOfDirection();
-
+	bool SearchBlockadeMode(VECTOR pos);
 private:
 
 	int enemyIndex_ = 0;
@@ -125,9 +113,9 @@ private:
 
 	int count_ = 0;
 
-	std::unordered_map<int, MasuState> masu_;
-	std::unordered_map<int, Score> scoreTable_;
-	std::unordered_map<int, Score> debugScoreTable;
+	std::unordered_map<int, MasuState> masu_;					//移動範囲
+	std::unordered_map<int, Score> scoreTable_;					//移動範囲の升にスコアをつける
+	std::unordered_map<int, Score> debugScoreTable;				//デバッグ用のスコアテーブル(削除してよい)
 
 	std::unordered_map<int, std::list<int>> preteriteIndex_;
 

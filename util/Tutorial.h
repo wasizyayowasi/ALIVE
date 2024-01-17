@@ -1,8 +1,7 @@
 #pragma once
+#include "KeyData.h"
 #include <DxLib.h>
 #include <map>
-
-class InputState;
 
 class Tutorial
 {
@@ -33,7 +32,7 @@ public:
 	Tutorial();
 	virtual ~Tutorial();
 
-	void Update(const InputState& input,VECTOR pos);
+	void Update(VECTOR pos);
 	void Draw(bool inputDevice);
 
 	void NoneDraw(bool inputDevice);
@@ -43,12 +42,7 @@ public:
 private:
 	
 	std::map<UIGraph,int> UIHandle_;					//画像
-
-	int xboxBottonSizeX = 0;							//xbox用ボタンのサイズX
-	int xboxBottonSizeY = 0;							//xbox用ボタンのサイズY
-
-	int keyBottonSizeX = 0;								//キーボード用ボタンのサイズX
-	int keyBottonSizeY = 0;								//キーボード用ボタンのサイズY
+	std::map<int, Key> keyNum_;							//キー番号
 
 	VECTOR tutorialDrawPos_ = {};
 

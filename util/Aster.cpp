@@ -87,6 +87,7 @@ void Aster::Draw()
 // ポジション情報を元に配列の何番目に存在するか取得する
 void Aster::LocationInformation(VECTOR playerPos, VECTOR enemyPos)
 {
+	//enemyとplayerがいたインデックス座標
 	int oldEnemyIndex = enemyIndex_;
 	int oldPlayerIndex = playerIndex_;
 
@@ -116,148 +117,12 @@ void Aster::LocationInformation(VECTOR playerPos, VECTOR enemyPos)
 
 }
 
-/// 周囲の升が存在するか探す
-void Aster::SearchAroundSquares()
-{
-	//両端、上下の端のマスを取得
-	int leftEnd = enemyIndex_ % max_X;
-	int rightEnd = enemyIndex_ % max_X;
-	int bottom = enemyIndex_ / max_X;
-	int top = enemyIndex_ / max_X;
-
-	//マスがないところは見ないようにする
-	bool isCheckLeft = false;
-	bool isCheckBottom = false;
-	bool isCheckRight = false;
-	bool isCheckTop = false;
-
-	if (leftEnd == 0) {
-		isCheckLeft = true;
-	}
-	if (bottom == 0) {
-		isCheckBottom = true;
-	}
-	if (rightEnd == max_X - 1) {
-		isCheckRight = true;
-	}
-	if (top == max_Y) {
-		isCheckTop = true;
-	}
-
-	SearchSurrroundingSquares(isCheckLeft, isCheckRight, isCheckTop, isCheckBottom);
-
-}
-
-//特定の升のスコアを取得する
-void Aster::ScoreCaluculation(Direction direction, int index)
-{
-	//推定コスト
-	int estimationCostX = 0;
-	int estimationCostZ = 0;
-
-	//XとZどこに移動したか
-	estimationCostX = masu_[playerIndex_].x - masu_[index].x;
-	estimationCostZ = masu_[playerIndex_].z - masu_[index].z;
-
-	//推定コストをdirectionの配列に入れる
-	if (estimationCostX < 0 || estimationCostZ < 0) {
-		if (estimationCostX < 0) {
-			estimationCostX = -(std::min)(estimationCostX, 0);
-		}
-		if (estimationCostZ < 0) {
-			estimationCostZ = -(std::min)(estimationCostZ, 0);
-		}
-		
-		//四方向の時
-		scoreTable_[index].estimationCost = estimationCostX + estimationCostZ;
-
-		//八方向の時
-		//score_[direction].estimationCost = (std::max)(estimationCostX, estimationCostZ);
-	}
-	else {
-		//四方向の時
-		scoreTable_[index].estimationCost = estimationCostX + estimationCostZ;
-
-		//八方向の時
-		//score_[direction].estimationCost = (std::max)(estimationCostX, estimationCostZ);
-	}
-
-	//移動量をカウントする
-	if (masu_[index].masuMode == MasuMode::normalMode) {
-		scoreTable_[index].moveCost = moveCount_;
-		scoreTable_[index].score = scoreTable_[index].moveCost + scoreTable_[index].estimationCost;
-		scoreTable_[index].destinationIndex = index;
-		scoreTable_[index].currentIndex = enemyIndex_;
-		scoreTable_[index].dir = direction;
-	}
-
-	preteriteIndex_[moveCount_].push_back(index);
-
-}
-
-bool Aster::StraightLineDistanceSearch(VECTOR playerPos, VECTOR enemyPos)
-{
-	VECTOR distance = {};
-
-	float size = MathUtil::GetSizeOfDistanceTwoPoints(playerPos,enemyPos);
-	int num = static_cast<int>(size / 100);
-	bool isBlockade = false;
-
-	//敵のインデックスを取得
-	enemyIndex_ = SearchCurrentIndex(enemyPos);
-	//プレイヤーのインデックスを取得
-	playerIndex_ = SearchCurrentIndex(playerPos);
-
-	for (int i = 0; i < num; i++) {
-		distance = VSub(playerPos, enemyPos);
-		VECTOR norm = VNorm(distance);
-		VECTOR scale = VScale(norm, i * 100.0f);
-		VECTOR pos = VAdd(enemyPos, scale);
-
-		int x = static_cast<int>(pos.x / 100);
-		int z = static_cast<int>(pos.z / 100);
-
-		int temp = enemyIndex_ + (x * max_X + z);
-
-		//masu_[temp].masuMode = MasuMode::blockadeMode;
-		if (masu_[x + z * max_X].masuMode == MasuMode::blockadeMode) {
-			isBlockade = true;
-		}
-
-	}
-
-	return isBlockade;
-}
-
-int Aster::SearchCurrentIndex(VECTOR pos)
-{
-
-	int index = 0;
-	float min = 1000.0f;
-	float size = 0.0f;
-
-	//座標から一番近いマスの中心を見つけindex番号を取得する
-	for (int i = 0; i < max_Index; i++) {
-		//中心から敵のポジションの距離をとる
-		size = MathUtil::GetSizeOfDistanceTwoPoints(masu_[i].centerPos, pos);
-		//過去最短に近い結果と比べる
-		if (min > size) {
-			//過去最短を更新
-			min = size;
-			//インデックスを取得
-			index = i;
-		}
-	}
-
-	//インデックスを取得
-	return index;
-}
-
 void Aster::RouteSearch()
 {
-
+	//現在のエネミーがいるインデックス座標を取得
 	int currentIndex = enemyIndex_;
 
+	//エネミーとプレイヤーのインデックス座標が一致しない間
 	while (enemyIndex_ != playerIndex_)
 	{
 		if (masu_[enemyIndex_].masuMode != MasuMode::blockadeMode) {
@@ -295,81 +160,46 @@ void Aster::RouteSearch()
 
 }
 
-VECTOR Aster::GetDestinationCoordinates(VECTOR playerPos,VECTOR enemyPos)
+/// 周囲の升が存在するか探す
+void Aster::SearchAroundSquares()
 {
+	//両端、上下の端のマスを取得
+	int leftEnd = enemyIndex_ % max_X;
+	int rightEnd = enemyIndex_ % max_X;
+	int bottom = enemyIndex_ / max_X;
+	int top = enemyIndex_ / max_X;
 
-	if (route_.empty()) {
-		return enemyPos;
+	//マスがないところは見ないようにする
+	bool isCheckLeft = false;
+	bool isCheckBottom = false;
+	bool isCheckRight = false;
+	bool isCheckTop = false;
+
+	if (leftEnd == 0) {
+		isCheckLeft = true;
+	}
+	if (bottom == 0) {
+		isCheckBottom = true;
+	}
+	if (rightEnd == max_X - 1) {
+		isCheckRight = true;
+	}
+	if (top == max_Y) {
+		isCheckTop = true;
 	}
 
-	//エネミーとプレイヤーのインデックス座標を取得
-	int enemyIndex = SearchCurrentIndex(enemyPos);
-	int playerIndex = SearchCurrentIndex(playerPos);
+	SearchSurrroundingSquares(isCheckLeft, isCheckRight, isCheckTop, isCheckBottom);
 
-	if (masu_[playerIndex].masuMode == MasuMode::blockadeMode) {
-		return masu_[enemyIndex].centerPos;
-	}
-
-	//プレイヤーとエネミーが同じインデックス座標に居る場合
-	if (enemyIndex == playerIndex) {
-		//最短ルートを削除する
-		route_.clear();
-
-		//最短ルートを探す際にマスのモードをdoneModeにしたため
-		//doneModeからnormalModeに戻す
-		for (auto& masu : masu_) {
-			if (masu.second.masuMode == MasuMode::doneMode) {
-				masu.second.masuMode = MasuMode::normalMode;
-			}
-		}
-
-		//プレイヤーの居るインデックス座標の中心のポジションを返す
-		return masu_[playerIndex].centerPos;
-	}
-
-	//目標インデックス座標の中心ポジション
-	VECTOR targetPos = masu_[route_.front()].centerPos;
-
-	//敵のインデックス座標と経路探索で得たインデックスが同じだった場合
-	//同じインデックス座標を削除する
-	if (enemyIndex == route_.front()) {
-		route_.pop_front();
-	}
-
-	//目標ポジションを返す
-	return targetPos;
-}
-
-bool Aster::temp(VECTOR pos)
-{
-	int pointIndex = SearchCurrentIndex(pos);
-
-	if (masu_[pointIndex].masuMode == MasuMode::blockadeMode) {
-		return true;
-	}
-
-	return false;
-}
-
-bool Aster::EndOfDirection()
-{
-	auto aiu = route_.empty();
-	return route_.empty();
 }
 
 //周囲の升のスコアを取得する
 void Aster::SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight, bool skipCheckTop, bool skipCheckBottom)
 {
 	//周囲の升のインデックス
-	int left			= enemyIndex_ - 1;
-	int right			= enemyIndex_ + 1;
-	int top				= enemyIndex_ + max_X;
-	int bottom			= enemyIndex_ - max_X;
-
-	int topLeft			= enemyIndex_ + max_X - 1;
-	int topRight		= enemyIndex_ + max_X + 1;
-	int bottomRight		= enemyIndex_ - max_X + 1;
-	int bottomLeft		= enemyIndex_ - max_X - 1;
+	int left = enemyIndex_ - 1;
+	int right = enemyIndex_ + 1;
+	int top = enemyIndex_ + max_X;
+	int bottom = enemyIndex_ - max_X;
 
 	if (!skipCheckTop) {
 		//上の升のスコアを取得する
@@ -416,4 +246,128 @@ void Aster::SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight, b
 	//デバッグ用
 	debugScoreTable = scoreTable_;
 
+}
+
+//特定の升のスコアを取得する
+void Aster::ScoreCaluculation(Direction direction, int index)
+{
+	//推定コスト
+	int estimationCostX = 0;
+	int estimationCostZ = 0;
+
+	//XとZどこに移動したか
+	estimationCostX = masu_[playerIndex_].x - masu_[index].x;
+	estimationCostZ = masu_[playerIndex_].z - masu_[index].z;
+
+	//推定コストをdirectionの配列に入れる
+	if (estimationCostX < 0 || estimationCostZ < 0) {
+		if (estimationCostX < 0) {
+			estimationCostX = -(std::min)(estimationCostX, 0);
+		}
+		if (estimationCostZ < 0) {
+			estimationCostZ = -(std::min)(estimationCostZ, 0);
+		}
+		
+		//四方向の時
+		scoreTable_[index].estimationCost = estimationCostX + estimationCostZ;
+	}
+	else {
+		//四方向の時
+		scoreTable_[index].estimationCost = estimationCostX + estimationCostZ;
+	}
+
+	//移動量をカウントする
+	if (masu_[index].masuMode == MasuMode::normalMode) {
+		scoreTable_[index].moveCost = moveCount_;
+		scoreTable_[index].score = scoreTable_[index].moveCost + scoreTable_[index].estimationCost;
+		scoreTable_[index].destinationIndex = index;
+		scoreTable_[index].currentIndex = enemyIndex_;
+		scoreTable_[index].dir = direction;
+	}
+
+	preteriteIndex_[moveCount_].push_back(index);
+
+}
+
+int Aster::SearchCurrentIndex(VECTOR pos)
+{
+
+	int index = 0;
+	float min = 1000.0f;
+	float size = 0.0f;
+
+	//引数の座標から一番近いマスの中心を見つけindex番号を取得する
+	for (int i = 0; i < max_Index; i++) {
+		//中心から敵のポジションの距離をとる
+		size = MathUtil::GetSizeOfDistanceTwoPoints(masu_[i].centerPos, pos);
+		//過去最短に近い結果と比べる
+		if (min > size) {
+			//過去最短を更新
+			min = size;
+			//インデックスを取得
+			index = i;
+		}
+	}
+
+	//インデックスを取得
+	return index;
+}
+
+VECTOR Aster::GetDestinationCoordinates(VECTOR playerPos,VECTOR enemyPos)
+{
+	//追跡ルートが存在しない場合、現在の座標を返す
+	if (route_.empty()) {
+		return enemyPos;
+	}
+
+	//エネミーとプレイヤーのインデックス座標を取得
+	int enemyIndex = SearchCurrentIndex(enemyPos);
+	int playerIndex = SearchCurrentIndex(playerPos);
+
+	//プレイヤーが追跡不可能なオブジェクトの上に立っている時
+	//エネミーが立っているインデックスの中心ポジションを返す
+	if (masu_[playerIndex].masuMode == MasuMode::blockadeMode) {
+		return masu_[enemyIndex].centerPos;
+	}
+
+	//プレイヤーとエネミーが同じインデックス座標に居る場合
+	if (enemyIndex == playerIndex) {
+		//最短ルートを削除する
+		route_.clear();
+
+		//最短ルートを探す際にマスのモードをdoneModeにしたため
+		//doneModeからnormalModeに戻す
+		for (auto& masu : masu_) {
+			if (masu.second.masuMode == MasuMode::doneMode) {
+				masu.second.masuMode = MasuMode::normalMode;
+			}
+		}
+
+		//プレイヤーの居るインデックス座標の中心のポジションを返す
+		return masu_[playerIndex].centerPos;
+	}
+
+	//目標インデックス座標の中心ポジション
+	VECTOR targetPos = masu_[route_.front()].centerPos;
+
+	//プレイヤーを追跡するルートで通った升を追跡ルート配列から削除する
+	if (enemyIndex == route_.front()) {
+		route_.pop_front();
+	}
+
+	//目標ポジションを返す
+	return targetPos;
+}
+
+bool Aster::SearchBlockadeMode(VECTOR pos)
+{
+	//引数の座標のインデックス座標を取得
+	int pointIndex = SearchCurrentIndex(pos);
+
+	//取得したインデックス座標の升がblockadeModeだったらtrueを返す
+	if (masu_[pointIndex].masuMode == MasuMode::blockadeMode) {
+		return true;
+	}
+
+	return false;
 }

@@ -73,8 +73,6 @@ private:
 
 	bool isEditing_ = false;							//編集中フラグ
 
-	//State_;						//コンストラクタの引数input参照を受け取る
-
 	std::shared_ptr<UIItemManager> KeyUI_;				//UIマネージャーのスマートポインタ
 	std::shared_ptr<UIItemManager> PadUI_;				//UIマネージャーのスマートポインタ
 

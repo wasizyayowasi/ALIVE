@@ -130,9 +130,11 @@ void Camera::FixedPointCamera(VECTOR playerPos, float playerHeight)
 }
 
 //ƒJƒƒ‰‚Ì’‹“_‚ğˆí‚ç‚·
-void Camera::ChangeOfFocus(const InputState& input)
+void Camera::ChangeOfFocus()
 {
-	
+	//’Zk‰»
+	auto& input = InputState::GetInstance();
+
 	GetJoypadDirectInputState(DX_INPUT_PAD1, &input_);
 
 	if (input_.Ry < 0 || input.IsPressed(InputType::upArrow)) {
