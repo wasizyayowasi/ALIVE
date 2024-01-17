@@ -15,7 +15,7 @@ public:
 	void Init();
 	void End();
 
-	void Update(const InputState& input);
+	void Update();
 	void Draw();
 
 private:

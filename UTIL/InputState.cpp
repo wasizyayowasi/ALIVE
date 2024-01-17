@@ -58,7 +58,7 @@ InputState::InputState()
 	inputMapTable_ = defaultMapTable_;
 
 	//loadKeyInfo();
-	LoadKeyInfo2("keyInfo");
+	LoadKeyInfo("keyInfo");
 
 	//一時マップテーブルにコピー
 	tempMapTable_ = inputMapTable_;
@@ -82,6 +82,10 @@ InputState::InputState()
 	currentInput_.resize(static_cast<int>(InputType::max));
 	lastInput_.resize(static_cast<int>(InputType::max));
 
+}
+
+InputState::~InputState()
+{
 }
 
 bool InputState::IsTriggered(InputType type) const
@@ -183,66 +187,7 @@ void InputState::UndoSelectKey(InputType type, InputCategory cat)
 	}
 }
 
-//TODO：消す
-//書き出し
-//もう使わないと思う
 void InputState::SavekeyInfo() const
-{
-	FILE* fp = nullptr;
-
-	auto err = fopen_s(&fp, "key.info", "wb");
-	assert(fp != nullptr);
-
-	//仮想キータイプの数を書き込む
-	int keyTypeNum = inputMapTable_.size();
-	fwrite(&keyTypeNum, sizeof(keyTypeNum), 1, fp);
-	//仮想キータイプ(next、prevなど)のループ
-	for (const auto& key : inputMapTable_) {
-		int keytype = static_cast<int>(key.first);
-		//仮想キー番号
-		fwrite(&keytype, sizeof(keytype), 1, fp);
-		int dataSize = key.second.size();
-		//いくつ入力データがあるのか
-		fwrite(&dataSize, sizeof(dataSize), 1, fp);
-
-		//Vector型のdata()は先頭のアドレスを返す
-		//一気にその入力データを書き込む
-		fwrite(key.second.data(), dataSize * sizeof(InputInfo), 1, fp);
-	}
-
-	fclose(fp);
-}
-
-//TODO：消す
-//読み込み
-//もう使わないと思う
-void InputState::LoadKeyInfo()
-{
-	int handle = FileRead_open("key.info");
-	assert(handle != -1);
-
-	int keyTypeNum = 0;
-	FileRead_read(&keyTypeNum, sizeof(keyTypeNum), handle);
-
-	//初期化した中身を消す
-	inputMapTable_.clear();
-
-	//外部データの読み込み
-	for (int i = 0; i < keyTypeNum; i++) {
-		int  inputType;
-		FileRead_read(&inputType, sizeof(inputType), handle);
-
-		int dataSize = 0;
-		FileRead_read(&dataSize, sizeof(dataSize), handle);
-		std::vector<InputInfo>inputInfoes(dataSize);
-		FileRead_read(inputInfoes.data(), sizeof(InputInfo) * dataSize, handle);
-		inputMapTable_[static_cast<InputType>(inputType)] = inputInfoes;
-	}
-	tempMapTable_ = inputMapTable_;
-	FileRead_close(handle);
-}
-
-void InputState::SavekeyInfo2() const
 {
 	//決め打ちしか出来ないのがネック
 	json keyInfo_[static_cast<int>(InputType::max)];
@@ -297,7 +242,7 @@ void InputState::SavekeyInfo2() const
 
 }
 
-void InputState::LoadKeyInfo2(const char* filename)
+void InputState::LoadKeyInfo(const char* filename)
 {
 
 	//初期化した中身を消す

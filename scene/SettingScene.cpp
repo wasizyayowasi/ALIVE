@@ -57,11 +57,11 @@ void SettingScene::Init()
 
 	//UI画像の作成
 	//フォントの取得
-	int pigumo42Font = FontsManager::getInstance().GetFontHandle(pigumo42_font_name);
+	int pigumo42Font = FontsManager::GetInstance().GetFontHandle(pigumo42_font_name);
 	//フォントを適用した文字列のサイズ取得
-	int windowFontSize = FontsManager::getInstance().GetStringSize("モード", pigumo42_font_name);
-	int BGMFontSize = FontsManager::getInstance().GetStringSize("BGM", pigumo42_font_name);
-	int SEFontSize = FontsManager::getInstance().GetStringSize("SE", pigumo42_font_name);
+	int windowFontSize = FontsManager::GetInstance().GetStringSize("モード", pigumo42_font_name);
+	int BGMFontSize = FontsManager::GetInstance().GetStringSize("BGM", pigumo42_font_name);
+	int SEFontSize = FontsManager::GetInstance().GetStringSize("SE", pigumo42_font_name);
 
 	//UI画像の作成
 	UIManager_->AddMenu(Game::screen_width / 4, Game::screen_height / 3, 320, 100, "モード", pigumo42Font);
@@ -89,9 +89,9 @@ void SettingScene::End()
 	DeleteGraph(makeScreenHandle_);
 }
 
-void SettingScene::Update(const InputState& input)
+void SettingScene::Update()
 {
-	(this->*updateFunc_)(input);
+	(this->*updateFunc_)();
 }
 
 void SettingScene::Draw()
@@ -115,8 +115,8 @@ void SettingScene::Draw()
 	DrawFormatString(0, 32, 0xffffff, "%.2f", SEPictogramPosX_);
 
 	//現在の画面モードを表示
-	int pigumo42 = FontsManager::getInstance().GetFontHandle(pigumo42_font_name);
-	int windowModeFontSize = FontsManager::getInstance().GetStringSize(windowModeText_.c_str(), pigumo42_font_name);
+	int pigumo42 = FontsManager::GetInstance().GetFontHandle(pigumo42_font_name);
+	int windowModeFontSize = FontsManager::GetInstance().GetStringSize(windowModeText_.c_str(), pigumo42_font_name);
 
 	int alpha = 150;
 
@@ -187,8 +187,10 @@ void SettingScene::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void SettingScene::NormalUpdate(const InputState& input)
+void SettingScene::NormalUpdate()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
 
 	if (input.IsTriggered(InputType::up)) {
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
@@ -197,7 +199,7 @@ void SettingScene::NormalUpdate(const InputState& input)
 		selectNum_ = (std::min)(selectNum_ + 1, 4);
 	}
 
-	ChangeUpdateFunc(input);
+	ChangeUpdateFunc();
 
 	//シーン切り替え
 	if (input.IsTriggered(InputType::pause)) {
@@ -206,7 +208,7 @@ void SettingScene::NormalUpdate(const InputState& input)
 	}
 }
 
-void SettingScene::GaussFadeInUpdate(const InputState& input)
+void SettingScene::GaussFadeInUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) {
@@ -215,7 +217,7 @@ void SettingScene::GaussFadeInUpdate(const InputState& input)
 	}
 }
 
-void SettingScene::GaussFadeOutUpdate(const InputState& input)
+void SettingScene::GaussFadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) {
@@ -225,8 +227,11 @@ void SettingScene::GaussFadeOutUpdate(const InputState& input)
 	}
 }
 
-void SettingScene::BGMUpdate(const InputState& input)
+void SettingScene::BGMUpdate()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//BGM音量調整
 	if (input.IsTriggered(InputType::left)) {
 		volumeBGM_ = (max)(volumeBGM_ - 25, 0);
@@ -243,8 +248,11 @@ void SettingScene::BGMUpdate(const InputState& input)
 	SoundManager::GetInstance().SetBGMVolume(volumeBGM_);
 }
 
-void SettingScene::SEUpdate(const InputState& input)
+void SettingScene::SEUpdate()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//SE音量調整
 	if (input.IsTriggered(InputType::left)) {
 		volumeSE_ = (max)(volumeSE_ - 25, 0);
@@ -261,8 +269,11 @@ void SettingScene::SEUpdate(const InputState& input)
 	SoundManager::GetInstance().SetSEVolume(volumeSE_);
 }
 
-void SettingScene::ChangeWindowUpdate(const InputState& input)
+void SettingScene::ChangeWindowUpdate()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	if (input.IsTriggered(InputType::left)) {
 		windowModeText_ = "≪  ウィンドウモード  ≫";
 		manager_.ChangeWindowMode(true);
@@ -299,21 +310,24 @@ void SettingScene::MovePictogram(int pictPos, float& pos, float& rot, bool& inve
 
 }
 
-void SettingScene::ChangeUpdateFunc(const InputState& input)
+void SettingScene::ChangeUpdateFunc()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	switch (selectNum_) {
 	case 0:
-		ChangeWindowUpdate(input);
+		ChangeWindowUpdate();
 		break;
 	case 1:
-		BGMUpdate(input);
+		BGMUpdate();
 		break;
 	case 2:
-		SEUpdate(input);
+		SEUpdate();
 		break;
 	case 3:
 		if (input.IsTriggered(InputType::space)) {
-			nextScene_ = std::make_shared<KeyConfigScene>(manager_, input);
+			nextScene_ = std::make_shared<KeyConfigScene>(manager_);
 			updateFunc_ = &SettingScene::GaussFadeOutUpdate;
 		}
 		break;

@@ -24,8 +24,11 @@ void PopUpTextScene::End()
 {
 }
 
-void PopUpTextScene::Update(const InputState& input)
+void PopUpTextScene::Update()
 {
+	//íZèkâª
+	auto& input = InputState::GetInstance();
+
 	if (input.IsTriggered(InputType::space)) {
 		manager_.PopFrontScene();
 	}

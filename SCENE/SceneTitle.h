@@ -15,7 +15,7 @@ public:
 	void Init();
 	void End();
 
-	void Update(const InputState& input);
+	void Update();
 	void Draw();
 
 
@@ -23,9 +23,9 @@ private:
 
 	void SceneChange();
 
-	void fadeInUpdate(const InputState& input);
-	void normalUpdate(const InputState& input);
-	void fadeOutUpdate(const InputState& input);
+	void fadeInUpdate();
+	void normalUpdate();
+	void fadeOutUpdate();
 
 private:
 	int fontHandle_ = -1;
@@ -43,6 +43,6 @@ private:
 	std::vector<std::string> menuName_;		//メニューの文字列
 	std::shared_ptr<UIItemManager> UI_;		//UIマネージャーのスマートポインタ
 
-	void (SceneTitle::* updateFunc_)(const InputState& input);
+	void (SceneTitle::* updateFunc_)();
 };
 

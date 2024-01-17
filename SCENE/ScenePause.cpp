@@ -34,7 +34,7 @@ void ScenePause::Init()
 	menuName_.push_back("デバッグシーンへ");
 
 	//UI画像の作成
-	int font = FontsManager::getInstance().GetFontHandle("ピグモ 0042");
+	int font = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
 	int y = 100;
 	for (auto& menu : menuName_) {
 		UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 2 + y, 640, 200, menu.c_str(), font);
@@ -47,8 +47,11 @@ void ScenePause::End()
 {
 }
 
-void ScenePause::Update(const InputState& input)
+void ScenePause::Update()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//TODO:まとめる
 	//項目選択
 	{

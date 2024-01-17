@@ -10,9 +10,13 @@
 class SoundManager
 {
 public:
-
+	//
 	~SoundManager();
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
 	static SoundManager& GetInstance() {
 		static SoundManager instance;
 		return instance;
@@ -25,17 +29,36 @@ public:
 	void Play(const char* name);
 	void PlayBGM(const char* path);
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="volume"></param>
 	void SetSEVolume(unsigned int volume);
 	int GetSEVolume()const;
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="volume"></param>
 	void SetBGMVolume(unsigned int volume);
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="rate"></param>
 	void SetBGMRate(float rate);
 	int GetBGMVolume()const;
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="name"></param>
 	void StopSE(const char* name = nullptr);
 	void StopBGM();
 
+	/// <summary>
+	/// 
+	/// </summary>
 	void SaveSoundConfig();
 
 	/// <summary>

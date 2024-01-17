@@ -10,20 +10,20 @@ public:
 	void Init();
 	void End();
 
-	void Update(const InputState& input);
+	void Update();
 	void Draw();
 
 private:
-	void fadeInUpdate(const InputState& input);
-	void normalUpdate(const InputState& input);
-	void fadeOutUpdate(const InputState& input);
+	void fadeInUpdate();
+	void normalUpdate();
+	void fadeOutUpdate();
 
 	static constexpr int fadeInterval_ = 60;
 	int fadeTimer_ = fadeInterval_;
 	int fadeValue_ = 255;
 	int fadeColor_ = 0x000000;
 
-	void (GameEnd::* updateFunc_)(const InputState& input);
+	void (GameEnd::* updateFunc_)();
 
 };
 

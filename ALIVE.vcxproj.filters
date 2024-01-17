@@ -114,9 +114,6 @@
     <ClCompile Include="scene\DebugScene.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
-    <ClCompile Include="scene\PopUpTextScene.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
     <ClCompile Include="scene\SettingScene.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
@@ -175,6 +172,9 @@
       <Filter>ソース ファイル\util</Filter>
     </ClCompile>
     <ClCompile Include="gimmick\Lever.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\PopUpTextScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -266,9 +266,6 @@
     <ClInclude Include="scene\DebugScene.h">
       <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
-    <ClInclude Include="scene\PopUpTextScene.h">
-      <Filter>ヘッダー ファイル\scene</Filter>
-    </ClInclude>
     <ClInclude Include="scene\SettingScene.h">
       <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
@@ -318,6 +315,9 @@
       <Filter>ヘッダー ファイル\object</Filter>
     </ClInclude>
     <ClInclude Include="gimmick\Lever.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\PopUpTextScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

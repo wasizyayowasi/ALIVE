@@ -41,35 +41,81 @@ class InputState
 	friend KeyConfigScene;
 	friend Tutorial;
 public:
-	InputState();
+	~InputState();
 
+	static InputState& GetInstance() {
+		static InputState instance;
+		return instance;
+	}
+
+	/// <summary>
+	/// 長押し不可能入力関数
+	/// </summary>
+	/// <param name="type">キーのタイプ</param>
+	/// <returns>押しているかどうか</returns>
 	bool IsTriggered(InputType type) const;
 
+	/// <summary>
+	/// 長押し可能入力関数
+	/// </summary>
+	/// <param name="type">キーのタイプ</param>
+	/// <returns>押しているかどうか</returns>
 	bool IsPressed(InputType type) const;
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// 変更中のキーコンフィグをtempMapTableに書き込む
+	/// </summary>
+	/// <param name="type">キータイプ</param>
+	/// <param name="cat">入力装置のカテゴリ</param>
+	/// <param name="id">キーの番号</param>
 	void RewriteInputInfo(InputType type, InputCategory cat, int id);
 
+	/// <summary>
+	/// キーの変更を実行する
+	/// </summary>
 	void CommitChangedInputInfo();
 
+	/// <summary>
+	/// 変更前のキーコンフィグに戻す
+	/// </summary>
 	void RollbackChangedInputInfo();
 
+	/// <summary>
+	/// キーコンフィグを初期化する
+	/// </summary>
 	void ResetInputInfo();
+
 
 	void UndoSelectKey(InputType type, InputCategory cat);
 
+	/// <summary>
+	/// キーコンフィグを外部ファイルとして保存する
+	/// </summary>
 	void SavekeyInfo()const;
 
-	void LoadKeyInfo();
+	/// <summary>
+	/// キーコンフィグを読み込む
+	/// </summary>
+	/// <param name="filename">外部ファイルのパス</param>
+	void LoadKeyInfo(const char* filename);
 
-	void SavekeyInfo2()const;
-
-	void LoadKeyInfo2(const char* filename);
-
+	/// <summary>
+	/// 最後に入力された入力装置を判別する
+	/// </summary>
+	/// <returns>true:キーボード　false：パッド</returns>
 	bool LastInputDevice() const;
 
 private:
+
+	InputState();
+
+	InputState(const InputState&) = delete;
+	void operator = (const InputState&) = delete;
 
 	bool currentInputDevice_ = false;			//true:キーボード　false:パッド
 
@@ -86,5 +132,4 @@ private:
 	std::vector<bool> lastInput_;
 
 	std::unordered_map<int, int> rewriteKeyInfo_;
-	std::vector<InputInfo> temp2;
 };

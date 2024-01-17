@@ -16,20 +16,20 @@ public:
 	void Init();
 	void End();
 
-	void Update(const InputState& input);
+	void Update();
 	void Draw();
 
-	void NormalUpdate(const InputState& input);
-	void GaussFadeInUpdate(const InputState& input);
-	void GaussFadeOutUpdate(const InputState& input);
+	void NormalUpdate();
+	void GaussFadeInUpdate();
+	void GaussFadeOutUpdate();
 
-	void BGMUpdate(const InputState& input);
-	void SEUpdate(const InputState& input);
-	void ChangeWindowUpdate(const InputState& input);
+	void BGMUpdate();
+	void SEUpdate();
+	void ChangeWindowUpdate();
 
 	void MovePictogram(int pictPos, float& pos, float& rot,bool& inversion);
 
-	void ChangeUpdateFunc(const InputState& input);
+	void ChangeUpdateFunc();
 
 private:
 
@@ -68,7 +68,7 @@ private:
 
 	std::shared_ptr<UIItemManager> UIManager_;
 
-	void(SettingScene::* updateFunc_)(const InputState& input);
+	void(SettingScene::* updateFunc_)();
 
 };
 

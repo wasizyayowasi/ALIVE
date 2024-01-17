@@ -22,9 +22,9 @@ void GameEnd::End()
 {
 }
 
-void GameEnd::Update(const InputState& input)
+void GameEnd::Update()
 {
-	(this->*updateFunc_)(input);
+	(this->*updateFunc_)();
 }
 
 void GameEnd::Draw()
@@ -37,7 +37,7 @@ void GameEnd::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void GameEnd::fadeInUpdate(const InputState& input)
+void GameEnd::fadeInUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) {
@@ -46,14 +46,17 @@ void GameEnd::fadeInUpdate(const InputState& input)
 	}
 }
 
-void GameEnd::normalUpdate(const InputState& input)
+void GameEnd::normalUpdate()
 {
+	//íZèkâª
+	auto& input = InputState::GetInstance();
+
 	if (input.IsTriggered(InputType::space)) {
 		updateFunc_ = &GameEnd::fadeOutUpdate;
 	}
 }
 
-void GameEnd::fadeOutUpdate(const InputState& input)
+void GameEnd::fadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) {

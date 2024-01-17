@@ -8,7 +8,7 @@ public:
 
 	~EffekseerManager();
 
-	static EffekseerManager& getInstance() {
+	static EffekseerManager& GetInstance() {
 		static EffekseerManager instance;
 		return instance;
 	}

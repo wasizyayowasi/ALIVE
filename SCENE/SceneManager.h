@@ -19,7 +19,8 @@ public:
 	//ひとつ前のシーンに戻る
 	void PopFrontScene();											
 	//シーンの更新
-	void Update(const InputState& input);							
+//	void Update(const InputState& input);							
+	void Update();							
 	//シーンの描画
 	void Draw();													
 	//メインwhile文を終了させるため
