@@ -47,12 +47,12 @@ void Aster::Draw()
 {
 	//デバッグ用描画
 	{
-		for (float x = -900.0f; x < 3000.0f; x += 100.0f) {
-			DrawLine3D(VGet(x, 20, 300), VGet(x, 20, -300), 0xff0000);
-		}
-		for (float z = -300.0f; z < 300.0f; z += 100.0f) {
-			DrawLine3D(VGet(-900, 20, z), VGet(3000, 20, z), 0xff0000);
-		}
+		//for (float x = -900.0f; x < 3000.0f; x += 100.0f) {
+		//	DrawLine3D(VGet(x, 20, 300), VGet(x, 20, -300), 0xff0000);
+		//}
+		//for (float z = -300.0f; z < 300.0f; z += 100.0f) {
+		//	DrawLine3D(VGet(-900, 20, z), VGet(3000, 20, z), 0xff0000);
+		//}
 
 		for (int i = 0; i < max_Index; i++) {
 			if (masu_[i].masuMode == MasuMode::normalMode) {
@@ -103,7 +103,6 @@ void Aster::LocationInformation(VECTOR playerPos, VECTOR enemyPos)
 		for (auto& mode : masu_) {
 			if (mode.second.masuMode != MasuMode::blockadeMode) {
 				mode.second.masuMode = MasuMode::normalMode;
-				moveCount_ = 0;
 			}
 		}
 	}
@@ -143,6 +142,8 @@ void Aster::RouteSearch()
 		moveCount_++;
 	}
 
+	moveCount_ = 0;
+
 	int targetIndex = playerIndex_;
 
 	//最短ルートをscoreTableから抽出する
@@ -157,6 +158,7 @@ void Aster::RouteSearch()
 	//リセット
 	scoreTable_.clear();
 	debugScoreTable.clear();
+	preteriteIndex_.clear();
 
 }
 

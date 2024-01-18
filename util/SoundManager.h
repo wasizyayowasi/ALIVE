@@ -30,34 +30,48 @@ public:
 	void PlayBGM(const char* path);
 
 	/// <summary>
-	/// 
+	/// SE音量を調整する
 	/// </summary>
-	/// <param name="volume"></param>
+	/// <param name="volume">音量</param>
 	void SetSEVolume(unsigned int volume);
+
+	/// <summary>
+	/// SEの音量を取得する
+	/// </summary>
+	/// <returns>音量</returns>
 	int GetSEVolume()const;
 
 	/// <summary>
-	/// 
+	/// BGMの音量を調整する
 	/// </summary>
-	/// <param name="volume"></param>
+	/// <param name="volume">音量</param>
 	void SetBGMVolume(unsigned int volume);
+
+	/// <summary>
+	/// BGMの音量を取得する
+	/// </summary>
+	/// <returns>音量</returns>
+	int GetBGMVolume()const;
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="rate"></param>
 	void SetBGMRate(float rate);
-	int GetBGMVolume()const;
+	
+	/// <summary>
+	/// SEを止める
+	/// </summary>
+	/// <param name="name">音のファイル名</param>
+	void StopSE(const char* name = nullptr);
 
 	/// <summary>
-	/// 
+	/// BGMを止める
 	/// </summary>
-	/// <param name="name"></param>
-	void StopSE(const char* name = nullptr);
 	void StopBGM();
 
 	/// <summary>
-	/// 
+	/// BGM、SEの音量を外部出力する
 	/// </summary>
 	void SaveSoundConfig();
 
@@ -68,6 +82,12 @@ public:
 	/// <param name="audioRange">聞こえる範囲</param>
 	/// <param name="name">サウンド名</param>
 	void Set3DSoundInfo(VECTOR pos,float audioRange,const char* name);
+
+	/// <summary>
+	/// 3Dサウンドを再生する際のリスナーの位置を決める
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="rot"></param>
 	void Set3DSoundListenerInfo(VECTOR pos, VECTOR rot);
 
 private:
@@ -78,8 +98,8 @@ private:
 		unsigned short volumeBGM;
 	};
 
-	int volumeSE_ = 0;
-	int volumeBGM_ = 0;
+	int volumeSE_ = 50;
+	int volumeBGM_ = 50;
 
 	std::unordered_map<std::string, int> nameAndHandleTable_;
 	int Load2DSoundSEFile(const char* fileName);

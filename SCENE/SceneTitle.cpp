@@ -121,11 +121,10 @@ void SceneTitle::SceneChange()
 	switch (selectNum_) {
 	case 0:
 		ExternalFile::GetInstance().ClearSaveData();
-//		ExternalFile::GetInstance().LoadFile(false);
 		manager_.PopFrontScene();
 		break;
 	case 1:
-//		ExternalFile::GetInstance().LoadFile(true);
+		ExternalFile::GetInstance().LoadSaveData();
 		manager_.PopFrontScene();
 		break;
 	case 2:

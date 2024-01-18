@@ -133,8 +133,6 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 			}
 			else if (lever_ != nullptr) {
 				//ƒŒƒo[‚ð“®‚©‚·€”õ‚ð‚·‚é
-				ChangeAnimNo(PlayerAnimType::LeverOn, false, 10);
-				lever_->OnAnimation();
 				updateFunc_ = &Player::GoLeverPullPosition;
 			}
 			return;
@@ -617,7 +615,8 @@ void Player::GoLeverPullPosition(const InputState& input, std::shared_ptr<Object
 		angle_ = 0.0f;
 		status_.rot = VGet(0, angle_, 0);
 		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
-		ChangeAnimNo(PlayerAnimType::LeverOn, false, 20);
+		ChangeAnimNo(PlayerAnimType::LeverOn, false, 10);
+		lever_->OnAnimation();
 		updateFunc_ = &Player::LeverUpdate;
 	}
 }

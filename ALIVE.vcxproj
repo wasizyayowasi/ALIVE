@@ -150,6 +150,7 @@
     <ClCompile Include="gimmick\Lever.cpp" />
     <ClCompile Include="object\Shot.cpp" />
     <ClCompile Include="object\ShotManager.cpp" />
+    <ClCompile Include="gimmick\PenetrationScaffld.cpp" />
     <ClCompile Include="scene\PopUpTextScene.cpp" />
     <ClCompile Include="util\Tutorial.cpp" />
     <ClCompile Include="util\Aster.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="KeyData.h" />
     <ClInclude Include="object\Shot.h" />
     <ClInclude Include="object\ShotManager.h" />
+    <ClInclude Include="gimmick\PenetrationScaffld.h" />
     <ClInclude Include="scene\PopUpTextScene.h" />
     <ClInclude Include="util\Tutorial.h" />
     <ClInclude Include="util\Aster.h" />

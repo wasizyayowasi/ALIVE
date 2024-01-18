@@ -10,7 +10,7 @@
 
 namespace {
 	//エレベーターが移動する速度
-	constexpr float move_speed = 10.0f;
+	constexpr float move_speed = 6.0f;
 
 	//出発する時間
 	constexpr int max_departure_time = 60;
@@ -85,14 +85,28 @@ void Elevator::Update(Player& player)
 
 	//レバーが引かれたらアニメーションを変更して
 	//目的地まで移動する
-	for (auto lever : levers_) {
-		float size = MathUtil::GetSizeOfDistanceTwoPoints(targetPos_, lever->GetElevatorStopPoint());
+	if (levers_.front()->IsOn()) {
+		float size = MathUtil::GetSizeOfDistanceTwoPoints(targetPos_, levers_.front()->GetElevatorStopPoint());
 		if (size != 0.0f) {
-			if (lever->IsOn()) {
-				targetPos_ = lever->GetElevatorStopPoint();
-				model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
-			}
+			targetPos_ = levers_.front()->GetElevatorStopPoint();
 		}
+		else {
+			targetPos_ = levers_.back()->GetElevatorStopPoint();
+		}
+		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
+	}
+
+	//レバーが引かれたらアニメーションを変更して
+	//目的地まで移動する
+	if (levers_.back()->IsOn()) {
+		float size = MathUtil::GetSizeOfDistanceTwoPoints(targetPos_, levers_.back()->GetElevatorStopPoint());
+		if (size != 0.0f) {
+			targetPos_ = levers_.back()->GetElevatorStopPoint();
+		}
+		else {
+			targetPos_ = levers_.front()->GetElevatorStopPoint();
+		}
+		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 	}
 
 	//ターゲットポジションの変更
@@ -111,16 +125,6 @@ void Elevator::Update(Player& player)
 		Move();
 	}
 
-//	VECTOR playerTopPos = VGet(playerPos.x, playerPos.y + player.GetStatus().height, playerPos.z);
-//	auto result = MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, playerTopPos, 30.0f);
-//
-//	if (result.HitNum > 0) {
-//		playerPos.y = result.Dim->Position->y;
-//		player.SetPos(playerPos);
-//	}
-//
-//	MV1CollResultPolyDimTerminate(result);
-
 }
 
 //描画
@@ -136,10 +140,6 @@ void Elevator::Draw()
 	for (auto lever : levers_) {
 		lever->Draw();
 	}
-
-//	DrawFormatString(0, 32, 0xff0000, "%.2f,%.2f,%.2f", pos_.x, pos_.y, pos_.z);
-//	DrawFormatString(0, 48, 0xff0000, "%.2f,%.2f,%.2f", switch_[0]->GetPos().x, switch_[0]->GetPos().y, switch_[0]->GetPos().z);
-//	DrawFormatString(0, 64, 0xff0000, "%.2f,%.2f,%.2f", switch_[1]->GetPos().x, switch_[1]->GetPos().y, switch_[1]->GetPos().z);
 
 }
 

@@ -66,6 +66,5 @@ void CrankScaffold::Draw()
 //Õ“Ë”»’è‚ğs‚¤ƒ‚ƒfƒ‹‚Ì’Ç‰Á
 std::shared_ptr<Model> CrankScaffold::AddCollModel()
 {
-	//return crank_->GetModelPointer();
 	return nullptr;
 }

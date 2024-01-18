@@ -1,6 +1,7 @@
 #include "GameMain.h"
-#include "SceneManager.h"
 #include "GameEnd.h"
+#include "ScenePause.h" 
+#include "SceneManager.h"
 
 #include "../gimmick/GimmickBase.h"
 #include "../gimmick/Switch.h"
@@ -13,8 +14,6 @@
 #include "../staging/Broom.h"
 #include "../staging/DepthOfField.h"
 
-#include "ScenePause.h" 
-
 #include "../util/game.h"
 #include "../util/SoundManager.h"
 #include "../util/InputState.h"
@@ -25,8 +24,6 @@
 
 #include "../object/ObjectManager.h"
 #include "../object/ObjectData.h"
-
-using namespace std;
 
 namespace {
 	const char* const player_model_Filename = "data/player/player16.mv1";
@@ -117,8 +114,6 @@ void GameMain::Draw()
 
 	tutorial_->Draw(currentInputDevice_);
 
-	
-
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	//フィルター処理を行うか
@@ -140,13 +135,13 @@ void GameMain::ObjectGenerater()
 	auto& loadData = ExternalFile::GetInstance();
 
 	//プレイヤーのインスタンス化
-	player_ = make_shared<Player>(player_model_Filename);
+	player_ = std::make_shared<Player>(player_model_Filename);
 	//プレイヤーの初期化
 	player_->Init(loadData.GetSpecifiedInfo("Player").front());
 	//ゲームオブジェクトの生成
 	objManager_->ObjectGenerator();
 	//カメラのインスタンス化
-	camera_ = make_shared<Camera>();
+	camera_ = std::make_shared<Camera>();
 
 }
 

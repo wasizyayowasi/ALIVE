@@ -1,14 +1,15 @@
 #include "ObjectManager.h"
 
-#include "../object/ObjectBase.h"
+#include "../object/Player.h"
 #include "../object/EnemyBase.h"
+#include "../object/ObjectBase.h"
 #include "../object/DeadPerson.h"
 #include "../object/OrnamentBase.h"
-#include "../object/Player.h"
 
-#include "../gimmick/TransparentObject.h"
-#include "../gimmick/CrankScaffold.h"
 #include "../gimmick/Elevator.h"
+#include "../gimmick/CrankScaffold.h"
+#include "../gimmick/TransparentObject.h"
+#include "../gimmick/PenetrationScaffld.h"
 
 #include "../util/game.h"
 #include "../util/Util.h"
@@ -20,11 +21,12 @@
 
 namespace {
 	const char* const player_model_Filename = "data/enemy/mv1/enemy.mv1";
-	//仮モデルのファイルパス
+	//モデルのファイルパス
 	const char* const switch_filepath = "data/model/switch.mv1";
 	const char* const transparent_filepath = "data/model/other/mv1/ElevatingMovableScaffolding.mv1";
 	const char* const elevator_filepath = "data/model/other/mv1/Elevator.mv1";
 	const char* const crank_filepath = "data/model/other/mv1/crankScaffold.mv1";
+	const char* const signboard_filepath = "data/model/other/mv1/SignBoard.mv1";
 
 	//実際に使う予定のモデルパス
 	//でかいビル
@@ -64,6 +66,7 @@ ObjectManager::ObjectManager()
 	modelHandle_[ObjectType::trans] = MV1LoadModel(transparent_filepath);
 	modelHandle_[ObjectType::elevator] = MV1LoadModel(elevator_filepath);
 	modelHandle_[ObjectType::CrankScaffold] = MV1LoadModel(crank_filepath);
+	modelHandle_[ObjectType::SignBoard] = MV1LoadModel(signboard_filepath);
 
 	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);
 	modelHandle_[ObjectType::BigBuildingB] = MV1LoadModel(big_buildingB_filepath);
@@ -111,7 +114,6 @@ void ObjectManager::ObjectGenerator()
 	auto& loadData = ExternalFile::GetInstance();
 
 	for (auto& objInfo : loadData.GetLoadObjectInfo()) {
-		//敵を作成
 		if (objInfo.first == "BigBuildingA") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingA, objSecond);
@@ -130,6 +132,11 @@ void ObjectManager::ObjectGenerator()
 		else if (objInfo.first == "BigBuildingD") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingD, objSecond);
+			}
+		}
+		else if (objInfo.first == "SignBoard") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::SignBoard, objSecond);
 			}
 		}
 		else if (objInfo.first == "BuildingA") {
@@ -220,16 +227,9 @@ void ObjectManager::ObjectGenerator()
 	}
 
 	for (auto& gimmick : loadData.GetGimmickInfo()) {
-		//ギミックスイッチを作成
 		if (gimmick.first == "Trans") {
 			for (auto& objSecond : gimmick.second) {
 				SortingObject(ObjectBaseType::gimmickBase, ObjectType::trans, objSecond);
-			}
-		}
-		//ギミック天秤を作成
-		else if (gimmick.first == "Steelyard") {
-			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::gimmickBase, ObjectType::gimmickSteelyard, objSecond);
 			}
 		}
 		else if (gimmick.first == "CrankScaffold") {
@@ -240,6 +240,11 @@ void ObjectManager::ObjectGenerator()
 		else if (gimmick.first == "Elevator") {
 			for (auto& objSecond : gimmick.second) {
 				SortingObject(ObjectBaseType::gimmickBase, ObjectType::elevator, objSecond);
+			}
+		}
+		else if (gimmick.first == "PenetrationScaffld") {
+			for (auto& objSecond : gimmick.second) {
+				SortingObject(ObjectBaseType::gimmickBase, ObjectType::PenetrationScaffld, objSecond);
 			}
 		}
 	}
@@ -522,6 +527,9 @@ void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo ob
 		break;
 	case ObjectType::CrankScaffold:
 		objects_[objType].push_front(std::make_shared<CrankScaffold>(duplicateModelHandle_[objType], objInfo));
+		break;
+	case ObjectType::PenetrationScaffld:
+		objects_[objType].push_front(std::make_shared<PenetrationScaffld>(duplicateModelHandle_[ObjectType::BlueContainer], objInfo));
 		break;
 	}
 }

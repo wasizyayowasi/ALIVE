@@ -1,7 +1,7 @@
 #include "ExternalFile.h"
+#include "Util.h"
 #include "InputState.h"
 #include "../object/ObjectData.h"
-#include "Util.h"
 
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -13,7 +13,7 @@ using namespace std;
 
 ExternalFile::ExternalFile()
 {
-	LoadFile(true);
+	LoadFile();
 }
 
 ExternalFile::~ExternalFile()
@@ -21,14 +21,8 @@ ExternalFile::~ExternalFile()
 	RewritePlayerInfo();
 }
 
-void ExternalFile::LoadFile(bool isLood)
+void ExternalFile::LoadFile()
 {
-	DeleteData();
-
-	if (isLood) {
-		LoadSaveDataInfo("saveData");
-	}
-
 	LoadPlayerInfo("player");
 	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
 	LoadObjectData("data/objData/Enemy.pos",loadEnemyInfo_);
@@ -38,22 +32,29 @@ void ExternalFile::LoadFile(bool isLood)
 	LoadObjectData("data/objData/cameraGimmick.pos", loadCameraGimmickInfo_);
 }
 
+void ExternalFile::LoadSaveData()
+{
+	LoadSaveDataInfo("saveData");
+}
+
 LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(VECTOR objPos, const char* const name)
 {
 
 	LoadObjectInfo info = {};
 
-	std::string key = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(name, ".");
+	//番号と記号を抜いた名前を取得する
+	std::string gimmickName = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(name, ".");
 
-	for (auto& specifiedObj : loadGimmickInfo_[key]) {
+	//引数の名前とloadGimmickInfo_の配列の中で名前が一致するものを探す
+	//一致した配列の情報を取得する
+	for (auto& specifiedObj : loadGimmickInfo_[gimmickName]) {
 		if (specifiedObj.name != name) {
 			continue;
 		}
 		info = specifiedObj;
 	}
 
-//	loadGimmickInfo_[key].remove_if([&info](LoadObjectInfo objInfo) {return VSize(objInfo.pos) == VSize(info.pos); });
-
+	//抜き出した情報を返す
 	return info;
 }
 
@@ -108,10 +109,6 @@ LoadObjectInfo ExternalFile::GetEnemyInfo(VECTOR playerPos)
 		}
 	}
 
-//	std::string key = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(info.name, ".");
-
-//	loadEnemyInfo_[key].remove_if([&info](LoadObjectInfo objInfo) {return objInfo.pos.x == info.pos.x && objInfo.pos.y == info.pos.y && objInfo.pos.z == info.pos.z; });
-
 	return info;
 }
 
@@ -133,8 +130,6 @@ LoadObjectInfo ExternalFile::GetDeleteObjInfo(VECTOR pos, const char* const name
 	if (info.name == "") {
 		info.pos.x = 10000000.0f;
 	}
-
-	//loadDeleteObjInfo_[info.name].remove_if([&info](LoadObjectInfo objInfo) {return objInfo.pos.x == info.pos.x && objInfo.pos.y == info.pos.y && objInfo.pos.z == info.pos.z; });
 
 	return info;
 }
@@ -160,6 +155,12 @@ LoadObjectInfo ExternalFile::GetTutorialObjInfo(VECTOR pos)
 	return info;
 }
 
+void ExternalFile::ClearSaveData()
+{
+	data_.checkPoint = VGet(0, 0, 0);
+	data_.totalDeathNum = 0;
+}
+
 //セーブデータの書き出し
 void ExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 {
@@ -183,29 +184,31 @@ void ExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 
 }
 
-void ExternalFile::ClearSaveData()
+//プレイヤーのステータスを書き出す
+void ExternalFile::RewritePlayerInfo()
 {
-	data_.checkPoint = VGet(0, 0, 0);
-	data_.totalDeathNum = 0;
-}
+	//プレイヤーのステータスをまとめる
+	json player = {
+	   {"name","player"},
+	   {"jumpPower",10.0f},
+	   {"runningJumpPower",8.0f},
+	   {"rotSpeed",15.0f},
+	   {"walkSpeed",3.0f},
+	   {"runningSpeed",7.0f},
+	};
 
-void ExternalFile::DeleteData()
-{
-	if (!loadObjInfo_.empty()) {
-		loadObjInfo_.clear();
-	}
-	if (!loadGimmickInfo_.empty()) {
-		loadGimmickInfo_.clear();
-	}
-	if (!loadCameraGimmickInfo_.empty()) {
-		loadCameraGimmickInfo_.clear();
-	}
-	if (!loadEnemyInfo_.empty()) {
-		loadEnemyInfo_.clear();
-	}
-	if (!loadDeleteObjInfo_.empty()) {
-		loadDeleteObjInfo_.clear();
-	}
+	//書き出す場所の指定
+	string filename = player["name"];
+	string extension = ".json";
+	filename += extension;
+	filename = "data/jsonFile/" + filename;
+
+	//出力
+	ofstream writeing_file;
+	writeing_file.open(filename, ios::out);
+	writeing_file << player.dump() << std::endl;
+	writeing_file.close();
+
 }
 
 //プレイヤーのステータス情報を読み込む
@@ -289,8 +292,8 @@ void ExternalFile::LoadObjectData(const char* const filename, std::unordered_map
 		//拡縮率をinfo.scale分読み取る
 		result = FileRead_read(&info.scale, sizeof(info.scale), dataHandle);
 		assert(result != -1);
-		
-		std::string keyName = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(info.name,".");
+
+		std::string keyName = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(info.name, ".");
 
 		//追加
 		dataTable[keyName].push_back(info);
@@ -309,27 +312,4 @@ void ExternalFile::LoadObjectData(const char* const filename, std::unordered_map
 
 }
 
-//プレイヤーのステータスを書き出す
-void ExternalFile::RewritePlayerInfo()
-{
-	json player = {
-	   {"name","player"},
-	   {"jumpPower",10.0f},
-	   {"runningJumpPower",8.0f},
-	   {"rotSpeed",15.0f},
-	   {"walkSpeed",3.0f},
-	   {"runningSpeed",7.0f},
-	};
-
-	string filename = player["name"];
-	string extension = ".json";
-	filename += extension;
-	filename = "data/jsonFile/" + filename;
-
-	ofstream writeing_file;
-	writeing_file.open(filename, ios::out);
-	writeing_file << player.dump() << std::endl;
-	writeing_file.close();
-
-}
 

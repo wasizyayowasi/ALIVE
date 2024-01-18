@@ -15,7 +15,7 @@ Model::Model(const char* fileName)
 	ClearAnimData(animNext_);
 }
 
-//duplicate死体モデルのコンストラクタ
+//duplicateモデルのコンストラクタ
 Model::Model(int orgModel)
 {
 	modelHandle_ = MV1DuplicateModel(orgModel);

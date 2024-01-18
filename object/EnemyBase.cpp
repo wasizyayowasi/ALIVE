@@ -196,8 +196,6 @@ void EnemyBase::RoutingUpdate(Player& player)
 		VECTOR moveVec = VScale(norm, move_speed);
 		//移動
 		pos_ = VAdd(pos_, moveVec);
-		//ポジションの更新
-		model_->SetPos(pos_);
 	}
 }
 

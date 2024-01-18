@@ -110,13 +110,13 @@ Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)
 		keyNum_[87] = Key::F11;
 		keyNum_[88] = Key::F12;
 		keyNum_[112] = Key::KANA;
-		keyNum_[121] = Key::•ÏŠ·;
-		keyNum_[123] = Key::–³•ÏŠ·;
+		keyNum_[121] = Key::Conversion;
+		keyNum_[123] = Key::NoConversion;
 		keyNum_[125] = Key::YEN_mark;
 		keyNum_[144] = Key::Caret;
 		keyNum_[145] = Key::At_mark;
 		keyNum_[146] = Key::Colon;
-		keyNum_[148] = Key::Š¿Žš;
+		keyNum_[148] = Key::ChineseCharacters;
 		keyNum_[156] = Key::Key10_enter;
 		keyNum_[157] = Key::R_ctrl;
 		keyNum_[181] = Key::Key10_slash;
