@@ -3,6 +3,7 @@
 #include "GameEnd.h"
 #include "ScenePause.h"
 #include "SceneTitle.h"
+#include "SceneTitle1.h"
 #include "SceneManager.h"
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
@@ -20,6 +21,7 @@ void DebugScene::Init()
 {
 	sceneName_.push_back("main");
 	sceneName_.push_back("title");
+	sceneName_.push_back("testScene");
 	sceneName_.push_back("end");
 	sceneName_.push_back("pause");
 	sceneName_.push_back("exit");
@@ -52,12 +54,15 @@ void DebugScene::Update()
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
 			break;
 		case 2:
-			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager_)));
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle1>(manager_)));
 			break;
 		case 3:
-			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager_)));
 			break;
 		case 4:
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
+			break;
+		case 5:
 			manager_.SetEndFlag(true);
 			break;
 		}

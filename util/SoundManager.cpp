@@ -11,6 +11,8 @@ using namespace std;
 
 SoundManager::SoundManager() {
     //loadSoundConfig();
+    Load2DSoundSEFile("alarm");
+    Load2DSoundSEFile("stopAlarm");
     Load3DSoundBGMFile("cafe");
     Load3DSoundSEFile("openTheDoor");
     Load3DSoundSEFile("pullLever");
@@ -183,7 +185,6 @@ void SoundManager::SaveSoundConfig()
     }
 }
 
-
 void SoundManager::Set3DSoundInfo(VECTOR pos, float audioRange, const char* name)
 {
     assert(nameAndHandleTable_[name] != -1);
@@ -197,4 +198,9 @@ void SoundManager::Set3DSoundListenerInfo(VECTOR pos, VECTOR rot)
 {
     //リスナーの位置と向きを設定
     Set3DSoundListenerPosAndFrontPos_UpVecY(pos, rot);
+}
+
+int SoundManager::CheckSoundFile(const char* const name)
+{
+    return DxLib::CheckSoundMem(nameAndHandleTable_[name]);
 }

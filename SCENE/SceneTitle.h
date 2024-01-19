@@ -23,9 +23,9 @@ private:
 
 	void SceneChange();
 
-	void fadeInUpdate();
-	void normalUpdate();
-	void fadeOutUpdate();
+	void FadeInUpdate();
+	void NormalUpdate();
+	void FadeOutUpdate();
 
 private:
 	int fontHandle_ = -1;
@@ -34,7 +34,7 @@ private:
 
 	static constexpr int fadeInterval_ = 30;
 	int fadeTimer_ = 0;
-	int fadeValue_ = 255;
+	int fadeValue_ = 0;
 	int fadeColor_ = 0x000000;
 
 	int titleHandle_ = -1;					//ƒ^ƒCƒgƒ‹‰æ‘œ‚Ì•ÛŠÇ•Ï”

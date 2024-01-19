@@ -1,7 +1,7 @@
 #include "SceneTitle.h"
-#include "SceneManager.h"
 #include "GameMain.h"
 #include "ScenePause.h"
+#include "SceneManager.h"
 
 #include "../util/game.h"
 #include "../util/InputState.h"
@@ -14,7 +14,7 @@
 
 
 
-SceneTitle::SceneTitle(SceneManager& manager) : SceneBase(manager), updateFunc_(&SceneTitle::fadeInUpdate)
+SceneTitle::SceneTitle(SceneManager& manager) : SceneBase(manager), updateFunc_(&SceneTitle::FadeInUpdate)
 {
 }
 
@@ -72,20 +72,17 @@ void SceneTitle::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void SceneTitle::fadeInUpdate()
+void SceneTitle::FadeInUpdate()
 {
 	float timer = (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_));
 	fadeValue_ = static_cast <int>(255 * timer);
-	if (fadeTimer_ == fadeInterval_) {
-		updateFunc_ = &SceneTitle::normalUpdate;
+	if (++fadeTimer_ == fadeInterval_) {
+		updateFunc_ = &SceneTitle::NormalUpdate;
 		return;
 	}
-
-	fadeTimer_++;
-
 }
 
-void SceneTitle::normalUpdate()
+void SceneTitle::NormalUpdate()
 {		
 	//íZèkâª
 	auto& input = InputState::GetInstance();
@@ -100,12 +97,12 @@ void SceneTitle::normalUpdate()
 
 	//åàíË
 	if (input.IsTriggered(InputType::space)) {
-		updateFunc_ = &SceneTitle::fadeOutUpdate;
+		updateFunc_ = &SceneTitle::FadeOutUpdate;
 	}
 
 }
 
-void SceneTitle::fadeOutUpdate()
+void SceneTitle::FadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) {

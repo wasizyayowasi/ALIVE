@@ -4,6 +4,11 @@
 #include<unordered_map>
 #include<string>
 
+enum class SoundPlay {
+	notPlaying,		//再生していない
+	nowPlaying,		//再生中
+};
+
 /// <summary>
 /// SE、BGMの管理を行うシングルトンクラス
 /// </summary>
@@ -90,6 +95,12 @@ public:
 	/// <param name="rot"></param>
 	void Set3DSoundListenerInfo(VECTOR pos, VECTOR rot);
 
+	/// <summary>
+	/// サウンドが再生中か調べる
+	/// </summary>
+	/// <returns>1:再生中 1:終了</returns>
+	int CheckSoundFile(const char* const name);
+
 private:
 	struct SoundConfigInfo {
 		char signature[4];
@@ -98,8 +109,8 @@ private:
 		unsigned short volumeBGM;
 	};
 
-	int volumeSE_ = 50;
-	int volumeBGM_ = 50;
+	int volumeSE_ = 250;
+	int volumeBGM_ = 250;
 
 	std::unordered_map<std::string, int> nameAndHandleTable_;
 	int Load2DSoundSEFile(const char* fileName);
