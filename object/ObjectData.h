@@ -41,6 +41,13 @@ enum class ObjectType{
 	RedContainer,
 	YellowContainer,
 	OrangeContainer,
+	Bed,
+	Chair,
+	Clock,
+	Desk,
+	RoomWall,
+	Window,
+	WoodFloor,
 	max,
 };
 

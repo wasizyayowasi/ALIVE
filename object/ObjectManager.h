@@ -13,17 +13,25 @@ class ShotManager;
 class ObjectManager
 {
 public:
-
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	ObjectManager();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~ObjectManager();
 
 	/// <summary>
-	/// オブジェクト生成
+	/// メインステージのオブジェクト生成
 	/// </summary>
-	/// <param name="baseType">どのbaseクラスをもとに生成するか</param>
-	/// <param name="objType">オブジェクトの種類</param>
-	/// <param name="objInfo">オブジェクトの配置データ等</param>
-	void ObjectGenerator();
+	void MainStageObjectGenerator();
+
+	/// <summary>
+	/// オープニングシーンのオブジェクトを生成する
+	/// </summary>
+	void OpeningStageObjectGenerator();
 
 	/// <summary>
 	/// 死体生成
@@ -33,11 +41,18 @@ public:
 	/// <param name="animNo">初期化時に使用するアニメーション番号</param>
 	void DeadPersonGenerator(int handle, LoadObjectInfo objInfo,int animNo);
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="player">プレイヤーの参照</param>
+	/// <param name="shotManager">ショットマネージャーのスマートポインタ</param>
 	void Update(Player& player, std::shared_ptr<ShotManager> shotManager);
 
-	//描画
-	void Draw(VECTOR pos);
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name="pos">プレイヤーポジション</param>
+	void Draw(VECTOR PlayerPos);
 
 	/// <summary>
 	/// 衝突判定に使用するモデルを取得する
@@ -45,6 +60,12 @@ public:
 	/// <returns>衝突判定を行うモデルスマートポインタのリスト</returns>
 	std::list<std::shared_ptr<Model>> GetAllCheckCollModel();
 
+	/// <summary>
+	/// baseType別にオブジェクトの生成を振り分ける
+	/// </summary>
+	/// <param name="baseType">オブジェクトのベースタイプ</param>
+	/// <param name="objType">オブジェクトのタイプ</param>
+	/// <param name="objInfo">オブジェクトの配置データ</param>
 	void SortingObject(ObjectBaseType baseType, ObjectType objType, LoadObjectInfo objInfo);
 
 	/// <summary>

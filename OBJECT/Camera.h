@@ -5,12 +5,12 @@ class Camera
 {
 public:
 	//コンストラクタ
-	Camera();
+	Camera(VECTOR pos);
 	//デストラクタ
 	virtual ~Camera();
 
 	//初期化用
-	void Init();
+	void Init(VECTOR targetPos);
 
 	//更新
 	void Update(VECTOR playerPos, float playerHeight);
@@ -33,8 +33,10 @@ public:
 	/// </summary>
 	void ChangeOfFocus();
 
-	VECTOR GetPos() { return cameraPos_; }
+	VECTOR GetPos() { return pos_; }
 	VECTOR GetTarget() { return cameraTarget_; }
+
+	void tempdraw();
 
 private:
 
@@ -59,15 +61,15 @@ private:
 private:
 
 	int i = 0;
-	float cameraTargetPosZ = 0.0f;
 	float moveVecZ = 0.0f;
 	float moveVecY = 0.0f;
 	float moveVecX = 0.0f;
 
 	DINPUT_JOYSTATE input_ = {};
 
-	VECTOR cameraPos_;									//カメラのポジション
-	VECTOR cameraTarget_ = {0, 0, 0};					//カメラのターゲット
+	VECTOR pos_ = {};							//カメラのポジション
+	VECTOR cameraTarget_ = {0, 0, 0};			//カメラのターゲット
+	VECTOR initPos_ = {};						//初期ポジション
 
 	void(Camera::* updateFunc_)(VECTOR pos, float height);
 

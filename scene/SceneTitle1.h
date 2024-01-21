@@ -5,6 +5,9 @@
 #include <memory>
 
 class UIItemManager;
+class ObjectManager;
+class Camera;
+class Model;
 
 class SceneTitle1 : public SceneBase
 {
@@ -90,11 +93,14 @@ private:
 	int fadeValue_ = 0;
 	int fadeColor_ = 0x000000;
 
-	int titleHandle_ = -1;					//タイトル画像の保管変数
-	int selectNum_ = 0;						//選択
+	int titleHandle_ = -1;						//タイトル画像の保管変数
+	int selectNum_ = 0;							//選択
 
-	std::vector<std::string> menuName_;		//メニューの文字列
-	std::shared_ptr<UIItemManager> UI_;		//UIマネージャーのスマートポインタ
+	std::vector<std::string> menuName_;			//メニューの文字列
+	std::shared_ptr<Camera> camera_;			//カメラのスパートポインタ
+	std::shared_ptr<UIItemManager> UI_;			//UIマネージャーのスマートポインタ
+	std::shared_ptr<ObjectManager> objManager_;	//オブジェクトマネージャーのスマートポインタ
+	std::shared_ptr<Model> model_;				//プレイヤーのスマートポインタ
 
 	void (SceneTitle1::* updateFunc_)();
 	void (SceneTitle1::* drawFunc_)();

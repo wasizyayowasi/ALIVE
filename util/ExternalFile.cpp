@@ -24,12 +24,13 @@ ExternalFile::~ExternalFile()
 void ExternalFile::LoadFile()
 {
 	LoadPlayerInfo("player");
-	LoadObjectData("data/objData/obj.pos",loadObjInfo_);
-	LoadObjectData("data/objData/Enemy.pos",loadEnemyInfo_);
-	LoadObjectData("data/objData/delete.pos",loadDeleteObjInfo_);
-	LoadObjectData("data/objData/tutorial.pos", loadTutorialInfo_);
-	LoadObjectData("data/objData/gimmick.pos",loadGimmickInfo_);
-	LoadObjectData("data/objData/cameraGimmick.pos", loadCameraGimmickInfo_);
+	LoadObjectData("obj",loadMainStageObjInfo_);
+	LoadObjectData("room",loadOpeningStageObjInfo_);
+	LoadObjectData("Enemy",loadEnemyInfo_);
+	LoadObjectData("delete",loadDeleteObjInfo_);
+	LoadObjectData("tutorial", loadTutorialInfo_);
+	LoadObjectData("gimmick",loadGimmickInfo_);
+	LoadObjectData("cameraGimmick", loadCameraGimmickInfo_);
 }
 
 void ExternalFile::LoadSaveData()
@@ -77,9 +78,9 @@ LoadObjectInfo ExternalFile::GetCameraGimmickInfo(VECTOR playerPos, const char* 
 std::list<LoadObjectInfo> ExternalFile::GetSpecifiedInfo(const char* const name)
 {
 
-	for (auto& obj : loadObjInfo_) {
+	for (auto& obj : loadMainStageObjInfo_) {
 		if (obj.first == name) {
-			return loadObjInfo_[name];
+			return loadMainStageObjInfo_[name];
 		}
 	}
 
@@ -259,8 +260,12 @@ void ExternalFile::LoadSaveDataInfo(const char* const filename)
 //オブジェクトのポジションを読み込む
 void ExternalFile::LoadObjectData(const char* const filename, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
 {
+	//ファイルパスの生成
+	std::string filepath = "data/objData/";
+	filepath = filepath + filename + ".pos";
+
 	//ファイルのロード
-	auto dataHandle = FileRead_open(filename);
+	auto dataHandle = FileRead_open(filepath.c_str());
 
 	//データ数の取得
 	int dataNum = 0;

@@ -52,10 +52,18 @@ namespace {
 	const char* const Tile_filepath = "data/model/city/model/Tile.mv1";
 	const char* const scaffold_filepath = "data/model/city/others/Scaffold.mv1";
 	//åöï®
-	const char* const BlueContainer_filepath = "data/model/city/container/mv1/BlueContainer.mv1";
-	const char* const RedContainer_filepath = "data/model/city/container/mv1/RedContainer.mv1";
-	const char* const YellowContainer_filepath = "data/model/city/container/mv1/YellowContainer.mv1";
-	const char* const OrangeContainer_filepath = "data/model/city/container/mv1/OrangeContainer.mv1";
+	const char* const blueContainer_filepath = "data/model/city/container/mv1/BlueContainer.mv1";
+	const char* const redContainer_filepath = "data/model/city/container/mv1/RedContainer.mv1";
+	const char* const yellowContainer_filepath = "data/model/city/container/mv1/YellowContainer.mv1";
+	const char* const orangeContainer_filepath = "data/model/city/container/mv1/OrangeContainer.mv1";
+	//ïîâÆ
+	const char* const bed_filepath = "data/model/room/mv1/Bed.mv1";
+	const char* const chair_filepath = "data/model/room/mv1/Chair.mv1";
+	const char* const clock_filepath = "data/model/room/mv1/Clock.mv1";
+	const char* const desk_filepath = "data/model/room/mv1/Desk.mv1";
+	const char* const window_filepath = "data/model/room/mv1/Window.mv1";
+	const char* const roomWall_filepath = "data/model/room/mv1/RoomWall.mv1";
+	const char* const woodFloor_filepath = "data/model/room/mv1/WoodFloor.mv1";
 }
 
 ObjectManager::ObjectManager()
@@ -90,10 +98,18 @@ ObjectManager::ObjectManager()
 	modelHandle_[ObjectType::Tile] = MV1LoadModel(Tile_filepath);
 	modelHandle_[ObjectType::Scaffold] = MV1LoadModel(scaffold_filepath);
 
-	modelHandle_[ObjectType::BlueContainer] = MV1LoadModel(BlueContainer_filepath);
-	modelHandle_[ObjectType::RedContainer] = MV1LoadModel(RedContainer_filepath);
-	modelHandle_[ObjectType::YellowContainer] = MV1LoadModel(YellowContainer_filepath);
-	modelHandle_[ObjectType::OrangeContainer] = MV1LoadModel(OrangeContainer_filepath);
+	modelHandle_[ObjectType::BlueContainer] = MV1LoadModel(blueContainer_filepath);
+	modelHandle_[ObjectType::RedContainer] = MV1LoadModel(redContainer_filepath);
+	modelHandle_[ObjectType::YellowContainer] = MV1LoadModel(yellowContainer_filepath);
+	modelHandle_[ObjectType::OrangeContainer] = MV1LoadModel(orangeContainer_filepath);
+
+	modelHandle_[ObjectType::Bed] = MV1LoadModel(bed_filepath);
+	modelHandle_[ObjectType::Chair] = MV1LoadModel(chair_filepath);
+	modelHandle_[ObjectType::Clock] = MV1LoadModel(clock_filepath);
+	modelHandle_[ObjectType::Desk] = MV1LoadModel(desk_filepath);
+	modelHandle_[ObjectType::Window] = MV1LoadModel(window_filepath);
+	modelHandle_[ObjectType::RoomWall] = MV1LoadModel(roomWall_filepath);
+	modelHandle_[ObjectType::WoodFloor] = MV1LoadModel(woodFloor_filepath);
 
 	for (auto model : modelHandle_) {
 		duplicateModelHandle_[model.first] = MV1DuplicateModel(model.second);
@@ -106,14 +122,17 @@ ObjectManager::~ObjectManager()
 	for (auto& type : modelHandle_) {
 		MV1DeleteModel(type.second);
 	}
+	for (auto& type : duplicateModelHandle_) {
+		MV1DeleteModel(type.second);
+	}
 }
 
-void ObjectManager::ObjectGenerator()
+void ObjectManager::MainStageObjectGenerator()
 {
 
 	auto& loadData = ExternalFile::GetInstance();
 
-	for (auto& objInfo : loadData.GetLoadObjectInfo()) {
+	for (auto& objInfo : loadData.GetLoadMainStageObjectInfo()) {
 		if (objInfo.first == "BigBuildingA") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingA, objSecond);
@@ -245,6 +264,50 @@ void ObjectManager::ObjectGenerator()
 		else if (gimmick.first == "PenetrationScaffld") {
 			for (auto& objSecond : gimmick.second) {
 				SortingObject(ObjectBaseType::gimmickBase, ObjectType::PenetrationScaffld, objSecond);
+			}
+		}
+	}
+}
+
+void ObjectManager::OpeningStageObjectGenerator()
+{
+	//íZèkâª
+	auto& loadData = ExternalFile::GetInstance();
+
+	for (auto& objInfo : loadData.GetLoadOpeningStageObjectInfo()) {
+		if (objInfo.first == "Bed") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Bed, objSecond);
+			}
+		}
+		else if (objInfo.first == "RoomWall") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::RoomWall, objSecond);
+			}
+		}
+		else if (objInfo.first == "WoodFloor") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::WoodFloor, objSecond);
+			}
+		}
+		else if (objInfo.first == "Window") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Window, objSecond);
+			}
+		}
+		else if (objInfo.first == "Clock") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Clock, objSecond);
+			}
+		}
+		else if (objInfo.first == "Chair") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Chair, objSecond);
+			}
+		}
+		else if (objInfo.first == "Desk") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Desk, objSecond);
 			}
 		}
 	}

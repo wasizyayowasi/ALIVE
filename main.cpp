@@ -42,12 +42,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//// ただし、DirectX11を使用する場合は実行する必要はない。
 	//Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 
-
 	//ダブルバッファモード
 	SetDrawScreen(DX_SCREEN_BACK);
 
-	
-	//InputState input;
 	SceneManager manager;
 
 //	manager.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager)));

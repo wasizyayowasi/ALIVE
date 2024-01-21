@@ -107,10 +107,16 @@ public:
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetGimmickInfo() { return loadGimmickInfo_; }
 
 	/// <summary>
-	/// オブジェクトの配置、回転率、拡縮率を取得する
+	/// メインステージオブジェクトの配置、回転率、拡縮率を取得する
 	/// </summary>
-	/// <returns>オブジェクトの配置データなどをすべてまとめた変数</returns>
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadObjectInfo() { return loadObjInfo_; }
+	/// <returns>オブジェクトの配置データなどをまとめた変数</returns>
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadMainStageObjectInfo() { return loadMainStageObjInfo_; }
+
+	/// <summary>
+	/// オープニングステージオブジェクトの配置、回転率、拡縮率を取得する
+	/// </summary>
+	/// <returns>オブジェクトの配置データなどをまとめた変数</returns>
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadOpeningStageObjectInfo() { return loadOpeningStageObjInfo_; }
 
 private:
 
@@ -149,7 +155,8 @@ private:
 	PlayerInfo player_ = {};		//プレイヤーのステータス情報
 	SaveData data_ = {};			//セーブデータ情報
 
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadObjInfo_;			//オブジェクトの配置データ
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadMainStageObjInfo_;	//メインステージオブジェクトの配置データ
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadOpeningStageObjInfo_;//オープニングステージオブジェクトの配置データ
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadGimmickInfo_;		//ギミックの配置データ	
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadCameraGimmickInfo_;	//カメラギミックの配置データ		
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadEnemyInfo_;			//敵の配置データ

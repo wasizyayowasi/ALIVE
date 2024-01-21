@@ -6,7 +6,7 @@
 Broom::Broom()
 {
 
-	camera_ = std::make_shared<Camera>();
+	//camera_ = std::make_shared<Camera>();
 
 	gaussRation_ = 900;
 	reductionScale_ = 8;

@@ -4,7 +4,11 @@
 #include "ScenePause.h"
 #include "SceneManager.h"
 
+#include "../object/ObjectManager.h"
+#include "../object/Camera.h"
+
 #include "../util/game.h"
+#include "../util/Model.h"
 #include "../util/InputState.h"
 #include "../util/FontsManager.h"
 #include "../util/SoundManager.h"
@@ -14,7 +18,11 @@
 #include <DxLib.h>
 #include <algorithm>
 
-SceneTitle1::SceneTitle1(SceneManager& manager): SceneBase(manager),updateFunc_(&SceneTitle1::FadeInUpdate),drawFunc_(&SceneTitle1::NormalDraw)
+namespace {
+	const char* const player_model_Filename = "data/player/player16.mv1";
+}
+
+SceneTitle1::SceneTitle1(SceneManager& manager): SceneBase(manager),updateFunc_(&SceneTitle1::OpeningFadeInUpdate),drawFunc_(&SceneTitle1::OpeningDraw)
 {
 }
 
@@ -25,7 +33,16 @@ SceneTitle1::~SceneTitle1()
 void SceneTitle1::Init()
 {
 	//インスタンス化
+	model_ = std::make_shared<Model>(player_model_Filename);
 	UI_ = std::make_shared<UIItemManager>();
+	objManager_ = std::make_shared<ObjectManager>();
+	camera_ = std::make_shared<Camera>(VGet(0, 140, -370));
+
+	objManager_->OpeningStageObjectGenerator();
+	camera_->Init(VGet(0,140,0));
+
+	//仮でライト処理を消している
+	SetUseLighting(false);
 
 	//UI文字列の作成
 	menuName_.push_back("ニューゲーム");
@@ -109,6 +126,9 @@ void SceneTitle1::OpeningFadeInUpdate()
 		fadeValue_ = 0;
 		return;
 	}
+
+	camera_->ChangeOfFocus();
+
 }
 
 void SceneTitle1::FadeOutUpdate()
@@ -131,6 +151,14 @@ void SceneTitle1::OpeningDraw()
 {
 	
 	DrawString(0, 0, "aaaaaaaaaaaaaaaaaaa", 0xffffff);
+
+	objManager_->Draw({0,0,0});
+
+	camera_->tempdraw();
+
+	model_->Draw();
+
+	DrawSphere3D({ 0,140,0 }, 32, 32, 0xff0000, 0xff0000, true);
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	//背景

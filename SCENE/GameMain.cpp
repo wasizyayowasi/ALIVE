@@ -98,7 +98,7 @@ void GameMain::Draw()
 
 	//カメラの初期化
 	//SetDrawScreenを行うとカメラの情報がリセットされるために
-	camera_->Init();
+	camera_->Init(VGet(0,0,0));
 	camera_->Update(player_->GetStatus().pos, player_->GetStatus().height);
 
 	//オブジェクトの描画
@@ -139,9 +139,9 @@ void GameMain::ObjectGenerater()
 	//プレイヤーの初期化
 	player_->Init(loadData.GetSpecifiedInfo("Player").front());
 	//ゲームオブジェクトの生成
-	objManager_->ObjectGenerator();
+	objManager_->MainStageObjectGenerator();
 	//カメラのインスタンス化
-	camera_ = std::make_shared<Camera>();
+	camera_ = std::make_shared<Camera>(VGet( 0, 400, -600 ));
 
 }
 
