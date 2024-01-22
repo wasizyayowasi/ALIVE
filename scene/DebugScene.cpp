@@ -3,6 +3,7 @@
 #include "GameEnd.h"
 #include "ScenePause.h"
 #include "SceneTitle.h"
+#include "LoadingScene.h"
 #include "SceneManager.h"
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
@@ -53,7 +54,7 @@ void DebugScene::Update()
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
 			break;
 		case 2:
-			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<LoadingScene>(manager_)));
 			break;
 		case 3:
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager_)));
