@@ -1,6 +1,5 @@
 #pragma once
 #include <DxLib.h>
-
 #include<unordered_map>
 #include<string>
 

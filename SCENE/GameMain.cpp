@@ -25,10 +25,6 @@
 #include "../object/ObjectManager.h"
 #include "../object/ObjectData.h"
 
-namespace {
-	const char* const player_model_Filename = "data/player/player16.mv1";
-}
-
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),
 updateFunc_(&GameMain::NormalUpdate)
 {
@@ -98,7 +94,7 @@ void GameMain::Draw()
 
 	//カメラの初期化
 	//SetDrawScreenを行うとカメラの情報がリセットされるために
-	camera_->Init(VGet(0,0,0));
+	camera_->Init(player_->GetStatus().pos);
 	camera_->Update(player_->GetStatus().pos, player_->GetStatus().height);
 
 	//オブジェクトの描画
@@ -135,9 +131,9 @@ void GameMain::ObjectGenerater()
 	auto& loadData = ExternalFile::GetInstance();
 
 	//プレイヤーのインスタンス化
-	player_ = std::make_shared<Player>(player_model_Filename);
+	player_ = std::make_shared<Player>();
 	//プレイヤーの初期化
-	player_->Init(loadData.GetSpecifiedInfo("Player").front());
+	player_->Init(loadData.GetSpecifiedInfo("main","Player"));
 	//ゲームオブジェクトの生成
 	objManager_->MainStageObjectGenerator();
 	//カメラのインスタンス化

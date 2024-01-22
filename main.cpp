@@ -10,6 +10,7 @@
 #include "util/InputState.h"
 #include "util/ExternalFile.h"
 #include "util/EffekseerManager.h"
+#include "util/ModelManager.h"
 
 #include "staging/Broom.h"
 
@@ -46,6 +47,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	SceneManager manager;
+
+	ModelManager::GetInstance().LoadModel();
 
 //	manager.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager)));
 	manager.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager)));

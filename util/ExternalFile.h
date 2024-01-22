@@ -52,7 +52,7 @@ public:
 	/// </summary>
 	/// <param name="name">取得したいオブジェクトの名前</param>
 	/// <returns>オブジェクトのデータ</returns>
-	std::list<LoadObjectInfo> GetSpecifiedInfo(const char* const name);
+	LoadObjectInfo GetSpecifiedInfo(const char* const stage,const char* const name);
 
 	/// <summary>
 	/// エネミーの配置データを取得する

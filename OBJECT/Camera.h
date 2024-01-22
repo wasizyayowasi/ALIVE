@@ -9,10 +9,17 @@ public:
 	//デストラクタ
 	virtual ~Camera();
 
-	//初期化用
+	/// <summary>
+	/// カメラの初期化
+	/// </summary>
+	/// <param name="targetPos">カメラが見る位置</param>
 	void Init(VECTOR targetPos);
 
-	//更新
+	/// <summary>
+	/// カメラの更新
+	/// </summary>
+	/// <param name="playerPos">プレイヤーのポジション</param>
+	/// <param name="playerHeight">プレイヤーの身長</param>
 	void Update(VECTOR playerPos, float playerHeight);
 
 	/// <summary>
@@ -33,8 +40,15 @@ public:
 	/// </summary>
 	void ChangeOfFocus();
 
+	/// <summary>
+	/// オープニングのカメラ
+	/// </summary>
+	void OpeningCameraUpdate();
+
 	VECTOR GetPos() { return pos_; }
 	VECTOR GetTarget() { return cameraTarget_; }
+
+	
 
 	void tempdraw();
 

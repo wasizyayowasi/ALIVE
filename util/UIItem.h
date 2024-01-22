@@ -5,7 +5,14 @@ class UIItem
 {
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	UIItem();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~UIItem();
 
 	/// <summary>

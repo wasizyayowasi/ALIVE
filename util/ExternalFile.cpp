@@ -75,22 +75,26 @@ LoadObjectInfo ExternalFile::GetCameraGimmickInfo(VECTOR playerPos, const char* 
 	return info;
 }
 
-std::list<LoadObjectInfo> ExternalFile::GetSpecifiedInfo(const char* const name)
+LoadObjectInfo ExternalFile::GetSpecifiedInfo(const char* const stage, const char* const name)
 {
+	LoadObjectInfo info;
 
-	for (auto& obj : loadMainStageObjInfo_) {
-		if (obj.first == name) {
-			return loadMainStageObjInfo_[name];
+	if (stage == "main") {
+		for (auto& obj : loadMainStageObjInfo_) {
+			if (obj.first == name) {
+				info = loadMainStageObjInfo_[name].front();
+			}
+		}
+	}
+	else if (stage == "title") {
+		for (auto& obj : loadOpeningStageObjInfo_) {
+			if (obj.first == name) {
+				info = loadOpeningStageObjInfo_[name].front();
+			}
 		}
 	}
 
-	for (auto& gimmick : loadGimmickInfo_) {
-		if (gimmick.first == name) {
-			return loadGimmickInfo_[name];
-		}
-	}
-
-	return std::list<LoadObjectInfo>();
+	return info;
 }
 
 LoadObjectInfo ExternalFile::GetEnemyInfo(VECTOR playerPos)

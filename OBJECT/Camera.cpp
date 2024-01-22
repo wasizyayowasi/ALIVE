@@ -151,17 +151,18 @@ void Camera::ChangeOfFocus()
 		cameraTarget_.x += add_focus;
 	}
 
-	if (input.IsPressed(InputType::death)) {
-		pos_.z += 1;
-	}
-
 	SetCameraPositionAndTarget_UpVecY(pos_, cameraTarget_);
+}
 
+void Camera::OpeningCameraUpdate()
+{
+	SetCameraPositionAndTarget_UpVecY(pos_, cameraTarget_);
 }
 
 void Camera::tempdraw()
 {
 	DrawFormatString(0, 16, 0xffffff, "%f:%f:%f", pos_.x, pos_.y, pos_.z);
+	DrawFormatString(0, 32, 0xffffff, "%f:%f:%f", cameraTarget_.x, cameraTarget_.y, cameraTarget_.z);
 
 	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
 }

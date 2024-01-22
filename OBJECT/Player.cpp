@@ -1,16 +1,17 @@
 #include "Player.h"
 
 #include "../object/DeadPerson.h"
+#include "../object/ObjectManager.h"
 
 #include "../gimmick/ManualCrank.h"
 #include "../gimmick/Lever.h"
 
-#include "../util/InputState.h"
+#include "../util/Util.h"
 #include "../util/Model.h"
+#include "../util/InputState.h"
 #include "../util/ExternalFile.h"
 #include "../util/SoundManager.h"
-#include "../object/ObjectManager.h"
-#include "../util/Util.h"
+#include "../util/ModelManager.h"
 
 #include<algorithm>
 #include<string>
@@ -19,20 +20,16 @@ namespace {
 	//重力
 	constexpr float gravity = -0.4f;
 
-	//ファイルパス
-	const char* const player_model_Filename = "data/player/mv1/player.mv1";
-
 	//フレームの名前
 	const char* const frame_name = "hand.R_end";
 
 	//プレイヤーの高さ
 	constexpr float player_hegiht = 130.0f;
-
 }
 
 using namespace std;
 
-Player::Player(const char* const filename):updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObjectUpdate)
+Player::Player():updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObjectUpdate)
 {
 	//ジャンプ情報の初期
 	status_.jump.isJump = false;
@@ -51,18 +48,22 @@ Player::~Player()
 
 void Player::Init(LoadObjectInfo info)
 {
+	//短縮化
+	auto& model = ModelManager::GetInstance();
 
 	//プレイヤー情報の初期化
 	playerInfo_ = ExternalFile::GetInstance().GetPlayerInfo();
 	
 	//プレイヤーモデルの生成
-	model_ = make_shared<Model>(player_model_Filename);
+	model_ = make_shared<Model>(model.GetModelHandle(ObjectType::Player));
+
 	//アニメーションの設定
 	model_->SetAnimation(static_cast<int>(PlayerAnimType::Idle), true, false);
+
 	//プレイヤーの大きさの調整
 	model_->SetScale(info.scale);
-	//ポジションの設定
 
+	//ポジションの設定
 	model_->SetPos(info.pos);
 	status_.pos = info.pos;
 //	status_.pos = VGet(0,41,0);

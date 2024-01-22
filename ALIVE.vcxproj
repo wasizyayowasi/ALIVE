@@ -148,10 +148,11 @@
     <ClCompile Include="gimmick\TransparentObject.cpp" />
     <ClCompile Include="gimmick\ManualCrank.cpp" />
     <ClCompile Include="gimmick\Lever.cpp" />
+    <ClCompile Include="util\ModelManager.cpp" />
     <ClCompile Include="object\Shot.cpp" />
     <ClCompile Include="object\ShotManager.cpp" />
     <ClCompile Include="gimmick\PenetrationScaffld.cpp" />
-    <ClCompile Include="scene\SceneTitle1.cpp" />
+    <ClCompile Include="scene\SceneTitle.cpp" />
     <ClCompile Include="scene\PopUpTextScene.cpp" />
     <ClCompile Include="util\Tutorial.cpp" />
     <ClCompile Include="util\Aster.cpp" />
@@ -185,7 +186,6 @@
     <ClCompile Include="scene\GameMain.cpp" />
     <ClCompile Include="scene\SceneBase.cpp" />
     <ClCompile Include="scene\SceneManager.cpp" />
-    <ClCompile Include="scene\SceneTitle.cpp" />
     <ClCompile Include="util\InputState.cpp" />
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
@@ -196,10 +196,11 @@
     <ClInclude Include="gimmick\ManualCrank.h" />
     <ClInclude Include="gimmick\Lever.h" />
     <ClInclude Include="KeyData.h" />
+    <ClInclude Include="util\ModelManager.h" />
     <ClInclude Include="object\Shot.h" />
     <ClInclude Include="object\ShotManager.h" />
     <ClInclude Include="gimmick\PenetrationScaffld.h" />
-    <ClInclude Include="scene\SceneTitle1.h" />
+    <ClInclude Include="scene\SceneTitle.h" />
     <ClInclude Include="scene\PopUpTextScene.h" />
     <ClInclude Include="util\Tutorial.h" />
     <ClInclude Include="util\Aster.h" />
@@ -235,7 +236,6 @@
     <ClInclude Include="scene\GameMain.h" />
     <ClInclude Include="scene\SceneBase.h" />
     <ClInclude Include="scene\SceneManager.h" />
-    <ClInclude Include="scene\SceneTitle.h" />
     <ClInclude Include="util\game.h" />
     <ClInclude Include="util\InputState.h" />
     <ClInclude Include="util\Model.h" />

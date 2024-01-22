@@ -108,9 +108,6 @@ private:
 
 	std::list<std::shared_ptr<Model>> checkCollList_;
 
-	std::unordered_map<ObjectType,int> modelHandle_;
-	std::unordered_map<ObjectType,int> duplicateModelHandle_;
-
 	std::unordered_map<ObjectType, std::list<std::shared_ptr<ObjectBase>>> objects_;			//オブジェクトをobjectTypeをキーにlistでもつ
 };
 

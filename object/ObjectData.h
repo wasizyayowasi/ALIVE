@@ -3,22 +3,22 @@
 #include <string>
 
 enum class ObjectBaseType {
-	characterBase,			//キャラクターベース
-	enemyBase,				//敵ベース
-	ornamentBase,			//置物ベース
-	carryBase,				//運べるオブジェクトベース
-	gimmickBase,			//装置ベース
+	CharacterBase,			//キャラクターベース
+	EnemyBase,				//敵ベース
+	OrnamentBase,			//置物ベース
+	CarryBase,				//運べるオブジェクトベース
+	GimmickBase,			//装置ベース
 };
 
 enum class ObjectType{
-	player,
-	deadPerson,
-	enemy,
-	gimmickSwitch,
+	Player,
+	DeadPerson,
+	Enemy,
+	GimmickSwitch,
 	PenetrationScaffld,
-	trans,
+	Trans,
 	CrankScaffold,
-	elevator,
+	Elevator,
 	SignBoard,
 	BigBuildingA,
 	BigBuildingB,
@@ -48,7 +48,8 @@ enum class ObjectType{
 	RoomWall,
 	Window,
 	WoodFloor,
-	max,
+	WoodenBox,
+	Max,
 };
 
 struct LoadObjectInfo {

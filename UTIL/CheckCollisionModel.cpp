@@ -428,7 +428,7 @@ void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player,
 	}
 
 	//‚¿‰^‚Ô€‘Ì‚ğæ“¾‚·‚é
-	for (auto& obj : objManager->GetSpecificObject(ObjectType::deadPerson)) {
+	for (auto& obj : objManager->GetSpecificObject(ObjectType::DeadPerson)) {
 		for (auto& hit : hitDim_)
 		{
 			//Õ“ËŒ‹‰Ê‚ª€‘ÌˆÈŠO‚¾‚Á‚½‚çcontinue

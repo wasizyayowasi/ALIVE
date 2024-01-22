@@ -28,7 +28,7 @@ void ScenePause::Init()
 	UI_ = std::make_shared<UIItemManager>();
 
 	//UI文字列の作成
-	menuName_.push_back("再開");
+	menuName_.push_back("戻る");
 	menuName_.push_back("設定");
 	menuName_.push_back("タイトルへ");
 	menuName_.push_back("デバッグシーンへ");
@@ -75,7 +75,6 @@ void ScenePause::Update()
 			 break;
 		//タイトルシーンへの遷移
 		case 2:
-//			ExternalFile::GetInstance().LoadFile(false);
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
 			break;
 		//デバッグシーンに戻る

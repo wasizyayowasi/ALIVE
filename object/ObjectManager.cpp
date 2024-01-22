@@ -13,118 +13,18 @@
 
 #include "../util/game.h"
 #include "../util/Util.h"
-
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
+#include "../util/ModelManager.h"
 
 #include <random>
 
-namespace {
-	const char* const player_model_Filename = "data/enemy/mv1/enemy.mv1";
-	//モデルのファイルパス
-	const char* const switch_filepath = "data/model/switch.mv1";
-	const char* const transparent_filepath = "data/model/other/mv1/ElevatingMovableScaffolding.mv1";
-	const char* const elevator_filepath = "data/model/other/mv1/Elevator.mv1";
-	const char* const crank_filepath = "data/model/other/mv1/crankScaffold.mv1";
-	const char* const signboard_filepath = "data/model/other/mv1/SignBoard.mv1";
-
-	//実際に使う予定のモデルパス
-	//でかいビル
-	const char* const big_buildingA_filepath = "data/model/city/model/BigBuildingA.mv1";
-	const char* const big_buildingB_filepath = "data/model/city/model/BigBuildingB.mv1";
-	const char* const big_buildingC_filepath = "data/model/city/model/BigBuildingC.mv1";
-	const char* const big_buildingD_filepath = "data/model/city/model/BigBuildingD.mv1";
-	//Aみたいな形のビル
-	const char* const buildingA_filepath = "data/model/city/model/BuildingA.mv1";
-	const char* const buildingB_filepath = "data/model/city/model/BuildingB.mv1";
-	const char* const buildingC_filepath = "data/model/city/model/BuildingC.mv1";
-	//長方形のビル
-	const char* const buildingA_type2_filepath = "data/model/city/model/Building2A.mv1";
-	const char* const buildingB_type2_filepath = "data/model/city/model/Building2B.mv1";
-	const char* const buildingC_type2_filepath = "data/model/city/model/Building2C.mv1";
-	//海外で見るような飲食店
-	const char* const storeA_filepath = "data/model/city/model/StoreA.mv1";
-	const char* const storeB_filepath = "data/model/city/model/StoreB.mv1";
-	const char* const storeC_filepath = "data/model/city/model/StoreC.mv1";
-	//道
-	const char* const street_filepath = "data/model/city/model/Street.mv1";
-	const char* const T_street_filepath = "data/model/city/model/TStreet.mv1";
-	const char* const Tile_filepath = "data/model/city/model/Tile.mv1";
-	const char* const scaffold_filepath = "data/model/city/others/Scaffold.mv1";
-	//建物
-	const char* const blueContainer_filepath = "data/model/city/container/mv1/BlueContainer.mv1";
-	const char* const redContainer_filepath = "data/model/city/container/mv1/RedContainer.mv1";
-	const char* const yellowContainer_filepath = "data/model/city/container/mv1/YellowContainer.mv1";
-	const char* const orangeContainer_filepath = "data/model/city/container/mv1/OrangeContainer.mv1";
-	//部屋
-	const char* const bed_filepath = "data/model/room/mv1/Bed.mv1";
-	const char* const chair_filepath = "data/model/room/mv1/Chair.mv1";
-	const char* const clock_filepath = "data/model/room/mv1/Clock.mv1";
-	const char* const desk_filepath = "data/model/room/mv1/Desk.mv1";
-	const char* const window_filepath = "data/model/room/mv1/Window.mv1";
-	const char* const roomWall_filepath = "data/model/room/mv1/RoomWall.mv1";
-	const char* const woodFloor_filepath = "data/model/room/mv1/WoodFloor.mv1";
-}
-
 ObjectManager::ObjectManager()
 {
-
-	modelHandle_[ObjectType::enemy] = MV1LoadModel(player_model_Filename);
-	modelHandle_[ObjectType::gimmickSwitch] = MV1LoadModel(switch_filepath);
-	modelHandle_[ObjectType::trans] = MV1LoadModel(transparent_filepath);
-	modelHandle_[ObjectType::elevator] = MV1LoadModel(elevator_filepath);
-	modelHandle_[ObjectType::CrankScaffold] = MV1LoadModel(crank_filepath);
-	modelHandle_[ObjectType::SignBoard] = MV1LoadModel(signboard_filepath);
-
-	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);
-	modelHandle_[ObjectType::BigBuildingB] = MV1LoadModel(big_buildingB_filepath);
-	modelHandle_[ObjectType::BigBuildingC] = MV1LoadModel(big_buildingC_filepath);
-	modelHandle_[ObjectType::BigBuildingD] = MV1LoadModel(big_buildingD_filepath);
-
-	modelHandle_[ObjectType::BuildingAType1] = MV1LoadModel(buildingA_filepath);
-	modelHandle_[ObjectType::BuildingBType1] = MV1LoadModel(buildingB_filepath);
-	modelHandle_[ObjectType::BuildingCType1] = MV1LoadModel(buildingC_filepath);
-
-	modelHandle_[ObjectType::BuildingAType2] = MV1LoadModel(buildingA_type2_filepath);
-	modelHandle_[ObjectType::BuildingBType2] = MV1LoadModel(buildingB_type2_filepath);
-	modelHandle_[ObjectType::BuildingCType2] = MV1LoadModel(buildingC_type2_filepath);
-
-	modelHandle_[ObjectType::StoreA] = MV1LoadModel(storeA_filepath);
-	modelHandle_[ObjectType::StoreB] = MV1LoadModel(storeB_filepath);
-	modelHandle_[ObjectType::StoreC] = MV1LoadModel(storeC_filepath);
-
-	modelHandle_[ObjectType::Street] = MV1LoadModel(street_filepath);
-	modelHandle_[ObjectType::TStreet] = MV1LoadModel(T_street_filepath);
-	modelHandle_[ObjectType::Tile] = MV1LoadModel(Tile_filepath);
-	modelHandle_[ObjectType::Scaffold] = MV1LoadModel(scaffold_filepath);
-
-	modelHandle_[ObjectType::BlueContainer] = MV1LoadModel(blueContainer_filepath);
-	modelHandle_[ObjectType::RedContainer] = MV1LoadModel(redContainer_filepath);
-	modelHandle_[ObjectType::YellowContainer] = MV1LoadModel(yellowContainer_filepath);
-	modelHandle_[ObjectType::OrangeContainer] = MV1LoadModel(orangeContainer_filepath);
-
-	modelHandle_[ObjectType::Bed] = MV1LoadModel(bed_filepath);
-	modelHandle_[ObjectType::Chair] = MV1LoadModel(chair_filepath);
-	modelHandle_[ObjectType::Clock] = MV1LoadModel(clock_filepath);
-	modelHandle_[ObjectType::Desk] = MV1LoadModel(desk_filepath);
-	modelHandle_[ObjectType::Window] = MV1LoadModel(window_filepath);
-	modelHandle_[ObjectType::RoomWall] = MV1LoadModel(roomWall_filepath);
-	modelHandle_[ObjectType::WoodFloor] = MV1LoadModel(woodFloor_filepath);
-
-	for (auto model : modelHandle_) {
-		duplicateModelHandle_[model.first] = MV1DuplicateModel(model.second);
-	}
-
 }
 
 ObjectManager::~ObjectManager()
 {
-	for (auto& type : modelHandle_) {
-		MV1DeleteModel(type.second);
-	}
-	for (auto& type : duplicateModelHandle_) {
-		MV1DeleteModel(type.second);
-	}
 }
 
 void ObjectManager::MainStageObjectGenerator()
@@ -135,112 +35,112 @@ void ObjectManager::MainStageObjectGenerator()
 	for (auto& objInfo : loadData.GetLoadMainStageObjectInfo()) {
 		if (objInfo.first == "BigBuildingA") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingA, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingA, objSecond);
 			}
 		}
 		else if (objInfo.first == "BigBuildingB") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingB, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingB, objSecond);
 			}
 		}
 		else if (objInfo.first == "BigBuildingC") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingC, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingC, objSecond);
 			}
 		}
 		else if (objInfo.first == "BigBuildingD") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BigBuildingD, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingD, objSecond);
 			}
 		}
 		else if (objInfo.first == "SignBoard") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::SignBoard, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoard, objSecond);
 			}
 		}
 		else if (objInfo.first == "BuildingA") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingAType1, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingAType1, objSecond);
 			}
 		}
 		else if (objInfo.first == "BuildingB") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingBType1, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingBType1, objSecond);
 			}
 		}
 		else if (objInfo.first == "BuildingC") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingCType1, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingCType1, objSecond);
 			}
 		}
 		else if (objInfo.first == "Building2A") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingAType2, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingAType2, objSecond);
 			}
 		}
 		else if (objInfo.first == "Building2B") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingBType2, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingBType2, objSecond);
 			}
 		}
 		else if (objInfo.first == "Building2C") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BuildingCType2, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingCType2, objSecond);
 			}
 		}
 		else if (objInfo.first == "StoreA") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::StoreA, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::StoreA, objSecond);
 			}
 		}
 		else if (objInfo.first == "StoreB") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::StoreB, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::StoreB, objSecond);
 			}
 		}
 		else if (objInfo.first == "StoreC") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::StoreC, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::StoreC, objSecond);
 			}
 		}
 		else if (objInfo.first == "Street") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Street, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Street, objSecond);
 			}
 		}
 		else if (objInfo.first == "TStreet") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::TStreet, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TStreet, objSecond);
 			}
 		}
 		else if (objInfo.first == "Tile") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Tile, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Tile, objSecond);
 			}
 		}
 		else if (objInfo.first == "Scaffold") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Scaffold, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Scaffold, objSecond);
 			}
 		}
 		else if (objInfo.first == "BlueContainer") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::BlueContainer, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BlueContainer, objSecond);
 			}
 		}
 		else if (objInfo.first == "RedContainer") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::RedContainer, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::RedContainer, objSecond);
 			}
 		}
 		else if (objInfo.first == "YellowContainer") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::YellowContainer, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::YellowContainer, objSecond);
 			}
 		}
 		else if (objInfo.first == "OrangeContainer") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::OrangeContainer, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::OrangeContainer, objSecond);
 			}
 		}
 	}
@@ -248,22 +148,22 @@ void ObjectManager::MainStageObjectGenerator()
 	for (auto& gimmick : loadData.GetGimmickInfo()) {
 		if (gimmick.first == "Trans") {
 			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::gimmickBase, ObjectType::trans, objSecond);
+				SortingObject(ObjectBaseType::GimmickBase, ObjectType::Trans, objSecond);
 			}
 		}
 		else if (gimmick.first == "CrankScaffold") {
 			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::gimmickBase, ObjectType::CrankScaffold, objSecond);
+				SortingObject(ObjectBaseType::GimmickBase, ObjectType::CrankScaffold, objSecond);
 			}
 		}
 		else if (gimmick.first == "Elevator") {
 			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::gimmickBase, ObjectType::elevator, objSecond);
+				SortingObject(ObjectBaseType::GimmickBase, ObjectType::Elevator, objSecond);
 			}
 		}
 		else if (gimmick.first == "PenetrationScaffld") {
 			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::gimmickBase, ObjectType::PenetrationScaffld, objSecond);
+				SortingObject(ObjectBaseType::GimmickBase, ObjectType::PenetrationScaffld, objSecond);
 			}
 		}
 	}
@@ -277,37 +177,42 @@ void ObjectManager::OpeningStageObjectGenerator()
 	for (auto& objInfo : loadData.GetLoadOpeningStageObjectInfo()) {
 		if (objInfo.first == "Bed") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Bed, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Bed, objSecond);
 			}
 		}
 		else if (objInfo.first == "RoomWall") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::RoomWall, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::RoomWall, objSecond);
 			}
 		}
 		else if (objInfo.first == "WoodFloor") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::WoodFloor, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WoodFloor, objSecond);
 			}
 		}
 		else if (objInfo.first == "Window") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Window, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Window, objSecond);
 			}
 		}
 		else if (objInfo.first == "Clock") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Clock, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Clock, objSecond);
 			}
 		}
 		else if (objInfo.first == "Chair") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Chair, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Chair, objSecond);
 			}
 		}
 		else if (objInfo.first == "Desk") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::ornamentBase, ObjectType::Desk, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Desk, objSecond);
+			}
+		}
+		else if (objInfo.first == "WoodenBox") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WoodenBox, objSecond);
 			}
 		}
 	}
@@ -316,13 +221,13 @@ void ObjectManager::OpeningStageObjectGenerator()
 void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int animNo)
 {
 	//死体を一つ生成する
-	objects_[ObjectType::deadPerson].push_back(std::make_shared<DeadPerson>(handle, objInfo, animNo));
+	objects_[ObjectType::DeadPerson].push_back(std::make_shared<DeadPerson>(handle, objInfo, animNo));
 
 	//死体が4個未満だったらリターン
-	if(objects_[ObjectType::deadPerson].size() < 4) return;
+	if(objects_[ObjectType::DeadPerson].size() < 4) return;
 
 	//死体のリストの一番先頭(古い)死体を削除する
-	objects_[ObjectType::deadPerson].remove(objects_[ObjectType::deadPerson].front());
+	objects_[ObjectType::DeadPerson].remove(objects_[ObjectType::DeadPerson].front());
 
 }
 
@@ -340,10 +245,10 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 	//死体とその他のオブジェクトの衝突判定を行う
 	for (auto& list : objects_) {
 		for (auto& obj : list.second) {
-			if (list.first == ObjectType::deadPerson) {
+			if (list.first == ObjectType::DeadPerson) {
 				continue;
 			}
-			for (auto& deadperson : objects_[ObjectType::deadPerson]) {
+			for (auto& deadperson : objects_[ObjectType::DeadPerson]) {
 				distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
 				if (distanceSize < 1000.0f) {
 					obj->HitColl(deadperson);
@@ -353,7 +258,7 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 	}
 
 	//enemyのShot
-	for (auto obj : objects_[ObjectType::enemy]) {
+	for (auto obj : objects_[ObjectType::Enemy]) {
 		if (std::dynamic_pointer_cast<EnemyBase>(obj) != nullptr) {
 			std::dynamic_pointer_cast<EnemyBase>(obj)->Shot(shotManager, player.GetStatus().pos, player.GetStatus().height);
 		}
@@ -403,7 +308,7 @@ void ObjectManager::Draw(VECTOR PlayerPos)
 		}
 	}
 
-	int size = static_cast<int>(objects_[ObjectType::enemy].size());
+	int size = static_cast<int>(objects_[ObjectType::Enemy].size());
 	DrawFormatString(0, 32, 0xffffff, "%d", size);
 }
 
@@ -426,11 +331,11 @@ void ObjectManager::SortingObject(ObjectBaseType baseType, ObjectType objType, L
 	//objectBaseTypeを元にインスタンス化するクラスを決める
 	switch (baseType) {
 		//置物を生成
-	case ObjectBaseType::ornamentBase:
+	case ObjectBaseType::OrnamentBase:
 		OrnamentGenerator(objType, objInfo);
 		break;
 		//ギミックを生成
-	case ObjectBaseType::gimmickBase:
+	case ObjectBaseType::GimmickBase:
 		GimmickObjectGenerator(objType, objInfo);
 		break;
 	}
@@ -529,11 +434,14 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 {
 	//外部ファイルから読み込んだ「エネミーオブジェクト」の情報を取得する
 	auto loadInfo = ExternalFile::GetInstance().GetEnemyInfo(playerPos);
+
+	//短縮化
+	auto& model = ModelManager::GetInstance();
 	
 	//文字列のサイズを取得する
 	int size = static_cast<int>(loadInfo.name.size());
 
-	for (auto& enemy : objects_[ObjectType::enemy]) {
+	for (auto& enemy : objects_[ObjectType::Enemy]) {
 		if (enemy.get()->GetName() == loadInfo.name) {
 			return;
 		}
@@ -556,7 +464,7 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 				CircumferencePosition(angle, loadInfo.pos, loadInfo.pos);
 
 				//インスタンス化
-				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(duplicateModelHandle_[ObjectType::enemy], loadInfo));
+				objects_[ObjectType::Enemy].push_back(std::make_shared<EnemyBase>(model.GetModelHandle(ObjectType::Enemy), loadInfo));
 				angle -= 15.0f;
 			}
 		}
@@ -567,7 +475,7 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 			//文字列の最後の数よりもdeathCountが多ければ
 			//エネミーを召喚する
 			if (num <= deathCount) {
-				objects_[ObjectType::enemy].push_back(std::make_shared<EnemyBase>(duplicateModelHandle_[ObjectType::enemy], loadInfo));
+				objects_[ObjectType::Enemy].push_back(std::make_shared<EnemyBase>(model.GetModelHandle(ObjectType::Enemy), loadInfo));
 			}
 		}
 	}
@@ -576,23 +484,29 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 //置物生成機
 void ObjectManager::OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
-	objects_[objType].push_front(std::make_shared<OrnamentBase>(duplicateModelHandle_[objType], objInfo));
+	//短縮化
+	auto& model = ModelManager::GetInstance();
+
+	objects_[objType].push_front(std::make_shared<OrnamentBase>(model.GetModelHandle(objType), objInfo));
 }
 
 void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo objInfo)
 {
+	//短縮化
+	auto& model = ModelManager::GetInstance();
+
 	switch (objType) {
-	case ObjectType::trans:
-		objects_[objType].push_front(std::make_shared<TransparentObject>(duplicateModelHandle_[objType], objInfo));
+	case ObjectType::Trans:
+		objects_[objType].push_front(std::make_shared<TransparentObject>(model.GetModelHandle(objType), objInfo));
 		break;
-	case ObjectType::elevator:
-		objects_[objType].push_front(std::make_shared<Elevator>(duplicateModelHandle_[objType], objInfo));
+	case ObjectType::Elevator:
+		objects_[objType].push_front(std::make_shared<Elevator>(model.GetModelHandle(objType), objInfo));
 		break;
 	case ObjectType::CrankScaffold:
-		objects_[objType].push_front(std::make_shared<CrankScaffold>(duplicateModelHandle_[objType], objInfo));
+		objects_[objType].push_front(std::make_shared<CrankScaffold>(model.GetModelHandle(objType), objInfo));
 		break;
 	case ObjectType::PenetrationScaffld:
-		objects_[objType].push_front(std::make_shared<PenetrationScaffld>(duplicateModelHandle_[ObjectType::BlueContainer], objInfo));
+		objects_[objType].push_front(std::make_shared<PenetrationScaffld>(model.GetModelHandle(ObjectType::BlueContainer), objInfo));
 		break;
 	}
 }

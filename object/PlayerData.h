@@ -11,6 +11,7 @@ enum class PlayerAnimType {
 	situpToIdle,	//座っている状態からidle
 	LeverOn,		//レバーを起動する
 	wakeUp,			//起き上がる
+	wakeUp2,			//起き上がる
 	max
 };
 

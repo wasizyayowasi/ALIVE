@@ -7,8 +7,14 @@ class UIItem;
 class UIItemManager
 {
 public:
-
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	UIItemManager();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~UIItemManager();
 
 	/// <summary>

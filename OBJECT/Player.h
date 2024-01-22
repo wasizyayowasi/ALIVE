@@ -42,7 +42,7 @@ private:
 
 public:
 
-	Player(const char* const filename);
+	Player();
 	virtual ~Player();
 
 	void Init(LoadObjectInfo info);
