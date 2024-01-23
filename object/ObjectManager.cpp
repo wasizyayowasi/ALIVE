@@ -55,7 +55,7 @@ void ObjectManager::MainStageObjectGenerator()
 		}
 		else if (objInfo.first == "SignBoard") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoard, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoardType1, objSecond);
 			}
 		}
 		else if (objInfo.first == "BuildingA") {
@@ -213,6 +213,11 @@ void ObjectManager::OpeningStageObjectGenerator()
 		else if (objInfo.first == "WoodenBox") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WoodenBox, objSecond);
+			}
+		}
+		else if (objInfo.first == "SignBoardType2") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoardType2, objSecond);
 			}
 		}
 	}

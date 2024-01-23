@@ -25,14 +25,13 @@ public:
 	//削除用関数
 	void End();
 
+	//オブジェクトの生成
+	void ObjectGenerater();
+
 	//更新
 	void Update();
 	//描画
 	void Draw();
-
-	//オブジェクトの生成
-	void ObjectGenerater();
-
 private:
 
 	int skyHandle_ = -1;
@@ -50,8 +49,8 @@ private:
 
 	//ここも消すかもしれない
 	static constexpr int fadeInterval_ = 60;
-	int fadeTimer_ = 0;
-	int fadeValue_ = 0;
+	int fadeTimer_ = fadeInterval_;
+	int fadeValue_ = 255;
 	int fadeColor_ = 0x000000;
 
 	VECTOR checkPoint_ = { 0.0f,0.0f, 0.0f };

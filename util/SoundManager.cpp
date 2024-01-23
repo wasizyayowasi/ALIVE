@@ -9,14 +9,27 @@ namespace {
 
 using namespace std;
 
-SoundManager::SoundManager() {
-    //loadSoundConfig();
+SoundManager::SoundManager() 
+{
+}
+
+SoundManager::~SoundManager()
+{
+}
+
+void SoundManager::LoadSound()
+{
+    //LoadSoundConfig();
     Load2DSoundSEFile("alarm");
     Load2DSoundSEFile("stopAlarm");
     Load3DSoundBGMFile("cafe");
     Load3DSoundSEFile("openTheDoor");
     Load3DSoundSEFile("pullLever");
     Load3DSoundSEFile("switchOn");
+}
+
+void SoundManager::ChangeVolumeMem()
+{
     SetSEVolume(volumeSE_);
     SetBGMVolume(volumeBGM_);
 }
@@ -38,11 +51,6 @@ int SoundManager::Load2DSoundSEFile(const char* fileName)
     return handle;
 }
 
-/// <summary>
-/// 2Dサウンドをロードする
-/// </summary>
-/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
-/// <returns>ロードしたサウンド</returns>
 int SoundManager::Load2DSoundBGMFile(const char* fileName)
 {
     //ファイルパスの生成
@@ -109,10 +117,6 @@ void SoundManager::LoadSoundConfig()
         volumeBGM_ = conf.volumeBGM;
         volumeSE_ = conf.volumeSE;
     }
-}
-
-SoundManager::~SoundManager()
-{
 }
 
 void SoundManager::Play(const char* name)

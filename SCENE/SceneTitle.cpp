@@ -21,7 +21,15 @@ namespace {
 	const char* const enemy_model_Filename = "data/player/mv1/player.mv1";
 }
 
-SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
+SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager),updateFunc_(&SceneTitle::FadeInUpdate)
+{
+}
+
+SceneTitle::~SceneTitle()
+{
+}
+
+void SceneTitle::Init()
 {
 	//インスタンス化
 	playerModel_ = std::make_shared<Model>(enemy_model_Filename);
@@ -29,7 +37,7 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	objManager_ = std::make_shared<ObjectManager>();
 	camera_ = std::make_shared<Camera>(VGet(0, 140, -370));
 
-	//モデルの配置データをセットする
+	//プレイヤーモデルの配置データをセットする
 	auto info = ExternalFile::GetInstance().GetSpecifiedInfo("title", "Player");
 	playerModel_->SetScale(info.scale);
 	playerModel_->SetPos(info.pos);
@@ -43,7 +51,7 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	camera_->Init(VGet(0, 140, 0));
 
 	//仮でライト処理を消している
-	//SetUseLighting(false);
+	SetUseLighting(true);
 
 	//タイトル画像の読み込み
 	titleHandle_ = LoadGraph("data/graph/title.png");
@@ -63,40 +71,48 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	}
 }
 
-SceneTitle::~SceneTitle()
-{
-}
-
-void SceneTitle::Init()
-{
-	updateFunc_ = &SceneTitle::FadeInUpdate;
-	drawFunc_ = &SceneTitle::UIDraw;
-
-	int fadeTimer_ = 0;
-	int fadeValue_ = 0;
-}
-
 void SceneTitle::End()
 {
 }
 
 void SceneTitle::Update()
 {
+	//カメラの更新
+	camera_->OpeningCameraUpdate();
+
 	(this->*updateFunc_)();
 }
 
 void SceneTitle::Draw()
 {
-	(this->*drawFunc_)();
+	//オブジェクトの描画
+	objManager_->Draw({ 0,0,0 });
+
+	//モデルの描画
+	playerModel_->Draw();
+
+	//UIの描画
+	UI_->AlphaChangeDraw(selectNum_, UIfadeValue_);
+
+	//fadeValue_の値によって透過具合が変化するタイトルの描画
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
+	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3, 1.0f, 0.0f, titleHandle_, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	//黒いフェード用boxの描画
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
+	DrawBox(0, 0, Game::screen_width, Game::screen_height, fadeColor_, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void SceneTitle::FadeInUpdate()
 {
 	//フェードイン
 	float timer = (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_));
-	fadeValue_ = static_cast <int>(255 * timer);
+	UIfadeValue_ = static_cast <int>(255 * timer);
 	if (++fadeTimer_ == fadeInterval_) {
 		updateFunc_ = &SceneTitle::UIUpdate;
+		UIfadeValue_ = 255;
 		return;
 	}
 }
@@ -130,25 +146,8 @@ void SceneTitle::OpeningSoundUpdate()
 	if (sound.CheckSoundFile("alarm") == notPlaying) {
 		if (sound.CheckSoundFile("stopAlarm") == notPlaying) {
 			sound.Play("stopAlarm");
-			drawFunc_ = &SceneTitle::OpeningDraw;
-			updateFunc_ = &SceneTitle::OpeningFadeInUpdate;
-			fadeValue_ = 255;
-			fadeTimer_ = fadeInterval_ * 4;
+			updateFunc_ = &SceneTitle::OpeningUpdate;
 		}
-	}
-}
-
-void SceneTitle::OpeningFadeInUpdate()
-{
-	//カメラの更新
-	camera_->OpeningCameraUpdate();
-
-	//フェードイン
-	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
-	if (--fadeTimer_ == 0) {
-		fadeValue_ = 0;
-		updateFunc_ = &SceneTitle::OpeningUpdate;
-		return;
 	}
 }
 
@@ -162,23 +161,22 @@ void SceneTitle::OpeningUpdate()
 
 	//アニメーションが終了次第
 	if (playerModel_->IsAnimEnd()) {
-		updateFunc_ = &SceneTitle::OpeningFadeOutUpdate;
+		updateFunc_ = &SceneTitle::SceneTitleFadeOutUpdate;
 	}
-
 }
 
 void SceneTitle::UIFadeOutUpdate()
 {
-	//フェードアウト
-	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	//UIのフェードアウト
+	UIfadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) {
+		UIfadeValue_ = 0;
 		SceneChange();
-		fadeValue_ = 0;
 		return;
 	}
 }
 
-void SceneTitle::OpeningFadeOutUpdate()
+void SceneTitle::SceneTitleFadeOutUpdate()
 {
 	//フェードアウト
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
@@ -186,33 +184,6 @@ void SceneTitle::OpeningFadeOutUpdate()
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 		return;
 	}
-}
-
-void SceneTitle::UIDraw()
-{
-	//UIの描画
-	UI_->AlphaChangeDraw(selectNum_, fadeValue_);
-
-	//fadeValue_の値によって透過具合が変化するタイトルの描画
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
-	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3, 1.0f, 0.0f, titleHandle_, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-}
-
-void SceneTitle::OpeningDraw()
-{
-	//オブジェクトの描画
-	objManager_->Draw({0,0,0});
-
-	//モデルの描画
-	playerModel_->Draw();
-
-
-	//fadeValue_の値によって透過具合が変化する背景の描画
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
-	DrawBox(0, 0, Game::screen_width, Game::screen_height, 0x000000, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
 }
 
 void SceneTitle::SceneChange()
@@ -225,7 +196,7 @@ void SceneTitle::SceneChange()
 		break;
 	case 1:
 		ExternalFile::GetInstance().LoadSaveData();
-		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
+		updateFunc_ = &SceneTitle::SceneTitleFadeOutUpdate;
 		break;
 	case 2:
 		Init();

@@ -60,11 +60,6 @@ private:
 	void OpeningSoundUpdate();
 
 	/// <summary>
-	/// オープニングフェードインの描画
-	/// </summary>
-	void OpeningFadeInUpdate();
-
-	/// <summary>
 	/// オープニングの更新
 	/// </summary>
 	void OpeningUpdate();
@@ -77,17 +72,7 @@ private:
 	/// <summary>
 	/// オープニングのフェードアウト
 	/// </summary>
-	void OpeningFadeOutUpdate();
-
-	/// <summary>
-	/// 通常時の描画
-	/// </summary>
-	void UIDraw();
-
-	/// <summary>
-	/// オープニングの描画
-	/// </summary>
-	void OpeningDraw();
+	void SceneTitleFadeOutUpdate();
 
 	/// <summary>
 	/// シーンを切り替える
@@ -99,9 +84,10 @@ private:
 	int titleWidth = 0;
 
 	static constexpr int fadeInterval_ = 30;
-	int fadeTimer_ = 0;
-	int fadeValue_ = 0;
-	int fadeColor_ = 0x000000;
+	int fadeTimer_ = 0;							//フェードする時間
+	int fadeValue_ = 0;							//フェードの透過値
+	int UIfadeValue_ = 0;						//UIのフェード透過値
+	int fadeColor_ = 0x000000;					//黒
 
 	int titleHandle_ = -1;						//タイトル画像の保管変数
 	int selectNum_ = 0;							//選択
@@ -113,6 +99,5 @@ private:
 	std::shared_ptr<Model> playerModel_;		//プレイヤーのスマートポインタ
 
 	void (SceneTitle::* updateFunc_)();
-	void (SceneTitle::* drawFunc_)();
 };
 

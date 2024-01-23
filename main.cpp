@@ -2,9 +2,7 @@
 #include "EffekseerForDXLib.h"
 
 #include "Scene/SceneManager.h"
-#include "Scene/SceneTitle.h"
-#include "Scene/GameMain.h"
-#include "scene/DebugScene.h"
+#include "scene/LoadingScene.h"
 
 #include "util/game.h"
 #include "util/InputState.h"
@@ -48,10 +46,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	SceneManager manager;
 
-	//ModelManager::GetInstance().LoadModel();
-
-//	manager.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager)));
-	manager.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager)));
+	manager.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<LoadingScene>(manager)));
 
 	while (ProcessMessage() == 0) {
 

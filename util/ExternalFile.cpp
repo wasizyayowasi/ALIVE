@@ -13,7 +13,7 @@ using namespace std;
 
 ExternalFile::ExternalFile()
 {
-	LoadFile();
+	//LoadFile();
 }
 
 ExternalFile::~ExternalFile()
@@ -23,19 +23,40 @@ ExternalFile::~ExternalFile()
 
 void ExternalFile::LoadFile()
 {
+	LoadFileHandle("obj");
+	LoadFileHandle("room");
+	LoadFileHandle("Enemy");
+	LoadFileHandle("delete");
+	LoadFileHandle("tutorial");
+	LoadFileHandle("gimmick");
+	LoadFileHandle("cameraGimmick");
+}
+
+void ExternalFile::LoadArrangementData()
+{
 	LoadPlayerInfo("player");
-	LoadObjectData("obj",loadMainStageObjInfo_);
-	LoadObjectData("room",loadOpeningStageObjInfo_);
-	LoadObjectData("Enemy",loadEnemyInfo_);
-	LoadObjectData("delete",loadDeleteObjInfo_);
+	LoadObjectData("obj", loadMainStageObjInfo_);
+	LoadObjectData("room", loadOpeningStageObjInfo_);
+	LoadObjectData("Enemy", loadEnemyInfo_);
+	LoadObjectData("delete", loadDeleteObjInfo_);
 	LoadObjectData("tutorial", loadTutorialInfo_);
-	LoadObjectData("gimmick",loadGimmickInfo_);
+	LoadObjectData("gimmick", loadGimmickInfo_);
 	LoadObjectData("cameraGimmick", loadCameraGimmickInfo_);
 }
 
 void ExternalFile::LoadSaveData()
 {
 	LoadSaveDataInfo("saveData");
+}
+
+void ExternalFile::LoadFileHandle(std::string name)
+{
+	//ファイルパスの生成
+	std::string filepath = "data/objData/";
+	filepath = filepath + name + ".pos";
+
+	//ファイルのロード
+	auto dataHandle = FileRead_open(filepath.c_str());
 }
 
 LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(VECTOR objPos, const char* const name)
@@ -236,7 +257,6 @@ void ExternalFile::LoadPlayerInfo(const char* const filename)
 	player_.runningSpeed = json_["runningSpeed"];
 
 	ifs.close();
-
 }
 
 //セーブデータを読み込む
@@ -262,14 +282,10 @@ void ExternalFile::LoadSaveDataInfo(const char* const filename)
 }
 
 //オブジェクトのポジションを読み込む
-void ExternalFile::LoadObjectData(const char* const filename, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
+void ExternalFile::LoadObjectData(std::string name, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
 {
-	//ファイルパスの生成
-	std::string filepath = "data/objData/";
-	filepath = filepath + filename + ".pos";
-
-	//ファイルのロード
-	auto dataHandle = FileRead_open(filepath.c_str());
+	
+	auto dataHandle = loadFile_[name.c_str()];
 
 	//データ数の取得
 	int dataNum = 0;
@@ -306,7 +322,6 @@ void ExternalFile::LoadObjectData(const char* const filename, std::unordered_map
 
 		//追加
 		dataTable[keyName].push_back(info);
-
 	}
 
 	//ファイルを閉じる

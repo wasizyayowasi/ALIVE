@@ -25,8 +25,7 @@
 #include "../object/ObjectManager.h"
 #include "../object/ObjectData.h"
 
-GameMain::GameMain(SceneManager& manager) : SceneBase(manager),
-updateFunc_(&GameMain::NormalUpdate)
+GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::FadeInUpdate)
 {
 }
 
@@ -65,17 +64,39 @@ void GameMain::Init()
 	MV1SetScale(skyHandle_, VGet(scale, scale, scale));
 	MV1SetPosition(skyHandle_, VGet(0, 200, 0));
 
+	//短縮化
+	auto& sound = SoundManager::GetInstance();
+
 	//3Dリスナーの位置を設定する
-	SoundManager::GetInstance().Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
+	sound.Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
 	//3Dサウンドに関連する情報を設定する
-	SoundManager::GetInstance().Set3DSoundInfo(VGet(575, 120, -60), 1000, "cafe");
+	sound.Set3DSoundInfo(VGet(575, 120, -60), 1000, "cafe");
 	//仮でcafeという音楽を流している
-	SoundManager::GetInstance().PlayBGM("cafe");
+	sound.PlayBGM("cafe");
 }
 
 void GameMain::End()
 {
 	DeleteGraph(makeScreenHandle_);
+}
+
+//オブジェクトの生成
+void GameMain::ObjectGenerater()
+{
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+
+	//プレイヤーのインスタンス化
+	player_ = std::make_shared<Player>();
+
+	//プレイヤーの初期化
+	player_->Init(file.GetSpecifiedInfo("main", "Player"));
+
+	//ゲームオブジェクトの生成
+	objManager_->MainStageObjectGenerator();
+
+	//カメラのインスタンス化
+	camera_ = std::make_shared<Camera>(VGet(0, 400, -600));
 }
 
 //更新
@@ -123,22 +144,6 @@ void GameMain::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, fadeColor_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-}
-
-//オブジェクトの生成
-void GameMain::ObjectGenerater()
-{
-	auto& loadData = ExternalFile::GetInstance();
-
-	//プレイヤーのインスタンス化
-	player_ = std::make_shared<Player>();
-	//プレイヤーの初期化
-	player_->Init(loadData.GetSpecifiedInfo("main","Player"));
-	//ゲームオブジェクトの生成
-	objManager_->MainStageObjectGenerator();
-	//カメラのインスタンス化
-	camera_ = std::make_shared<Camera>(VGet( 0, 400, -600 ));
-
 }
 
 //TODO：別のフェードインが出来次第消去

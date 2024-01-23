@@ -23,15 +23,24 @@ public:
 	}
 
 	/// <summary>
-	/// データの読み込み
+	/// ファイルをまとめて読み込む
 	/// </summary>
-	/// <param name="isLood"></param>
 	void LoadFile();
+
+	/// <summary>
+	/// 配置データを読み込む
+	/// </summary>
+	void LoadArrangementData();
 
 	/// <summary>
 	/// セーブデータを読み込む
 	/// </summary>
 	void LoadSaveData();
+
+	/// <summary>
+	/// ファイルを読み込む
+	/// </summary>
+	void LoadFileHandle(std::string name);
 
 	/// <summary>
 	/// 特定のギミックの配置情報を取得する
@@ -142,7 +151,7 @@ private:
 	/// </summary>
 	/// <param name="filename">ファイルの名前</param>
 	/// <param name="dataTable">データテーブル</param>
-	void LoadObjectData(const char* const filename, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable);
+	void LoadObjectData(std::string name, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable);
 
 
 private:
@@ -155,6 +164,7 @@ private:
 	PlayerInfo player_ = {};		//プレイヤーのステータス情報
 	SaveData data_ = {};			//セーブデータ情報
 
+	std::unordered_map<std::string, int> loadFile_;										//ロードしたファイル
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadMainStageObjInfo_;	//メインステージオブジェクトの配置データ
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadOpeningStageObjInfo_;//オープニングステージオブジェクトの配置データ
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadGimmickInfo_;		//ギミックの配置データ	

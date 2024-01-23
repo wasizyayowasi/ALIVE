@@ -1,5 +1,6 @@
 #pragma once
 #include <DxLib.h>
+#include <string>
 
 class UIItem
 {
@@ -23,6 +24,13 @@ public:
 	void AlphaChangeDraw(float scale, int alpha);
 
 	/// <summary>
+	/// ポジションが変わるUIの描画
+	/// </summary>
+	/// <param name="centerPosX">ポジションX</param>
+	/// <param name="centerPosY">ポジションY</param>
+	void ChangePosDraw(float centerPosX, float centerPosY);
+
+	/// <summary>
 	/// UI画像を作成するための位置情報等を設定する
 	/// </summary>
 	/// <param name="centerPosX">ポジションのX</param>
@@ -31,13 +39,19 @@ public:
 	/// <param name="height"></param>
 	/// <param name="str">文字列</param>
 	/// <param name="fontHandle">フォントハンドル</param>
-	void CreateUIGraphSetUp(float centerPosX, float centerPosY, int width, int height, const char* str, int fontHandle);
+	void CreateUIGraphSetUp(float centerPosX, float centerPosY, int width, int height, std::string str, int fontHandle);
 
 	/// <summary>
 	/// UI画像の作成
 	/// </summary>
 	/// <param name="fontHandle">フォントハンドル</param>
 	void CreateUIGraph(int fontHandle);
+
+	/// <summary>
+	/// 文字列を取得する
+	/// </summary>
+	/// <returns>文字列</returns>
+	std::string GetString() { return UIString_; }
 
 private:
 	
@@ -49,7 +63,7 @@ private:
 	float centerPosY_ = 0;
 	float scale_ = 1.0f;
 
-	const char* UIString = nullptr;
+	std::string UIString_ = {};
 
 };
 

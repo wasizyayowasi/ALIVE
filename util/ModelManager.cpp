@@ -8,7 +8,8 @@ namespace {
 	const char* const transparent_filepath = "data/model/other/mv1/ElevatingMovableScaffolding.mv1";
 	const char* const elevator_filepath = "data/model/other/mv1/Elevator.mv1";
 	const char* const crank_filepath = "data/model/other/mv1/crankScaffold.mv1";
-	const char* const signboard_filepath = "data/model/other/mv1/SignBoard.mv1";
+	const char* const signboardType1_filepath = "data/model/other/mv1/SignBoardType1.mv1";
+	const char* const signboardType2_filepath = "data/model/other/mv1/SignBoardType2.mv1";
 
 	//実際に使う予定のモデルパス
 	//でかいビル
@@ -64,7 +65,8 @@ void ModelManager::LoadModel()
 	modelHandle_[ObjectType::Trans] = MV1LoadModel(transparent_filepath);
 	modelHandle_[ObjectType::Elevator] = MV1LoadModel(elevator_filepath);
 	modelHandle_[ObjectType::CrankScaffold] = MV1LoadModel(crank_filepath);
-	modelHandle_[ObjectType::SignBoard] = MV1LoadModel(signboard_filepath);
+	modelHandle_[ObjectType::SignBoardType1] = MV1LoadModel(signboardType1_filepath);
+	modelHandle_[ObjectType::SignBoardType2] = MV1LoadModel(signboardType2_filepath);
 
 	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);
 	modelHandle_[ObjectType::BigBuildingB] = MV1LoadModel(big_buildingB_filepath);

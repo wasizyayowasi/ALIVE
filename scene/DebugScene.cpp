@@ -47,7 +47,6 @@ void DebugScene::Update()
 	if (input.IsTriggered(InputType::space)) {
 		switch (selectNum_) {
 		case 0:
-//			ExternalFile::GetInstance().LoadFile(true);
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 			break;
 		case 1:

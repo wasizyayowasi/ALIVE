@@ -65,15 +65,16 @@ void Player::Init(LoadObjectInfo info)
 
 	//ƒ|ƒWƒVƒ‡ƒ“‚ÌÝ’è
 	model_->SetPos(info.pos);
-	status_.pos = info.pos;
-//	status_.pos = VGet(0,41,0);
+//	status_.pos = info.pos;
+	status_.pos = VGet(0,41,0);
+
 	//‰ñ“]—¦‚ÌÝ’è
 	model_->SetRot(info.rot);
+
 	//ƒRƒŠƒWƒ‡ƒ“ƒtƒŒ[ƒ€‚ÌÝ’è
 	model_->SetCollFrame("Character");
 
 	scale_ = info.scale;
-
 }
 
 void Player::Update(const InputState& input, std::shared_ptr<ObjectManager> objManager)
@@ -87,14 +88,13 @@ void Player::Update(const InputState& input, std::shared_ptr<ObjectManager> objM
 
 void Player::Draw()
 {
+	//ƒ‚ƒfƒ‹‚Ì•`‰æ
 	model_->Draw();
 
 	//‰e‚à‚Ç‚«‚Ì•`‰æ
 	DrawPolygon3D();
 
-	DrawFormatString(0, 16, 0xffffff, "%d", deathCount_);
 	DrawFormatString(0, 64, 0xffffff, "normal %.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
-
 }
 
 void Player::SetPos(VECTOR pos)

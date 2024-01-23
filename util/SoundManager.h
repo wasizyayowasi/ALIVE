@@ -27,10 +27,25 @@ public:
 	}
 
 	/// <summary>
+	/// 音声ファイルをロードする
+	/// </summary>
+	void LoadSound();
+
+	/// <summary>
+	/// サウンドボリュームを変更する
+	/// </summary>
+	void ChangeVolumeMem();
+
+	/// <summary>
 	/// 読み込んだサウンドを流す
 	/// </summary>
 	/// <param name="name">ファイル名</param>
 	void Play(const char* name);
+
+	/// <summary>
+	/// 読み込んだBGMを流す
+	/// </summary>
+	/// <param name="path">ファイル名</param>
 	void PlayBGM(const char* path);
 
 	/// <summary>
@@ -112,9 +127,33 @@ private:
 	int volumeBGM_ = 250;
 
 	std::unordered_map<std::string, int> nameAndHandleTable_;
+
+	/// <summary>
+	/// 2DSEをロードする
+	/// </summary>
+	/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
+	/// <returns>ロードしたサウンド</returns>
 	int Load2DSoundSEFile(const char* fileName);
+ 
+	/// <summary>
+	/// 2DBGMをロードする
+	/// </summary>
+	/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
+	/// <returns>ロードしたサウンド</returns>
 	int Load2DSoundBGMFile(const char* fileName);
+
+	/// <summary>
+	/// 3DSEをロードする
+	/// </summary>
+	/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
+	/// <returns>ロードしたサウンド</returns>
 	int Load3DSoundSEFile(const char* fileName);
+
+	/// <summary>
+	/// 3DBGMをロードする
+	/// </summary>
+	/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
+	/// <returns>ロードしたサウンド</returns>
 	int Load3DSoundBGMFile(const char* fileName);
 
 	SoundManager();

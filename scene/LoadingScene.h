@@ -1,5 +1,8 @@
 #pragma once
 #include "SceneBase.h"
+#include <memory>
+
+class UIItemManager;
 
 class LoadingScene : public SceneBase
 {
@@ -36,6 +39,10 @@ public:
 	void Draw();
 
 private:
+
+	int aSyncLoadNum_ = 0;							//非同期読み込み中の処理の数
+
+	std::shared_ptr<UIItemManager> UIManager_;		//uiメニューのマネージャーのスマートポインタ
 
 };
 
