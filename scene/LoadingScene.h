@@ -42,6 +42,8 @@ private:
 
 	int aSyncLoadNum_ = 0;							//非同期読み込み中の処理の数
 
+	bool loadingFile_ = false;						//ロード中  true:途中　false:完了
+
 	std::shared_ptr<UIItemManager> UIManager_;		//uiメニューのマネージャーのスマートポインタ
 
 };

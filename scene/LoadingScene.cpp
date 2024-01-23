@@ -32,17 +32,19 @@ void LoadingScene::Init()
 	//非同期初期の開始
 	SetUseASyncLoadFlag(true);
 
-	//モデルのロード
-	ModelManager::GetInstance().LoadModel();
-
 	//外部ファイルのロード
 	ExternalFile::GetInstance().LoadFile();
-
-	//データのロード
-	ExternalFile::GetInstance().LoadArrangementData();
-
+	
+	//モデルのロード
+	ModelManager::GetInstance().LoadModel();
+	
 	//サウンドファイルのロード
 	SoundManager::GetInstance().LoadSound();
+	
+	//非同期処理を終了する
+	SetUseASyncLoadFlag(false);
+
+	loadingFile_ = true;
 }
 
 void LoadingScene::End()
@@ -54,14 +56,24 @@ void LoadingScene::Update()
 	//非同期読み込み中の数を取得
 	aSyncLoadNum_ = GetASyncLoadNum();
 
-	if (aSyncLoadNum_ < 1) {
-		SetUseASyncLoadFlag(false);
-		//manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
-		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager_)));
+	if (loadingFile_) {
+		if (aSyncLoadNum_ < 1) {
+			loadingFile_ = false;
+			
+			//データのロード
+			ExternalFile::GetInstance().LoadArrangementData();
+		}
+	}
+	else {
+		if (aSyncLoadNum_ < 1) {
+			//manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager_)));
+		}
 	}
 }
 
 void LoadingScene::Draw()
 {
 	UIManager_->ChangePosDraw(Game::screen_width - 230, Game::screen_height - 80);
+	DrawFormatString(0, 0, 0xffffff, "%d", aSyncLoadNum_);
 }

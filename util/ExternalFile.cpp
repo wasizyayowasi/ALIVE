@@ -56,7 +56,8 @@ void ExternalFile::LoadFileHandle(std::string name)
 	filepath = filepath + name + ".pos";
 
 	//ファイルのロード
-	auto dataHandle = FileRead_open(filepath.c_str());
+	loadFile_[name] = FileRead_open(filepath.c_str());
+	bool temp = CheckHandleASyncLoad(loadFile_[name]);
 }
 
 LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(VECTOR objPos, const char* const name)
@@ -284,8 +285,11 @@ void ExternalFile::LoadSaveDataInfo(const char* const filename)
 //オブジェクトのポジションを読み込む
 void ExternalFile::LoadObjectData(std::string name, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
 {
-	
+	//読み込んだデータのハンドルを取得
 	auto dataHandle = loadFile_[name.c_str()];
+	bool mki = CheckHandleASyncLoad(loadFile_[name.c_str()]);
+	bool loading = CheckHandleASyncLoad(dataHandle);
+	assert(loading != true);
 
 	//データ数の取得
 	int dataNum = 0;
@@ -333,7 +337,6 @@ void ExternalFile::LoadObjectData(std::string name, std::unordered_map<std::stri
 			objSecond.rot = MathUtil::VECTORDegreeToRadian(objSecond.rot);
 		}
 	}
-
 }
 
 
