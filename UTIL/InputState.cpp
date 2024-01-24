@@ -317,3 +317,19 @@ bool InputState::LastInputDevice() const
 {
 	return currentInputDevice_;
 }
+
+int InputState::GetInputNum(int num, InputCategory cat)
+{
+	int keyNum = 0;
+
+	auto type = static_cast<InputType>(num);
+
+	for (auto key : inputMapTable_[type]) {
+		if (key.cat == cat) {
+			keyNum = static_cast<int>(key.id);
+			break;
+		}
+	}
+
+	return keyNum;
+}

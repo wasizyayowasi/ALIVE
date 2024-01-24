@@ -4,23 +4,42 @@
 
 class Switch;
 
-class TransparentObject : public GimmickBase
+class TransparentObject final : public GimmickBase
 {
 public:
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="handle">モデルハンドル</param>
+	/// <param name="objInfo">配置データ</param>
 	TransparentObject(int handle, LoadObjectInfo objInfo);
-	//デストラクタ
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~TransparentObject();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="player">プレイヤーの参照</param>
 	void Update(Player& player)override;
-	//描画
-	void Draw();
 
-	//天秤モデルと死体との衝突判定を行う
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw()override;
+
+	/// <summary>
+	/// スイッチモデルと死体の衝突判定を行う
+	/// </summary>
+	/// <param name="deadPerson">死体のポインタ</param>
 	void HitColl(std::shared_ptr<ObjectBase> deadPerson);
 
-	//衝突判定を行うモデルを追加する
+	/// <summary>
+	/// 衝突判定を行うモデルの追加
+	/// </summary>
+	/// <returns>モデルポインタ</returns>
 	virtual std::shared_ptr<Model> AddCollModel();
 
 private:

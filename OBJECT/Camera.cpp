@@ -27,7 +27,6 @@ namespace {
 
 Camera::Camera(VECTOR pos):updateFunc_(&Camera::TrackingCameraUpdate)
 {
-
 	pos_ = pos;
 
 	initPos_ = pos;

@@ -80,10 +80,8 @@ private:
 	void SceneChange();
 
 private:
-	int fontHandle_ = -1;
-	int titleWidth = 0;
 
-	static constexpr int fadeInterval_ = 30;
+	static constexpr int fadeInterval_ = 30;	//インターバル
 	int fadeTimer_ = 0;							//フェードする時間
 	int fadeValue_ = 0;							//フェードの透過値
 	int UIfadeValue_ = 0;						//UIのフェード透過値

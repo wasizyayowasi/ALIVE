@@ -27,6 +27,22 @@
 
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::FadeInUpdate)
 {
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+
+	//インスタンス化
+	player_ = std::make_shared<Player>();
+	camera_ = std::make_shared<Camera>(VGet(0, 400, -600));
+	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
+	objManager_ = std::make_shared<ObjectManager>();
+	shotManager_ = std::make_shared<ShotManager>();
+	tutorial_ = std::make_shared<Tutorial>();
+
+	//プレイヤーの初期化
+	player_->Init(file.GetSpecifiedInfo("main", "Player"));
+
+	//ゲームオブジェクトの生成
+	objManager_->MainStageObjectGenerator();
 }
 
 GameMain::~GameMain()
@@ -40,14 +56,6 @@ GameMain::~GameMain()
 void GameMain::Init()
 {
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
-
-	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
-	objManager_ = std::make_shared<ObjectManager>();
-	shotManager_ = std::make_shared<ShotManager>();
-	tutorial_ = std::make_shared<Tutorial>();
-
-	//オブジェクトを生成
-	ObjectGenerater();
 
 	//仮でライト処理を消している
 	SetUseLighting(false);
@@ -78,25 +86,7 @@ void GameMain::Init()
 void GameMain::End()
 {
 	DeleteGraph(makeScreenHandle_);
-}
-
-//オブジェクトの生成
-void GameMain::ObjectGenerater()
-{
-	//短縮化
-	auto& file = ExternalFile::GetInstance();
-
-	//プレイヤーのインスタンス化
-	player_ = std::make_shared<Player>();
-
-	//プレイヤーの初期化
-	player_->Init(file.GetSpecifiedInfo("main", "Player"));
-
-	//ゲームオブジェクトの生成
-	objManager_->MainStageObjectGenerator();
-
-	//カメラのインスタンス化
-	camera_ = std::make_shared<Camera>(VGet(0, 400, -600));
+	MV1DeleteModel(skyHandle_);
 }
 
 //更新
@@ -115,7 +105,7 @@ void GameMain::Draw()
 
 	//カメラの初期化
 	//SetDrawScreenを行うとカメラの情報がリセットされるために
-	camera_->Init(player_->GetStatus().pos);
+	camera_->Init(camera_->GetTarget());
 	camera_->Update(player_->GetStatus().pos, player_->GetStatus().height);
 
 	//オブジェクトの描画
@@ -129,7 +119,7 @@ void GameMain::Draw()
 
 	shotManager_->Draw();
 
-	tutorial_->Draw(currentInputDevice_);
+	tutorial_->Draw();
 
 	SetDrawScreen(DX_SCREEN_BACK);
 

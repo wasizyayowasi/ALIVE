@@ -27,4 +27,7 @@ namespace StrUtil
 
 	//•¶š—ñ‚©‚ç‹L†ˆÈ~‚Ì•¶š—ñ‚ğæ“¾‚·‚é
 	std::string GetStringAfterSign(std::string name, std::string sign);
+
+	//•¶š—ñ‚©‚ç‹L†ˆÈ‘O‚Ì•¶š—ñ‚ğæ“¾‚·‚é
+	std::string GetStringBeforeSign(std::string name, std::string sign);
 }

@@ -6,16 +6,17 @@
 class CharacterBase : public ObjectBase
 {
 public:
-	//作成済みモデルでモデルクラスをインスタンス化するコンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="handle">モデルハンドル</param>
+	/// <param name="objInfo">配置データ</param>
 	CharacterBase(int handle, LoadObjectInfo objInfo);
-	//デストラクタ
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~CharacterBase() {};
-
-	//更新
-	virtual void Update(Player& player) override;
-	//描画
-	virtual void Draw();
-
 protected:
 
 	int animNo_ = 0;				//アニメーション番号

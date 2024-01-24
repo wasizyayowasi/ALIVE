@@ -20,8 +20,16 @@ namespace {
 Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)
 {
 	//UI画像の読み込み
-	UIHandle_[UIGraph::xboxBotton] = Graph::LoadGraph(xbox_Botton_filepath);
-	UIHandle_[UIGraph::keyBord] = Graph::LoadGraph(key_filepath);
+	UIHandle_[UIGraph::XboxBotton] = Graph::LoadGraph(xbox_Botton_filepath);
+	UIHandle_[UIGraph::KeyBord] = Graph::LoadGraph(key_filepath);
+
+	//キーボードの画像を描画する位置
+	UIPos_[UIGraph::KeyBord].first = Game::screen_width / 2 - keybord_graph_chip_size;
+	UIPos_[UIGraph::KeyBord].second = Game::screen_height - keybord_graph_chip_size * 1.3f;
+
+	//padのボタンを描画する位置
+	UIPos_[UIGraph::XboxBotton].first = Game::screen_width / 2 - controller_graph_chip_size;
+	UIPos_[UIGraph::XboxBotton].second = Game::screen_height - controller_graph_chip_size;
 
 	{
 		keyNum_[0] = Key::ESC;
@@ -164,6 +172,15 @@ void Tutorial::Update(VECTOR pos)
 		else if (tutorialInfo.name == "SwitchTutorial") {
 			drawFunc_ = &Tutorial::SwitchTutorialDraw;
 		}
+		else if (tutorialInfo.name == "RunTutorial") {
+			drawFunc_ = &Tutorial::RunTutorialDraw;
+		}
+		else if (tutorialInfo.name == "JumpTutorial") {
+			drawFunc_ = &Tutorial::JumpTutorialDraw;
+		}
+		else if (tutorialInfo.name == "ElevatorTutorial") {
+			drawFunc_ = &Tutorial::ElevatorTutorialDraw;
+		}
 		tutorialDrawPos_ = tutorialInfo.pos;
 	}
 	else {
@@ -171,65 +188,121 @@ void Tutorial::Update(VECTOR pos)
 	}
 }
 
-void Tutorial::Draw(bool inputDevice)
+void Tutorial::Draw()
 {
-	(this->*drawFunc_)(inputDevice);
+	(this->*drawFunc_)();
 }
 
-void Tutorial::NoneDraw(bool inputDevice)
+void Tutorial::KeyGraphDraw(int keyNum)
 {
-}
-
-void Tutorial::SwitchTutorialDraw(bool inputDevice)
-{
-	if (inputDevice) {
-		DrawSphere3D(tutorialDrawPos_, 32, 32, 0xff0000, 0xff0000, true);
-	}
-	else {
-		DrawSphere3D(tutorialDrawPos_, 32, 32, 0x0000ff, 0x0000ff, true);
-	}
-}
-
-void Tutorial::CranckTutorialDraw(bool inputDevice)
-{
-
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	//keybord画像の描画位置
-	float drawKeyGraphPosX = Game::screen_width / 2 - keybord_graph_chip_size;
-	float drawKeyGraphPosY = Game::screen_height - keybord_graph_chip_size * 1.3f;
-	//controller画像の描画位置
-	float drawControllerGraphPosX = Game::screen_width / 2 - controller_graph_chip_size;
-	float drawControllerGraphPosY = Game::screen_height - controller_graph_chip_size;
+	//番号
+	int num = 0;
 
-	if (inputDevice) {
+	//入力装置の番号を取得する
+	num = input.GetInputNum(keyNum, InputCategory::keybd);
 
-		int num = 0;
+	//入力装置の番号を自作の画像の番号に変換する
+	num = static_cast<int>(keyNum_[num]);
 
-		//クランクの操作を開始するためのキーの情報を取得する
-		auto inputInfo = input.inputMapTable_[InputType::activate];
+	//画像の任意のキーが何列目の何行目にあるか取得する
+	int GraphX = num % 9;
+	int GraphY = num / 9;
 
-		//キーボードのキーIDを取得する
-		for (auto info : inputInfo) {
-			if (info.cat == InputCategory::keybd) {
-				num = static_cast<int>(keyNum_[info.id]);
-				break;
-			}
-		}
+	//キー画像の描画
+	Graph::DrawRectRotaGraph(UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, GraphX * keybord_graph_chip_size, GraphY * keybord_graph_chip_size, keybord_graph_chip_size, keybord_graph_chip_size, 1.2f, 0.0f, UIHandle_[UIGraph::KeyBord], true, false);
+}
 
-		//画像の任意のキーが何列目の何行目にあるか取得する
-		int GraphX = num % 9;
-		int GraphY = num / 9;
+void Tutorial::NoneDraw()
+{
+}
 
-		//キー画像の描画
-		Graph::DrawRectRotaGraph(drawKeyGraphPosX, drawKeyGraphPosY, GraphX * keybord_graph_chip_size, GraphY * keybord_graph_chip_size, keybord_graph_chip_size, keybord_graph_chip_size, 1.2f, 0.0f, UIHandle_[UIGraph::keyBord], true, false);
+void Tutorial::SwitchTutorialDraw()
+{
+	//短縮化
+	auto& input = InputState::GetInstance();
+
+	if (input.currentInputDevice_) {
+		KeyGraphDraw(static_cast<int>(InputType::death));
 	}
 	else {
 		//画像描画
-		Graph::DrawRectRotaGraph(drawControllerGraphPosX, drawControllerGraphPosY, controller_graph_chip_size * static_cast<int>(XboxBotton::B), 0, controller_graph_chip_size, controller_graph_chip_size, 1.0f, 0.0f, UIHandle_[UIGraph::xboxBotton], true, false);
+		Graph::DrawRectRotaGraph(UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, controller_graph_chip_size * static_cast<int>(XboxBotton::Y), 0, controller_graph_chip_size, controller_graph_chip_size, 1.0f, 0.0f, UIHandle_[UIGraph::XboxBotton], true, false);
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	DrawStringFToHandle(Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size*1.5f, input.inputNameTable_[InputType::activate].c_str(), 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
+	DrawStringFToHandle(Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, input.inputNameTable_[InputType::activate].c_str(), 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
+}
+
+void Tutorial::CranckTutorialDraw()
+{
+	//短縮化
+	auto& input = InputState::GetInstance();
+
+	if (input.currentInputDevice_) {
+		KeyGraphDraw(static_cast<int>(InputType::activate));
+	}
+	else {
+		//画像描画
+		Graph::DrawRectRotaGraph(UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, controller_graph_chip_size * static_cast<int>(XboxBotton::B), 0, controller_graph_chip_size, controller_graph_chip_size, 1.0f, 0.0f, UIHandle_[UIGraph::XboxBotton], true, false);
+	}
+
+	//キーに対応した文字列の描画(アクションキーの文字列)
+	DrawStringFToHandle(Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size*1.6f, input.inputNameTable_[InputType::activate].c_str(), 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
+}
+
+void Tutorial::RunTutorialDraw()
+{
+	//短縮化
+	auto& input = InputState::GetInstance();
+
+	if (input.currentInputDevice_) {
+		KeyGraphDraw(static_cast<int>(InputType::shift));
+	}
+	else {
+		//画像描画
+		Graph::DrawRectRotaGraph(UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, controller_graph_chip_size * static_cast<int>(XboxBotton::X), 0, controller_graph_chip_size, controller_graph_chip_size, 1.0f, 0.0f, UIHandle_[UIGraph::XboxBotton], true, false);
+	}
+
+	//キーに対応した文字列の描画(アクションキーの文字列)
+	DrawStringFToHandle(Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, input.inputNameTable_[InputType::shift].c_str(), 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
+}
+
+void Tutorial::JumpTutorialDraw()
+{
+	//短縮化
+	auto& input = InputState::GetInstance();
+
+	if (input.currentInputDevice_) {
+		KeyGraphDraw(static_cast<int>(InputType::space));
+	}
+	else {
+		//画像描画
+		Graph::DrawRectRotaGraph(UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, controller_graph_chip_size * static_cast<int>(XboxBotton::Y), 0, controller_graph_chip_size, controller_graph_chip_size, 1.0f, 0.0f, UIHandle_[UIGraph::XboxBotton], true, false);
+	}
+
+	//決定/ジャンプという文字列の「決定/」の部分を取り除いた文字列を取得する
+	std::string name = StrUtil::GetStringAfterSign(input.inputNameTable_[InputType::space], "/");
+
+	//キーに対応した文字列の描画(アクションキーの文字列)
+	DrawStringFToHandle(Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, name.c_str(), 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
+}
+
+void Tutorial::ElevatorTutorialDraw()
+{
+	//短縮化
+	auto& input = InputState::GetInstance();
+
+	if (input.currentInputDevice_) {
+		KeyGraphDraw(static_cast<int>(InputType::activate));
+	}
+	else {
+		//画像描画
+		Graph::DrawRectRotaGraph(UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, controller_graph_chip_size * static_cast<int>(XboxBotton::B), 0, controller_graph_chip_size, controller_graph_chip_size, 1.0f, 0.0f, UIHandle_[UIGraph::XboxBotton], true, false);
+	}
+
+	//キーに対応した文字列の描画(アクションキーの文字列)
+	DrawStringFToHandle(Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, input.inputNameTable_[InputType::activate].c_str(), 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
 }

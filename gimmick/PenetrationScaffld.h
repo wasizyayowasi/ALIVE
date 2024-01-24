@@ -1,7 +1,7 @@
 #pragma once
 #include "GimmickBase.h"
 
-class PenetrationScaffld : public GimmickBase
+class PenetrationScaffld final : public GimmickBase
 {
 public:
 	/// <summary>
@@ -20,12 +20,12 @@ public:
 	/// 更新
 	/// </summary>
 	/// <param name="player">プレイヤーの参照</param>
-	void Update(Player& player);
+	void Update(Player& player)override;
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw()override;
 
 private:
 

@@ -94,6 +94,17 @@ namespace StrUtil
 		return str;
 	}
 
+	std::string GetStringBeforeSign(std::string name, std::string sign)
+	{
+		//「.」が文字列の何番目かを取得する
+		int dotNum = name.find(sign);
+
+		//「.」以降から最後までの文字列を取得する
+		std::string str = name.substr(0, dotNum);
+
+		return str;
+	}
+
 }
 
 

@@ -11,41 +11,68 @@ class Model;
 class Switch
 {
 public:
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="objInfo">配置データ</param>
 	Switch( LoadObjectInfo objInfo);
-	//デストラクタ
+	
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~Switch();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="player">プレイヤーの参照</param>
 	void Update(Player& player);
-	//描画
+	
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
-	//スイッチモデルと死体との衝突判定を行う
+	/// <summary>
+	/// スイッチモデルと死体の衝突判定を行う
+	/// </summary>
+	/// <param name="deadPerson">死体のポインタ</param>
 	void HitColl(std::shared_ptr<ObjectBase> deadPerson);
 
-	//衝突判定の結果の処理
+	/// <summary>
+	/// 衝突判定の結果
+	/// </summary>
+	/// <returns>true：衝突　false：衝突していない</returns>
 	bool CollResult();
 
-	//衝突判定を行うモデルを追加する
+	/// <summary>
+	/// 衝突判定を行うモデルを追加する
+	/// </summary>
+	/// <returns>衝突判定を行うモデルのポインタ</returns>
 	std::shared_ptr<Model> GetModelPointer();
 
-	//ポジションの追加
-	VECTOR GetPos() { return pos_; }
-
-	//衝突結果のクリア
+	/// <summary>
+	/// 衝突結果の削除
+	/// </summary>
 	void DeleteHitResult();
 
 private:
-	//スイッチモデルとプレイヤーの衝突判定を行う
+	/// <summary>
+	/// スイッチモデルとプレイヤーの衝突判定を行う
+	/// </summary>
+	/// <param name="player">プレイヤーの参照</param>
 	void HitCollPlayer(Player& player);
-	//スイッチをオンにする
+
+	/// <summary>
+	/// スイッチをオンにする
+	/// </summary>
 	void OnAnim();
-	//スイッチをオフにする
+
+	/// <summary>
+	/// スイッチをオフにする
+	/// </summary>
 	void OffAnim();
 private:
-
-	bool isTransit_ = false;							//透過フラグ
 
 	VECTOR pos_ = {};									//ポジション
 

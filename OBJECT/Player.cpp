@@ -151,7 +151,7 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 	status_.situation.isGimmickCanBeOperated = false;
 
 	if (status_.situation.isInTransit) {
-		dynamic_pointer_cast<DeadPerson>(deadPersonModelPointer_)->Init();
+		//dynamic_pointer_cast<DeadPerson>(deadPersonModelPointer_)->Init();
 		deadPersonModelPointer_->GetModelPointer()->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 		VECTOR framePos = model_->GetFrameLocalPosition(frame_name);
 		deadPersonModelPointer_->GetModelPointer()->SetPos(framePos);

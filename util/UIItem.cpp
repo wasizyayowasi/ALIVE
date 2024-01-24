@@ -8,7 +8,6 @@ UIItem::UIItem()
 
 UIItem::~UIItem()
 {
-	DeleteGraph(makeScreenHandle_);
 }
 
 void UIItem::AlphaChangeDraw(float scale,int alpha)

@@ -4,21 +4,16 @@
 class GimmickBase : public OrnamentBase
 {
 public:
-	//作成済みのモデルをコピーするコンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="handle">モデルハンドル</param>
+	/// <param name="objInfo">配置データ</param>
 	GimmickBase(int handle, LoadObjectInfo objInfo);
-	//デストラクタ
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~GimmickBase();
-
-	//更新
-	virtual void Update(Player& player)override;
-	//描画
-	void Draw();
-
-	std::shared_ptr<Model> GetModelInfo() { return model_; }
-
-protected:
-
-	bool isTransit_ = false;
-
 };
 

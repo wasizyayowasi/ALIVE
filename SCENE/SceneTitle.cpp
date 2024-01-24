@@ -21,15 +21,7 @@ namespace {
 	const char* const enemy_model_Filename = "data/player/mv1/player.mv1";
 }
 
-SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager),updateFunc_(&SceneTitle::FadeInUpdate)
-{
-}
-
-SceneTitle::~SceneTitle()
-{
-}
-
-void SceneTitle::Init()
+SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 {
 	//インスタンス化
 	playerModel_ = std::make_shared<Model>(enemy_model_Filename);
@@ -71,6 +63,18 @@ void SceneTitle::Init()
 	}
 }
 
+SceneTitle::~SceneTitle()
+{
+}
+
+void SceneTitle::Init()
+{
+	updateFunc_ = &SceneTitle::FadeInUpdate;
+
+	fadeTimer_ = 0;
+	fadeValue_ = 0;
+}
+
 void SceneTitle::End()
 {
 }
@@ -85,6 +89,9 @@ void SceneTitle::Update()
 
 void SceneTitle::Draw()
 {
+	//カメラの初期化
+	camera_->Init(VGet(0, 140, 0));
+
 	//オブジェクトの描画
 	objManager_->Draw({ 0,0,0 });
 
@@ -155,9 +162,6 @@ void SceneTitle::OpeningUpdate()
 {
 	//モデルの描画
 	playerModel_->Update();
-
-	//カメラの更新
-	camera_->OpeningCameraUpdate();
 
 	//アニメーションが終了次第
 	if (playerModel_->IsAnimEnd()) {

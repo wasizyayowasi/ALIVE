@@ -37,9 +37,6 @@ void Switch::Update(Player& player)
 
 	//Õ“Ë”»’è
 	HitCollPlayer(player);
-
-	isTransit_ = player.GetStatus().situation.isInTransit;
-
 }
 
 //•`‰æ

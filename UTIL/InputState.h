@@ -1,4 +1,5 @@
 #pragma once
+#include "KeyData.h"
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -90,7 +91,11 @@ public:
 	/// </summary>
 	void ResetInputInfo();
 
-
+	/// <summary>
+	/// 変更したキーを戻す
+	/// </summary>
+	/// <param name="type">キーのタイプ</param>
+	/// <param name="cat">入力装置のカテゴリ</param>
 	void UndoSelectKey(InputType type, InputCategory cat);
 
 	/// <summary>
@@ -109,6 +114,14 @@ public:
 	/// </summary>
 	/// <returns>true:キーボード　false：パッド</returns>
 	bool LastInputDevice() const;
+
+	/// <summary>
+	/// 入力装置の番号を取得する
+	/// </summary>
+	/// <param name="type">ボタンのタイプ</param>
+	/// <param name="cat">入力装置のカテゴリー</param>
+	/// <returns>入力装置の番号</returns>
+	int GetInputNum(int num,InputCategory cat);
 
 private:
 

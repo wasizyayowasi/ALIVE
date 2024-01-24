@@ -4,21 +4,37 @@
 
 class ManualCrank;
 
-class CrankScaffold : public GimmickBase
+class CrankScaffold final : public GimmickBase
 {
 public:
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="handle">モデルハンドル</param>
+	/// <param name="objInfo">配置データ</param>
 	CrankScaffold(int handle, LoadObjectInfo objInfo);
-	//デストラクタ
+	
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~CrankScaffold();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="player">プレイヤーの参照</param>
 	void Update(Player& player)override;
-	//描画
-	void Draw();
+	
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw()override;
 
-	//衝突判定を行うモデルを追加する
-	virtual std::shared_ptr<Model> AddCollModel();
+	/// <summary>
+	/// 衝突判定を行うモデルの追加
+	/// </summary>
+	/// <returns>モデルポインタ</returns>
+	std::shared_ptr<Model> AddCollModel();
 private:
 
 	float upVec_ = 0.0f;						//上昇ベクトル

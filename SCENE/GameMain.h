@@ -25,9 +25,6 @@ public:
 	//削除用関数
 	void End();
 
-	//オブジェクトの生成
-	void ObjectGenerater();
-
 	//更新
 	void Update();
 	//描画

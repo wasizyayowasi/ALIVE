@@ -9,51 +9,81 @@ class UIItemManager;
 class SettingScene : public SceneBase
 {
 public:
-
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="manager">シーンマネージャーの参照</param>
 	SettingScene(SceneManager& manager);
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~SettingScene();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
+
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void End();
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 通常時の更新
+	/// </summary>
 	void NormalUpdate();
+
+	/// <summary>
+	/// ガウス処理を施したフェードイン
+	/// </summary>
 	void GaussFadeInUpdate();
+
+	/// <summary>
+	/// ガウス処理を施したフェードアウト
+	/// </summary>
 	void GaussFadeOutUpdate();
 
+	/// <summary>
+	/// BGMの音量を変更する
+	/// </summary>
 	void BGMUpdate();
+
+	/// <summary>
+	/// SEの音量を変更する
+	/// </summary>
 	void SEUpdate();
+
+	/// <summary>
+	/// ウィンドウモードを変更する
+	/// </summary>
 	void ChangeWindowUpdate();
 
-	void MovePictogram(int pictPos, float& pos, float& rot,bool& inversion);
-
+	/// <summary>
+	/// updateFuncの中身を変更する
+	/// </summary>
 	void ChangeUpdateFunc();
 
 private:
 
 	int makeScreenHandle_ = -1;
 
-	int circleTransWhiteHandle_ = -1;
-	int circleWhiteHandle_ = -1;
-	int pictogramHandle_ = -1;
-	int houseHandle_ = -1;
-
 	int volumeBGM_ = 0;
 	int volumeSE_ = 0;
 
 	int selectNum_ = 0;
-	int time_ = 0;
 
-	float BGMPictogramPosX_ = 0.0f;				//BGMピクトグラムのポジション
-	float SEPictogramPosX_ = 0.0f;				//SEピクトグラムのポジション
-
-	float BGMPictogramRot_ = 0.1f;				//BGMピクトグラムの傾き
-	float SEPictogramRot_ = 0.1f;				//SEピクトグラムの傾き
-
-	bool BGMPictogramTransInversion_ = false;	//BGMピクトグラム画像のの反転
-	bool SEPictogramTransInversion_ = false;	//SEピクトグラム画像のの反転
 	bool windowMode_ = true;					//ウィンドウモード
 
 	//ここも消すかもしれない
