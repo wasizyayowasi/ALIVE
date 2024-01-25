@@ -75,5 +75,5 @@ void LoadingScene::Update()
 void LoadingScene::Draw()
 {
 	UIManager_->ChangePosDraw(Game::screen_width - 230, Game::screen_height - 80);
-	DrawFormatString(0, 0, 0xffffff, "%d", aSyncLoadNum_);
+	//DrawFormatString(0, 0, 0xffffff, "%d", aSyncLoadNum_);
 }

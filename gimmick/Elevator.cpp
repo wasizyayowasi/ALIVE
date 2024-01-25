@@ -25,6 +25,9 @@ Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInf
 	//ターゲットポジションの初期化
 	targetPos_ = pos_;
 
+	//衝突判定用フレームの設定
+	model_->SetUseCollision(true, false);
+
 	//このエレベーターが何番目のエレベーターかを名前の末尾から取得する
 	int elevatorNum = StrUtil::GetNumberFromString(objInfo.name, ".");
 
@@ -50,7 +53,6 @@ Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInf
 
 	//アニメーションの設定
 	model_->SetAnimation(static_cast<int>(ElevatorAnimType::openIdle), true, false);
-
 }
 
 //デストラクタ

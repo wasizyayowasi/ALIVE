@@ -7,6 +7,9 @@
 
 TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
 {
+	//衝突判定用フレームの設定
+	model_->SetUseCollision(true, false);
+
 	//文字列の末尾を数値として取得する
 	int num = StrUtil::GetNumberFromString(objInfo.name, ".");
 	//第一引数と数値を連結させた文字列を取得

@@ -1,5 +1,6 @@
 #pragma once
 #include <DxLib.h>
+#include <string>
 
 class Model
 {
@@ -20,7 +21,8 @@ public:
 	/// </summary>
 	/// <param name="isUse">使用するか</param>
 	/// <param name="isNeedUpdate">更新が必要か</param>
-	void SetUseCollision(bool isUse, bool isNeedUpdate);
+	/// <param name="collFrameName">特定のフレームを衝突判定用フレームにする場合、フレーム名をいれる</param>
+	void SetUseCollision(bool isUse, bool isNeedUpdate,std::string collFrameName = "");
 
 	//更新
 	void Update();
@@ -32,21 +34,25 @@ public:
 	/// </summary>
 	/// <returns>モデルハンドルを返す</returns>
 	int GetModelHandle() const { return modelHandle_; }
+
 	/// <summary>
 	/// collisionフレームを取得する
 	/// </summary>
 	/// <returns>collisionフレームを返す</returns>
 	int GetColFrameIndex() const { return colFrameIndex_; }
+
 	/// <summary>
 	/// ポジションを取得する
 	/// </summary>
 	/// <returns>ポジションを返す</returns>
 	VECTOR GetPos() const { return pos_; }
+
 	/// <summary>
 	/// 回転値を取得する
 	/// </summary>
 	/// <returns>回転値</returns>
 	VECTOR GetRot()const { return rot_; }
+
 	/// <summary>
 	/// アニメーションの再生時間を取得する
 	/// </summary>
@@ -58,16 +64,19 @@ public:
 	/// </summary>
 	/// <param name="pos">ポジション</param>
 	void SetPos(VECTOR pos);
+
 	/// <summary>
 	/// 角度を設定する
 	/// </summary>
 	/// <param name="rot">角度</param>
 	void SetRot(VECTOR rot);
+
 	/// <summary>
 	/// サイズを設定する
 	/// </summary>
 	/// <param name="scale">拡縮率</param>
 	void SetScale(VECTOR scale);
+
 	/// <summary>
 	/// collisionとして使いたいフレームを指定する
 	/// </summary>

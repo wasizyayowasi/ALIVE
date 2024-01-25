@@ -18,6 +18,9 @@ CrankScaffold::CrankScaffold(int handle, LoadObjectInfo objInfo) : GimmickBase(h
 	//初期ポジションの初期化
 	initPos_ = objInfo.pos;
 
+	//衝突判定用フレームの設定
+	model_->SetUseCollision(true, false);
+
 	//objInfoの名前から末尾の数値を取得する
 	int num = StrUtil::GetNumberFromString(objInfo.name, ".");
 	//上記の数値と第一引数の文字列を連結させた文字列を取得する

@@ -65,14 +65,14 @@ void Player::Init(LoadObjectInfo info)
 
 	//ポジションの設定
 	model_->SetPos(info.pos);
-//	status_.pos = info.pos;
-	status_.pos = VGet(0,41,0);
+	status_.pos = info.pos;
+//	status_.pos = VGet(0,41,0);
 
 	//回転率の設定
 	model_->SetRot(info.rot);
 
 	//コリジョンフレームの設定
-	model_->SetCollFrame("Character");
+	model_->SetUseCollision(true,true,"Character");
 
 	scale_ = info.scale;
 }

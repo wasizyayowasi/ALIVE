@@ -17,7 +17,7 @@ Switch::Switch(LoadObjectInfo objInfo)
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
-	model_->SetCollFrame();
+	model_->SetUseCollision(true,false);
 
 	//ƒ|ƒWƒVƒ‡ƒ“‚Ì‰Šú‰»
 	pos_ = objInfo.pos;

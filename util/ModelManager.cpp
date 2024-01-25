@@ -10,24 +10,16 @@ namespace {
 	const char* const crank_filepath = "data/model/other/mv1/crankScaffold.mv1";
 	const char* const signboardType1_filepath = "data/model/other/mv1/SignBoardType1.mv1";
 	const char* const signboardType2_filepath = "data/model/other/mv1/SignBoardType2.mv1";
+	const char* const train_filepath = "data/model/station/mv1/Train.mv1";
 
 	//実際に使う予定のモデルパス
 	//でかいビル
 	const char* const big_buildingA_filepath = "data/model/city/building/mv1/BigBuildingA.mv1";
-	const char* const big_buildingB_filepath = "data/model/city//building/mv1/BigBuildingB.mv1";
-	const char* const big_buildingC_filepath = "data/model/city//building/mv1/BigBuildingC.mv1";
-	const char* const big_buildingD_filepath = "data/model/city//building/mv1/BigBuildingD.mv1";
 	//Aみたいな形のビル
-	const char* const buildingA_filepath = "data/model/city//building/mv1/BuildingA.mv1";
-	const char* const buildingB_filepath = "data/model/city//building/mv1/BuildingB.mv1";
 	const char* const buildingC_filepath = "data/model/city//building/mv1/BuildingC.mv1";
 	//長方形のビル
 	const char* const buildingA_type2_filepath = "data/model/city//building/mv1/Building2A.mv1";
-	const char* const buildingB_type2_filepath = "data/model/city//building/mv1/Building2B.mv1";
-	const char* const buildingC_type2_filepath = "data/model/city//building/mv1/Building2C.mv1";
 	//海外で見るような飲食店
-	const char* const storeA_filepath = "data/model/city//building/mv1/StoreA.mv1";
-	const char* const storeB_filepath = "data/model/city//building/mv1/StoreB.mv1";
 	const char* const storeC_filepath = "data/model/city//building/mv1/StoreC.mv1";
 	//道
 	const char* const street_filepath = "data/model/city//building/mv1/Street.mv1";
@@ -67,22 +59,14 @@ void ModelManager::LoadModel()
 	modelHandle_[ObjectType::CrankScaffold] = MV1LoadModel(crank_filepath);
 	modelHandle_[ObjectType::SignBoardType1] = MV1LoadModel(signboardType1_filepath);
 	modelHandle_[ObjectType::SignBoardType2] = MV1LoadModel(signboardType2_filepath);
+	modelHandle_[ObjectType::Train] = MV1LoadModel(train_filepath);
 
 	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);
-	modelHandle_[ObjectType::BigBuildingB] = MV1LoadModel(big_buildingB_filepath);
-	modelHandle_[ObjectType::BigBuildingC] = MV1LoadModel(big_buildingC_filepath);
-	modelHandle_[ObjectType::BigBuildingD] = MV1LoadModel(big_buildingD_filepath);
 
-	modelHandle_[ObjectType::BuildingAType1] = MV1LoadModel(buildingA_filepath);
-	modelHandle_[ObjectType::BuildingBType1] = MV1LoadModel(buildingB_filepath);
 	modelHandle_[ObjectType::BuildingCType1] = MV1LoadModel(buildingC_filepath);
 
 	modelHandle_[ObjectType::BuildingAType2] = MV1LoadModel(buildingA_type2_filepath);
-	modelHandle_[ObjectType::BuildingBType2] = MV1LoadModel(buildingB_type2_filepath);
-	modelHandle_[ObjectType::BuildingCType2] = MV1LoadModel(buildingC_type2_filepath);
 
-	modelHandle_[ObjectType::StoreA] = MV1LoadModel(storeA_filepath);
-	modelHandle_[ObjectType::StoreB] = MV1LoadModel(storeB_filepath);
 	modelHandle_[ObjectType::StoreC] = MV1LoadModel(storeC_filepath);
 
 	modelHandle_[ObjectType::Street] = MV1LoadModel(street_filepath);

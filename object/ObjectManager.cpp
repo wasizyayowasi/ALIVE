@@ -38,34 +38,9 @@ void ObjectManager::MainStageObjectGenerator()
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingA, objSecond);
 			}
 		}
-		else if (objInfo.first == "BigBuildingB") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingB, objSecond);
-			}
-		}
-		else if (objInfo.first == "BigBuildingC") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingC, objSecond);
-			}
-		}
-		else if (objInfo.first == "BigBuildingD") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingD, objSecond);
-			}
-		}
 		else if (objInfo.first == "SignBoard") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoardType1, objSecond);
-			}
-		}
-		else if (objInfo.first == "BuildingA") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingAType1, objSecond);
-			}
-		}
-		else if (objInfo.first == "BuildingB") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingBType1, objSecond);
 			}
 		}
 		else if (objInfo.first == "BuildingC") {
@@ -78,29 +53,14 @@ void ObjectManager::MainStageObjectGenerator()
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingAType2, objSecond);
 			}
 		}
-		else if (objInfo.first == "Building2B") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingBType2, objSecond);
-			}
-		}
-		else if (objInfo.first == "Building2C") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingCType2, objSecond);
-			}
-		}
-		else if (objInfo.first == "StoreA") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::StoreA, objSecond);
-			}
-		}
-		else if (objInfo.first == "StoreB") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::StoreB, objSecond);
-			}
-		}
 		else if (objInfo.first == "StoreC") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::StoreC, objSecond);
+			}
+		}
+		else if (objInfo.first == "Train") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Train, objSecond);
 			}
 		}
 		else if (objInfo.first == "Street") {
@@ -294,7 +254,6 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 	}
 
 	EnemyGenerator(player.GetDeathCount(),player.GetStatus().pos);
-
 }
 
 //•`‰æ
@@ -314,7 +273,6 @@ void ObjectManager::Draw(VECTOR PlayerPos)
 	}
 
 	int size = static_cast<int>(objects_[ObjectType::Enemy].size());
-//	DrawFormatString(0, 32, 0xffffff, "%d", size);
 }
 
 std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()

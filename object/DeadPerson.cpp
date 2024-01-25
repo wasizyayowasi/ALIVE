@@ -22,10 +22,10 @@ DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : Characte
 	model_->SetAnimEndFrame(animNo);
 	switch (static_cast<PlayerAnimType>(animNo)) {
 	case PlayerAnimType::Death:
-		model_->SetCollFrame(coll_frame_death);
+		model_->SetUseCollision(true,true,coll_frame_death);
 		break;
 	case PlayerAnimType::idleToSitup:
-		model_->SetCollFrame(coll_frame_Sit);
+		model_->SetUseCollision(true, true, coll_frame_Sit);
 		break;
 	}
 }

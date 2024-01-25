@@ -9,7 +9,6 @@ ObjectBase::ObjectBase(int handle, LoadObjectInfo objInfo)
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
-	model_->SetCollFrame("Coll");
 	pos_ = model_->GetPos();
 	scale_ = objInfo.scale;
 	isEnable_ = true;

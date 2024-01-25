@@ -2,7 +2,7 @@
 #include <cassert>
 
 namespace {
-	const char* const collision_frame_name = "Collision";
+	const char* const collision_frame_name = "Coll";
 }
 
 //ファイルパスのコンストラクタ
@@ -32,13 +32,26 @@ Model::~Model()
 }
 
 //collisionフレームをcollisionとして使う
-void Model::SetUseCollision(bool isUse, bool isNeedUpdate)
+void Model::SetUseCollision(bool isUse, bool isNeedUpdate,std::string collFrameName)
 {
 	assert(isUse | !isNeedUpdate);
 
+	//collFrameNameに指定のフレームが入っているか
+	//文字列のサイズを取ることで調べる
+	int size = collFrameName.size();
+
+	//指定が無ければ既定のフレームを衝突判定に使う
+	std::string frameName = collision_frame_name;
+
+	//指定のフレームがあった場合、そのフレームを
+	//衝突判定用フレームにする
+	if (size > 0) {
+		frameName = collFrameName;
+	}
+
 	if (isUseCollision_ != isUse) {
 		if (isUse) {
-			colFrameIndex_ = MV1SearchFrame(modelHandle_, collision_frame_name);
+			colFrameIndex_ = MV1SearchFrame(modelHandle_, frameName.c_str());
 			if (colFrameIndex_ < 0) {
 				colFrameIndex_ = -1;
 			}
