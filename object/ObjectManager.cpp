@@ -314,7 +314,7 @@ void ObjectManager::Draw(VECTOR PlayerPos)
 	}
 
 	int size = static_cast<int>(objects_[ObjectType::Enemy].size());
-	DrawFormatString(0, 32, 0xffffff, "%d", size);
+//	DrawFormatString(0, 32, 0xffffff, "%d", size);
 }
 
 std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()

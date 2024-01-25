@@ -79,17 +79,17 @@ void SceneManager::Draw()
 
 	float rate = static_cast<float>(debugUpdateTime_ + debugDrawTime_) / 16666.6f;
 	int width = static_cast<int>(Game::screen_width * rate);
-	DrawBox(0, Game::screen_height - 16, width, Game::screen_height, 0xff0000, true);
+//	DrawBox(0, Game::screen_height - 16, width, Game::screen_height, 0xff0000, true);
 
 	rate = static_cast<float>(debugUpdateTime_) / 16666.6f;
 	width = static_cast<int>(Game::screen_width * rate);
-	DrawBox(0, Game::screen_height - 16, width, Game::screen_height, 0x0000ff, true);
+//	DrawBox(0, Game::screen_height - 16, width, Game::screen_height, 0x0000ff, true);
 
-	DrawBox( 0, Game::screen_height - 48, 16, Game::screen_height - 32, 0x0000ff, true);
-	DrawBox(64, Game::screen_height - 48, 80, Game::screen_height - 32, 0xff0000, true);
-
-	DrawString( 0, Game::screen_height - 32, "update", 0xffffff);
-	DrawString(64, Game::screen_height - 32, "draw", 0xffffff);
+//	DrawBox( 0, Game::screen_height - 48, 16, Game::screen_height - 32, 0x0000ff, true);
+//	DrawBox(64, Game::screen_height - 48, 80, Game::screen_height - 32, 0xff0000, true);
+//
+//	DrawString( 0, Game::screen_height - 32, "update", 0xffffff);
+//	DrawString(64, Game::screen_height - 32, "draw", 0xffffff);
 
 }
 

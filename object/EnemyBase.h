@@ -7,6 +7,7 @@
 class Aster;
 class ShotManager;
 
+//エネミーのアニメーションタイプ
 enum class EnemyAnimType {
 	Idle,
 	Walk,
@@ -19,14 +20,27 @@ enum class EnemyAnimType {
 class EnemyBase : public CharacterBase
 {
 public:
-	//作成済みモデルでモデルクラスをインスタンス化するコンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="handle">モデルハンドル</param>
+	/// <param name="objInfo">配置データ</param>
 	EnemyBase(int handle, LoadObjectInfo objInfo);
-	//デストラクタ
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~EnemyBase() {};
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="player">プレイヤーの参照</param>
 	void Update(Player& player) override;
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw()override;
 
 	/// <summary>

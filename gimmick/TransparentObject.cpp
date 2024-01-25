@@ -5,7 +5,6 @@
 #include "../util/Util.h"
 #include <algorithm>
 
-//コンストラクタ
 TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
 {
 	//文字列の末尾を数値として取得する
@@ -34,12 +33,10 @@ TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : Gimmi
 
 }
 
-//デストラクタ
 TransparentObject::~TransparentObject()
 {
 }
 
-//更新
 void TransparentObject::Update(Player& player)
 {
 	switch_->Update(player);
@@ -71,7 +68,6 @@ void TransparentObject::Update(Player& player)
 
 }
 
-//描画
 void TransparentObject::Draw()
 {
 	model_->Draw();
@@ -79,13 +75,11 @@ void TransparentObject::Draw()
 	switch_->Draw();
 }
 
-//スイッチの衝突判定
 void TransparentObject::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 {
 	switch_->HitColl(deadPerson);
 }
 
-//衝突判定を行うモデルの追加
 std::shared_ptr<Model> TransparentObject::AddCollModel()
 {
 	return switch_->GetModelPointer();
