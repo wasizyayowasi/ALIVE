@@ -40,6 +40,7 @@ namespace {
 	const char* const roomWall_filepath = "data/model/room/mv1/RoomWall.mv1";
 	const char* const woodFloor_filepath = "data/model/room/mv1/WoodFloor.mv1";
 	const char* const woodenBox_filepath = "data/model/room/mv1/WoodenBox.mv1";
+	const char* const TV_filepath = "data/model/room/mv1/TV.mv1";
 }
 
 ModelManager::~ModelManager()
@@ -87,6 +88,7 @@ void ModelManager::LoadModel()
 	modelHandle_[ObjectType::RoomWall] = MV1LoadModel(roomWall_filepath);
 	modelHandle_[ObjectType::WoodFloor] = MV1LoadModel(woodFloor_filepath);
 	modelHandle_[ObjectType::WoodenBox] = MV1LoadModel(woodenBox_filepath);
+	modelHandle_[ObjectType::TV] = MV1LoadModel(TV_filepath);
 }
 
 int ModelManager::GetModelHandle(ObjectType type)

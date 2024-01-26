@@ -127,6 +127,12 @@ public:
 	/// <returns>オブジェクトの配置データなどをまとめた変数</returns>
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadOpeningStageObjectInfo() { return loadOpeningStageObjInfo_; }
 
+	/// <summary>
+	/// カメラの座標データを取得する
+	/// </summary>
+	/// <param name="name">名前</param>
+	/// <returns>座標データ</returns>
+	VECTOR GetCameraTargetPos(std::string name);
 private:
 
 	/// <summary>
@@ -172,5 +178,6 @@ private:
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadEnemyInfo_;			//敵の配置データ
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadTutorialInfo_;		//チュートリアルポイントの配置データ	
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadDeleteObjInfo_;		//削除ポイントの配置データ	
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadCameraPosInfo_;		//カメラの配置データ	
 };
 

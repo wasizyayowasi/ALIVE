@@ -42,6 +42,7 @@ enum class ObjectType{
 	Window,
 	WoodFloor,
 	WoodenBox,
+	TV,
 	Max,
 };
 

@@ -143,7 +143,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Easing.cpp" />
     <ClCompile Include="gimmick\Elevator.cpp" />
     <ClCompile Include="gimmick\CrankScaffold.cpp" />
     <ClCompile Include="gimmick\TransparentObject.cpp" />
@@ -192,7 +191,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Easing.h" />
+    <ClInclude Include="util\Easing.h" />
     <ClInclude Include="gimmick\Elevator.h" />
     <ClInclude Include="gimmick\CrankScaffold.h" />
     <ClInclude Include="gimmick\TransparentObject.h" />

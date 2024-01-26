@@ -41,14 +41,27 @@ public:
 	void ChangeOfFocus();
 
 	/// <summary>
-	/// オープニングのカメラ
+	/// 目標のポジションまで移動する
 	/// </summary>
-	void OpeningCameraUpdate();
+	void EasingMoveCamera();
 
+	/// <summary>
+	/// カメラのポジションを取得する
+	/// </summary>
+	/// <returns>カメラの座標</returns>
 	VECTOR GetPos() { return pos_; }
-	VECTOR GetTarget() { return cameraTarget_; }
 
-	
+	/// <summary>
+	/// カメラが見る位置を取得する
+	/// </summary>
+	/// <returns>カメラが見る位置</returns>
+	VECTOR GetTarget() { return cameraViewingPos_; }
+
+	/// <summary>
+	/// カメラが目標とする座標を設定する
+	/// </summary>
+	/// <param name="targetPos">目標位置</param>
+	void SetCameraTargetPos(VECTOR targetPos);
 
 	void tempdraw();
 
@@ -79,11 +92,14 @@ private:
 	float moveVecY = 0.0f;
 	float moveVecX = 0.0f;
 
+	float elapsedTime_ = 0.0f;
+
 	DINPUT_JOYSTATE input_ = {};
 
-	VECTOR pos_ = {};							//カメラのポジション
-	VECTOR cameraTarget_ = {0, 0, 0};			//カメラのターゲット
 	VECTOR initPos_ = {};						//初期ポジション
+	VECTOR pos_ = {};							//カメラのポジション
+	VECTOR cameraViewingPos_ = {};				//カメラが見る位置
+	VECTOR cameraTargetPos_ = {};				//カメラの目標位置
 
 	void(Camera::* updateFunc_)(VECTOR pos, float height);
 

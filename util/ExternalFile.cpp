@@ -30,6 +30,7 @@ void ExternalFile::LoadFile()
 	LoadFileHandle("tutorial");
 	LoadFileHandle("gimmick");
 	LoadFileHandle("cameraGimmick");
+	LoadFileHandle("cameraPosition");
 }
 
 void ExternalFile::LoadArrangementData()
@@ -42,6 +43,7 @@ void ExternalFile::LoadArrangementData()
 	LoadObjectData("tutorial", loadTutorialInfo_);
 	LoadObjectData("gimmick", loadGimmickInfo_);
 	LoadObjectData("cameraGimmick", loadCameraGimmickInfo_);
+	LoadObjectData("cameraPosition", loadCameraPosInfo_);
 }
 
 void ExternalFile::LoadSaveData()
@@ -99,7 +101,7 @@ LoadObjectInfo ExternalFile::GetCameraGimmickInfo(VECTOR playerPos, const char* 
 
 LoadObjectInfo ExternalFile::GetSpecifiedInfo(const char* const stage, const char* const name)
 {
-	LoadObjectInfo info;
+	LoadObjectInfo info = {};
 
 	if (stage == "main") {
 		for (auto& obj : loadMainStageObjInfo_) {
@@ -211,6 +213,20 @@ void ExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 
 }
 
+VECTOR ExternalFile::GetCameraTargetPos(std::string name)
+{
+	VECTOR pos = {};
+
+	for (auto data : loadCameraPosInfo_) {
+		auto keyName = data.first;
+		if (keyName == name) {
+			pos = data.second.front().pos;
+		}
+	}
+
+	return pos;
+}
+
 //プレイヤーのステータスを書き出す
 void ExternalFile::RewritePlayerInfo()
 {
@@ -298,7 +314,7 @@ void ExternalFile::LoadObjectData(std::string name, std::unordered_map<std::stri
 
 	for (int i = 0; i < dataNum; i++) {
 
-		LoadObjectInfo info;
+		LoadObjectInfo info = {};
 
 		//名前の文字列数を読み取る
 		uint8_t nameSize = 0;

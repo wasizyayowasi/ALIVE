@@ -42,6 +42,8 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	//カメラの初期化
 	camera_->Init(VGet(0, 140, 0));
 
+	camera_->SetCameraTargetPos(ExternalFile::GetInstance().GetCameraTargetPos("start"));
+
 	//仮でライト処理を消している
 	SetUseLighting(true);
 
@@ -82,7 +84,7 @@ void SceneTitle::End()
 void SceneTitle::Update()
 {
 	//カメラの更新
-	camera_->OpeningCameraUpdate();
+	camera_->EasingMoveCamera();
 
 	(this->*updateFunc_)();
 }
@@ -100,6 +102,8 @@ void SceneTitle::Draw()
 
 	//UIの描画
 	UI_->AlphaChangeDraw(selectNum_, UIfadeValue_);
+
+	camera_->tempdraw();
 
 	//fadeValue_の値によって透過具合が変化するタイトルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
@@ -128,6 +132,7 @@ void SceneTitle::UIUpdate()
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
+	auto& file = ExternalFile::GetInstance();
 
 	//選択
 	if (input.IsTriggered(InputType::up)) {
@@ -135,6 +140,15 @@ void SceneTitle::UIUpdate()
 	}
 	if (input.IsTriggered(InputType::down)) {
 		selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
+	}
+
+	if (input.IsTriggered(InputType::left)) {
+		VECTOR pos = file.GetCameraTargetPos("setting");
+		camera_->SetCameraTargetPos(pos);
+	}
+	if (input.IsTriggered(InputType::right)) {
+		VECTOR pos = file.GetCameraTargetPos("start");
+		camera_->SetCameraTargetPos(pos);
 	}
 
 	//決定

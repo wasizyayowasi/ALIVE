@@ -180,6 +180,11 @@ void ObjectManager::OpeningStageObjectGenerator()
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoardType2, objSecond);
 			}
 		}
+		else if (objInfo.first == "TV") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TV, objSecond);
+			}
+		}
 	}
 }
 

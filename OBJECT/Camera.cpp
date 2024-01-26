@@ -1,7 +1,8 @@
 #include "Camera.h"
+#include "../util/Util.h"
+#include "../util/Easing.h"
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
-#include "../util/Util.h"
 #include <algorithm>
 
 namespace {
@@ -23,6 +24,9 @@ namespace {
 
 	//カメラのY座標が移動する際、ボーダーラインが有効な範囲
 	constexpr float border_range = 100.0f;
+
+	//カメラの移動にかかる合計時間
+	constexpr float total_time = 180.0f;
 }
 
 Camera::Camera(VECTOR pos):updateFunc_(&Camera::TrackingCameraUpdate)
@@ -38,7 +42,8 @@ Camera::~Camera()
 
 void Camera::Init(VECTOR targetPos)
 {
-	cameraTarget_ = targetPos;
+
+//	cameraViewingPos_ = targetPos;
 
 	/////////////// 3D関連の設定 /////////////
 	// Zバッファを使用する
@@ -52,7 +57,7 @@ void Camera::Init(VECTOR targetPos)
 	// カメラからどれだけ離れたところ( Near )から、 どこまで( Far )のものを描画するかを設定
 	SetCameraNearFar(5.0f, 5000.0f);
 	// カメラの位置、どこを見ているかを設定する
-	SetCameraPositionAndTarget_UpVecY(pos_, cameraTarget_);
+	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
 	// カメラの視野角を設定(ラジアン)
 	SetupCamera_Perspective(60.0f * DX_PI_F / 180.0f);
 
@@ -96,11 +101,11 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos,float playerHeight)
 	pos_.z = TrackingPozZ(playerPos);
 
 	//プレイヤーがいた位置を見るようにする
-	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
-	cameraTarget_.y = (cameraTarget_.y * 0.9f) + ((playerPos.y + playerHeight / 2) * 0.1f);
-	cameraTarget_.z = (cameraTarget_.z * 0.95f) + (playerPos.z * 0.05f);
+	cameraViewingPos_.x = (cameraViewingPos_.x * 0.9f) + (playerPos.x * 0.1f);
+	cameraViewingPos_.y = (cameraViewingPos_.y * 0.9f) + ((playerPos.y + playerHeight / 2) * 0.1f);
+	cameraViewingPos_.z = (cameraViewingPos_.z * 0.95f) + (playerPos.z * 0.05f);
 
-	SetCameraPositionAndTarget_UpVecY(pos_, cameraTarget_);
+	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
 }
 
 //定点カメラの更新
@@ -122,11 +127,11 @@ void Camera::FixedPointCamera(VECTOR playerPos, float playerHeight)
 	}
 
 	//カメラが見る位置をプレイヤーから少しずらす
-	cameraTarget_.x = (cameraTarget_.x * 0.9f) + (playerPos.x * 0.1f);
-	cameraTarget_.y = (cameraTarget_.y * 0.9f) + ((playerPos.y + playerHeight / 2) * 0.1f);
-	cameraTarget_.z = (cameraTarget_.z * 0.95f) + (playerPos.z * 0.05f);
+	cameraViewingPos_.x = (cameraViewingPos_.x * 0.9f) + (playerPos.x * 0.1f);
+	cameraViewingPos_.y = (cameraViewingPos_.y * 0.9f) + ((playerPos.y + playerHeight / 2) * 0.1f);
+	cameraViewingPos_.z = (cameraViewingPos_.z * 0.95f) + (playerPos.z * 0.05f);
 
-	SetCameraPositionAndTarget_UpVecY(pos_, cameraTarget_);
+	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
 }
 
 //カメラの注視点を逸らす
@@ -138,30 +143,54 @@ void Camera::ChangeOfFocus()
 	GetJoypadDirectInputState(DX_INPUT_PAD1, &input_);
 
 	if (input_.Ry < 0 || input.IsPressed(InputType::upArrow)) {
-		cameraTarget_.y += add_focus;
+		cameraViewingPos_.y += add_focus;
 	}
 	if (input_.Ry > 0 || input.IsPressed(InputType::downArrow)) {
-		cameraTarget_.y -= add_focus;
+		cameraViewingPos_.y -= add_focus;
 	}
 	if (input_.Rx < 0 || input.IsPressed(InputType::leftArrow)) {
-		cameraTarget_.x -= add_focus;
+		cameraViewingPos_.x -= add_focus;
 	} 
 	if (input_.Rx > 0 || input.IsPressed(InputType::rightArrow)) {
-		cameraTarget_.x += add_focus;
+		cameraViewingPos_.x += add_focus;
 	}
 
-	SetCameraPositionAndTarget_UpVecY(pos_, cameraTarget_);
+	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
 }
 
-void Camera::OpeningCameraUpdate()
+void Camera::EasingMoveCamera()
 {
-	SetCameraPositionAndTarget_UpVecY(pos_, cameraTarget_);
+	//時間の更新
+	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
+
+	//カメラの座標移動
+	//pos_.x = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.x, pos_.x);
+	//pos_.y = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.y, pos_.y);
+	//pos_.z = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.z, pos_.z);
+
+	//カメラの見る位置の移動
+	//cameraViewingPos_.x = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.x, cameraViewingPos_.x);
+	//cameraViewingPos_.y = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.y, cameraViewingPos_.y);
+	//cameraViewingPos_.z = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.z, cameraViewingPos_.z);
+
+	//カメラの情報の更新
+	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
+}
+
+void Camera::SetCameraTargetPos(VECTOR targetPos)
+{
+	//目標位置の設定
+	cameraTargetPos_ = targetPos;
+
+	//経過時間をリセットする
+	elapsedTime_ = 0.0f;
 }
 
 void Camera::tempdraw()
 {
 	DrawFormatString(0, 16, 0xffffff, "%f:%f:%f", pos_.x, pos_.y, pos_.z);
-	DrawFormatString(0, 32, 0xffffff, "%f:%f:%f", cameraTarget_.x, cameraTarget_.y, cameraTarget_.z);
+	DrawFormatString(0, 32, 0xffffff, "%f:%f:%f", cameraViewingPos_.x, cameraViewingPos_.y, cameraViewingPos_.z);
+	DrawFormatString(0, 48, 0xffffff, "%f:%f:%f", cameraTargetPos_.x, cameraTargetPos_.y, cameraTargetPos_.z);
 
 	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
 }
