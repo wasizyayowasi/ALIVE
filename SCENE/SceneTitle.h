@@ -1,8 +1,10 @@
 #pragma once
 #include "SceneBase.h"
-#include<string>
+#include <DxLib.h>
+#include <string>
 #include <vector>
 #include <memory>
+#include <map>
 
 class UIItemManager;
 class ObjectManager;
@@ -79,6 +81,11 @@ private:
 	/// </summary>
 	void SceneChange();
 
+	/// <summary>
+	/// カメラの設定
+	/// </summary>
+	void CameraSetting();
+
 private:
 
 	static constexpr int fadeInterval_ = 30;	//インターバル
@@ -88,9 +95,10 @@ private:
 	int fadeColor_ = 0x000000;					//黒
 
 	int titleHandle_ = -1;						//タイトル画像の保管変数
-	int selectNum_ = 0;							//選択
+	int selectNum_ = 1;							//選択
 
 	std::vector<std::string> menuName_;			//メニューの文字列
+	std::map<std::string, VECTOR> menuDrawPos_;	//メニューを描画する座標
 	std::shared_ptr<Camera> camera_;			//カメラのスパートポインタ
 	std::shared_ptr<UIItemManager> UI_;			//UIマネージャーのスマートポインタ
 	std::shared_ptr<ObjectManager> objManager_;	//オブジェクトマネージャーのスマートポインタ

@@ -2,6 +2,7 @@
 #include "GameMain.h"
 #include "ScenePause.h"
 #include "SceneManager.h"
+#include "SettingSceneForSceneTitle.h"
 
 #include "../object/ObjectManager.h"
 #include "../object/Camera.h"
@@ -14,7 +15,6 @@
 #include "../util/ExternalFile.h"
 #include "../util/UIItemManager.h"
 
-#include <DxLib.h>
 #include <algorithm>
 
 namespace {
@@ -23,18 +23,31 @@ namespace {
 
 SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 {
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+
 	//インスタンス化
 	playerModel_ = std::make_shared<Model>(enemy_model_Filename);
 	UI_ = std::make_shared<UIItemManager>();
 	objManager_ = std::make_shared<ObjectManager>();
-	camera_ = std::make_shared<Camera>(VGet(0, 140, -370));
+	camera_ = std::make_shared<Camera>(file.GetCameraTargetPos("start"),file.GetCameraTargetPos("startTargetPos"));
 
 	//プレイヤーモデルの配置データをセットする
 	auto info = ExternalFile::GetInstance().GetSpecifiedInfo("title", "Player");
 	playerModel_->SetScale(info.scale);
 	playerModel_->SetPos(info.pos);
 	playerModel_->SetRot(info.rot);
-	playerModel_->SetAnimation(static_cast<int>(PlayerAnimType::wakeUp2), false, true);
+	playerModel_->SetAnimation(static_cast<int>(PlayerAnimType::wakeUp), false, true);
+
+	menuDrawPos_["タイトル"] = file.GetUIPos("titleDrawPos");
+	menuDrawPos_["ニューゲーム"] = file.GetUIPos("startDrawPos");
+	menuDrawPos_["ゲームを再開する"] = file.GetUIPos("continueDrawPos");
+	menuDrawPos_["設定"] = file.GetUIPos("settingDrawPos");
+	menuDrawPos_["モード"] = file.GetUIPos("windowModeUIPos");
+	menuDrawPos_["BGM"] = file.GetUIPos("BGMUIPos");
+	menuDrawPos_["SE"] = file.GetUIPos("SEUIPos");
+	menuDrawPos_["操作設定"] = file.GetUIPos("advancedSettingUIPos");
+	menuDrawPos_["戻る"] = file.GetUIPos("backUIPos");
 
 	//オブジェクトの生成
 	objManager_->OpeningStageObjectGenerator();
@@ -42,7 +55,7 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	//カメラの初期化
 	camera_->Init(VGet(0, 140, 0));
 
-	camera_->SetCameraTargetPos(ExternalFile::GetInstance().GetCameraTargetPos("start"));
+	camera_->SetCameraTargetPosAndView(file.GetCameraTargetPos("start"), file.GetCameraTargetPos("startTargetPos"));
 
 	//仮でライト処理を消している
 	SetUseLighting(true);
@@ -60,7 +73,7 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	int font = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
 	float y = 120.0f;
 	for (auto& menu : menuName_) {
-		UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 2 + y, 320, 100, menu.c_str(), font);
+		UI_->AddMenu(static_cast<float>(Game::screen_width / 2), static_cast<float>(Game::screen_height / 2) + y, 320, 100, menu.c_str(), font);
 		y += 40.0f;
 	}
 }
@@ -101,13 +114,13 @@ void SceneTitle::Draw()
 	playerModel_->Draw();
 
 	//UIの描画
-	UI_->AlphaChangeDraw(selectNum_, UIfadeValue_);
+	UI_->DrawBillBoard(menuDrawPos_,UIfadeValue_,200.0f);
 
 	camera_->tempdraw();
 
 	//fadeValue_の値によって透過具合が変化するタイトルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
-	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3, 1.0f, 0.0f, titleHandle_, true);
+	DrawBillboard3D(menuDrawPos_["タイトル"], 0.5f, 0.5f, 300.0f, 0.0f, titleHandle_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	//黒いフェード用boxの描画
@@ -131,29 +144,24 @@ void SceneTitle::FadeInUpdate()
 void SceneTitle::UIUpdate()
 {
 	//短縮化
-	auto& input = InputState::GetInstance();
 	auto& file = ExternalFile::GetInstance();
+	auto& input = InputState::GetInstance();
 
 	//選択
-	if (input.IsTriggered(InputType::up)) {
-		selectNum_ = (std::max)(selectNum_ - 1, 0);
-	}
-	if (input.IsTriggered(InputType::down)) {
-		selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
-	}
-
 	if (input.IsTriggered(InputType::left)) {
-		VECTOR pos = file.GetCameraTargetPos("setting");
-		camera_->SetCameraTargetPos(pos);
+		selectNum_ = (std::max)(selectNum_ - 1, 0);
+		CameraSetting();
 	}
 	if (input.IsTriggered(InputType::right)) {
-		VECTOR pos = file.GetCameraTargetPos("start");
-		camera_->SetCameraTargetPos(pos);
+		selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
+		CameraSetting();
 	}
 
 	//決定
 	if (input.IsTriggered(InputType::space)) {
-		updateFunc_ = &SceneTitle::UIFadeOutUpdate;
+		if (!camera_->GetMoving()) {
+			updateFunc_ = &SceneTitle::UIFadeOutUpdate;
+		}
 	}
 }
 
@@ -208,20 +216,52 @@ void SceneTitle::SceneChange()
 {
 	switch (selectNum_) {
 	case 0:
+		Init();
+		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<SettingSceneForSceneTitle>(manager_)));
+		break;
+	case 1:
 		ExternalFile::GetInstance().ClearSaveData();
 		updateFunc_ = &SceneTitle::OpeningSoundUpdate;
 		SoundManager::GetInstance().Play("alarm");
 		break;
-	case 1:
+	case 2:
 		ExternalFile::GetInstance().LoadSaveData();
 		updateFunc_ = &SceneTitle::SceneTitleFadeOutUpdate;
 		break;
-	case 2:
-		Init();
-		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
-		break;
 	case 3:
 		manager_.SetEndFlag(true);
+		break;
+	}
+}
+
+void SceneTitle::CameraSetting()
+{
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+
+	//目標座標
+	VECTOR targetPos = {};
+	//見る目標座標
+	VECTOR targetViewPos = {};
+
+	switch (selectNum_) {
+	case 0:
+		targetPos = file.GetCameraTargetPos("setting");
+		targetViewPos = file.GetCameraTargetPos("settingTargetPos");
+		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos);
+
+		break;
+	case 1:
+		targetPos = file.GetCameraTargetPos("start");
+		targetViewPos = file.GetCameraTargetPos("startTargetPos");
+		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos);
+
+		break;
+	case 2:
+		targetPos = file.GetCameraTargetPos("continue");
+		targetViewPos = file.GetCameraTargetPos("continueTargetPos");
+		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos);
+
 		break;
 	}
 }

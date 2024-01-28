@@ -32,7 +32,7 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 
 	//インスタンス化
 	player_ = std::make_shared<Player>();
-	camera_ = std::make_shared<Camera>(VGet(0, 400, -600));
+	camera_ = std::make_shared<Camera>(VGet(0, 400, -600), VGet(0, 0, 0));
 	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
 	objManager_ = std::make_shared<ObjectManager>();
 	shotManager_ = std::make_shared<ShotManager>();

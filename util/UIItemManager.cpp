@@ -51,6 +51,41 @@ void UIItemManager::ChangePosDraw(float centerPosX, float centerPosY)
 
 }
 
+void UIItemManager::DrawBillBoard(std::map<std::string, VECTOR> drawPos,float alpha, float size)
+{
+	for (int i = 0; i < UIMenu_.size(); i++) {
+		//画像に書かれた文字を取得
+		std::string name = UIMenu_[i]->GetString();
+
+		//画像を3D空間に描画する
+		UIMenu_[i]->DrawBillboard(drawPos[name],alpha,size);
+	}
+}
+
+void UIItemManager::AlphaChangeDrawBillBoard(std::map<std::string, VECTOR> drawPos, int selectNum,int fadeValue, float size)
+{
+	int alpha = 100;
+
+	float currentNum = 250.0f / 255.0f;
+	float notCurrentNum = 100.0f / 255.0f;
+
+	for (int i = 0; i < UIMenu_.size(); i++) {
+
+		if (selectNum == i) {
+			alpha = currentNum * fadeValue;
+		}
+		else {
+			alpha = notCurrentNum * fadeValue;
+		}
+
+		//画像に書かれた文字を取得
+		std::string name = UIMenu_[i]->GetString();
+
+		//画像を3D空間に描画する
+		UIMenu_[i]->DrawBillboard(drawPos[name], alpha, size);
+	}
+}
+
 void UIItemManager::AddMenu(float centerPosX, float centerPosY, int width, int height, std::string str, int fontHandle)
 {
 	//インスタンス化

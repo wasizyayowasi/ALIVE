@@ -22,6 +22,13 @@ void UIItem::ChangePosDraw(float centerPosX, float centerPosY)
 	DrawRotaGraph(centerPosX, centerPosY, 1.0f, 0.0f, makeScreenHandle_, true);
 }
 
+void UIItem::DrawBillboard(VECTOR drawPos,int alpha, float size)
+{
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+	DrawBillboard3D(drawPos, 0.5f, 0.5f, size, 0.0f, makeScreenHandle_, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
 void UIItem::CreateUIGraphSetUp(float centerPosX, float centerPosY, int width, int height, std::string str, int fontHandle)
 {
 	makeScreenWidth_ = width;

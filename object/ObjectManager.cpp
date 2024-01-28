@@ -63,6 +63,16 @@ void ObjectManager::MainStageObjectGenerator()
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Train, objSecond);
 			}
 		}
+		else if (objInfo.first == "Station") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Station, objSecond);
+			}
+		}
+		else if (objInfo.first == "FenceType1") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Fence, objSecond);
+			}
+		}
 		else if (objInfo.first == "Street") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Street, objSecond);
@@ -185,6 +195,11 @@ void ObjectManager::OpeningStageObjectGenerator()
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TV, objSecond);
 			}
 		}
+		else if (objInfo.first == "Book") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Book, objSecond);
+			}
+		}
 	}
 }
 
@@ -228,7 +243,7 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 	}
 
 	//enemy‚ÌShot
-	for (auto obj : objects_[ObjectType::Enemy]) {
+	for (auto& obj : objects_[ObjectType::Enemy]) {
 		if (std::dynamic_pointer_cast<EnemyBase>(obj) != nullptr) {
 			std::dynamic_pointer_cast<EnemyBase>(obj)->Shot(shotManager, player.GetStatus().pos, player.GetStatus().height);
 		}
@@ -236,8 +251,8 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 
 	
 	//XV
-	for (auto list : objects_) {
-		for (auto obj : list.second) {
+	for (auto& list : objects_) {
+		for (auto& obj : list.second) {
 			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
 			if (distanceSize < 1000) {
 				obj->Update(player);
@@ -249,8 +264,8 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 
 	if (playerPos.x > deleteBorderLineInfo.pos.x) {
 		auto deletePointInfo = ExternalFile::GetInstance().GetDeleteObjInfo(deleteBorderLineInfo.pos, "DeletePoint");
-		for (auto list : objects_) {
-			for (auto obj : list.second) {
+		for (auto& list : objects_) {
+			for (auto& obj : list.second) {
 				if (obj->GetPos().x < deletePointInfo.pos.x) {
 					obj->SetIsEnable(false);
 				}
@@ -350,8 +365,8 @@ void ObjectManager::AddCheckCollModel()
 
 	checkCollList_.clear();
 
-	for (auto obj : objects_) {
-		for (auto objSecond : obj.second) {
+	for (auto& obj : objects_) {
+		for (auto& objSecond : obj.second) {
 			if (objSecond->AddCollModel() != nullptr) {
 				checkCollList_.push_back(objSecond->AddCollModel());
 			}
@@ -474,7 +489,7 @@ void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo ob
 		objects_[objType].push_front(std::make_shared<CrankScaffold>(model.GetModelHandle(objType), objInfo));
 		break;
 	case ObjectType::PenetrationScaffld:
-		objects_[objType].push_front(std::make_shared<PenetrationScaffld>(model.GetModelHandle(ObjectType::BlueContainer), objInfo));
+		objects_[objType].push_front(std::make_shared<PenetrationScaffld>(model.GetModelHandle(ObjectType::Train), objInfo));
 		break;
 	}
 }

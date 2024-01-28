@@ -5,7 +5,7 @@ class Camera
 {
 public:
 	//コンストラクタ
-	Camera(VECTOR pos);
+	Camera(VECTOR pos,VECTOR viewPos);
 	//デストラクタ
 	virtual ~Camera();
 
@@ -58,10 +58,17 @@ public:
 	VECTOR GetTarget() { return cameraViewingPos_; }
 
 	/// <summary>
-	/// カメラが目標とする座標を設定する
+	/// カメラが移動中か取得する
+	/// </summary>
+	/// <returns>true : 移動中　 false : 移動してない</returns>
+	bool GetMoving() { return isMoving_; }
+
+	/// <summary>
+	/// カメラが目標とする座標と見る位置を設定する
 	/// </summary>
 	/// <param name="targetPos">目標位置</param>
-	void SetCameraTargetPos(VECTOR targetPos);
+	/// <param name="targetViewPos">見る位置</param>
+	void SetCameraTargetPosAndView(VECTOR targetPos, VECTOR targetViewPos);
 
 	void tempdraw();
 
@@ -94,12 +101,15 @@ private:
 
 	float elapsedTime_ = 0.0f;
 
+	bool isMoving_ = false;
+
 	DINPUT_JOYSTATE input_ = {};
 
 	VECTOR initPos_ = {};						//初期ポジション
 	VECTOR pos_ = {};							//カメラのポジション
 	VECTOR cameraViewingPos_ = {};				//カメラが見る位置
 	VECTOR cameraTargetPos_ = {};				//カメラの目標位置
+	VECTOR cameraTargetViewPos_ = {};			//カメラの見る目標位置
 
 	void(Camera::* updateFunc_)(VECTOR pos, float height);
 

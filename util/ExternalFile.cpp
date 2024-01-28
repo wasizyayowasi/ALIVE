@@ -25,6 +25,7 @@ void ExternalFile::LoadFile()
 {
 	LoadFileHandle("obj");
 	LoadFileHandle("room");
+	LoadFileHandle("UIpos");
 	LoadFileHandle("Enemy");
 	LoadFileHandle("delete");
 	LoadFileHandle("tutorial");
@@ -36,14 +37,15 @@ void ExternalFile::LoadFile()
 void ExternalFile::LoadArrangementData()
 {
 	LoadPlayerInfo("player");
-	LoadObjectData("obj", loadMainStageObjInfo_);
-	LoadObjectData("room", loadOpeningStageObjInfo_);
+	LoadObjectData("UIpos", loadUIInfo_);
 	LoadObjectData("Enemy", loadEnemyInfo_);
-	LoadObjectData("delete", loadDeleteObjInfo_);
-	LoadObjectData("tutorial", loadTutorialInfo_);
 	LoadObjectData("gimmick", loadGimmickInfo_);
-	LoadObjectData("cameraGimmick", loadCameraGimmickInfo_);
+	LoadObjectData("delete", loadDeleteObjInfo_);
+	LoadObjectData("obj", loadMainStageObjInfo_);
+	LoadObjectData("tutorial", loadTutorialInfo_);
+	LoadObjectData("room", loadOpeningStageObjInfo_);
 	LoadObjectData("cameraPosition", loadCameraPosInfo_);
+	LoadObjectData("cameraGimmick", loadCameraGimmickInfo_);
 }
 
 void ExternalFile::LoadSaveData()
@@ -218,6 +220,20 @@ VECTOR ExternalFile::GetCameraTargetPos(std::string name)
 	VECTOR pos = {};
 
 	for (auto data : loadCameraPosInfo_) {
+		auto keyName = data.first;
+		if (keyName == name) {
+			pos = data.second.front().pos;
+		}
+	}
+
+	return pos;
+}
+
+VECTOR ExternalFile::GetUIPos(std::string name)
+{
+	VECTOR pos = {};
+
+	for (auto data : loadUIInfo_) {
 		auto keyName = data.first;
 		if (keyName == name) {
 			pos = data.second.front().pos;

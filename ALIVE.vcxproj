@@ -149,6 +149,7 @@
     <ClCompile Include="gimmick\ManualCrank.cpp" />
     <ClCompile Include="gimmick\Lever.cpp" />
     <ClCompile Include="scene\LoadingScene.cpp" />
+    <ClCompile Include="scene\SettingSceneForSceneTitle.cpp" />
     <ClCompile Include="util\ModelManager.cpp" />
     <ClCompile Include="object\Shot.cpp" />
     <ClCompile Include="object\ShotManager.cpp" />
@@ -191,6 +192,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scene\SettingSceneForSceneTitle.h" />
     <ClInclude Include="util\Easing.h" />
     <ClInclude Include="gimmick\Elevator.h" />
     <ClInclude Include="gimmick\CrankScaffold.h" />

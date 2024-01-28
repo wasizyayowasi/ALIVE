@@ -1,4 +1,5 @@
 #pragma once
+#include <DxLib.h>
 #include <map>
 #include <vector>
 #include <memory>
@@ -32,6 +33,23 @@ public:
 	/// <param name="centerPosX">ポジションX</param>
 	/// <param name="centerPosY">ポジションY</param>
 	void ChangePosDraw(float centerPosX, float centerPosY);
+
+	/// <summary>
+	/// 画像を3D空間に描画する
+	/// </summary>
+	/// <param name="drawPos">描画座標</param>
+	/// <param name="alpha">アルファ値</param>
+	/// /// <param name="size">サイズ</param>
+	void DrawBillBoard(std::map<std::string,VECTOR> drawPos, float alpha,float size);
+
+	/// <summary>
+	/// 画像を3D空間に描画する
+	/// </summary>
+	/// <param name="drawPos">描画座標</param>
+	/// <param name="selectNum">選択番号</param>
+	/// <param name="fadeValue">アルファ値</param>
+	/// /// <param name="size">サイズ</param>
+	void AlphaChangeDrawBillBoard(std::map<std::string, VECTOR> drawPos, int selectNum, int fadeValue, float size);
 
 	/// <summary>
 	/// UIメニューの追加

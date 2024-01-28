@@ -133,6 +133,13 @@ public:
 	/// <param name="name">名前</param>
 	/// <returns>座標データ</returns>
 	VECTOR GetCameraTargetPos(std::string name);
+
+	/// <summary>
+	/// 指定UIの配置座標を取得する
+	/// </summary>
+	/// <param name="name">取得したいUIの名前</param>
+	/// <returns>座標</returns>
+	VECTOR GetUIPos(std::string name);
 private:
 
 	/// <summary>
@@ -179,5 +186,6 @@ private:
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadTutorialInfo_;		//チュートリアルポイントの配置データ	
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadDeleteObjInfo_;		//削除ポイントの配置データ	
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadCameraPosInfo_;		//カメラの配置データ	
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadUIInfo_;				//UIの配置データ	
 };
 

@@ -26,14 +26,16 @@ namespace {
 	constexpr float border_range = 100.0f;
 
 	//カメラの移動にかかる合計時間
-	constexpr float total_time = 180.0f;
+	constexpr float total_time = 120.0f;
 }
 
-Camera::Camera(VECTOR pos):updateFunc_(&Camera::TrackingCameraUpdate)
+Camera::Camera(VECTOR pos, VECTOR viewPos):updateFunc_(&Camera::TrackingCameraUpdate)
 {
 	pos_ = pos;
 
 	initPos_ = pos;
+
+	cameraViewingPos_ = viewPos;
 }
 
 Camera::~Camera()
@@ -42,9 +44,6 @@ Camera::~Camera()
 
 void Camera::Init(VECTOR targetPos)
 {
-
-//	cameraViewingPos_ = targetPos;
-
 	/////////////// 3D関連の設定 /////////////
 	// Zバッファを使用する
 	SetUseZBuffer3D(true);
@@ -60,7 +59,6 @@ void Camera::Init(VECTOR targetPos)
 	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
 	// カメラの視野角を設定(ラジアン)
 	SetupCamera_Perspective(60.0f * DX_PI_F / 180.0f);
-
 }
 
 void Camera::Update(VECTOR playerPos, float playerHeight)
@@ -164,23 +162,33 @@ void Camera::EasingMoveCamera()
 	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
 
 	//カメラの座標移動
-	//pos_.x = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.x, pos_.x);
-	//pos_.y = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.y, pos_.y);
-	//pos_.z = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.z, pos_.z);
+	pos_.x = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.x, pos_.x);
+	pos_.y = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.y, pos_.y);
+	pos_.z = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.z, pos_.z);
 
 	//カメラの見る位置の移動
-	//cameraViewingPos_.x = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.x, cameraViewingPos_.x);
-	//cameraViewingPos_.y = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.y, cameraViewingPos_.y);
-	//cameraViewingPos_.z = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.z, cameraViewingPos_.z);
+	cameraViewingPos_.x = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetViewPos_.x, cameraViewingPos_.x);
+	cameraViewingPos_.y = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetViewPos_.y, cameraViewingPos_.y);
+	cameraViewingPos_.z = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetViewPos_.z, cameraViewingPos_.z);
 
 	//カメラの情報の更新
 	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
+
+	if (elapsedTime_ == total_time) {
+		isMoving_ = false;
+	}
+	else {
+		isMoving_ = true;
+	}
 }
 
-void Camera::SetCameraTargetPos(VECTOR targetPos)
+void Camera::SetCameraTargetPosAndView(VECTOR targetPos, VECTOR targetViewPos)
 {
 	//目標位置の設定
 	cameraTargetPos_ = targetPos;
+
+	//見る位置の設定
+	cameraTargetViewPos_ = targetViewPos;
 
 	//経過時間をリセットする
 	elapsedTime_ = 0.0f;

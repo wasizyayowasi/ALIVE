@@ -14,7 +14,7 @@ enum class ObjectType{
 	Player,
 	DeadPerson,
 	Enemy,
-	GimmickSwitch,
+	Switch,
 	PenetrationScaffld,
 	Trans,
 	CrankScaffold,
@@ -25,6 +25,8 @@ enum class ObjectType{
 	BuildingCType1,
 	BuildingAType2,
 	Train,
+	Station,
+	Fence,
 	StoreC,
 	Street,
 	TStreet,
@@ -43,6 +45,7 @@ enum class ObjectType{
 	WoodFloor,
 	WoodenBox,
 	TV,
+	Book,
 	Max,
 };
 

@@ -31,6 +31,14 @@ public:
 	void ChangePosDraw(float centerPosX, float centerPosY);
 
 	/// <summary>
+	/// 画像を3D空間に描画する
+	/// </summary>
+	/// <param name="drawPos">描画座標</param>
+	/// <param name="alpha">アルファ値</param>
+	/// <param name="size">サイズ</param>
+	void DrawBillboard(VECTOR drawPos, int alpha, float size);
+
+	/// <summary>
 	/// UI画像を作成するための位置情報等を設定する
 	/// </summary>
 	/// <param name="centerPosX">ポジションのX</param>
@@ -52,7 +60,6 @@ public:
 	/// </summary>
 	/// <returns>文字列</returns>
 	std::string GetString() { return UIString_; }
-
 private:
 	
 	int makeScreenHandle_ = 0;
