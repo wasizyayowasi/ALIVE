@@ -1,10 +1,12 @@
 #include "Elevator.h"
 #include "Switch.h"
 #include "Lever.h"
-#include "../util/ExternalFile.h"
-#include "../util/Model.h"
+
 #include "../util/Util.h"
+#include "../util/Model.h"
+#include "../util/Easing.h"
 #include "../util/InputState.h"
+#include "../util/ExternalFile.h"
 
 #include "../object/Player.h"
 
@@ -14,6 +16,9 @@ namespace {
 
 	//出発する時間
 	constexpr int max_departure_time = 60;
+
+	//到達時間
+	constexpr float total_time = 180.0f;
 }
 
 //コンストラクタ
@@ -96,6 +101,7 @@ void Elevator::Update(Player& player)
 			targetPos_ = levers_.back()->GetElevatorStopPoint();
 		}
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
+		elapsedTime_ = 0;
 	}
 
 	//レバーが引かれたらアニメーションを変更して
@@ -109,6 +115,7 @@ void Elevator::Update(Player& player)
 			targetPos_ = levers_.front()->GetElevatorStopPoint();
 		}
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
+		elapsedTime_ = 0;
 	}
 
 	//ターゲットポジションの変更
@@ -118,6 +125,9 @@ void Elevator::Update(Player& player)
 	else {
 		if (!switch_->CollResult()) {
 			isDeparture_ = false;
+		}
+		else {
+			elapsedTime_ = 0;
 		}
 		switch_->DeleteHitResult();
 	}
@@ -148,34 +158,39 @@ void Elevator::Draw()
 //エレベーターを移動させる
 void Elevator::Move()
 {
-	//移動
-	float distance = targetPos_.y - pos_.y;
+	//時間の更新
+	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
 
-	//Y軸の移動ベクトルを取得
-	moveVecY_ = distance / 0.96f;
+	pos_.y = Easing::InOutCubic(elapsedTime_, total_time, targetPos_.y, pos_.y);
 
-	//正の数値の移動ベクトルを取得
-	moveVecY_ = (std::max)(moveVecY_, -moveVecY_);
-
-	//移動ベクトルがmove_speedよりも大きかったら
-	//移動ベクトルをmove_speedにする
-	if (moveVecY_ > move_speed) {
-		float scale = move_speed / distance;
-		scale = (std::max)(scale, -scale);
-		moveVecY_ = distance * scale;
-	}
-
-	//ターゲットポジションとエレベーターのポジションが
-	//一定の距離以内だったらターゲットポジションをポジションとする
-	distance = (std::max)(distance, -distance);
-
-	if (distance < 3.0f) {
-		pos_ = targetPos_;
-		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, 10);
-	}
-	else {
-		pos_.y += moveVecY_;
-	}
+//	//移動
+//	float distance = targetPos_.y - pos_.y;
+//
+//	//Y軸の移動ベクトルを取得
+//	moveVecY_ = distance / 0.96f;
+//
+//	//正の数値の移動ベクトルを取得
+//	moveVecY_ = (std::max)(moveVecY_, -moveVecY_);
+//
+//	//移動ベクトルがmove_speedよりも大きかったら
+//	//移動ベクトルをmove_speedにする
+//	if (moveVecY_ > move_speed) {
+//		float scale = move_speed / distance;
+//		scale = (std::max)(scale, -scale);
+//		moveVecY_ = distance * scale;
+//	}
+//
+//	//ターゲットポジションとエレベーターのポジションが
+//	//一定の距離以内だったらターゲットポジションをポジションとする
+//	distance = (std::max)(distance, -distance);
+//
+//	if (distance < 3.0f) {
+//		pos_ = targetPos_;
+//		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, 10);
+//	}
+//	else {
+//		pos_.y += moveVecY_;
+//	}
 
 	//ポジションの設定
 	model_->SetPos(pos_);

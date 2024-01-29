@@ -37,7 +37,7 @@ void ScenePause::Init()
 	int font = FontsManager::GetInstance().GetFontHandle("ƒsƒOƒ‚ 0042");
 	int y = 100;
 	for (auto& menu : menuName_) {
-		UI_->AddMenu(Game::screen_width / 2, Game::screen_height / 2 + y, 640, 200, menu.c_str(), font);
+		UI_->AddMenu(static_cast<float>(Game::screen_width / 2), static_cast<float>(Game::screen_height / 2 + y), 640, 200, menu.c_str(), font);
 		y += 40;
 	}
 

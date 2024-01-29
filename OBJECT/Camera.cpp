@@ -17,7 +17,7 @@ namespace {
 	constexpr float add_focus = 30.0f;
 
 	//カメラの初期ポジション
-	const VECTOR init_pos = VGet(0, 400, -600);
+	const VECTOR init_pos = VGet(0, 400, -800);
 
 	//カメラのZ座標が移動する際、ボーダーライン
 	constexpr float tracking_Z_borderline = 1000.0f;
@@ -95,12 +95,11 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos,float playerHeight)
 	//カメラがプレイヤーを追いかける用にする
 	pos_.x = TrackingPosX(playerPos);
 	pos_.y = TrackingPosY(playerPos,playerHeight);
-//	cameraPos_.y = playerPos.y;
 	pos_.z = TrackingPozZ(playerPos);
 
 	//プレイヤーがいた位置を見るようにする
 	cameraViewingPos_.x = (cameraViewingPos_.x * 0.9f) + (playerPos.x * 0.1f);
-	cameraViewingPos_.y = (cameraViewingPos_.y * 0.9f) + ((playerPos.y + playerHeight / 2) * 0.1f);
+	cameraViewingPos_.y = (cameraViewingPos_.y * 0.99f) + ((playerPos.y + playerHeight / 2) * 0.01f);
 	cameraViewingPos_.z = (cameraViewingPos_.z * 0.95f) + (playerPos.z * 0.05f);
 
 	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
@@ -126,7 +125,7 @@ void Camera::FixedPointCamera(VECTOR playerPos, float playerHeight)
 
 	//カメラが見る位置をプレイヤーから少しずらす
 	cameraViewingPos_.x = (cameraViewingPos_.x * 0.9f) + (playerPos.x * 0.1f);
-	cameraViewingPos_.y = (cameraViewingPos_.y * 0.9f) + ((playerPos.y + playerHeight / 2) * 0.1f);
+	cameraViewingPos_.y = (cameraViewingPos_.y * 0.9f);
 	cameraViewingPos_.z = (cameraViewingPos_.z * 0.95f) + (playerPos.z * 0.05f);
 
 	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
@@ -219,6 +218,7 @@ float Camera::TrackingPosX(VECTOR playerPos)
 		return pos_.x + moveVecX;
 	}
 
+	//return (pos_.x * 0.99f) + (playerPos.x * 0.01f);
 	return (pos_.x * 0.9f) + (playerPos.x * 0.1f);
 
 }

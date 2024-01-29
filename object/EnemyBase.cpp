@@ -31,6 +31,9 @@ namespace {
 
 	//物を投げているときのアニメーションフレーム
 	constexpr int throw_frame_time = 73;
+
+	//石を投げる距離
+	constexpr float throw_distance = 800.0f;
 }
 
 EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,objInfo)
@@ -42,7 +45,6 @@ EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,
 
 void EnemyBase::Update(Player& player)
 {
-
 	//モデルの更新
 	model_->Update();
 
@@ -55,30 +57,30 @@ void EnemyBase::Update(Player& player)
 	//プレイヤーの座標
 	VECTOR playerPos = player.GetStatus().pos;
 
+	//プレイヤーを索敵する
+	SearchForPlayer(playerPos);
+
 	//索敵
 	if (!IsThereAnObject(playerPos)) {
-		if (SearchForPlayer(playerPos)) {
+		if (isDetection_) {
 			//プレイヤーを追跡する
 			TrackingUpdate(playerPos);
 		}
-		else {
-			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, true, 10);
-		}
 	}
 	else{
-		if (DistanceIsWithinRange(playerPos)) {
+		if (isDetection_) {
 			//目標マスの中心座標を取得
 			Aster_->LocationInformation(playerPos, pos_);
 
 			//経路探索
 			RoutingUpdate(player);
 		}
-		else {
-			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, true, 10);
-		}
 	}
 
-	if (distanceSize_ < within_reach) {
+	//敵からプレイヤーの直線距離
+	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
+
+	if (distanceSize < within_reach) {
 		pushVec_ = VScale(VNorm(frontVec_), 10);
 	}
 
@@ -87,22 +89,23 @@ void EnemyBase::Update(Player& player)
 	if (pushVecSize > 1.0f) {
 		ThrustAway(player);
 	}
-
 }
 
 void EnemyBase::Draw()
 {
 	model_->Draw();
-	DrawSphere3D(pos_, 32, 16, 0xff0000, 0xff0000, true);
 //	Aster_->Draw();
 }
 
 void EnemyBase::TrackingUpdate(VECTOR playerPos)
 {
-
-	//プレイヤーと自分の差を算出し、正規化し、スピードを掛ける
+	//プレイヤーと自分の差を算出する
 	VECTOR distancePlayerAndEnemy = VSub(playerPos, pos_);
+
+	//Y座標の追跡は考慮しない
 	distancePlayerAndEnemy.y = 0;
+
+	//移動ベクトルの生成
 	VECTOR moveVec = VScale(VNorm(distancePlayerAndEnemy), move_speed);
 
 	//回転行列と拡縮行列の合成行列
@@ -118,10 +121,10 @@ void EnemyBase::TrackingUpdate(VECTOR playerPos)
 	MV1SetMatrix(model_->GetModelHandle(), mtx);
 }
 
-bool EnemyBase::SearchForPlayer(VECTOR playerPos)
+void EnemyBase::SearchForPlayer(VECTOR playerPos)
 {
 	//敵からプレイヤーの直線距離
-	distanceSize_ = MathUtil::GetSizeOfDistanceTwoPoints(playerPos,pos_);
+	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos,pos_);
 
 	//内積を取得する(返り値はコサイン)
 	innerProduct = VDot(frontVec_, VNorm(VSub(playerPos, pos_)));
@@ -130,26 +133,23 @@ bool EnemyBase::SearchForPlayer(VECTOR playerPos)
 	float radian = acos(innerProduct);
 	innerProduct = radian / DX_PI_F * 180.0f;
 
+	//視野の範囲内かつ距離が石を投げる距離よりも
+	//短かったらプレイヤーを検知したことにする
 	if (innerProduct < viewing_angle) {
-		if (distanceSize_ < 700.0f) {
+		if (distanceSize < throw_distance) {
 			isDetection_ = true;
 		}
 	}
 
 	//敵の視野角よりも外側にいるまたは
-	//敵からプレイヤーの距離が指定範囲より大きかったらreturn
-	if (innerProduct < viewing_angle) {
-		if (distanceSize_ > visible_range) {
-			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, false, 20);
-			return false;
-		}
+	//敵からプレイヤーの距離が指定範囲より大きかったら
+	//idleアニメーション、それ以外だったら歩きアニメーションに変更する
+	if (innerProduct > viewing_angle || distanceSize > visible_range) {
+		model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, false, 20);
 	}
-
-	if (!DistanceIsWithinRange(playerPos)) {
-		return false;
+	else {
+		model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Walk), true, false, 20);
 	}
-
-	return true;
 }
 
 //プレイヤーを突き飛ばす
@@ -159,6 +159,8 @@ void EnemyBase::ThrustAway(Player& player)
 	float size = VSize(pushVec_);
 	VECTOR nockback = VAdd(player.GetStatus().pos,pushVec_);
 
+	//カメラ側の一定ラインを過ぎると
+	//Z座標のベクトルを0にする
 	if (nockback.z < -250.0f) {
 		pushVec_.z = 0.0f;
 	}
@@ -222,21 +224,6 @@ bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 	}
 
 	return noObject;
-}
-
-bool EnemyBase::DistanceIsWithinRange(VECTOR playerPos)
-{
-	//プレイヤーとエネミーの距離を取得
-	distanceSize_ = VSize(VSub(playerPos, pos_));
-
-	//プレイヤーと敵の座標差を見て、エネミーが見える範囲内だったら
-	//アニメーションを歩きに変更して、trueを返す
-	if (distanceSize_ < visible_range) {
-		model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Walk), true, false, 20);
-		return true;
-	}
-
-	return false;
 }
 
 void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos,float height)

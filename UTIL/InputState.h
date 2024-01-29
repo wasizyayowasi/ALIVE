@@ -18,7 +18,8 @@ enum class InputType
 	rightArrow,		//右
 	space,			//space
 	death,			//死亡入力
-	shift,			//shift
+	dush,			//走る
+	sit,			//座る
 	activate,		//運ぶ
 	creative,		//デバッグ用
 	max,			//最大入力インデックス
@@ -34,13 +35,15 @@ struct InputInfo {
 	int id;
 };
 
-class KeyConfigScene;
 class Tutorial;
+class KeyConfigScene;
+class KeyConfigSceneForSceneTitle;
 
 class InputState
 {
-	friend KeyConfigScene;
 	friend Tutorial;
+	friend KeyConfigScene;
+	friend KeyConfigSceneForSceneTitle;
 public:
 	~InputState();
 

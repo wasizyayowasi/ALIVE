@@ -46,19 +46,22 @@ InputState::InputState()
 	defaultMapTable_[InputType::death] =		{ {InputCategory::keybd,KEY_INPUT_Z},
 												{InputCategory::pad,PAD_INPUT_4} };
 	//shift
-	defaultMapTable_[InputType::shift] =		{ {InputCategory::keybd,KEY_INPUT_LSHIFT},
+	defaultMapTable_[InputType::dush] =			{ {InputCategory::keybd,KEY_INPUT_LSHIFT},
 												{InputCategory::pad,PAD_INPUT_3} };
+	//sit
+	defaultMapTable_[InputType::sit] =			{ {InputCategory::keybd,KEY_INPUT_E},
+												{InputCategory::pad,PAD_INPUT_6} };
 	//activate
 	defaultMapTable_[InputType::activate] =		{ {InputCategory::keybd,KEY_INPUT_F},
 												{InputCategory::pad,PAD_INPUT_2} };
-
+	//creative
 	defaultMapTable_[InputType::creative] =		{ {InputCategory::keybd,KEY_INPUT_Q},
 												{InputCategory::pad,PAD_INPUT_5} };
 
 	inputMapTable_ = defaultMapTable_;
 
 	//loadKeyInfo();
-	LoadKeyInfo("keyInfo");
+	//LoadKeyInfo("keyInfo");
 
 	//一時マップテーブルにコピー
 	tempMapTable_ = inputMapTable_;
@@ -75,7 +78,8 @@ InputState::InputState()
 	inputNameTable_[InputType::rightArrow]	= "右を見る";
 	inputNameTable_[InputType::space]		= "決定/ジャンプ";
 	inputNameTable_[InputType::death]		= "死亡";
-	inputNameTable_[InputType::shift]		= "走る";
+	inputNameTable_[InputType::dush]		= "走る";
+	inputNameTable_[InputType::sit]			= "座る";
 	inputNameTable_[InputType::activate]	= "アクション";
 
 

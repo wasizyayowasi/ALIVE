@@ -148,8 +148,10 @@
     <ClCompile Include="gimmick\TransparentObject.cpp" />
     <ClCompile Include="gimmick\ManualCrank.cpp" />
     <ClCompile Include="gimmick\Lever.cpp" />
+    <ClCompile Include="scene\KeyConfigSceneForSceneTitle.cpp" />
     <ClCompile Include="scene\LoadingScene.cpp" />
     <ClCompile Include="scene\SettingSceneForSceneTitle.cpp" />
+    <ClCompile Include="object\ThrowEnemy.cpp" />
     <ClCompile Include="util\ModelManager.cpp" />
     <ClCompile Include="object\Shot.cpp" />
     <ClCompile Include="object\ShotManager.cpp" />
@@ -192,7 +194,9 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scene\KeyConfigSceneForSceneTitle.h" />
     <ClInclude Include="scene\SettingSceneForSceneTitle.h" />
+    <ClInclude Include="object\ThrowEnemy.h" />
     <ClInclude Include="util\Easing.h" />
     <ClInclude Include="gimmick\Elevator.h" />
     <ClInclude Include="gimmick\CrankScaffold.h" />

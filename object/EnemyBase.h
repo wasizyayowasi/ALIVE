@@ -53,7 +53,7 @@ public:
 	/// プレイヤーを索敵する
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの座標</param>
-	bool SearchForPlayer(VECTOR playerPos);
+	void SearchForPlayer(VECTOR playerPos);
 
 	/// <summary>
 	/// プレイヤーを突き飛ばす
@@ -75,12 +75,6 @@ public:
 	bool IsThereAnObject(VECTOR playerPos);
 
 	/// <summary>
-	/// 距離が範囲内だったら
-	/// </summary>
-	/// <returns></returns>
-	bool DistanceIsWithinRange(VECTOR playerPos);
-
-	/// <summary>
 	/// 敵が弾を撃つ処理
 	/// </summary>
 	/// <param name="shotManager">弾を管理するクラスのポインタ</param>
@@ -94,7 +88,7 @@ public:
 	/// <returns>回転行列と拡縮行列を合成した結果</returns>
 	MATRIX CombiningRotAndScallMat(VECTOR distance);
 
-private:
+protected:
 
 	float distanceSize_ = 0.0f;						//敵からプレイヤーの距離
 	float innerProduct = 0.0f;						//内積の結果を入れる
@@ -109,7 +103,5 @@ private:
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 
 	std::shared_ptr<Aster> Aster_;
-
-
 };
 

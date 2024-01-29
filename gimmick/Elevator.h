@@ -65,6 +65,7 @@ private:
 private:
 
 	float moveVecY_ = 0.0f;							//Y軸の移動ヴェクトル
+	float elapsedTime_ = 0.0f;
 
 	bool isDeparture_ = false;						//エレベーターが出発しているかどうか
 

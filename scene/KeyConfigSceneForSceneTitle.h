@@ -6,27 +6,25 @@
 
 class UIItemManager;
 
-class KeyConfigScene : public SceneBase
+class KeyConfigSceneForSceneTitle : public SceneBase
 {
-public:
-
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="manager">managerを参照し、シーンベースに引数として渡す</param>
 	/// <param name="input">inputの情報を参照する</param>
-	KeyConfigScene(SceneManager& manager);
-	
+	KeyConfigSceneForSceneTitle(SceneManager& manager);
+
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~KeyConfigScene();
+	virtual ~KeyConfigSceneForSceneTitle();
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	void Init();
-	
+
 	/// <summary>
 	/// 終了
 	/// </summary>
@@ -36,7 +34,7 @@ public:
 	/// 更新
 	/// </summary>
 	void Update();
-	
+
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -46,7 +44,7 @@ public:
 	/// 現在のkey入力情報を描画
 	/// </summary>
 	void KeyStateDraw();
-	
+
 	/// <summary>
 	/// keyの画像を描画
 	/// </summary>
@@ -107,9 +105,8 @@ private:
 
 	std::map<int, Key> keyNum_;
 
-	void (KeyConfigScene::* updateFunc_)();
-	void (KeyConfigScene::* changeKeyUpdateFunc_)();	//メンバ関数ポインタ
-	void (KeyConfigScene::* drawFunc_)();				//メンバ関数ポインタ
-
+	void (KeyConfigSceneForSceneTitle::* updateFunc_)();
+	void (KeyConfigSceneForSceneTitle::* changeKeyUpdateFunc_)();	//メンバ関数ポインタ
+	void (KeyConfigSceneForSceneTitle::* drawFunc_)();				//メンバ関数ポインタ
 };
 

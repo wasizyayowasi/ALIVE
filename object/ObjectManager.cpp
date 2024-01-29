@@ -2,6 +2,7 @@
 
 #include "../object/Player.h"
 #include "../object/EnemyBase.h"
+#include "../object/ThrowEnemy.h"
 #include "../object/ObjectBase.h"
 #include "../object/DeadPerson.h"
 #include "../object/OrnamentBase.h"
@@ -244,8 +245,8 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 
 	//enemyのShot
 	for (auto& obj : objects_[ObjectType::Enemy]) {
-		if (std::dynamic_pointer_cast<EnemyBase>(obj) != nullptr) {
-			std::dynamic_pointer_cast<EnemyBase>(obj)->Shot(shotManager, player.GetStatus().pos, player.GetStatus().height);
+		if (std::dynamic_pointer_cast<ThrowEnemy>(obj) != nullptr) {
+			std::dynamic_pointer_cast<ThrowEnemy>(obj)->Shot(shotManager, player.GetStatus().pos, player.GetStatus().height);
 		}
 	}
 
@@ -447,7 +448,7 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 				CircumferencePosition(angle, loadInfo.pos, loadInfo.pos);
 
 				//インスタンス化
-				objects_[ObjectType::Enemy].push_back(std::make_shared<EnemyBase>(model.GetModelHandle(ObjectType::Enemy), loadInfo));
+				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), loadInfo));
 				angle -= 15.0f;
 			}
 		}
@@ -458,7 +459,7 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 			//文字列の最後の数よりもdeathCountが多ければ
 			//エネミーを召喚する
 			if (num <= deathCount) {
-				objects_[ObjectType::Enemy].push_back(std::make_shared<EnemyBase>(model.GetModelHandle(ObjectType::Enemy), loadInfo));
+				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), loadInfo));
 			}
 		}
 	}

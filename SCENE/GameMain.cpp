@@ -108,14 +108,15 @@ void GameMain::Draw()
 	camera_->Init(camera_->GetTarget());
 	camera_->Update(player_->GetStatus().pos, player_->GetStatus().height);
 
+	//プレイヤーの描画
+	player_->Draw();
+
 	//オブジェクトの描画
 	objManager_->Draw(player_->GetStatus().pos);
 
 	MV1SetPosition(skyHandle_, player_->GetStatus().pos);
 	MV1DrawModel(skyHandle_);
 
-	//プレイヤーの描画
-	player_->Draw();
 
 	shotManager_->Draw();
 

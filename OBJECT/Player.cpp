@@ -138,14 +138,15 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 			}
 			return;
 		}
-		else {
-			updateFunc_ = &Player::IdleToSitup;
-			return;
-		}
 	}
 	else {
 		crank_.reset();
 		lever_.reset();
+	}
+
+	if (input.IsTriggered(InputType::sit)) {
+		updateFunc_ = &Player::IdleToSitup;
+		return;
 	}
 
 	status_.situation.isGimmickCanBeOperated = false;
@@ -259,7 +260,7 @@ float Player::Move(const InputState& input) {
 	bool pressedDown = input.IsPressed(InputType::down);
 	bool pressedLeft = input.IsPressed(InputType::left);
 	bool pressedRight = input.IsPressed(InputType::right);
-	bool pressedShift = input.IsPressed(InputType::shift);
+	bool pressedShift = input.IsPressed(InputType::dush);
 
 	status_.moveVec = VGet(0,0,0);
 
@@ -532,7 +533,7 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 	}
 
 	int naturalNumber = (std::max)(rotZ, -rotZ);
-	int animTime = (naturalNumber % 360) / 3;
+	float animTime = static_cast<float>(naturalNumber % 360) / 3;
 
 	model_->SetAnimationFrame(animTime);
 
@@ -697,9 +698,9 @@ void Player::PlayerJump(float jumpPower) {
 void Player::DrawPolygon3D()
 {
 	//頂点の数分配列を作る
-	VERTEX3D vertex[7];
+	VERTEX3D vertex[7] = {};
 	//三角形を作成する順番を保存する配列
-	WORD index[18];
+	WORD index[18] = {};
 
 	//カラー
 	COLOR_U8 difColor = GetColorU8(51, 51, 51, 125);

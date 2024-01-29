@@ -259,7 +259,7 @@ void Tutorial::RunTutorialDraw()
 	auto& input = InputState::GetInstance();
 
 	if (input.currentInputDevice_) {
-		KeyGraphDraw(static_cast<int>(InputType::shift));
+		KeyGraphDraw(static_cast<int>(InputType::dush));
 	}
 	else {
 		//画像描画
@@ -267,7 +267,7 @@ void Tutorial::RunTutorialDraw()
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	DrawStringFToHandle(Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, input.inputNameTable_[InputType::shift].c_str(), 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
+	DrawStringFToHandle(Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, input.inputNameTable_[InputType::dush].c_str(), 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
 }
 
 void Tutorial::JumpTutorialDraw()
