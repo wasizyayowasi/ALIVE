@@ -75,6 +75,7 @@ void Elevator::Update(Player& player)
 	model_->Update();
 
 	//スイッチの更新
+	switch_->ChangeDuringStartup(elapsedTime_);
 	switch_->Update(player);
 
 	//レバーの更新
@@ -88,6 +89,80 @@ void Elevator::Update(Player& player)
 		if (lever->CollCheck(playerPos)) {
 			player.SetLeverPointer(lever);
 		}
+	}
+
+	//ターゲットポジションの変更
+	if (targetPos_.y == pos_.y && !isDeparture_) {
+		TargetPosition();
+	}
+	else {
+		if (!switch_->ElevatorCollResult()) {
+			isDeparture_ = false;
+		}
+		switch_->DeleteHitResult();
+	}
+
+	//アニメーションが終了次第、移動を開始する
+	if (model_->IsAnimEnd()) {
+		Move();
+	}
+}
+
+//描画
+void Elevator::Draw()
+{
+	//モデルの描画
+	model_->Draw();
+
+	//スイッチの描画
+	switch_->Draw();
+
+	//レバーの描画
+	for (auto lever : levers_) {
+		lever->Draw();
+	}
+}
+
+//エレベーターを移動させる
+void Elevator::Move()
+{
+	//時間の更新
+	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
+
+	//座標の移動
+	pos_.y = Easing::InOutCubic(elapsedTime_, total_time, targetPos_.y, pos_.y);
+
+	//移動終了後アニメーションを変更する
+	if (elapsedTime_ == 180.0f) {
+		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, 10);
+	}
+
+	//ポジションの設定
+	model_->SetPos(pos_);
+
+	//スイッチのポジションの設定
+	switch_->GetModelPointer()->SetPos(VGet(pos_.x, pos_.y + 8.0f, pos_.z));
+}
+
+//移動先のポジションを取得する
+void Elevator::TargetPosition()
+{
+	float distanceSize = {};
+	float maxSize = 0.0f;
+
+	//一番遠いレバーが所持しているポジションを取得する
+	if (switch_->ElevatorCollResult()) {
+		for (auto lever : levers_) {
+			VECTOR stopPos = lever->GetElevatorStopPoint();
+			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(pos_, stopPos);
+			if (maxSize < distanceSize) {
+				maxSize = distanceSize;
+				targetPos_ = stopPos;
+				model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
+				elapsedTime_ = 0;
+			}
+		}
+		isDeparture_ = true;
 	}
 
 	//レバーが引かれたらアニメーションを変更して
@@ -116,106 +191,6 @@ void Elevator::Update(Player& player)
 		}
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 		elapsedTime_ = 0;
-	}
-
-	//ターゲットポジションの変更
-	if (targetPos_.y == pos_.y && !isDeparture_) {
-		TargetPosition();
-	}
-	else {
-		if (!switch_->CollResult()) {
-			isDeparture_ = false;
-		}
-		else {
-			elapsedTime_ = 0;
-		}
-		switch_->DeleteHitResult();
-	}
-
-	//アニメーションが終了次第、移動を開始する
-	if (model_->IsAnimEnd()) {
-		Move();
-	}
-
-}
-
-//描画
-void Elevator::Draw()
-{
-	//モデルの描画
-	model_->Draw();
-
-	//スイッチの描画
-	switch_->Draw();
-
-	//レバーの描画
-	for (auto lever : levers_) {
-		lever->Draw();
-	}
-
-}
-
-//エレベーターを移動させる
-void Elevator::Move()
-{
-	//時間の更新
-	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
-
-	pos_.y = Easing::InOutCubic(elapsedTime_, total_time, targetPos_.y, pos_.y);
-
-//	//移動
-//	float distance = targetPos_.y - pos_.y;
-//
-//	//Y軸の移動ベクトルを取得
-//	moveVecY_ = distance / 0.96f;
-//
-//	//正の数値の移動ベクトルを取得
-//	moveVecY_ = (std::max)(moveVecY_, -moveVecY_);
-//
-//	//移動ベクトルがmove_speedよりも大きかったら
-//	//移動ベクトルをmove_speedにする
-//	if (moveVecY_ > move_speed) {
-//		float scale = move_speed / distance;
-//		scale = (std::max)(scale, -scale);
-//		moveVecY_ = distance * scale;
-//	}
-//
-//	//ターゲットポジションとエレベーターのポジションが
-//	//一定の距離以内だったらターゲットポジションをポジションとする
-//	distance = (std::max)(distance, -distance);
-//
-//	if (distance < 3.0f) {
-//		pos_ = targetPos_;
-//		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, 10);
-//	}
-//	else {
-//		pos_.y += moveVecY_;
-//	}
-
-	//ポジションの設定
-	model_->SetPos(pos_);
-	//スイッチのポジションの設定
-	switch_->GetModelPointer()->SetPos(VGet(pos_.x, pos_.y + 8.0f, pos_.z));
-}
-
-//移動先のポジションを取得する
-void Elevator::TargetPosition()
-{
-	float distanceSize = {};
-	float maxSize = 0.0f;
-
-	//一番遠いレバーが所持しているポジションを取得する
-	if (switch_->CollResult()) {
-		for (auto lever : levers_) {
-			VECTOR stopPos = lever->GetElevatorStopPoint();
-			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(pos_, stopPos);
-			if (maxSize < distanceSize) {
-				maxSize = distanceSize;
-				targetPos_ = stopPos;
-				model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
-			}
-		}
-		isDeparture_ = true;
 	}
 }
 

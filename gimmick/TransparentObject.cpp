@@ -46,7 +46,7 @@ void TransparentObject::Update(Player& player)
 
 	//スイッチが起動していたら
 	//モデルとの衝突判定を行うようにする
-	if (switch_->CollResult()) {
+	if (switch_->TransCollResult()) {
 		isCollCheck_ = true;
 	}
 	else {
@@ -68,7 +68,6 @@ void TransparentObject::Update(Player& player)
 		color.a = alphaValue_;
 		MV1SetMaterialDifColor(model_->GetModelHandle(), i, color);
 	}
-
 }
 
 void TransparentObject::Draw()

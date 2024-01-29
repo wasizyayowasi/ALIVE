@@ -40,10 +40,16 @@ public:
 	void HitColl(std::shared_ptr<ObjectBase> deadPerson);
 
 	/// <summary>
-	/// 衝突判定の結果
+	/// エレベーターの衝突判定の結果
 	/// </summary>
 	/// <returns>true：衝突　false：衝突していない</returns>
-	bool CollResult();
+	bool ElevatorCollResult();
+
+	/// <summary>
+	/// 透過オブジェクトの衝突判定の結果
+	/// </summary>
+	/// <returns>true：衝突　false：衝突していない</returns>
+	bool TransCollResult();
 
 	/// <summary>
 	/// 衝突判定を行うモデルを追加する
@@ -56,6 +62,17 @@ public:
 	/// </summary>
 	void DeleteHitResult();
 
+	/// <summary>
+	/// 起動中かを変更する
+	/// </summary>
+	/// <param name="time">時間</param>
+	void ChangeDuringStartup(int time);
+
+	/// <summary>
+	/// 起動中か
+	/// </summary>
+	/// <returns>true : 起動中 false : 起動していない</returns>
+	bool IsDuringStartup() { return isDuringStartup_; }
 private:
 	/// <summary>
 	/// スイッチモデルとプレイヤーの衝突判定を行う
@@ -74,9 +91,13 @@ private:
 	void OffAnim();
 private:
 
+	bool isDuringStartup_ = false;									//スイッチが押されたか　true：on　false：off
+
 	VECTOR pos_ = {};									//ポジション
 
 	std::shared_ptr<Model> model_;						//モデルクラスのスマートポインタ
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;		//衝突判定の配列
+
+	void(Switch::* stateFunc_)();
 };
 

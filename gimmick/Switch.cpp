@@ -22,6 +22,8 @@ Switch::Switch(LoadObjectInfo objInfo)
 	//ポジションの初期化
 	pos_ = objInfo.pos;
 
+	//メンバ関数ポインタをoffAnimにする
+	stateFunc_ = &Switch::OffAnim;
 }
 
 //デストラクタ
@@ -37,6 +39,8 @@ void Switch::Update(Player& player)
 
 	//衝突判定
 	HitCollPlayer(player);
+
+	(this->*stateFunc_)();
 }
 
 //描画
@@ -56,14 +60,23 @@ void Switch::DeleteHitResult()
 	hitDim_.clear();
 }
 
+void Switch::ChangeDuringStartup(int time)
+{
+	if (time == 180) {
+		if (!isDuringStartup_) {
+			stateFunc_ = &Switch::OffAnim;
+		}
+		isDuringStartup_ = false;
+		SoundManager::GetInstance().StopSE();
+	}
+}
+
 //衝突判定
 void Switch::HitCollPlayer(Player& player)
 {
 	VECTOR playerPos = player.GetStatus().pos;
 
 	MV1RefreshCollInfo(model_->GetModelHandle(), model_->GetColFrameIndex());
-
-	int model = model_->GetModelHandle();
 
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
 	hitDim_.push_back(MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, VAdd(playerPos, VGet(0.0f, player.GetStatus().height, 0.0f)), 20.0f));
@@ -72,8 +85,6 @@ void Switch::HitCollPlayer(Player& player)
 void Switch::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 {
 	MV1RefreshCollInfo(deadPerson->GetModelPointer()->GetModelHandle(), deadPerson->GetModelPointer()->GetColFrameIndex());
-
-	int temp = deadPerson->GetModelPointer()->GetColFrameIndex();
 
 	//持ち運び中だったら以降の処理を行わない
 	if (deadPerson->IsTransit()) {
@@ -85,9 +96,37 @@ void Switch::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 }
 
 //衝突判定結果の初期化
-bool Switch::CollResult()
+bool Switch::ElevatorCollResult()
+{
+	//当たっている数を数える
+	for (auto& result : hitDim_) {
+		if (result.HitNum > 0) {
+			isDuringStartup_ = true;
+		}
+	}
+
+	DeleteHitResult();
+
+	//当たっていなかったら
+	//アニメーションを変更し終了
+	if (!isDuringStartup_) {
+		return false;
+	}
+
+	if (stateFunc_ == &Switch::OffAnim) {
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1000, "switchOn");
+		SoundManager::GetInstance().Play("switchOn");
+	}
+
+	stateFunc_ = &Switch::OnAnim;
+
+	return true;
+}
+
+bool Switch::TransCollResult()
 {
 	int hitNum = 0;
+
 	//当たっている数を数える
 	for (auto& result : hitDim_) {
 		if (result.HitNum > 0) {
@@ -100,12 +139,16 @@ bool Switch::CollResult()
 	//当たっていなかったら
 	//アニメーションを変更し終了
 	if (hitNum < 1) {
-		OffAnim();
+		stateFunc_ = &Switch::OffAnim;
 		return false;
 	}
 
-	//アニメーションの変更
-	OnAnim();
+	if (stateFunc_ == &Switch::OffAnim) {
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1000, "switchOn");
+		SoundManager::GetInstance().Play("switchOn");
+	}
+
+	stateFunc_ = &Switch::OnAnim;
 
 	return true;
 }
@@ -121,8 +164,6 @@ void Switch::OnAnim()
 {
 	model_->ChangeAnimation(0, false, false, 10);
 	MV1SetMaterialDifColor(model_->GetModelHandle(), 1, GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
-	SoundManager::GetInstance().Set3DSoundInfo(pos_, 1000, "switchOn");
-	SoundManager::GetInstance().Play("switchOn");
 }
 
 //スイッチオフアニメーション

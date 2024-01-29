@@ -56,7 +56,7 @@ void Camera::Init(VECTOR targetPos)
 	// カメラからどれだけ離れたところ( Near )から、 どこまで( Far )のものを描画するかを設定
 	SetCameraNearFar(5.0f, 5000.0f);
 	// カメラの位置、どこを見ているかを設定する
-	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
+	//SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
 	// カメラの視野角を設定(ラジアン)
 	SetupCamera_Perspective(60.0f * DX_PI_F / 180.0f);
 }

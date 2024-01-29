@@ -120,8 +120,11 @@ void SceneTitle::Draw()
 
 	camera_->tempdraw();
 
-//	DrawSphere3D(file.GetCameraTargetPos("continue"), 16, 32, 0xff0000, 0xff0000, true);
-//	DrawSphere3D(file.GetCameraTargetPos("continueTargetPos"), 16, 32, 0xff0000, 0xff0000, true);
+	auto temp = file.GetCameraTargetPos("continue");
+	auto temp1 = file.GetCameraTargetPos("continueTargetPos");
+
+	DrawSphere3D(file.GetCameraTargetPos("continue"), 16, 32, 0xff0000, 0xff0000, true);
+	DrawSphere3D(file.GetCameraTargetPos("continueTargetPos"), 16, 32, 0xff0000, 0xff0000, true);
 
 	//fadeValue_の値によって透過具合が変化するタイトルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
