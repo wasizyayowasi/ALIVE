@@ -77,7 +77,7 @@ void TransparentObject::Draw()
 	switch_->Draw();
 }
 
-void TransparentObject::HitColl(std::shared_ptr<ObjectBase> deadPerson)
+void TransparentObject::UpdateForCorpse(std::shared_ptr<ObjectBase> deadPerson)
 {
 	switch_->HitColl(deadPerson);
 }

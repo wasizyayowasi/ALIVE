@@ -34,7 +34,7 @@ public:
 	/// スイッチモデルと死体の衝突判定を行う
 	/// </summary>
 	/// <param name="deadPerson">死体のポインタ</param>
-	void HitColl(std::shared_ptr<ObjectBase> deadPerson);
+	void UpdateForCorpse(std::shared_ptr<ObjectBase> deadPerson)override;
 
 	/// <summary>
 	/// 衝突判定を行うモデルの追加

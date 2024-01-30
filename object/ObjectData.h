@@ -31,6 +31,7 @@ enum class ObjectType{
 	Street,
 	TStreet,
 	Tile,
+	TileType2,
 	Scaffold,
 	BlueContainer,
 	RedContainer,

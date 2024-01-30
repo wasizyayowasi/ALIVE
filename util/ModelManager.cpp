@@ -14,17 +14,14 @@ namespace {
 
 	//でかいビル
 	const char* const big_buildingA_filepath		= "data/model/city/building/mv1/BigBuildingA.mv1";
-	//Aみたいな形のビル
 	const char* const buildingC_filepath			= "data/model/city//building/mv1/BuildingC.mv1";
-	//長方形のビル
 	const char* const buildingA_type2_filepath		= "data/model/city//building/mv1/Building2A.mv1";
-	//海外で見るような飲食店
 	const char* const storeC_filepath				= "data/model/city//building/mv1/StoreC.mv1";
 	//道
 	const char* const street_filepath				= "data/model/city//building/mv1/Street.mv1";
 	const char* const T_street_filepath				= "data/model/city//building/mv1/TStreet.mv1";
 	const char* const Tile_filepath					= "data/model/city//building/mv1/Tile.mv1";
-	const char* const scaffold_filepath				= "data/model/city/others/mv1/Scaffold.mv1";
+	const char* const TileType2_filepath			= "data/model/city//building/mv1/TileType2.mv1";
 	//建物
 	const char* const blueContainer_filepath		= "data/model/city/container/mv1/BlueContainer.mv1";
 	const char* const redContainer_filepath			= "data/model/city/container/mv1/RedContainer.mv1";
@@ -75,7 +72,7 @@ void ModelManager::LoadModel()
 	modelHandle_[ObjectType::Street] = MV1LoadModel(street_filepath);						//
 	modelHandle_[ObjectType::TStreet] = MV1LoadModel(T_street_filepath);					//
 	modelHandle_[ObjectType::Tile] = MV1LoadModel(Tile_filepath);							//
-	modelHandle_[ObjectType::Scaffold] = MV1LoadModel(scaffold_filepath);					//
+	modelHandle_[ObjectType::TileType2] = MV1LoadModel(TileType2_filepath);					//
 
 	modelHandle_[ObjectType::BlueContainer] = MV1LoadModel(blueContainer_filepath);			//
 	modelHandle_[ObjectType::RedContainer] = MV1LoadModel(redContainer_filepath);			//

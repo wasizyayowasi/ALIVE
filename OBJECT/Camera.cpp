@@ -57,6 +57,8 @@ void Camera::Init(VECTOR targetPos)
 	//////////////// カメラの設定 //////////////////
 	// カメラからどれだけ離れたところ( Near )から、 どこまで( Far )のものを描画するかを設定
 	SetCameraNearFar(5.0f, 5000.0f);
+	//カメラのポジション、見る場所、上の方向を設定
+	SetCameraPositionAndTargetAndUpVec(pos_, cameraViewingPos_, upVec_);
 	// カメラの視野角を設定(ラジアン)
 	SetupCamera_Perspective(60.0f * DX_PI_F / 180.0f);
 }
@@ -99,7 +101,7 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos,float playerHeight)
 
 	//プレイヤーがいた位置を見るようにする
 	cameraViewingPos_.x = (cameraViewingPos_.x * 0.9f) + (playerPos.x * 0.1f);
-	cameraViewingPos_.y = (cameraViewingPos_.y * 0.99f) + ((playerPos.y + playerHeight / 2) * 0.01f);
+	cameraViewingPos_.y = (cameraViewingPos_.y * 0.9f) + ((playerPos.y + playerHeight / 2) * 0.1f);
 	cameraViewingPos_.z = (cameraViewingPos_.z * 0.95f) + (playerPos.z * 0.05f);
 
 	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);

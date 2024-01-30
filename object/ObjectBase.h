@@ -36,7 +36,7 @@ public:
 	/// <summary>
 	/// 死体に対しての更新
 	/// </summary>
-	/// <param name="pointer"></param>
+	/// <param name="pointer">死体のポインタ</param>
 	virtual void UpdateForCorpse(std::shared_ptr<ObjectBase> pointer);
 
 	/// <summary>

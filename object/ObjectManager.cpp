@@ -89,9 +89,9 @@ void ObjectManager::MainStageObjectGenerator()
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Tile, objSecond);
 			}
 		}
-		else if (objInfo.first == "Scaffold") {
+		else if (objInfo.first == "TileType2") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Scaffold, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TileType2, objSecond);
 			}
 		}
 		else if (objInfo.first == "BlueContainer") {
@@ -265,7 +265,7 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 	for (auto& list : objects_) {
 		for (auto& obj : list.second) {
 			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
-			if (distanceSize < 1000) {
+			if (distanceSize < 3000) {
 				obj->Update(player);
 			}
 		}

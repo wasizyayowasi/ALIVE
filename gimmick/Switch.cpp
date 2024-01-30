@@ -74,9 +74,9 @@ void Switch::ChangeDuringStartup(int time)
 //衝突判定
 void Switch::HitCollPlayer(Player& player)
 {
-	VECTOR playerPos = player.GetStatus().pos;
-
 	MV1RefreshCollInfo(model_->GetModelHandle(), model_->GetColFrameIndex());
+
+	VECTOR playerPos = player.GetStatus().pos;
 
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
 	hitDim_.push_back(MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, VAdd(playerPos, VGet(0.0f, player.GetStatus().height, 0.0f)), 20.0f));
