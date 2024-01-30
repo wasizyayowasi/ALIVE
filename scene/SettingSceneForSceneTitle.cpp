@@ -1,7 +1,7 @@
 #include "SettingSceneForSceneTitle.h"
 #include "SceneManager.h"
 #include "ScenePause.h"
-#include "KeyConfigScene.h"
+#include "KeyConfigSceneForSceneTitle.h"
 
 #include "../util/game.h"
 #include "../util/InputState.h"
@@ -90,12 +90,6 @@ void SettingSceneForSceneTitle::Update()
 
 void SettingSceneForSceneTitle::Draw()
 {
-	//­‚µ“§‰ß‚µ‚½•‚Ì”wŒi‚ð•`‰æ
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
-	//DrawBox(0, 0, Game::screen_width, Game::screen_height, 0x000000, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-	
 	//UI•¶Žš—ñ‚Ì•`‰æ
 	UIManager_->AlphaChangeDrawBillBoard(menuDrawPos_, selectNum_,fadeValue_, 20.0f);
 
@@ -123,7 +117,7 @@ void SettingSceneForSceneTitle::Draw()
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha[0]);
-	DrawStringFToHandle(static_cast<float>(Game::screen_width / 2) - windowModeFontSize / 3, Game::screen_height / 3.5f, windowModeText_.c_str(), 0xffffff, pigumo42);
+	DrawStringFToHandle(static_cast<float>(Game::screen_width / 2) - windowModeFontSize / 2.5f, Game::screen_height / 3.5f, windowModeText_.c_str(), 0xffffff, pigumo42);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	//‰~‚ð•`‰æ‚·‚éˆÊ’u
@@ -302,7 +296,7 @@ void SettingSceneForSceneTitle::SceneChange()
 {
 	switch (selectNum_) {
 	case 3:
-		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<KeyConfigScene>(manager_)));
+		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<KeyConfigSceneForSceneTitle>(manager_)));
 		break;
 	case 4:
 		manager_.PopFrontScene();

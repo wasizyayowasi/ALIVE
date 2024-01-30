@@ -68,7 +68,8 @@ public:
 	/// </summary>
 	/// <param name="targetPos">目標位置</param>
 	/// <param name="targetViewPos">見る位置</param>
-	void SetCameraTargetPosAndView(VECTOR targetPos, VECTOR targetViewPos);
+	/// <param name="upVec">カメラの上方向ベクトル</param>
+	void SetCameraTargetPosAndView(VECTOR targetPos, VECTOR targetViewPos, VECTOR upVec);
 
 	void tempdraw();
 
@@ -106,9 +107,13 @@ private:
 	DINPUT_JOYSTATE input_ = {};
 
 	VECTOR initPos_ = {};						//初期ポジション
+
 	VECTOR pos_ = {};							//カメラのポジション
+	VECTOR upVec_ = {0,1,0};					//カメラの見る目標位置
 	VECTOR cameraViewingPos_ = {};				//カメラが見る位置
+
 	VECTOR cameraTargetPos_ = {};				//カメラの目標位置
+	VECTOR targetUpVec_ = {};					//カメラの目標上方向
 	VECTOR cameraTargetViewPos_ = {};			//カメラの見る目標位置
 
 	void(Camera::* updateFunc_)(VECTOR pos, float height);

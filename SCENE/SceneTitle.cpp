@@ -55,7 +55,7 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	//カメラの初期化
 	camera_->Init(VGet(0, 140, 0));
 
-	camera_->SetCameraTargetPosAndView(file.GetCameraTargetPos("start"), file.GetCameraTargetPos("startTargetPos"));
+	camera_->SetCameraTargetPosAndView(file.GetCameraTargetPos("start"), file.GetCameraTargetPos("startTargetPos"),{0,1,0});
 
 	//仮でライト処理を消している
 	SetUseLighting(true);
@@ -117,14 +117,6 @@ void SceneTitle::Draw()
 
 	//UIの描画
 	UI_->DrawBillBoard(menuDrawPos_,UIfadeValue_,200.0f);
-
-	camera_->tempdraw();
-
-	auto temp = file.GetCameraTargetPos("continue");
-	auto temp1 = file.GetCameraTargetPos("continueTargetPos");
-
-	DrawSphere3D(file.GetCameraTargetPos("continue"), 16, 32, 0xff0000, 0xff0000, true);
-	DrawSphere3D(file.GetCameraTargetPos("continueTargetPos"), 16, 32, 0xff0000, 0xff0000, true);
 
 	//fadeValue_の値によって透過具合が変化するタイトルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
@@ -256,19 +248,19 @@ void SceneTitle::CameraSetting()
 	case 0:
 		targetPos = file.GetCameraTargetPos("setting");
 		targetViewPos = file.GetCameraTargetPos("settingTargetPos");
-		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos);
+		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos, { 0,1,0 });
 
 		break;
 	case 1:
 		targetPos = file.GetCameraTargetPos("start");
 		targetViewPos = file.GetCameraTargetPos("startTargetPos");
-		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos);
+		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos, { 0,1,0 });
 
 		break;
 	case 2:
 		targetPos = file.GetCameraTargetPos("continue");
 		targetViewPos = file.GetCameraTargetPos("continueTargetPos");
-		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos);
+		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos, { 0,0,1 });
 
 		break;
 	}

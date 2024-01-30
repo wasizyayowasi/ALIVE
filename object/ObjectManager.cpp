@@ -114,6 +114,16 @@ void ObjectManager::MainStageObjectGenerator()
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::OrangeContainer, objSecond);
 			}
 		}
+		else if (objInfo.first == "TunnelWall") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TunnelWall, objSecond);
+			}
+		}
+		else if (objInfo.first == "TunnelEntrance") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TunnelEntrance, objSecond);
+			}
+		}
 	}
 
 	for (auto& gimmick : loadData.GetGimmickInfo()) {
@@ -237,7 +247,7 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 			for (auto& deadperson : objects_[ObjectType::DeadPerson]) {
 				distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
 				if (distanceSize < 1000.0f) {
-					obj->HitColl(deadperson);
+					obj->UpdateForCorpse(deadperson);
 				}
 			}
 		}

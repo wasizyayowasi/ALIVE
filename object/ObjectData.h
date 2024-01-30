@@ -46,6 +46,8 @@ enum class ObjectType{
 	WoodenBox,
 	TV,
 	Book,
+	TunnelWall,
+	TunnelEntrance,
 	Max,
 };
 

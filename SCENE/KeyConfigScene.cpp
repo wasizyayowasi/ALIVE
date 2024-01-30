@@ -410,7 +410,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 			selectNum_ = ((selectNum_ - 1) + keyNum) % keyNum;
 		}
 	}
-	if (input.IsTriggered(InputType::down)) {
+	else if (input.IsTriggered(InputType::down)) {
 		if (selectNum_ + 1 == (keyNum - 1) / 2) {
 			selectNum_ += keyNum / 2;
 		}
@@ -418,7 +418,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 			selectNum_ = (selectNum_ + 1) % keyNum;
 		}
 	}
-	if (input.IsTriggered(InputType::left) || input.IsTriggered(InputType::right)) {
+	else if (input.IsTriggered(InputType::left) || input.IsTriggered(InputType::right)) {
 		if (selectNum_ < keyNum - 2) {
 			selectNum_ = (selectNum_ + ((keyNum - 2) / 2)) % (keyNum - 2);
 		}
@@ -517,29 +517,17 @@ void KeyConfigScene::ChangeKeyborardUpdate()
 			break;
 		}
 	}
-
-//	auto padState = GetJoypadInputState(DX_INPUT_PAD1);
-//	//パッドの入力を変更する
-//	if (padState != 0) {
-//		configInput.RewriteInputInfo(currentType, InputCategory::pad, padState);
-//		isEditing_ = !isEditing_;
-//		changeKeyUpdateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
-//		drawFunc_ = &KeyConfigScene::KeyStateDraw;
-//	}
-
 }
 
 void KeyConfigScene::ControllerUpdate()
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
-	//短縮化
-	auto& configInput = const_cast<InputState&>(input);
 
 	//仮キー情報を消去してポーズシーンに戻る
 	if (selectNum_ == 0) {
 		if (input.IsTriggered(InputType::space)) {
-			configInput.ResetInputInfo();
+			input.ResetInputInfo();
 			updateFunc_ = &KeyConfigScene::FadeOutUpdate;
 			return;
 		}
@@ -548,7 +536,7 @@ void KeyConfigScene::ControllerUpdate()
 	//ひとつ前のシーンに戻る
 	if (input.IsTriggered(InputType::pause)) {
 		updateFunc_ = &KeyConfigScene::FadeOutUpdate;
-		configInput.RollbackChangedInputInfo();
+		input.RollbackChangedInputInfo();
 		return;
 	}
 

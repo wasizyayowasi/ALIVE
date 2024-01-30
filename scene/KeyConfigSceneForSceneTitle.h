@@ -3,11 +3,14 @@
 #include "KeyData.h"
 #include <memory>
 #include <map>
+#include <string>
+#include <DxLib.h>
 
 class UIItemManager;
 
 class KeyConfigSceneForSceneTitle : public SceneBase
 {
+public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -84,12 +87,10 @@ private:
 
 private:
 
+	int keyTypeHandle1_[117] = {};			//keyTypeを描画するためのグラフを受け取るためのhandle
 	int controllerHandle_ = -1;				//コントローラー画像
 	int fontHandleSize21_ = -1;				//フォント16サイズを保管する変数
 	int fontHandleSize42_ = -1;				//フォント32サイズを保管する変数
-	int makeScreenHandle_ = -1;				//作成したハンドルを保管する変数
-	int keyTypeHandle_ = -1;				//keyTypeを描画するためのグラフを受け取るためのhandle
-	int textColor_ = 0xffffff;				//カラー
 	int selectNum_ = 0;						//現在の選択番号
 
 	//ここも消すかもしれない
@@ -104,6 +105,8 @@ private:
 	std::shared_ptr<UIItemManager> PadUI_;				//UIマネージャーのスマートポインタ
 
 	std::map<int, Key> keyNum_;
+	std::map<std::string, VECTOR> keyDrawPos_;
+	std::map<std::string, VECTOR> padDrawPos_;
 
 	void (KeyConfigSceneForSceneTitle::* updateFunc_)();
 	void (KeyConfigSceneForSceneTitle::* changeKeyUpdateFunc_)();	//メンバ関数ポインタ

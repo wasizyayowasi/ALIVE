@@ -10,45 +10,96 @@ class Player;
 class ObjectBase
 {
 public:
-	//作成済みモデルでモデルクラスをインスタンス化するコンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="handle">モデルハンドル</param>
+	/// <param name="objInfo">配置データ</param>
 	ObjectBase(int handle, LoadObjectInfo objInfo);
-	//デストラクタ
+	
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~ObjectBase();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="player">プレイヤーの参照</param>
 	virtual void Update(Player& player);
-	//描画
+	
+	/// <summary>
+	/// 描画
+	/// </summary>
 	virtual void Draw();
 
-	//衝突判定
-	virtual void HitColl(std::shared_ptr<ObjectBase> pointer);
+	/// <summary>
+	/// 死体に対しての更新
+	/// </summary>
+	/// <param name="pointer"></param>
+	virtual void UpdateForCorpse(std::shared_ptr<ObjectBase> pointer);
 
-	//ポジションの取得
+	/// <summary>
+	/// ポジションの取得
+	/// </summary>
+	/// <returns>ポジション</returns>
 	VECTOR GetPos() { return pos_; }
 
-	//現在有効か無効化を取得する
+	/// <summary>
+	/// 現在、このオブジェクトが有効か無効か
+	/// </summary>
+	/// <returns></returns>
 	bool IsEnabled() { return isEnable_; };
 
-	//衝突判定を行うか
+	/// <summary>
+	/// 衝突判定を行うか取得する
+	/// </summary>
+	/// <returns>衝突判定を行うか</returns>
 	bool IsCollCheck() { return isCollCheck_; }
 
-	//持ち運び中か
+	/// <summary>
+	/// オブジェクトを運んでいるかどうか取得する
+	/// </summary>
+	/// <returns>オブジェクトを運んでいるか</returns>
 	bool IsTransit() { return isTransit_; }
 
-	//持ち運び中フラグの設定
+	/// <summary>
+	/// 持ち運び中フラグの設定
+	/// </summary>
+	/// <param name="isTransit">true：運んでいる　false：運んでいない</param>
 	void SetIsTransit(bool isTransit) { isTransit_ = isTransit; }
 
 	//有効なオブジェクト化無効なオブジェクト化を設定する
+	
+	/// <summary>
+	/// 現在、このオブジェクトが有効か無効か
+	/// </summary>
+	/// <param name="isEnable">true：有効　false：無効</param>
 	void SetIsEnable(bool isEnable) { isEnable_ = isEnable; }
 
-	//モデルのスマートポインタを取得する
+	/// <summary>
+	/// モデルのスマートポインタを取得する
+	/// </summary>
+	/// <returns>モデルポインタ</returns>
 	std::shared_ptr<Model> GetModelPointer() { return model_; }
 
-	//衝突判定を行うモデルを追加する
+	/// <summary>
+	/// 衝突判定を行うモデルを追加する
+	/// </summary>
+	/// <returns>モデルポインタ</returns>
 	virtual std::shared_ptr<Model> AddCollModel();
 
-	//名前を取得する
+	/// <summary>
+	/// オブジェクトデータの名前を取得
+	/// </summary>
+	/// <returns>名前</returns>
 	std::string GetName() { return name_; }
+
+	/// <summary>
+	/// ポジションを設定する
+	/// </summary>
+	/// <param name="pos">ポジション</param>
+	void SetPos(VECTOR pos) { pos_ = pos; }
 
 protected:
 

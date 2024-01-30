@@ -29,7 +29,7 @@ void ObjectBase::Draw()
 	model_->Draw();
 }
 
-void ObjectBase::HitColl(std::shared_ptr<ObjectBase> pointer)
+void ObjectBase::UpdateForCorpse(std::shared_ptr<ObjectBase> pointer)
 {
 }
 

@@ -27,6 +27,8 @@ namespace {
 
 	//カメラの移動にかかる合計時間
 	constexpr float total_time = 120.0f;
+
+	constexpr VECTOR temp = { 0,0,1 };
 }
 
 Camera::Camera(VECTOR pos, VECTOR viewPos):updateFunc_(&Camera::TrackingCameraUpdate)
@@ -55,8 +57,6 @@ void Camera::Init(VECTOR targetPos)
 	//////////////// カメラの設定 //////////////////
 	// カメラからどれだけ離れたところ( Near )から、 どこまで( Far )のものを描画するかを設定
 	SetCameraNearFar(5.0f, 5000.0f);
-	// カメラの位置、どこを見ているかを設定する
-	//SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
 	// カメラの視野角を設定(ラジアン)
 	SetupCamera_Perspective(60.0f * DX_PI_F / 180.0f);
 }
@@ -170,8 +170,13 @@ void Camera::EasingMoveCamera()
 	cameraViewingPos_.y = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetViewPos_.y, cameraViewingPos_.y);
 	cameraViewingPos_.z = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetViewPos_.z, cameraViewingPos_.z);
 
+	//カメラの上方向を変移させる
+	upVec_.x = Easing::InOutCubic(elapsedTime_, total_time, targetUpVec_.x, upVec_.x);
+	upVec_.y = Easing::InOutCubic(elapsedTime_, total_time, targetUpVec_.y, upVec_.y);
+	upVec_.z = Easing::InOutCubic(elapsedTime_, total_time, targetUpVec_.z, upVec_.z);
+
 	//カメラの情報の更新
-	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
+	SetCameraPositionAndTargetAndUpVec(pos_, cameraViewingPos_, upVec_);
 
 	if (elapsedTime_ == total_time) {
 		isMoving_ = false;
@@ -181,7 +186,7 @@ void Camera::EasingMoveCamera()
 	}
 }
 
-void Camera::SetCameraTargetPosAndView(VECTOR targetPos, VECTOR targetViewPos)
+void Camera::SetCameraTargetPosAndView(VECTOR targetPos, VECTOR targetViewPos, VECTOR upVec)
 {
 	//目標位置の設定
 	cameraTargetPos_ = targetPos;
@@ -189,15 +194,17 @@ void Camera::SetCameraTargetPosAndView(VECTOR targetPos, VECTOR targetViewPos)
 	//見る位置の設定
 	cameraTargetViewPos_ = targetViewPos;
 
+	//カメラの上方向
+	targetUpVec_ = upVec;
+
 	//経過時間をリセットする
 	elapsedTime_ = 0.0f;
 }
 
 void Camera::tempdraw()
 {
-	DrawFormatString(0, 16, 0xffffff, "%f:%f:%f", pos_.x, pos_.y, pos_.z);
-	DrawFormatString(0, 32, 0xffffff, "%f:%f:%f", cameraViewingPos_.x, cameraViewingPos_.y, cameraViewingPos_.z);
-	DrawFormatString(0, 48, 0xffffff, "%f:%f:%f", cameraTargetPos_.x, cameraTargetPos_.y, cameraTargetPos_.z);
+	DrawFormatString(0, 16, 0xffffff, "ポジション　　%f:%f:%f", pos_.x, pos_.y, pos_.z);
+	DrawFormatString(0, 32, 0xffffff, "見ている場所　%f:%f:%f", cameraViewingPos_.x, cameraViewingPos_.y, cameraViewingPos_.z);
 
 	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
 }

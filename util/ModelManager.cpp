@@ -1,49 +1,51 @@
 #include "ModelManager.h"
 
 namespace {
-	const char* const player_model_Filename = "data/player/mv1/player.mv1";
-	const char* const enemy_model_Filename = "data/enemy/mv1/enemy.mv1";
+	const char* const player_model_Filename			= "data/player/mv1/player.mv1";
+	const char* const enemy_model_Filename			= "data/enemy/mv1/enemy.mv1";
 	//モデルのファイルパス
-	const char* const switch_filepath = "data/model/switch.mv1";
-	const char* const trans_scaffold_filepath = "data/model/other/mv1/TransScaffold.mv1";
-	const char* const elevator_filepath = "data/model/other/mv1/Elevator.mv1";
-	const char* const crank_filepath = "data/model/other/mv1/crankScaffold.mv1";
-	const char* const signboardType1_filepath = "data/model/other/mv1/SignBoardType1.mv1";
-	const char* const signboardType2_filepath = "data/model/other/mv1/SignBoardType2.mv1";
-	const char* const fence_filepath = "data/model/city/container/mv1/FenceType1.mv1";
+	const char* const switch_filepath				= "data/model/switch.mv1";
+	const char* const trans_scaffold_filepath		= "data/model/other/mv1/TransScaffold.mv1";
+	const char* const elevator_filepath				= "data/model/other/mv1/Elevator.mv1";
+	const char* const crank_filepath				= "data/model/other/mv1/crankScaffold.mv1";
+	const char* const signboardType1_filepath		= "data/model/other/mv1/SignBoardType1.mv1";
+	const char* const signboardType2_filepath		= "data/model/other/mv1/SignBoardType2.mv1";
+	const char* const fence_filepath				= "data/model/city/container/mv1/FenceType1.mv1";
 
-	//実際に使う予定のモデルパス
 	//でかいビル
-	const char* const big_buildingA_filepath = "data/model/city/building/mv1/BigBuildingA.mv1";
+	const char* const big_buildingA_filepath		= "data/model/city/building/mv1/BigBuildingA.mv1";
 	//Aみたいな形のビル
-	const char* const buildingC_filepath = "data/model/city//building/mv1/BuildingC.mv1";
+	const char* const buildingC_filepath			= "data/model/city//building/mv1/BuildingC.mv1";
 	//長方形のビル
-	const char* const buildingA_type2_filepath = "data/model/city//building/mv1/Building2A.mv1";
+	const char* const buildingA_type2_filepath		= "data/model/city//building/mv1/Building2A.mv1";
 	//海外で見るような飲食店
-	const char* const storeC_filepath = "data/model/city//building/mv1/StoreC.mv1";
+	const char* const storeC_filepath				= "data/model/city//building/mv1/StoreC.mv1";
 	//道
-	const char* const street_filepath = "data/model/city//building/mv1/Street.mv1";
-	const char* const T_street_filepath = "data/model/city//building/mv1/TStreet.mv1";
-	const char* const Tile_filepath = "data/model/city//building/mv1/Tile.mv1";
-	const char* const scaffold_filepath = "data/model/city/others/mv1/Scaffold.mv1";
+	const char* const street_filepath				= "data/model/city//building/mv1/Street.mv1";
+	const char* const T_street_filepath				= "data/model/city//building/mv1/TStreet.mv1";
+	const char* const Tile_filepath					= "data/model/city//building/mv1/Tile.mv1";
+	const char* const scaffold_filepath				= "data/model/city/others/mv1/Scaffold.mv1";
 	//建物
-	const char* const blueContainer_filepath = "data/model/city/container/mv1/BlueContainer.mv1";
-	const char* const redContainer_filepath = "data/model/city/container/mv1/RedContainer.mv1";
-	const char* const yellowContainer_filepath = "data/model/city/container/mv1/YellowContainer.mv1";
-	const char* const orangeContainer_filepath = "data/model/city/container/mv1/OrangeContainer.mv1";
+	const char* const blueContainer_filepath		= "data/model/city/container/mv1/BlueContainer.mv1";
+	const char* const redContainer_filepath			= "data/model/city/container/mv1/RedContainer.mv1";
+	const char* const yellowContainer_filepath		= "data/model/city/container/mv1/YellowContainer.mv1";
+	const char* const orangeContainer_filepath		= "data/model/city/container/mv1/OrangeContainer.mv1";
 	//部屋
-	const char* const bed_filepath = "data/model/room/mv1/Bed.mv1";
-	const char* const clock_filepath = "data/model/room/mv1/Clock.mv1";
-	const char* const desk_filepath = "data/model/room/mv1/Desk.mv1";
-	const char* const window_filepath = "data/model/room/mv1/Window.mv1";
-	const char* const roomWall_filepath = "data/model/room/mv1/RoomWall.mv1";
-	const char* const woodFloor_filepath = "data/model/room/mv1/WoodFloor.mv1";
-	const char* const woodenBox_filepath = "data/model/room/mv1/WoodenBox.mv1";
-	const char* const TV_filepath = "data/model/room/mv1/TV.mv1";
-	const char* const book_filepath = "data/model/room/mv1/Book.mv1";
+	const char* const bed_filepath					= "data/model/room/mv1/Bed.mv1";
+	const char* const clock_filepath				= "data/model/room/mv1/Clock.mv1";
+	const char* const desk_filepath					= "data/model/room/mv1/Desk.mv1";
+	const char* const window_filepath				= "data/model/room/mv1/Window.mv1";
+	const char* const roomWall_filepath				= "data/model/room/mv1/RoomWall.mv1";
+	const char* const woodFloor_filepath			= "data/model/room/mv1/WoodFloor.mv1";
+	const char* const woodenBox_filepath			= "data/model/room/mv1/WoodenBox.mv1";
+	const char* const TV_filepath					= "data/model/room/mv1/TV.mv1";
+	const char* const book_filepath					= "data/model/room/mv1/Book.mv1";
 	//駅
-	const char* const train_filepath = "data/model/station/mv1/Train.mv1";
-	const char* const station_filepath = "data/model/station/mv1/Station.mv1";
+	const char* const train_filepath				= "data/model/station/mv1/Train.mv1";
+	const char* const station_filepath				= "data/model/station/mv1/Station.mv1";
+	//トンネル
+	const char* const tunnel_wall_filepath			= "data/model/tunnel/mv1/TunnelWall.mv1";
+	const char* const tunnel_entrance_filepath		= "data/model/tunnel/mv1/TunnelEntrance.mv1";
 }
 
 ModelManager::~ModelManager()
@@ -92,6 +94,9 @@ void ModelManager::LoadModel()
 
 	modelHandle_[ObjectType::Train] = MV1LoadModel(train_filepath);							//300MB
 	modelHandle_[ObjectType::Station] = MV1LoadModel(station_filepath);						//
+
+	modelHandle_[ObjectType::TunnelWall] = MV1LoadModel(tunnel_wall_filepath);				//
+	modelHandle_[ObjectType::TunnelEntrance] = MV1LoadModel(tunnel_entrance_filepath);		//
 }
 
 int ModelManager::GetModelHandle(ObjectType type)

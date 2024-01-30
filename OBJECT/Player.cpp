@@ -94,7 +94,7 @@ void Player::Draw()
 	//‰e‚à‚Ç‚«‚Ì•`‰æ
 	DrawPolygon3D();
 
-	DrawFormatString(0, 64, 0xffffff, "normal %.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
+//	DrawFormatString(0, 64, 0xffffff, "normal %.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
 }
 
 void Player::SetPos(VECTOR pos)
