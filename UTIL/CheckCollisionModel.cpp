@@ -241,7 +241,7 @@ void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 				HITRESULT_LINE hitLine = {};
 
 				for (auto& result : hitLineResult_) {
-					if (result.HitFlag == true) {
+					if (result.HitFlag == 1) {
 						hitCount++;
 						hitLine = result;
 					}

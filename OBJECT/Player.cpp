@@ -36,7 +36,6 @@ Player::Player():updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::Ca
 	status_.jump.jumpVec = 0.0f;
 	//ƒvƒŒƒCƒ„[‚Ì‚‚³‚Ìİ’è
 	status_.height = player_hegiht;
-	deathCount_ = 3;
 }
 
 /// <summary>
@@ -94,7 +93,7 @@ void Player::Draw()
 	//‰e‚à‚Ç‚«‚Ì•`‰æ
 	DrawPolygon3D();
 
-//	DrawFormatString(0, 64, 0xffffff, "normal %.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
+	DrawFormatString(0, 64, 0xffffff, "normal %.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
 }
 
 void Player::SetPos(VECTOR pos)
@@ -532,7 +531,7 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 		CrankRotationUpdate(rotZ);
 	}
 
-	int naturalNumber = (std::max)(rotZ, -rotZ);
+	int naturalNumber = static_cast<int>((std::max)(rotZ, -rotZ));
 	float animTime = static_cast<float>(naturalNumber % 360) / 3;
 
 	model_->SetAnimationFrame(animTime);

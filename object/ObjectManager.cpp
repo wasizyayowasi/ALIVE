@@ -246,7 +246,7 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 			}
 			for (auto& deadperson : objects_[ObjectType::DeadPerson]) {
 				distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
-				if (distanceSize < 1000.0f) {
+				if (distanceSize < 4000.0f) {
 					obj->UpdateForCorpse(deadperson);
 				}
 			}
@@ -265,26 +265,17 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 	for (auto& list : objects_) {
 		for (auto& obj : list.second) {
 			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
-			if (distanceSize < 3000) {
+			if (distanceSize < 4000) {
 				obj->Update(player);
 			}
 		}
 	}
 	
-	auto deleteBorderLineInfo = ExternalFile::GetInstance().GetDeleteObjInfo(playerPos, "DeleteBorderLine");
-
-	if (playerPos.x > deleteBorderLineInfo.pos.x) {
-		auto deletePointInfo = ExternalFile::GetInstance().GetDeleteObjInfo(deleteBorderLineInfo.pos, "DeletePoint");
-		for (auto& list : objects_) {
-			for (auto& obj : list.second) {
-				if (obj->GetPos().x < deletePointInfo.pos.x) {
-					obj->SetIsEnable(false);
-				}
-			}
+	for (auto& enemy : ExternalFile::GetInstance().GetEnemyInfo(playerPos)) {
+		if (!usedEnemyList_[enemy.name]) {
+			EnemyGenerator(player.GetDeathCount(), enemy);
 		}
 	}
-
-	EnemyGenerator(player.GetDeathCount(),player.GetStatus().pos);
 }
 
 //描画
@@ -296,8 +287,8 @@ void ObjectManager::Draw(VECTOR PlayerPos)
 		for (auto& obj : objs.second) {
 			//オブジェクトからプレイヤーまでの距離をとりサイズ変換する
 			distance = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), PlayerPos);
-			//プレイヤーから距離が5000.0f未満だったら描画する
-			if (distance < 5000.0f) {
+			//プレイヤーから距離が8000.0f未満だったら描画する
+			if (distance < 8000.0f) {
 				obj->Draw();
 			}
 		}
@@ -424,27 +415,19 @@ void ObjectManager::CircumferencePosition(float angle, VECTOR& infoPos, VECTOR p
 }
 
 //敵生成機
-void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
+void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 {
-	//外部ファイルから読み込んだ「エネミーオブジェクト」の情報を取得する
-	auto loadInfo = ExternalFile::GetInstance().GetEnemyInfo(playerPos);
-
 	//短縮化
 	auto& model = ModelManager::GetInstance();
-	
-	//文字列のサイズを取得する
-	int size = static_cast<int>(loadInfo.name.size());
 
-	for (auto& enemy : objects_[ObjectType::Enemy]) {
-		if (enemy.get()->GetName() == loadInfo.name) {
-			return;
-		}
-	}
+	//文字列のサイズを取得する
+	int size = static_cast<int>(info.name.size());
 
 	//「.」以降の文字列によって
 	//エネミーの召喚パターンを変更する
 	if (size > 0) {
-		std::string str = StrUtil::GetStringAfterSign(loadInfo.name, ".");
+		std::string str = StrUtil::GetStringAfterSign(info.name, ".");
+		str = StrUtil::GetStringBeforeSign(str, "-");
 
 		//文字列が「ALL」だったら
 		if (str == "ALL") {
@@ -454,12 +437,13 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 				//RandomPositionGenerator(info, loadInfo.pos);
 				
 				//プレイヤーを中心に円周上でスポーンさせる
-				//CircumferencePosition(angle, loadInfo.pos, playerPos);
-				CircumferencePosition(angle, loadInfo.pos, loadInfo.pos);
+				CircumferencePosition(angle, info.pos, info.pos);
 
 				//インスタンス化
-				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), loadInfo));
+				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), info));
 				angle -= 15.0f;
+
+				usedEnemyList_[info.name] = true;
 			}
 		}
 		else {
@@ -469,7 +453,8 @@ void ObjectManager::EnemyGenerator(int deathCount,VECTOR playerPos)
 			//文字列の最後の数よりもdeathCountが多ければ
 			//エネミーを召喚する
 			if (num <= deathCount) {
-				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), loadInfo));
+				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), info));
+				usedEnemyList_[info.name] = true;
 			}
 		}
 	}

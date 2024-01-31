@@ -153,6 +153,7 @@
     <ClCompile Include="scene\LoadingScene.cpp" />
     <ClCompile Include="scene\SettingSceneForSceneTitle.cpp" />
     <ClCompile Include="object\ThrowEnemy.cpp" />
+    <ClCompile Include="scene\SelectChapterScene.cpp" />
     <ClCompile Include="util\ModelManager.cpp" />
     <ClCompile Include="object\Shot.cpp" />
     <ClCompile Include="object\ShotManager.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="scene\KeyConfigSceneForSceneTitle.h" />
     <ClInclude Include="scene\SettingSceneForSceneTitle.h" />
     <ClInclude Include="object\ThrowEnemy.h" />
+    <ClInclude Include="scene\SelectChapterScene.h" />
     <ClInclude Include="util\Easing.h" />
     <ClInclude Include="gimmick\Elevator.h" />
     <ClInclude Include="gimmick\CrankScaffold.h" />

@@ -60,9 +60,9 @@ void Switch::DeleteHitResult()
 	hitDim_.clear();
 }
 
-void Switch::ChangeDuringStartup(int time)
+void Switch::ChangeDuringStartup(float time)
 {
-	if (time == 180) {
+	if (time == 180.0f) {
 		if (!isDuringStartup_) {
 			stateFunc_ = &Switch::OffAnim;
 		}

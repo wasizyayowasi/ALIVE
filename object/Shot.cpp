@@ -5,7 +5,7 @@
 
 namespace {
 	//Á¸ƒ‰ƒCƒ“
-	constexpr float vanishing_line = 1000.0f;
+	constexpr float vanishing_line = 1500.0f;
 
 	//d—Í
 	constexpr float gravity = -1.0f;

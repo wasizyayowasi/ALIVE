@@ -13,7 +13,6 @@ using namespace std;
 
 ExternalFile::ExternalFile()
 {
-	//LoadFile();
 }
 
 ExternalFile::~ExternalFile()
@@ -23,11 +22,12 @@ ExternalFile::~ExternalFile()
 
 void ExternalFile::LoadFile()
 {
+	//ファイルのロード
 	LoadFileHandle("obj");
 	LoadFileHandle("room");
 	LoadFileHandle("UIpos");
 	LoadFileHandle("Enemy");
-	LoadFileHandle("delete");
+	LoadFileHandle("startPos");
 	LoadFileHandle("tutorial");
 	LoadFileHandle("gimmick");
 	LoadFileHandle("cameraGimmick");
@@ -37,15 +37,17 @@ void ExternalFile::LoadFile()
 void ExternalFile::LoadArrangementData()
 {
 	LoadPlayerInfo("player");
+	//マップに格納する
 	LoadObjectData("UIpos", loadUIInfo_);
-	LoadObjectData("Enemy", loadEnemyInfo_);
-	LoadObjectData("gimmick", loadGimmickInfo_);
-	LoadObjectData("delete", loadDeleteObjInfo_);
-	LoadObjectData("obj", loadMainStageObjInfo_);
+	LoadObjectData("startPos", loadStartPos_);
 	LoadObjectData("tutorial", loadTutorialInfo_);
-	LoadObjectData("room", loadOpeningStageObjInfo_);
 	LoadObjectData("cameraPosition", loadCameraPosInfo_);
-	LoadObjectData("cameraGimmick", loadCameraGimmickInfo_);
+	//マップのリストに格納する
+	LoadObjectDataList("Enemy", loadEnemyInfo_);
+	LoadObjectDataList("gimmick", loadGimmickInfo_);
+	LoadObjectDataList("obj", loadMainStageObjInfo_);
+	LoadObjectDataList("room", loadOpeningStageObjInfo_);
+	LoadObjectDataList("cameraGimmick", loadCameraGimmickInfo_);
 }
 
 void ExternalFile::LoadSaveData()
@@ -123,19 +125,18 @@ LoadObjectInfo ExternalFile::GetSpecifiedInfo(const char* const stage, const cha
 	return info;
 }
 
-LoadObjectInfo ExternalFile::GetEnemyInfo(VECTOR playerPos)
+std::list<LoadObjectInfo> ExternalFile::GetEnemyInfo(VECTOR playerPos)
 {
-	LoadObjectInfo info = {};
+	std::list<LoadObjectInfo> info = {};
 	float distanceSize = 0.0f;
-	float minSize = 5000.0f;
+	float minSize = 3000.0f;
 
 	for (auto& list : loadEnemyInfo_) {
 		for (auto& enemy : list.second) {
-
 			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(enemy.pos, playerPos);
 
 			if (distanceSize < minSize) {
-				info = enemy;
+				info.push_back(enemy);
 			}
 		}
 	}
@@ -143,26 +144,9 @@ LoadObjectInfo ExternalFile::GetEnemyInfo(VECTOR playerPos)
 	return info;
 }
 
-LoadObjectInfo ExternalFile::GetDeleteObjInfo(VECTOR pos, const char* const name)
+VECTOR ExternalFile::GetStartPos(std::string name)
 {
-	LoadObjectInfo info = {};
-	VECTOR distance = {};
-	float distanceSize = 0.0f;
-	float min = 10000.0f;
-
-	for (auto deleteObj : loadDeleteObjInfo_[name]) {
-		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(deleteObj.pos, pos);
-		if (min > distanceSize) {
-			min = distanceSize;
-			info = deleteObj;
-		}
-	}
-
-	if (info.name == "") {
-		info.pos.x = 10000000.0f;
-	}
-
-	return info;
+	return loadStartPos_[name].pos;
 }
 
 LoadObjectInfo ExternalFile::GetTutorialObjInfo(VECTOR pos)
@@ -172,14 +156,12 @@ LoadObjectInfo ExternalFile::GetTutorialObjInfo(VECTOR pos)
 	float distanceSize = 0.0f;
 	float min = 10000.0f;
 
-	for (auto list : loadTutorialInfo_) {
-		for (auto tutorialObj : list.second) {
-			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorialObj.pos, pos);
+	for (auto tutorial : loadTutorialInfo_) {
+		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorial.second.pos, pos);
 
-			if (min > distanceSize) {
-				min = distanceSize;
-				info = tutorialObj;
-			}
+		if (min > distanceSize) {
+			min = distanceSize;
+			info = tutorial.second;
 		}
 	}
 
@@ -215,6 +197,11 @@ void ExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
 
 }
 
+void ExternalFile::SetPlayerInfo(VECTOR startPos)
+{
+	loadMainStageObjInfo_["Player"].front().pos = startPos;
+}
+
 VECTOR ExternalFile::GetCameraTargetPos(std::string name)
 {
 	VECTOR pos = {};
@@ -222,7 +209,7 @@ VECTOR ExternalFile::GetCameraTargetPos(std::string name)
 	for (auto data : loadCameraPosInfo_) {
 		auto keyName = data.first;
 		if (keyName == name) {
-			pos = data.second.front().pos;
+			pos = data.second.pos;
 		}
 	}
 
@@ -236,7 +223,7 @@ VECTOR ExternalFile::GetUIPos(std::string name)
 	for (auto data : loadUIInfo_) {
 		auto keyName = data.first;
 		if (keyName == name) {
-			pos = data.second.front().pos;
+			pos = data.second.pos;
 		}
 	}
 
@@ -267,7 +254,6 @@ void ExternalFile::RewritePlayerInfo()
 	writeing_file.open(filename, ios::out);
 	writeing_file << player.dump() << std::endl;
 	writeing_file.close();
-
 }
 
 //プレイヤーのステータス情報を読み込む
@@ -311,11 +297,10 @@ void ExternalFile::LoadSaveDataInfo(const char* const filename)
 	data_.totalDeathNum = json["totalDeath"];
 
 	ifs.close();
-
 }
 
 //オブジェクトのポジションを読み込む
-void ExternalFile::LoadObjectData(std::string name, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
+void ExternalFile::LoadObjectDataList(std::string name, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
 {
 	//読み込んだデータのハンドルを取得
 	auto dataHandle = loadFile_[name.c_str()];
@@ -371,4 +356,58 @@ void ExternalFile::LoadObjectData(std::string name, std::unordered_map<std::stri
 	}
 }
 
+
+void ExternalFile::LoadObjectData(std::string name, std::unordered_map<std::string, LoadObjectInfo>& dataTable)
+{
+	//読み込んだデータのハンドルを取得
+	auto dataHandle = loadFile_[name.c_str()];
+	bool mki = CheckHandleASyncLoad(loadFile_[name.c_str()]);
+	bool loading = CheckHandleASyncLoad(dataHandle);
+	assert(loading != true);
+
+	//データ数の取得
+	int dataNum = 0;
+	int result = FileRead_read(&dataNum, sizeof(dataNum), dataHandle);
+	assert(result != -1);
+
+	for (int i = 0; i < dataNum; i++) {
+
+		LoadObjectInfo info = {};
+
+		//名前の文字列数を読み取る
+		uint8_t nameSize = 0;
+		result = FileRead_read(&nameSize, sizeof(nameSize), dataHandle);
+		assert(result != -1);
+
+		//名前そのものを読み取る
+		info.name.resize(nameSize);
+		result = FileRead_read(info.name.data(), sizeof(char) * nameSize, dataHandle);
+		assert(result != -1);
+
+		//座標データをinfo.pos分読み取る
+		result = FileRead_read(&info.pos, sizeof(info.pos), dataHandle);
+		assert(result != -1);
+
+		//回転率をinfo.rot分読み取る
+		result = FileRead_read(&info.rot, sizeof(info.rot), dataHandle);
+		assert(result != -1);
+
+		//拡縮率をinfo.scale分読み取る
+		result = FileRead_read(&info.scale, sizeof(info.scale), dataHandle);
+		assert(result != -1);
+
+		std::string keyName = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(info.name, ".");
+
+		//追加
+		dataTable[keyName] = info;
+	}
+
+	//ファイルを閉じる
+	FileRead_close(dataHandle);
+
+	//読み取ったデータの回転率を度数法から弧度法へと変換する
+	for (auto& obj : dataTable) {
+		obj.second.rot = MathUtil::VECTORDegreeToRadian(obj.second.rot);
+	}
+}
 

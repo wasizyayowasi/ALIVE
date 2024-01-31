@@ -11,7 +11,7 @@ namespace {
 	const VECTOR init_rot = { 0.0f,0.0f,-1.0f };
 
 	//敵がプレイヤーを視認できる範囲
-	constexpr float visible_range = 500.0f;
+	constexpr float visible_range = 800.0f;
 
 	//右手のフレーム名
 	const char* const hand_framename = "mixamorig:RightHandIndex2";
@@ -43,15 +43,22 @@ void ThrowEnemy::Update(Player& player)
 	//プレイヤーを索敵する
 	SearchForPlayer(playerPos);
 
-	//プレイヤーと敵の距離
-	//VECTOR distance = VSub(playerPos,pos_);
-	VECTOR distance = VNorm(VSub(playerPos,pos_));
+	if (isDetection_) {
+		//プレイヤーと敵の距離
+		VECTOR distance = VNorm(VSub(playerPos, pos_));
 
-	//回転行列と拡縮行列の合成
-	MATRIX mtx = CombiningRotAndScallMat(distance);
+		//Y軸は考慮しない
+		distance.y = 0.0f;
 
-	//行列をモデルにセットする
-	//MV1SetMatrix(model_->GetModelHandle(), mtx);
+		//回転行列と拡縮行列の合成
+		MATRIX mtx = CombiningRotAndScallMat(distance);
+
+		//回転行列と拡縮行列を掛けた行列に平行移動行列をかける
+		mtx = MMult(mtx, MGetTranslate(pos_));
+
+		//行列をモデルにセットする
+		MV1SetMatrix(model_->GetModelHandle(), mtx);
+	}
 
 	//モデルの更新
 	model_->Update();
@@ -60,6 +67,8 @@ void ThrowEnemy::Update(Player& player)
 void ThrowEnemy::Draw()
 {
 	model_->Draw();
+
+	DrawLine3D(pos_, VAdd(pos_, VScale(frontVec_, 10.0f)), 0x0000ff);
 }
 
 void ThrowEnemy::SearchForPlayer(VECTOR playerPos)

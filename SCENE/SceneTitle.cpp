@@ -2,6 +2,7 @@
 #include "GameMain.h"
 #include "ScenePause.h"
 #include "SceneManager.h"
+#include "SelectChapterScene.h"
 #include "SettingSceneForSceneTitle.h"
 
 #include "../object/ObjectManager.h"
@@ -116,7 +117,7 @@ void SceneTitle::Draw()
 	playerModel_->Draw();
 
 	//UIの描画
-	UI_->DrawBillBoard(menuDrawPos_,UIfadeValue_,200.0f);
+	UI_->DrawBillBoard(menuDrawPos_,static_cast<float>(UIfadeValue_),200.0f);
 
 	//fadeValue_の値によって透過具合が変化するタイトルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
@@ -225,8 +226,7 @@ void SceneTitle::SceneChange()
 		SoundManager::GetInstance().Play("alarm");
 		break;
 	case 2:
-		ExternalFile::GetInstance().LoadSaveData();
-		updateFunc_ = &SceneTitle::SceneTitleFadeOutUpdate;
+		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<SelectChapterScene>(manager_)));
 		break;
 	case 3:
 		manager_.SetEndFlag(true);
@@ -241,6 +241,7 @@ void SceneTitle::CameraSetting()
 
 	//目標座標
 	VECTOR targetPos = {};
+
 	//見る目標座標
 	VECTOR targetViewPos = {};
 

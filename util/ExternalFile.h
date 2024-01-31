@@ -68,15 +68,14 @@ public:
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <returns>配置データ</returns>
-	LoadObjectInfo GetEnemyInfo(VECTOR playerPos);
+	std::list<LoadObjectInfo> GetEnemyInfo(VECTOR playerPos);
 
 	/// <summary>
-	/// オブジェクトを削除するポイントの配置データを取得する
+	/// プレイヤーの開始位置のデータを取得する
 	/// </summary>
-	/// <param name="pos">プレイヤーのポジション</param>
-	/// <param name="name"></param>
+	/// <param name="name">開始位置の名前</param>
 	/// <returns>配置データ</returns>
-	LoadObjectInfo GetDeleteObjInfo(VECTOR pos, const char* const name);
+	VECTOR GetStartPos(std::string name);
 
 	/// <summary>
 	/// チュートリアルを表示するポイントの配置データを取得する
@@ -102,6 +101,12 @@ public:
 	/// </summary>
 	/// <returns>playerData</returns>
 	PlayerInfo GetPlayerInfo() { return player_; }
+
+	/// <summary>
+	/// プレイヤーの開始座標を変更する
+	/// </summary>
+	/// <param name="startPos">開始場所</param>
+	void SetPlayerInfo(VECTOR startPos);
 
 	/// <summary>
 	/// savedataを取得する
@@ -160,12 +165,18 @@ private:
 	void LoadSaveDataInfo(const char* const filename);
 
 	/// <summary>
-	/// オブジェクトの配置情報を読み込む
+	/// オブジェクトの配置情報を読み込みlistに格納する
 	/// </summary>
 	/// <param name="filename">ファイルの名前</param>
 	/// <param name="dataTable">データテーブル</param>
-	void LoadObjectData(std::string name, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable);
+	void LoadObjectDataList(std::string name, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable);
 
+	/// <summary>
+	/// オブジェクトの配置情報を読み込む
+	/// </summary>
+	/// /// <param name="filename">ファイルの名前</param>
+	/// <param name="dataTable">データテーブル</param>
+	void LoadObjectData(std::string name, std::unordered_map<std::string, LoadObjectInfo>& dataTable);
 
 private:
 
@@ -178,14 +189,16 @@ private:
 	SaveData data_ = {};			//セーブデータ情報
 
 	std::unordered_map<std::string, int> loadFile_;										//ロードしたファイル
+
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadMainStageObjInfo_;	//メインステージオブジェクトの配置データ
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadOpeningStageObjInfo_;//オープニングステージオブジェクトの配置データ
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadGimmickInfo_;		//ギミックの配置データ	
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadCameraGimmickInfo_;	//カメラギミックの配置データ		
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadEnemyInfo_;			//敵の配置データ
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadTutorialInfo_;		//チュートリアルポイントの配置データ	
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadDeleteObjInfo_;		//削除ポイントの配置データ	
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadCameraPosInfo_;		//カメラの配置データ	
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadUIInfo_;				//UIの配置データ	
+
+	std::unordered_map<std::string, LoadObjectInfo>			   loadTutorialInfo_;		//チュートリアルポイントの配置データ	
+	std::unordered_map<std::string, LoadObjectInfo>			   loadStartPos_;			//開始位置のデータ	
+	std::unordered_map<std::string, LoadObjectInfo>			   loadCameraPosInfo_;		//カメラの配置データ	
+	std::unordered_map<std::string, LoadObjectInfo>			   loadUIInfo_;				//UIの配置データ	
 };
 

@@ -37,7 +37,6 @@ private:
 	int totalDeathNum_ = 0;					//ゲーム開始からの総死亡数
 
 	bool isFilterOn_ = false;				//フィルターを使用するか
-	bool currentInputDevice_ = false;		//true:キーボード　false:パッド
 
 	//消すかもしれない
 	void FadeInUpdate();

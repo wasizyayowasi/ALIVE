@@ -1,8 +1,9 @@
 #pragma once
 #include "ObjectData.h"
-#include <DxLib.h>
-#include <memory>
 #include <list>
+#include <string>
+#include <memory>
+#include <DxLib.h>
 #include <unordered_map>
 
 class ObjectBase;
@@ -99,7 +100,7 @@ public:
 	void CircumferencePosition(float angle,VECTOR& infoPos, VECTOR playerPos);
 
 private:
-	void EnemyGenerator(int deathCount,VECTOR playerPos);
+	void EnemyGenerator(int deathCount,LoadObjectInfo info);
 	//置物生成機
 	void OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo);
 	//ギミック生成機
@@ -107,6 +108,7 @@ private:
 private:
 
 	std::list<std::shared_ptr<Model>> checkCollList_;
+	std::unordered_map<std::string, bool>  usedEnemyList_;
 
 	std::unordered_map<ObjectType, std::list<std::shared_ptr<ObjectBase>>> objects_;			//オブジェクトをobjectTypeをキーにlistでもつ
 };

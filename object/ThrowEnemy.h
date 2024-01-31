@@ -40,6 +40,7 @@ public:
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <param name="height">プレイヤーの高さ</param>
 	void Shot(std::shared_ptr<ShotManager> shotManager, VECTOR playerPos, float height);
+
 private:
 	float innerProduct = 0.0f;						//内積の結果を入れる
 
@@ -47,7 +48,6 @@ private:
 	bool isThrow_ = false;							//投げるモーション中か
 
 	VECTOR pushVec_ = {};							//プレイヤーが敵にぶつかったときに押すベクトル
-	VECTOR temp_ = {};							//プレイヤーが敵にぶつかったときに押すベクトル
 
 	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 };

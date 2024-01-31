@@ -66,7 +66,7 @@ public:
 	/// ‹N“®’†‚©‚ğ•ÏX‚·‚é
 	/// </summary>
 	/// <param name="time">ŠÔ</param>
-	void ChangeDuringStartup(int time);
+	void ChangeDuringStartup(float time);
 
 	/// <summary>
 	/// ‹N“®’†‚©
