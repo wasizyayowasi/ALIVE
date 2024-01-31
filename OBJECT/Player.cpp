@@ -618,6 +618,8 @@ void Player::GoLeverPullPosition(const InputState& input, std::shared_ptr<Object
 		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 		ChangeAnimNo(PlayerAnimType::LeverOn, false, 10);
 		lever_->OnAnimation();
+		//SoundManager::GetInstance().Set3DSoundInfo(lever_->GetStandingPosition(), 100.0f, "crank");
+		SoundManager::GetInstance().Play("crank");
 		updateFunc_ = &Player::LeverUpdate;
 	}
 }

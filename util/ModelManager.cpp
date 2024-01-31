@@ -54,46 +54,46 @@ ModelManager::~ModelManager()
 
 void ModelManager::LoadModel()
 {
-	modelHandle_[ObjectType::Player] = MV1LoadModel(player_model_Filename);					//200MB
-	modelHandle_[ObjectType::Enemy] = MV1LoadModel(enemy_model_Filename);					//200
-	modelHandle_[ObjectType::Switch] = MV1LoadModel(switch_filepath);						//100MB–¢–ž
-	modelHandle_[ObjectType::Trans] = MV1LoadModel(trans_scaffold_filepath);				//300MB
-	modelHandle_[ObjectType::Elevator] = MV1LoadModel(elevator_filepath);					//200MB
-	modelHandle_[ObjectType::CrankScaffold] = MV1LoadModel(crank_filepath);					//500MB‚®‚ç‚¢
-	modelHandle_[ObjectType::SignBoardType1] = MV1LoadModel(signboardType1_filepath);		//100MB
-	modelHandle_[ObjectType::SignBoardType2] = MV1LoadModel(signboardType2_filepath);		//100MB–¢–ž
-	modelHandle_[ObjectType::Fence] = MV1LoadModel(fence_filepath);							//300MB
+	modelHandle_[ObjectType::Player] = MV1LoadModel(player_model_Filename);					//67
+	modelHandle_[ObjectType::Enemy] = MV1LoadModel(enemy_model_Filename);					//57
+	modelHandle_[ObjectType::Switch] = MV1LoadModel(switch_filepath);						//54
+	modelHandle_[ObjectType::Trans] = MV1LoadModel(trans_scaffold_filepath);				//58
+	modelHandle_[ObjectType::Elevator] = MV1LoadModel(elevator_filepath);					//178
+	modelHandle_[ObjectType::CrankScaffold] = MV1LoadModel(crank_filepath);					//510
+	modelHandle_[ObjectType::SignBoardType1] = MV1LoadModel(signboardType1_filepath);		//103
+	modelHandle_[ObjectType::SignBoardType2] = MV1LoadModel(signboardType2_filepath);		//66
+	modelHandle_[ObjectType::Fence] = MV1LoadModel(fence_filepath);							//172
 
-	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);			//‚æ‚­‚í‚©‚ç‚ñ
-	modelHandle_[ObjectType::BuildingCType1] = MV1LoadModel(buildingC_filepath);			//‚æ‚­‚í‚©‚ç‚ñ
-	modelHandle_[ObjectType::BuildingAType2] = MV1LoadModel(buildingA_type2_filepath);		//‚æ‚­‚í‚©‚ç‚ñ
-	modelHandle_[ObjectType::StoreC] = MV1LoadModel(storeC_filepath);						//‚æ‚­‚í‚©‚ç‚ñ
+	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);			//55
+	modelHandle_[ObjectType::BuildingCType1] = MV1LoadModel(buildingC_filepath);			//59
+	modelHandle_[ObjectType::BuildingAType2] = MV1LoadModel(buildingA_type2_filepath);		//58
+	modelHandle_[ObjectType::StoreC] = MV1LoadModel(storeC_filepath);						//57
 
-	modelHandle_[ObjectType::Street] = MV1LoadModel(street_filepath);						//
-	modelHandle_[ObjectType::TStreet] = MV1LoadModel(T_street_filepath);					//
-	modelHandle_[ObjectType::Tile] = MV1LoadModel(Tile_filepath);							//
-	modelHandle_[ObjectType::TileType2] = MV1LoadModel(TileType2_filepath);					//
+	modelHandle_[ObjectType::Street] = MV1LoadModel(street_filepath);						//55
+	modelHandle_[ObjectType::TStreet] = MV1LoadModel(T_street_filepath);					//54
+	modelHandle_[ObjectType::Tile] = MV1LoadModel(Tile_filepath);							//58
+	modelHandle_[ObjectType::TileType2] = MV1LoadModel(TileType2_filepath);					//53
 
-	modelHandle_[ObjectType::BlueContainer] = MV1LoadModel(blueContainer_filepath);			//
-	modelHandle_[ObjectType::RedContainer] = MV1LoadModel(redContainer_filepath);			//
-	modelHandle_[ObjectType::YellowContainer] = MV1LoadModel(yellowContainer_filepath);		//
-	modelHandle_[ObjectType::OrangeContainer] = MV1LoadModel(orangeContainer_filepath);		//
+	modelHandle_[ObjectType::BlueContainer] = MV1LoadModel(blueContainer_filepath);			//66
+	modelHandle_[ObjectType::RedContainer] = MV1LoadModel(redContainer_filepath);			//180
+	modelHandle_[ObjectType::YellowContainer] = MV1LoadModel(yellowContainer_filepath);		//179
+	modelHandle_[ObjectType::OrangeContainer] = MV1LoadModel(orangeContainer_filepath);		//178
 
-	modelHandle_[ObjectType::Bed] = MV1LoadModel(bed_filepath);								//
-	modelHandle_[ObjectType::Clock] = MV1LoadModel(clock_filepath);							//
-	modelHandle_[ObjectType::Desk] = MV1LoadModel(desk_filepath);							//
-	modelHandle_[ObjectType::Window] = MV1LoadModel(window_filepath);						//
-	modelHandle_[ObjectType::RoomWall] = MV1LoadModel(roomWall_filepath);					//
-	modelHandle_[ObjectType::WoodFloor] = MV1LoadModel(woodFloor_filepath);					//
-	modelHandle_[ObjectType::WoodenBox] = MV1LoadModel(woodenBox_filepath);					//
-	modelHandle_[ObjectType::TV] = MV1LoadModel(TV_filepath);								//
-	modelHandle_[ObjectType::Book] = MV1LoadModel(book_filepath);							//
+	modelHandle_[ObjectType::Bed] = MV1LoadModel(bed_filepath);								//174
+	modelHandle_[ObjectType::Clock] = MV1LoadModel(clock_filepath);							//56
+	modelHandle_[ObjectType::Desk] = MV1LoadModel(desk_filepath);							//391
+	modelHandle_[ObjectType::Window] = MV1LoadModel(window_filepath);						//70
+	modelHandle_[ObjectType::RoomWall] = MV1LoadModel(roomWall_filepath);					//101
+	modelHandle_[ObjectType::WoodFloor] = MV1LoadModel(woodFloor_filepath);					//174
+	modelHandle_[ObjectType::WoodenBox] = MV1LoadModel(woodenBox_filepath);					//175
+	modelHandle_[ObjectType::TV] = MV1LoadModel(TV_filepath);								//513
+	modelHandle_[ObjectType::Book] = MV1LoadModel(book_filepath);							//172
 
-	modelHandle_[ObjectType::Train] = MV1LoadModel(train_filepath);							//300MB
-	modelHandle_[ObjectType::Station] = MV1LoadModel(station_filepath);						//
+	modelHandle_[ObjectType::Train] = MV1LoadModel(train_filepath);							//307
+	modelHandle_[ObjectType::Station] = MV1LoadModel(station_filepath);						//713
 
-	modelHandle_[ObjectType::TunnelWall] = MV1LoadModel(tunnel_wall_filepath);				//
-	modelHandle_[ObjectType::TunnelEntrance] = MV1LoadModel(tunnel_entrance_filepath);		//
+	modelHandle_[ObjectType::TunnelWall] = MV1LoadModel(tunnel_wall_filepath);				//595
+	modelHandle_[ObjectType::TunnelEntrance] = MV1LoadModel(tunnel_entrance_filepath);		//621
 }
 
 int ModelManager::GetModelHandle(ObjectType type)

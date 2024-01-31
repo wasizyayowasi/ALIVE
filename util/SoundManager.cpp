@@ -22,10 +22,11 @@ void SoundManager::LoadSound()
     //LoadSoundConfig();
     Load2DSoundSEFile("alarm");
     Load2DSoundSEFile("stopAlarm");
-    Load3DSoundBGMFile("cafe");
-    Load3DSoundSEFile("openTheDoor");
+    Load2DSoundSEFile("crank");
+    Load2DSoundSEFile("door");
     Load3DSoundSEFile("pullLever");
     Load3DSoundSEFile("switchOn");
+    Load3DSoundBGMFile("cafe");
 }
 
 void SoundManager::ChangeVolumeMem()
@@ -194,7 +195,7 @@ void SoundManager::Set3DSoundInfo(VECTOR pos, float audioRange, const char* name
     assert(nameAndHandleTable_[name] != -1);
     //サウンドのポジションを決める
     Set3DPositionSoundMem(pos, nameAndHandleTable_[name]);
-    //サウンドが聞える範囲を設定
+    //サウンドが聞こえる範囲を設定
     Set3DRadiusSoundMem(audioRange, nameAndHandleTable_[name]);
 }
 

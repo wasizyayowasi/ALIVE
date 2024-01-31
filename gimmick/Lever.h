@@ -16,35 +16,67 @@ private:
 	};
 
 public:
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="info">配置データ</param>
+	/// <param name="stopPos">エレベーターの停止位置</param>
 	Lever(LoadObjectInfo info,VECTOR stopPos);
-	//デストラクタ
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~Lever();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
-	//描画
+	
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
-	//衝突判定
+	/// <summary>
+	/// 衝突判定
+	/// </summary>
+	/// <param name="playerPos">プレイヤーのポジション</param>
+	/// <returns>true : 当たっている  false : 当たっていない</returns>
 	bool CollCheck(VECTOR playerPos);
 
-	//エレベータの停止位置の取得
+	/// <summary>
+	/// エレベータの停止位置の取得
+	/// </summary>
+	/// <returns>エレベータの停止位置</returns>
 	VECTOR GetElevatorStopPoint() { return elevatorStopPosition_; }
 
-	//モデルポインターの取得
+	/// <summary>
+	/// モデルポインタの取得
+	/// </summary>
+	/// <returns>モデルのポインタ</returns>
 	std::shared_ptr<Model> GetModelPointer() { return model_; }
 	
-	//レバーを引くポジションの取得
+	/// <summary>
+	/// レバーを引くポジションの取得
+	/// </summary>
+	/// <returns>レバーを引くポジション</returns>
 	VECTOR GetStandingPosition() { return standingPos_; }
 
-	//レバーの起動
+	/// <summary>
+	/// レバーの起動
+	/// </summary>
 	void OnAnimation();
 
-	//レバーの停止
+	/// <summary>
+	/// レバーの停止
+	/// </summary>
 	void OffAnimation();
 
-	//レバーが起動しているかどうか取得
+	/// <summary>
+	/// レバーが起動しているかどうか取得
+	/// </summary>
+	/// <returns>レバーが起動しているか</returns>
 	bool IsOn() { return isOn_; }
 private:
 

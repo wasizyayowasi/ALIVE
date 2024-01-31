@@ -14,11 +14,13 @@ enum class SoundPlay {
 class SoundManager
 {
 public:
-	//
-	~SoundManager();
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	virtual ~SoundManager();
 
 	/// <summary>
-	/// 
+	/// インスタンス作成
 	/// </summary>
 	/// <returns></returns>
 	static SoundManager& GetInstance() {

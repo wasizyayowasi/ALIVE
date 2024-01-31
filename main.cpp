@@ -65,8 +65,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		auto fps = GetFPS();
 		auto DC = GetDrawCallCount();
 
+#ifdef _DEBUG
 		DrawFormatString(Game::screen_width - 200, 0, 0x448844, "FPS : %2.2f", fps);
 		DrawFormatString(Game::screen_width - 200, 16, 0x448844, "DC : %d", DC);
+#endif
 
 		//ó†âÊñ Çï\âÊñ Ç…êÿÇËë÷Ç¶ÇÈ
 		ScreenFlip();

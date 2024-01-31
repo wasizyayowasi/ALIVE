@@ -132,7 +132,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(dxlib);$(json);$(Dxlib)</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
