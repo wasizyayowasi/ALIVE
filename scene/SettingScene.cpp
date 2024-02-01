@@ -3,9 +3,9 @@
 #include "ScenePause.h"
 #include "KeyConfigScene.h"
 
-#include "../util/SoundManager.h"
-#include "../util/InputState.h"
 #include "../util/game.h"
+#include "../util/InputState.h"
+#include "../util/SoundManager.h"
 #include "../util/FontsManager.h"
 #include "../util/UIItemManager.h"
 
@@ -215,13 +215,16 @@ void SettingScene::BGMUpdate()
 {
 	//íZèkâª
 	auto& input = InputState::GetInstance();
+	auto& sound = SoundManager::GetInstance();
 
 	//BGMâπó í≤êÆ
 	if (input.IsTriggered(InputType::left)) {
 		volumeBGM_ = (max)(volumeBGM_ - 1, 1);
+		sound.PlayBGM("checkSoundBGM");
 	}
 	if (input.IsTriggered(InputType::right)) {
 		volumeBGM_ = (min)(volumeBGM_ + 1, 10);
+		sound.PlayBGM("checkSoundBGM");
 	}
 
 	//âπó ÇÃïœçX
@@ -232,13 +235,16 @@ void SettingScene::SEUpdate()
 {
 	//íZèkâª
 	auto& input = InputState::GetInstance();
+	auto& sound = SoundManager::GetInstance();
 
 	//SEâπó í≤êÆ
 	if (input.IsTriggered(InputType::left)) {
 		volumeSE_ = (max)(volumeSE_ - 1, 1);
+		sound.PlaySE("checkSoundSE");
 	}
 	if (input.IsTriggered(InputType::right)) {
 		volumeSE_ = (min)(volumeSE_ + 1, 10);
+		sound.PlaySE("checkSoundSE");
 	}
 
 	//âπó ÇÃïœçX

@@ -3,8 +3,8 @@
 #include <list>
 #include <string>
 #include <memory>
-#include <DxLib.h>
 #include <unordered_map>
+#include <DxLib.h>
 
 class ObjectBase;
 class Model;
@@ -66,8 +66,9 @@ public:
 	/// </summary>
 	/// <param name="baseType">オブジェクトのベースタイプ</param>
 	/// <param name="objType">オブジェクトのタイプ</param>
+	/// <param name="materialType">オブジェクトのマテリアルタイプ</param>
 	/// <param name="objInfo">オブジェクトの配置データ</param>
-	void SortingObject(ObjectBaseType baseType, ObjectType objType, LoadObjectInfo objInfo);
+	void SortingObject(ObjectBaseType baseType, ObjectType objType,Material materialType, LoadObjectInfo objInfo);
 
 	/// <summary>
 	/// 特定のモデルポインタを取得する
@@ -83,7 +84,9 @@ public:
 	/// <returns>特定のオブジェクトベースポインタ</returns>
 	std::list<std::shared_ptr<ObjectBase>> GetSpecificObject(ObjectType type);
 
-	//衝突判定を行うモデルを追加する
+	/// <summary>
+	/// 衝突判定を行うモデルを追加する
+	/// </summary>
 	void AddCheckCollModel();
 
 	/// <summary>
@@ -100,11 +103,28 @@ public:
 	void CircumferencePosition(float angle,VECTOR& infoPos, VECTOR playerPos);
 
 private:
+	/// <summary>
+	/// 敵生成
+	/// </summary>
+	/// <param name="deathCount">今までにプレイヤーが死亡した数</param>
+	/// <param name="info">配置データ</param>
 	void EnemyGenerator(int deathCount,LoadObjectInfo info);
-	//置物生成機
-	void OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo);
-	//ギミック生成機
-	void GimmickObjectGenerator(ObjectType objType, LoadObjectInfo objInfo);
+
+	/// <summary>
+	/// 置物生成機
+	/// </summary>
+	/// <param name="objType">オブジェクトのタイプ</param>
+	/// <param name="materialType">オブジェクトのタイプ</param>
+	/// <param name="objInfo">配置データ</param>
+	void OrnamentGenerator(ObjectType objType, Material materialType, LoadObjectInfo objInfo);
+
+	/// <summary>
+	/// ギミック生成機
+	/// </summary>
+	/// <param name="objType">オブジェクトのタイプ</param>
+	/// <param name="materialType">オブジェクトのタイプ</param>
+	/// <param name="objInfo">配置データ</param>
+	void GimmickObjectGenerator(ObjectType objType, Material materialType, LoadObjectInfo objInfo);
 private:
 
 	std::list<std::shared_ptr<Model>> checkCollList_;

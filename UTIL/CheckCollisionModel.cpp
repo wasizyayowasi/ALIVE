@@ -1,9 +1,13 @@
 #include "CheckCollisionModel.h"
+
 #include "../object/Player.h"
-#include "../object/ObjectManager.h"
 #include "../object/ObjectBase.h"
+#include "../object/ObjectManager.h"
+
 #include "Model.h"
 #include "Util.h"
+#include "SoundManager.h"
+
 #include <algorithm>
 
 namespace {
@@ -362,9 +366,7 @@ void CheckCollisionModel::CheckStepDifference(std::shared_ptr<Player> player)
 
 void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
 {
-	std::list<MV1_COLL_RESULT_POLY> hitLine;
-	HITRESULT_LINE hitLineResult = {};
-	int hitNum = 0;
+	std::unordered_map<Material, std::list<MV1_COLL_RESULT_POLY>> hitLine;
 
 	//オブジェクトのポリゴンを取得する
 	for (auto& model : objManager->GetAllCheckCollModel()) {
@@ -381,39 +383,44 @@ void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> p
 		distance = (std::max)(distance, -distance);
 
 		//高さの差が1000以上あったらcontinue
-		if (distance > 1000.0f) {
-			continue;
-		}
+		//if (distance > 1000.0f) {
+		//	continue;
+		//}
 
 		//モデルと線の当たり判定を取る
 		MV1RefreshCollInfo(model->GetModelHandle(), model->GetColFrameIndex());
-		hitLine.push_back(MV1CollCheck_Line(model->GetModelHandle(), model->GetColFrameIndex(), VGet(nowPos.x, nowPos.y + player->GetStatus().height, nowPos.z), VGet(nowPos.x, nowPos.y - distance, nowPos.z)));
+		VECTOR playerHeadPos = VGet(nowPos.x, nowPos.y + player->GetStatus().height, nowPos.z);
+		VECTOR lowPos = VGet(nowPos.x, nowPos.y - distance, nowPos.z);
+		hitLine[model->GetMaterialType()].push_back(MV1CollCheck_Line(model->GetModelHandle(), model->GetColFrameIndex(), playerHeadPos, lowPos));
 	}
 
 	float nearPosY = 5000.0f;
 	float resultY = 0.0f;
 	float distanceY = 0.0f;
+	Material materialType = Material::max;
 
 	//当たり判定の結果から一番近いポリゴンのY座標を取得する
-	for (auto& result : hitLine) {
+	for (auto& list : hitLine) {
+		for(auto& result : list.second)
+
 		if (!result.HitFlag) {
 			continue;
 		}
-		distanceY = nowPos.y - result.Position->y;
+		
+		distanceY = nowPos.y - result.hitDim->Position->y;
 		if (nearPosY > distanceY) {
 			nearPosY = distanceY;
-			resultY = result.Position->y;
-			hitNum++;
+			resultY = result.hitDim->Position->y;
+			materialType = list.first;
 		}
 	}
 
 	//一番近いY座標を丸影のY座標として使う
 	//当たり判定の結果何とも当たっていなかった場合
 	//Y座標を0にする
-	player->SetRoundShadowHeight(resultY);
+	player->SetRoundShadowHeightAndMaterial(resultY,materialType);
 
 	hitLine.clear();
-
 }
 
 void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)

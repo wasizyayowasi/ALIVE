@@ -39,7 +39,7 @@ void LoadingScene::Init()
 	ModelManager::GetInstance().LoadModel();
 	
 	//サウンドファイルのロード
-//	SoundManager::GetInstance().LoadSound();
+	SoundManager::GetInstance().LoadSound();
 	
 	//非同期処理を終了する
 	SetUseASyncLoadFlag(false);

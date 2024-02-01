@@ -13,7 +13,7 @@ namespace {
 }
 
 //コンストラクタ
-CrankScaffold::CrankScaffold(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
+CrankScaffold::CrankScaffold(int handle, Material materialType, LoadObjectInfo objInfo) : GimmickBase(handle, materialType, objInfo)
 {
 	//初期ポジションの初期化
 	initPos_ = objInfo.pos;

@@ -36,92 +36,92 @@ void ObjectManager::MainStageObjectGenerator()
 	for (auto& objInfo : loadData.GetLoadMainStageObjectInfo()) {
 		if (objInfo.first == "BigBuildingA") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingA, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingA,Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "SignBoard") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoardType1, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoardType1, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "BuildingC") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingCType1, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingCType1, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "Building2A") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingAType2, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingAType2, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "StoreC") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::StoreC, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::StoreC, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "Train") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Train, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Train, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "Station") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Station, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Station, Material::Stone, objSecond);
 			}
 		}
 		else if (objInfo.first == "FenceType1") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Fence, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Fence, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "Street") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Street, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Street, Material::Stone, objSecond);
 			}
 		}
 		else if (objInfo.first == "TStreet") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TStreet, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TStreet, Material::Stone, objSecond);
 			}
 		}
 		else if (objInfo.first == "Tile") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Tile, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Tile, Material::Stone, objSecond);
 			}
 		}
 		else if (objInfo.first == "TileType2") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TileType2, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TileType2, Material::Stone, objSecond);
 			}
 		}
 		else if (objInfo.first == "BlueContainer") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BlueContainer, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BlueContainer, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "RedContainer") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::RedContainer, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::RedContainer, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "YellowContainer") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::YellowContainer, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::YellowContainer, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "OrangeContainer") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::OrangeContainer, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::OrangeContainer, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "TunnelWall") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TunnelWall, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TunnelWall, Material::Stone, objSecond);
 			}
 		}
 		else if (objInfo.first == "TunnelEntrance") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TunnelEntrance, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TunnelEntrance, Material::Stone, objSecond);
 			}
 		}
 	}
@@ -129,22 +129,22 @@ void ObjectManager::MainStageObjectGenerator()
 	for (auto& gimmick : loadData.GetGimmickInfo()) {
 		if (gimmick.first == "Trans") {
 			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::GimmickBase, ObjectType::Trans, objSecond);
+				SortingObject(ObjectBaseType::GimmickBase, ObjectType::Trans, Material::Iron, objSecond);
 			}
 		}
 		else if (gimmick.first == "CrankScaffold") {
 			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::GimmickBase, ObjectType::CrankScaffold, objSecond);
+				SortingObject(ObjectBaseType::GimmickBase, ObjectType::CrankScaffold, Material::Iron, objSecond);
 			}
 		}
 		else if (gimmick.first == "Elevator") {
 			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::GimmickBase, ObjectType::Elevator, objSecond);
+				SortingObject(ObjectBaseType::GimmickBase, ObjectType::Elevator, Material::Iron, objSecond);
 			}
 		}
 		else if (gimmick.first == "PenetrationScaffld") {
 			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::GimmickBase, ObjectType::PenetrationScaffld, objSecond);
+				SortingObject(ObjectBaseType::GimmickBase, ObjectType::PenetrationScaffld, Material::Iron, objSecond);
 			}
 		}
 	}
@@ -158,57 +158,57 @@ void ObjectManager::OpeningStageObjectGenerator()
 	for (auto& objInfo : loadData.GetLoadOpeningStageObjectInfo()) {
 		if (objInfo.first == "Bed") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Bed, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Bed, Material::Wood, objSecond);
 			}
 		}
 		else if (objInfo.first == "RoomWall") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::RoomWall, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::RoomWall, Material::Stone, objSecond);
 			}
 		}
 		else if (objInfo.first == "WoodFloor") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WoodFloor, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WoodFloor, Material::Wood, objSecond);
 			}
 		}
 		else if (objInfo.first == "Window") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Window, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Window, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "Clock") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Clock, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Clock, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "Chair") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Chair, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Chair, Material::Wood, objSecond);
 			}
 		}
 		else if (objInfo.first == "Desk") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Desk, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Desk, Material::Wood, objSecond);
 			}
 		}
 		else if (objInfo.first == "WoodenBox") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WoodenBox, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WoodenBox, Material::Wood, objSecond);
 			}
 		}
 		else if (objInfo.first == "SignBoardType2") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoardType2, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoardType2, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "TV") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TV, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TV, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "Book") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Book, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Book, Material::Other, objSecond);
 			}
 		}
 	}
@@ -217,7 +217,7 @@ void ObjectManager::OpeningStageObjectGenerator()
 void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int animNo)
 {
 	//死体を一つ生成する
-	objects_[ObjectType::DeadPerson].push_back(std::make_shared<DeadPerson>(handle, objInfo, animNo));
+	objects_[ObjectType::DeadPerson].push_back(std::make_shared<DeadPerson>(handle,Material::Other, objInfo, animNo));
 
 	//死体が4個未満だったらリターン
 	if(objects_[ObjectType::DeadPerson].size() < 4) return;
@@ -311,17 +311,17 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
 	return checkCollList_;
 }
 
-void ObjectManager::SortingObject(ObjectBaseType baseType, ObjectType objType, LoadObjectInfo objInfo)
+void ObjectManager::SortingObject(ObjectBaseType baseType, ObjectType objType, Material materialType, LoadObjectInfo objInfo)
 {
 	//objectBaseTypeを元にインスタンス化するクラスを決める
 	switch (baseType) {
 		//置物を生成
 	case ObjectBaseType::OrnamentBase:
-		OrnamentGenerator(objType, objInfo);
+		OrnamentGenerator(objType, materialType, objInfo);
 		break;
 		//ギミックを生成
 	case ObjectBaseType::GimmickBase:
-		GimmickObjectGenerator(objType, objInfo);
+		GimmickObjectGenerator(objType, materialType, objInfo);
 		break;
 	}
 }
@@ -440,7 +440,7 @@ void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 				CircumferencePosition(angle, info.pos, info.pos);
 
 				//インスタンス化
-				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), info));
+				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy),Material::Other, info));
 				angle -= 15.0f;
 
 				usedEnemyList_[info.name] = true;
@@ -453,7 +453,7 @@ void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 			//文字列の最後の数よりもdeathCountが多ければ
 			//エネミーを召喚する
 			if (num <= deathCount) {
-				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), info));
+				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), Material::Other, info));
 				usedEnemyList_[info.name] = true;
 			}
 		}
@@ -461,31 +461,31 @@ void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 }
 
 //置物生成機
-void ObjectManager::OrnamentGenerator(ObjectType objType, LoadObjectInfo objInfo)
+void ObjectManager::OrnamentGenerator(ObjectType objType,Material materialType, LoadObjectInfo objInfo)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
 
-	objects_[objType].push_front(std::make_shared<OrnamentBase>(model.GetModelHandle(objType), objInfo));
+	objects_[objType].push_front(std::make_shared<OrnamentBase>(model.GetModelHandle(objType), materialType, objInfo));
 }
 
-void ObjectManager::GimmickObjectGenerator(ObjectType objType, LoadObjectInfo objInfo)
+void ObjectManager::GimmickObjectGenerator(ObjectType objType, Material materialType, LoadObjectInfo objInfo)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
 
 	switch (objType) {
 	case ObjectType::Trans:
-		objects_[objType].push_front(std::make_shared<TransparentObject>(model.GetModelHandle(objType), objInfo));
+		objects_[objType].push_front(std::make_shared<TransparentObject>(model.GetModelHandle(objType),materialType, objInfo));
 		break;
 	case ObjectType::Elevator:
-		objects_[objType].push_front(std::make_shared<Elevator>(model.GetModelHandle(objType), objInfo));
+		objects_[objType].push_front(std::make_shared<Elevator>(model.GetModelHandle(objType),materialType, objInfo));
 		break;
 	case ObjectType::CrankScaffold:
-		objects_[objType].push_front(std::make_shared<CrankScaffold>(model.GetModelHandle(objType), objInfo));
+		objects_[objType].push_front(std::make_shared<CrankScaffold>(model.GetModelHandle(objType),materialType, objInfo));
 		break;
 	case ObjectType::PenetrationScaffld:
-		objects_[objType].push_front(std::make_shared<PenetrationScaffld>(model.GetModelHandle(ObjectType::Train), objInfo));
+		objects_[objType].push_front(std::make_shared<PenetrationScaffld>(model.GetModelHandle(ObjectType::Train), materialType, objInfo));
 		break;
 	}
 }

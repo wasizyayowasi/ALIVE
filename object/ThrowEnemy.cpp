@@ -26,7 +26,7 @@ namespace {
 	constexpr float throw_distance = 800.0f;
 }
 
-ThrowEnemy::ThrowEnemy(int handle, LoadObjectInfo objInfo):EnemyBase(handle,objInfo)
+ThrowEnemy::ThrowEnemy(int handle, Material materialType, LoadObjectInfo objInfo):EnemyBase(handle, materialType, objInfo)
 {
 	frontVec_ = init_rot;
 }

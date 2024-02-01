@@ -11,8 +11,9 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="handle">モデルハンドル</param>
+	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	TransparentObject(int handle, LoadObjectInfo objInfo);
+	TransparentObject(int handle, Material materialType, LoadObjectInfo objInfo);
 
 	/// <summary>
 	/// デストラクタ

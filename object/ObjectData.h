@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <string>
 
+//オブジェクトのべース
 enum class ObjectBaseType {
 	CharacterBase,			//キャラクターベース
 	EnemyBase,				//敵ベース
@@ -10,6 +11,16 @@ enum class ObjectBaseType {
 	GimmickBase,			//装置ベース
 };
 
+//オブジェクトの材料(見た目)
+enum class Material {
+	Stone,					//石
+	Iron,					//鉄
+	Wood,					//木
+	Other,					//その他
+	max,
+};
+
+//オブジェクトのタイプ
 enum class ObjectType{
 	Player,
 	DeadPerson,

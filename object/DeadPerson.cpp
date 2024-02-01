@@ -9,7 +9,7 @@ namespace {
 	const char* const coll_frame_Sit = "CollSit";
 }
 
-DeadPerson::DeadPerson(int handle,LoadObjectInfo objInfo, int animNo) : CharacterBase(handle,objInfo)
+DeadPerson::DeadPerson(int handle,Material materialType, LoadObjectInfo objInfo, int animNo) : CharacterBase(handle, materialType,objInfo)
 {
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);

@@ -10,9 +10,10 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="handle">モデルハンドル</param>
+	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
 	/// <param name="animNo">アニメーション番号</param>
-	DeadPerson(int handle, LoadObjectInfo objInfo, int animNo);
+	DeadPerson(int handle, Material materialType, LoadObjectInfo objInfo, int animNo);
 
 	/// <summary>
 	/// デストラクタ

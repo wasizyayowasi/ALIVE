@@ -8,8 +8,9 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="handle">モデルハンドル</param>
+	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	OrnamentBase(int handle, LoadObjectInfo objInfo);
+	OrnamentBase(int handle, Material materialType, LoadObjectInfo objInfo);
 
 	/// <summary>
 	/// デストラクタ

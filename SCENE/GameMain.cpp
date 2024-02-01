@@ -78,9 +78,9 @@ void GameMain::Init()
 	//3Dリスナーの位置を設定する
 	sound.Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
 	//3Dサウンドに関連する情報を設定する
-	sound.Set3DSoundInfo(VGet(575, 120, -60), 1000, "cafe");
+	sound.Set3DSoundInfo(VGet(575, 120, -60), 10, "cafe");
 	//仮でcafeという音楽を流している
-	sound.PlayBGM("cafe");
+	//sound.PlayBGM("cafe");
 }
 
 void GameMain::End()
@@ -193,7 +193,6 @@ void GameMain::NormalUpdate()
 	}
 
 	MV1CollResultPolyDimTerminate(result);
-
 }
 
 //TODO：別のフェードインが出来次第消去

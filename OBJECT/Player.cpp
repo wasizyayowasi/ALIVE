@@ -27,8 +27,6 @@ namespace {
 	constexpr float player_hegiht = 130.0f;
 }
 
-using namespace std;
-
 Player::Player():updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObjectUpdate)
 {
 	//ジャンプ情報の初期
@@ -54,7 +52,7 @@ void Player::Init(LoadObjectInfo info)
 	playerInfo_ = ExternalFile::GetInstance().GetPlayerInfo();
 	
 	//プレイヤーモデルの生成
-	model_ = make_shared<Model>(model.GetModelHandle(ObjectType::Player));
+	model_ = std::make_shared<Model>(model.GetModelHandle(ObjectType::Player),Material::Other);
 
 	//アニメーションの設定
 	model_->SetAnimation(static_cast<int>(PlayerAnimType::Idle), true, false);
@@ -151,7 +149,6 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 	status_.situation.isGimmickCanBeOperated = false;
 
 	if (status_.situation.isInTransit) {
-		//dynamic_pointer_cast<DeadPerson>(deadPersonModelPointer_)->Init();
 		deadPersonModelPointer_->GetModelPointer()->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 		VECTOR framePos = model_->GetFrameLocalPosition(frame_name);
 		deadPersonModelPointer_->GetModelPointer()->SetPos(framePos);
@@ -162,6 +159,7 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 
 	ChangeAnimIdle();
 	MovingUpdate(input);
+	StepFootSound();
 
 	//空中にいるとき
 	//重力をベクトルに足してポジションに足す
@@ -467,7 +465,7 @@ void Player::IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager>
 
 }
 
-void Player::SetCarryInfo(bool isCarry, shared_ptr<ObjectBase>model) {
+void Player::SetCarryInfo(bool isCarry, std::shared_ptr<ObjectBase>model) {
 	status_.situation.isCanBeCarried = isCarry;
 	deadPersonModelPointer_ = model;
 }
@@ -582,6 +580,11 @@ void Player::BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectMa
 	//ノックバック
 	status_.moveVec = VScale(status_.moveVec, 0.96f);
 
+	VECTOR destination = VAdd(status_.pos, status_.moveVec);
+	if (destination.z < -250.0f) {
+		status_.moveVec.z = 0.0f;
+	}
+
 	status_.pos = VAdd(status_.pos, status_.moveVec);
 
 	model_->SetPos(status_.pos);
@@ -618,8 +621,6 @@ void Player::GoLeverPullPosition(const InputState& input, std::shared_ptr<Object
 		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 		ChangeAnimNo(PlayerAnimType::LeverOn, false, 10);
 		lever_->OnAnimation();
-		//SoundManager::GetInstance().Set3DSoundInfo(lever_->GetStandingPosition(), 100.0f, "crank");
-		SoundManager::GetInstance().Play("crank");
 		updateFunc_ = &Player::LeverUpdate;
 	}
 }
@@ -667,6 +668,13 @@ void Player::BulletHitMe(VECTOR moveVec)
 	updateFunc_ = &Player::BulletHitMeUpdate;
 }
 
+void Player::SetRoundShadowHeightAndMaterial(float height,Material materialType)
+{
+	roundShadowHeight_ = height; 
+
+	materialSteppedOn_ = materialType;
+}
+
 void Player::ChangeAnimNo(PlayerAnimType type, bool isAnimLoop, int changeTime)
 {
 	status_.animNo = static_cast<int>(type);
@@ -693,6 +701,43 @@ void Player::PlayerJump(float jumpPower) {
 	status_.jump.jumpVec = jumpPower;
 	status_.pos.y += status_.jump.jumpVec;
 	status_.jump.isJump = true;
+}
+
+void Player::StepFootSound()
+{
+	bool tem = false;
+
+	switch (static_cast<PlayerAnimType>(status_.animNo))
+	{
+	case PlayerAnimType::Walk:
+
+		if (model_->GetSpecifiedAnimTime(80) || model_->GetSpecifiedAnimTime(160)) {
+			tem = true;
+		}
+
+		break;
+	case PlayerAnimType::Run:
+
+		if (model_->GetSpecifiedAnimTime(6) || model_->GetSpecifiedAnimTime(45)) {
+			tem = true;
+		}
+
+		break;
+	}
+
+	if (!tem) {
+		return;
+	}
+
+	switch (materialSteppedOn_)
+	{
+	case Material::Iron:
+		SoundManager::GetInstance().PlaySE("ironStep");
+		break;
+	case Material::Stone:
+		SoundManager::GetInstance().PlaySE("asphaltStep");
+		break;
+	}
 }
 
 //落ち影を作成、描画

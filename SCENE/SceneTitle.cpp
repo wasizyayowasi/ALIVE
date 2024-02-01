@@ -14,6 +14,7 @@
 #include "../util/FontsManager.h"
 #include "../util/SoundManager.h"
 #include "../util/ExternalFile.h"
+#include "../util/ModelManager.h"
 #include "../util/UIItemManager.h"
 
 #include <algorithm>
@@ -26,11 +27,12 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
+	auto& model = ModelManager::GetInstance();
 
 	//インスタンス化
-	playerModel_ = std::make_shared<Model>(enemy_model_Filename);
 	UI_ = std::make_shared<UIItemManager>();
 	objManager_ = std::make_shared<ObjectManager>();
+	playerModel_ = std::make_shared<Model>(model.GetModelHandle(ObjectType::Player),Material::Other);
 	camera_ = std::make_shared<Camera>(file.GetCameraTargetPos("start"),file.GetCameraTargetPos("startTargetPos"));
 
 	//プレイヤーモデルの配置データをセットする
@@ -175,7 +177,7 @@ void SceneTitle::OpeningSoundUpdate()
 	//サウンドが鳴り終わったら
 	if (sound.CheckSoundFile("alarm") == notPlaying) {
 		if (sound.CheckSoundFile("stopAlarm") == notPlaying) {
-			sound.Play("stopAlarm");
+			sound.PlaySE("stopAlarm");
 			updateFunc_ = &SceneTitle::OpeningUpdate;
 		}
 	}
@@ -223,7 +225,7 @@ void SceneTitle::SceneChange()
 	case 1:
 		ExternalFile::GetInstance().ClearSaveData();
 		updateFunc_ = &SceneTitle::OpeningSoundUpdate;
-		SoundManager::GetInstance().Play("alarm");
+		SoundManager::GetInstance().PlaySE("alarm");
 		break;
 	case 2:
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<SelectChapterScene>(manager_)));

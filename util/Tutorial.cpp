@@ -6,6 +6,8 @@
 #include "Util.h"
 #include "game.h"
 
+#include <algorithm>
+
 namespace {
 	//xboxÇÃÉ{É^ÉìâÊëúÇÃÉtÉ@ÉCÉãÉpÉX
 	const char* const xbox_Botton_filepath = "data/graph/ControllerBotton.png";
@@ -190,7 +192,9 @@ void Tutorial::Update(VECTOR pos)
 
 void Tutorial::Draw()
 {
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	(this->*drawFunc_)();
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void Tutorial::KeyGraphDraw(int keyNum)
@@ -217,12 +221,18 @@ void Tutorial::KeyGraphDraw(int keyNum)
 
 void Tutorial::NoneDraw()
 {
+	fadeTimer_--;
+
+	fadeValue_ = (std::max)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 0);
 }
 
 void Tutorial::SwitchTutorialDraw()
 {
 	//íZèkâª
 	auto& input = InputState::GetInstance();
+
+	fadeTimer_++;
+	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {
 		KeyGraphDraw(static_cast<int>(InputType::death));
@@ -241,6 +251,9 @@ void Tutorial::CranckTutorialDraw()
 	//íZèkâª
 	auto& input = InputState::GetInstance();
 
+	fadeTimer_++;
+	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
+
 	if (input.currentInputDevice_) {
 		KeyGraphDraw(static_cast<int>(InputType::activate));
 	}
@@ -258,6 +271,9 @@ void Tutorial::RunTutorialDraw()
 	//íZèkâª
 	auto& input = InputState::GetInstance();
 
+	fadeTimer_++;
+	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
+
 	if (input.currentInputDevice_) {
 		KeyGraphDraw(static_cast<int>(InputType::dush));
 	}
@@ -274,6 +290,9 @@ void Tutorial::JumpTutorialDraw()
 {
 	//íZèkâª
 	auto& input = InputState::GetInstance();
+
+	fadeTimer_++;
+	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {
 		KeyGraphDraw(static_cast<int>(InputType::space));
@@ -294,6 +313,9 @@ void Tutorial::ElevatorTutorialDraw()
 {
 	//íZèkâª
 	auto& input = InputState::GetInstance();
+
+	fadeTimer_++;
+	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {
 		KeyGraphDraw(static_cast<int>(InputType::activate));

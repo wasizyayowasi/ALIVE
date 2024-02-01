@@ -106,7 +106,7 @@ public:
 
 	void BulletHitMe(VECTOR moveVec);
 
-	void SetRoundShadowHeight(float height) { roundShadowHeight_ = height; }
+	void SetRoundShadowHeightAndMaterial(float height, Material materialType);
 
 private:
 	//通常更新
@@ -190,6 +190,11 @@ private:
 	void PlayerJump(float jumpPower);
 
 	/// <summary>
+	/// 足ふみの音
+	/// </summary>
+	void StepFootSound();
+
+	/// <summary>
 	/// アニメーションの変更を行う
 	/// </summary>
 	/// <param name="type">アニメーションのタイプ</param>
@@ -218,11 +223,13 @@ private:
 
 	bool debugCreativeMode = false;
 
+	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};						//中間ポイント
+	VECTOR scale_ = {0.0f,0.0f, 0.0f};							//拡縮率
+
 	PlayerInfo playerInfo_ = {};
 	PlayerStatus status_ = {};
 
-	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};						//中間ポイント
-	VECTOR scale_ = {0.0f,0.0f, 0.0f};							//拡縮率
+	Material materialSteppedOn_ = Material::Stone;
 
 	std::shared_ptr<Model> model_;								//モデルクラスのポインタ
 	std::shared_ptr<ManualCrank> crank_;						//クランククラスのポインタ

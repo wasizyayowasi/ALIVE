@@ -4,9 +4,16 @@
 class Camera
 {
 public:
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="pos">初期座標</param>
+	/// <param name="viewPos">見る場所</param>
 	Camera(VECTOR pos,VECTOR viewPos);
-	//デストラクタ
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~Camera();
 
 	/// <summary>

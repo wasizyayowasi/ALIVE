@@ -29,7 +29,8 @@ void GameEnd::Update()
 
 void GameEnd::Draw()
 {
-	DrawString(0, 0, "GameEnd", 0xffffff);
+
+
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	//‰æ–Ê‘S‘Ì‚ğ^‚Á•‚É“h‚è‚Â‚Ô‚·

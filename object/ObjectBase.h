@@ -1,6 +1,6 @@
 #pragma once
-#include <DxLib.h>
 #include "ObjectData.h"
+#include <DxLib.h>
 #include <memory>
 #include <string>
 
@@ -14,8 +14,9 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="handle">モデルハンドル</param>
+	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	ObjectBase(int handle, LoadObjectInfo objInfo);
+	ObjectBase(int handle,Material materialType, LoadObjectInfo objInfo);
 	
 	/// <summary>
 	/// デストラクタ
@@ -90,12 +91,6 @@ public:
 	virtual std::shared_ptr<Model> AddCollModel();
 
 	/// <summary>
-	/// オブジェクトデータの名前を取得
-	/// </summary>
-	/// <returns>名前</returns>
-	std::string GetName() { return name_; }
-
-	/// <summary>
 	/// ポジションを設定する
 	/// </summary>
 	/// <param name="pos">ポジション</param>
@@ -110,8 +105,6 @@ protected:
 	VECTOR pos_ = { 0.0f,0.0f,0.0f };			//ポジション
 	VECTOR rot_ = { 0.0f,0.0f,0.0f };			//回転率
 	VECTOR scale_ = { 0.5f,0.5f,0.5f };			//拡縮率
-
-	std::string name_;							//名前
 
 	std::shared_ptr<Model> model_;				//モデルクラスのスマートポインタ
 

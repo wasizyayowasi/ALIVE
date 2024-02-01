@@ -26,7 +26,7 @@ namespace {
 	constexpr float border_range = 100.0f;
 
 	//ƒJƒƒ‰‚ÌˆÚ“®‚É‚©‚©‚é‡ŒvŠÔ
-	constexpr float total_time = 120.0f;
+	constexpr float total_time = 90.0f;
 
 	constexpr VECTOR temp = { 0,0,1 };
 }

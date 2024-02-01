@@ -13,7 +13,7 @@ namespace {
 Switch::Switch(LoadObjectInfo objInfo)
 {
 	//ÉÇÉfÉãÉNÉâÉXÇÃèâä˙âª
-	model_ = std::make_shared<Model>(switch_filename);
+	model_ = std::make_shared<Model>(switch_filename,Material::Iron);
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
@@ -62,12 +62,14 @@ void Switch::DeleteHitResult()
 
 void Switch::ChangeDuringStartup(float time)
 {
+	//íZèkâª
+	auto& sound = SoundManager::GetInstance();
+
 	if (time == 180.0f) {
 		if (!isDuringStartup_) {
 			stateFunc_ = &Switch::OffAnim;
 		}
 		isDuringStartup_ = false;
-		SoundManager::GetInstance().StopSE();
 	}
 }
 
@@ -115,7 +117,7 @@ bool Switch::ElevatorCollResult()
 
 	if (stateFunc_ == &Switch::OffAnim) {
 		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1000, "switchOn");
-		SoundManager::GetInstance().Play("switchOn");
+		SoundManager::GetInstance().PlaySE("switchOn");
 	}
 
 	stateFunc_ = &Switch::OnAnim;
@@ -145,7 +147,7 @@ bool Switch::TransCollResult()
 
 	if (stateFunc_ == &Switch::OffAnim) {
 		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1000, "switchOn");
-		SoundManager::GetInstance().Play("switchOn");
+		SoundManager::GetInstance().PlaySE("switchOn");
 	}
 
 	stateFunc_ = &Switch::OnAnim;

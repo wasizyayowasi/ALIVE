@@ -23,7 +23,7 @@ namespace {
 }
 
 //コンストラクタ
-Elevator::Elevator(int handle, LoadObjectInfo objInfo):GimmickBase(handle,objInfo)
+Elevator::Elevator(int handle,Material materialType, LoadObjectInfo objInfo):GimmickBase(handle, materialType, objInfo)
 {
 	//ポジションの初期化
 	pos_ = objInfo.pos;
@@ -107,6 +107,10 @@ void Elevator::Update(Player& player)
 	if (model_->IsAnimEnd()) {
 		Move();
 	}
+
+	if (model_->IsAnimEnd()) {
+		SoundManager::GetInstance().StopSE("door");
+	}
 }
 
 //描画
@@ -135,7 +139,7 @@ void Elevator::Move()
 
 	//移動終了後アニメーションを変更する
 	if (elapsedTime_ == 180.0f) {
-		SoundManager::GetInstance().Play("door");
+		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, 10);
 	}
 
@@ -160,7 +164,7 @@ void Elevator::TargetPosition()
 			if (maxSize < distanceSize) {
 				maxSize = distanceSize;
 				targetPos_ = stopPos;
-				SoundManager::GetInstance().Play("door");
+				SoundManager::GetInstance().PlaySE("door");
 				model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 				elapsedTime_ = 0;
 			}
@@ -178,7 +182,7 @@ void Elevator::TargetPosition()
 		else {
 			targetPos_ = levers_.back()->GetElevatorStopPoint();
 		}
-		SoundManager::GetInstance().Play("door");
+		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 		elapsedTime_ = 0;
 	}
@@ -193,7 +197,7 @@ void Elevator::TargetPosition()
 		else {
 			targetPos_ = levers_.front()->GetElevatorStopPoint();
 		}
-		SoundManager::GetInstance().Play("door");
+		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 		elapsedTime_ = 0;
 	}

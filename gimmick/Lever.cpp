@@ -12,7 +12,7 @@ namespace {
 Lever::Lever(LoadObjectInfo info, VECTOR stopPos)
 {
 	//モデルクラスのインスタンス化
-	model_ = std::make_shared<Model>(filename);
+	model_ = std::make_shared<Model>(filename,Material::Iron);
 
 	//ポジションの初期化
 	pos_ = info.pos;
@@ -28,6 +28,7 @@ Lever::Lever(LoadObjectInfo info, VECTOR stopPos)
 	//レバーがどのエレベーターグループに属しているか取得する
 	int standingNum = StrUtil::GetNumberFromString(info.name, ".");
 	std::string standingName = StrUtil::GetConcatenateNumAndStrings("LeverStandingPos", ".", standingNum);
+
 	//取得したグループの何番目のレバーかを取得する
 	int num = StrUtil::GetNumberFromString(info.name, "-");
 	standingName = StrUtil::GetConcatenateNumAndStrings(standingName, "-", num);
@@ -79,8 +80,6 @@ void Lever::OnAnimation()
 {
 	model_->ChangeAnimation(static_cast<int>(AnimType::on), false, false, 10);
 	isOn_ = true;
-	SoundManager::GetInstance().Set3DSoundInfo(pos_, 500, "pullLever");
-	SoundManager::GetInstance().Play("pullLever");
 }
 
 //レバーの停止

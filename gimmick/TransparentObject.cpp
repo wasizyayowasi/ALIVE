@@ -5,7 +5,7 @@
 #include "../util/Util.h"
 #include <algorithm>
 
-TransparentObject::TransparentObject(int handle, LoadObjectInfo objInfo) : GimmickBase(handle, objInfo)
+TransparentObject::TransparentObject(int handle, Material materialType, LoadObjectInfo objInfo) : GimmickBase(handle, materialType, objInfo)
 {
 	//Õ“Ë”»’è—pƒtƒŒ[ƒ€‚ÌÝ’è
 	model_->SetUseCollision(true, false);

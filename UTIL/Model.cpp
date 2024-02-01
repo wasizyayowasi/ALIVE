@@ -6,23 +6,27 @@ namespace {
 }
 
 //ファイルパスのコンストラクタ
-Model::Model(const char* fileName)
+Model::Model(const char* fileName, Material materialType)
 {
 	modelHandle_ = MV1LoadModel(fileName);
 	assert(modelHandle_ != -1);
 
 	ClearAnimData(animPrev_);
 	ClearAnimData(animNext_);
+
+	materialType_ = materialType;
 }
 
 //duplicateモデルのコンストラクタ
-Model::Model(int orgModel)
+Model::Model(int orgModel, Material materialType)
 {
 	modelHandle_ = MV1DuplicateModel(orgModel);
 	assert(modelHandle_ != -1);
 
 	ClearAnimData(animPrev_);
 	ClearAnimData(animNext_);
+
+	materialType_ = materialType;
 }
 
 //デストラクタ

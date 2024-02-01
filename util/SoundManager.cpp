@@ -11,6 +11,11 @@ using namespace std;
 
 SoundManager::SoundManager() 
 {
+    //3DサウンドにXAudioを使用するか
+    SetEnableXAudioFlag(true);
+
+    //3Dサウンドの1メートルをどのくらいの値にするか
+    Set3DSoundOneMetre(1.0f);
 }
 
 SoundManager::~SoundManager()
@@ -24,8 +29,14 @@ void SoundManager::LoadSound()
     Load2DSoundSEFile("stopAlarm");
     Load2DSoundSEFile("crank");
     Load2DSoundSEFile("door");
+    Load2DSoundSEFile("checkSoundSE");
+    Load2DSoundBGMFile("checkSoundBGM");
+
+    Load3DSoundSEFile("hit");
+    Load2DSoundSEFile("ironStep");
     Load3DSoundSEFile("pullLever");
     Load3DSoundSEFile("switchOn");
+    Load2DSoundSEFile("asphaltStep");
     Load3DSoundBGMFile("cafe");
 }
 
@@ -35,7 +46,7 @@ void SoundManager::ChangeVolumeMem()
     SetBGMVolume(volumeBGM_);
 }
 
-int SoundManager::Load2DSoundSEFile(const char* fileName)
+int SoundManager::Load2DSoundSEFile(std::string fileName)
 {
     //ファイルパスの生成
     string path = "data/sound/SE/";
@@ -52,7 +63,7 @@ int SoundManager::Load2DSoundSEFile(const char* fileName)
     return handle;
 }
 
-int SoundManager::Load2DSoundBGMFile(const char* fileName)
+int SoundManager::Load2DSoundBGMFile(std::string fileName)
 {
     //ファイルパスの生成
     string path = "data/sound/BGM/";
@@ -69,7 +80,7 @@ int SoundManager::Load2DSoundBGMFile(const char* fileName)
     return handle;
 }
 
-int SoundManager::Load3DSoundSEFile(const char* fileName)
+int SoundManager::Load3DSoundSEFile(std::string fileName)
 {
     //ファイルパスの生成
     string path = "data/sound/SE/";
@@ -88,7 +99,7 @@ int SoundManager::Load3DSoundSEFile(const char* fileName)
     return handle;
 }
 
-int SoundManager::Load3DSoundBGMFile(const char* fileName)
+int SoundManager::Load3DSoundBGMFile(std::string fileName)
 {
     //ファイルパスの生成
     string path = "data/sound/BGM/";
@@ -120,16 +131,22 @@ void SoundManager::LoadSoundConfig()
     }
 }
 
-void SoundManager::Play(const char* name)
+void SoundManager::PlaySE(std::string name)
 {
     assert(nameAndHandleTable_[name] != -1);
+
+    //メモリに読み込んだサウンドを再生する
     PlaySoundMem(nameAndHandleTable_[name], DX_PLAYTYPE_BACK);
 }
 
-void SoundManager::PlayBGM(const char* path)
+void SoundManager::PlayBGM(std::string name)
 {
-    PlayMusic(path, DX_PLAYTYPE_LOOP);
-    SetVolumeMusic(volumeBGM_);
+    //ファイルパスの生成
+    std::string path = "data/sound/BGM/";
+    path = path + name;
+    path = path + ".mp3";
+
+    PlayMusic(path.c_str(), DX_PLAYTYPE_BACK);
 }
 
 void SoundManager::SetSEVolume(unsigned int volume)
@@ -138,11 +155,6 @@ void SoundManager::SetSEVolume(unsigned int volume)
         ChangeVolumeSoundMem(volume, record.second);
     }
     volumeSE_ = volume;
-}
-
-int SoundManager::GetSEVolume() const
-{
-    return volumeSE_;
 }
 
 void SoundManager::SetBGMVolume(unsigned int volume)
@@ -157,16 +169,12 @@ void SoundManager::SetBGMRate(float rate)
     SetVolumeMusic(static_cast<int>(static_cast<float>(volumeBGM_ * rate)));
 }
 
-int SoundManager::GetBGMVolume() const
+void SoundManager::StopSE(std::string name)
 {
-    return volumeBGM_;
-}
+    assert(static_cast<int>(name.size()) > 0);
 
-void SoundManager::StopSE(const char* name)
-{
-    if (name != nullptr) {
-        StopSoundMem(nameAndHandleTable_[name]);
-    }
+    //再生中のサウンドを止める
+    StopSoundMem(nameAndHandleTable_[name]);
 }
 
 void SoundManager::StopBGM()
@@ -190,11 +198,13 @@ void SoundManager::SaveSoundConfig()
     }
 }
 
-void SoundManager::Set3DSoundInfo(VECTOR pos, float audioRange, const char* name)
+void SoundManager::Set3DSoundInfo(VECTOR pos, float audioRange, std::string name)
 {
     assert(nameAndHandleTable_[name] != -1);
+
     //サウンドのポジションを決める
     Set3DPositionSoundMem(pos, nameAndHandleTable_[name]);
+
     //サウンドが聞こえる範囲を設定
     Set3DRadiusSoundMem(audioRange, nameAndHandleTable_[name]);
 }
@@ -205,7 +215,7 @@ void SoundManager::Set3DSoundListenerInfo(VECTOR pos, VECTOR rot)
     Set3DSoundListenerPosAndFrontPos_UpVecY(pos, rot);
 }
 
-int SoundManager::CheckSoundFile(const char* const name)
+int SoundManager::CheckSoundFile(std::string name)
 {
     return DxLib::CheckSoundMem(nameAndHandleTable_[name]);
 }

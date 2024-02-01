@@ -1,4 +1,5 @@
 #pragma once
+#include "../object/ObjectData.h"
 #include <DxLib.h>
 #include <string>
 
@@ -9,11 +10,17 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="fileName">モデルが入っているファイルパス</param>
-	Model(const char* fileName);
-	//duplicate用コンストラクタ
-	Model(int orgModel);
+	Model(const char* fileName,Material materialType);
 
-	//デストラクタ
+	/// <summary>
+	/// duplicate用コンストラクタ
+	/// </summary>
+	/// <param name="orgModel"></param>
+	Model(int orgModel, Material materialType);
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~Model();
 
 	/// <summary>
@@ -24,9 +31,14 @@ public:
 	/// <param name="collFrameName">特定のフレームを衝突判定用フレームにする場合、フレーム名をいれる</param>
 	void SetUseCollision(bool isUse, bool isNeedUpdate,std::string collFrameName = "");
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 	/// <summary>
@@ -120,11 +132,24 @@ public:
 	/// <returns>座標</returns>
 	VECTOR GetFrameLocalPosition(const char* frameName);
 
-
+	/// <summary>
+	/// アニメーションのフレームを設定する
+	/// </summary>
+	/// <param name="value">フレーム数</param>
 	void SetAnimationFrame(float value);
 
-
+	/// <summary>
+	/// アニメーションの特定フレームと現在のアニメーションフレーム数が同じかを取得する
+	/// </summary>
+	/// <param name="specifiedTime">特定のフレーム時間</param>
+	/// <returns>true : 同じ  false : 違う</returns>
 	bool GetSpecifiedAnimTime(int specifiedTime);
+
+	/// <summary>
+	/// オブジェクトのマテリアルタイプを取得
+	/// </summary>
+	/// <returns>タイプ</returns>
+	Material GetMaterialType() { return materialType_; }
 private:
 	struct AnimData {
 		int animNo;
@@ -162,6 +187,8 @@ private:
 
 	int animChangeFrame_ = 0;
 	int animChangeFrameTotal_ = 0;
+
+	Material materialType_;
 
 	VECTOR pos_;
 	VECTOR rot_;

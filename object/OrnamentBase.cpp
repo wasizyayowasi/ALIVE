@@ -1,7 +1,7 @@
 #include "OrnamentBase.h"
 #include "../util/Model.h"
 
-OrnamentBase::OrnamentBase(int handle, LoadObjectInfo objInfo) : ObjectBase(handle,objInfo)
+OrnamentBase::OrnamentBase(int handle, Material materialType, LoadObjectInfo objInfo) : ObjectBase(handle, materialType,objInfo)
 {
 	//Õ“Ë”»’è—pƒtƒŒ[ƒ€‚ÌÝ’è
 	model_->SetUseCollision(true, false);

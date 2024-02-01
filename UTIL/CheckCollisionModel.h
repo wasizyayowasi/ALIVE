@@ -89,11 +89,13 @@ private:
 	bool moveFlag = false;		//現在移動しているかのフラグ
 	bool hitFlag = false;		//衝突したかのフラグ
 
+	MV1_COLL_RESULT_POLY temp = {};
+
 	//モデルとの当たり判定用メソッド
 	std::list<CollModelState> hitDim_;
+	std::list<HITRESULT_LINE> hitLineResult_ = {};
 	CollResultPoly wallHitDim_[max_hit_coll] = {};
 	CollResultPoly floorHitDim_[max_hit_coll] = {};
-	std::list<HITRESULT_LINE> hitLineResult_ = {};
 	CollResultPoly result = {};
 };
 

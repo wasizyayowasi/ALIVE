@@ -20,7 +20,7 @@ namespace {
 ManualCrank::ManualCrank(LoadObjectInfo objInfo)
 {
 	//ƒ‚ƒfƒ‹ƒNƒ‰ƒX‚Ì‰Šú‰»
-	model_ = std::make_shared<Model>(crank_filename);
+	model_ = std::make_shared<Model>(crank_filename,Material::Iron);
 	model_->SetUseCollision(true,false);
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);

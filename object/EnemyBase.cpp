@@ -36,7 +36,7 @@ namespace {
 	constexpr float throw_distance = 800.0f;
 }
 
-EnemyBase::EnemyBase(int handle, LoadObjectInfo objInfo) : CharacterBase(handle,objInfo)
+EnemyBase::EnemyBase(int handle, Material materialType, LoadObjectInfo objInfo) : CharacterBase(handle, materialType, objInfo)
 {
 	model_->SetAnimation(0, true, false);
 	Aster_ = std::make_shared<Aster>(objInfo.pos);

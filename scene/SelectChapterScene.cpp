@@ -2,6 +2,8 @@
 #include "GameMain.h"
 #include "SceneManager.h"
 
+#include "../object/ObjectData.h"
+
 #include "../util/game.h"
 #include "../util/Model.h"
 #include "../util/InputState.h"
@@ -22,7 +24,7 @@ SelectChapterScene::~SelectChapterScene()
 void SelectChapterScene::Init()
 {
 	//インスタンス化
-	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(ObjectType::Book));
+	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(ObjectType::Book),Material::Other);
 
 	//オブジェクト配置データ
 	auto info = ExternalFile::GetInstance().GetSpecifiedInfo("title", "Book");

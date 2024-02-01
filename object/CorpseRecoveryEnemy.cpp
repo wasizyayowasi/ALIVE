@@ -20,7 +20,7 @@ namespace {
 	const char* const hand_framename = "mixamorig:RightHandIndex2";
 }
 
-CorpseRecoveryEnemy::CorpseRecoveryEnemy(int handle, LoadObjectInfo objInfo):EnemyBase(handle,objInfo)
+CorpseRecoveryEnemy::CorpseRecoveryEnemy(int handle,Material materialType, LoadObjectInfo objInfo):EnemyBase(handle, materialType, objInfo)
 {
 	initPos_ = objInfo.pos;
 }

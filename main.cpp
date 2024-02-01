@@ -6,9 +6,8 @@
 
 #include "util/game.h"
 #include "util/InputState.h"
-#include "util/ExternalFile.h"
+#include "util/SoundManager.h"
 #include "util/EffekseerManager.h"
-#include "util/ModelManager.h"
 
 #include "staging/Broom.h"
 
@@ -28,8 +27,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//画面サイズの設定
 	SetGraphMode(Game::screen_width,Game::screen_height, Game::screen_depth);
 
-	//3DサウンドにXAudioを使用するか
-	SetEnableXAudioFlag(true);
+	//サウンドのインスタンス生成
+	SoundManager::GetInstance();
 
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
 	{

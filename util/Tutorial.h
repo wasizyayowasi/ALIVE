@@ -87,6 +87,11 @@ public:
 
 private:
 	
+	static constexpr int fadeInterval_ = 10;
+	int fadeTimer_ = 0;
+	int fadeValue_ = 0;
+	int fadeColor_ = 0x000000;
+
 	std::map<UIGraph,int> UIHandle_;					//画像
 	std::map<int, Key> keyNum_;							//キー番号
 	std::map<UIGraph, std::pair<float, float>> UIPos_;	//UIの画面ポジション pairの中身｜first：X｜second：Y

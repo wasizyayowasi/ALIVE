@@ -2,6 +2,6 @@
 #include "../util/Model.h"
 #include <cassert>
 
-CharacterBase::CharacterBase(int handle, LoadObjectInfo objInfo) :ObjectBase(handle,objInfo)
+CharacterBase::CharacterBase(int handle,Material materialType, LoadObjectInfo objInfo) :ObjectBase(handle,materialType,objInfo)
 {
 }

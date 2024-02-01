@@ -3,16 +3,18 @@
 #include "../util/Model.h"
 #include "../util/InputState.h"
 
-ObjectBase::ObjectBase(int handle, LoadObjectInfo objInfo)
+ObjectBase::ObjectBase(int handle, Material materialType, LoadObjectInfo objInfo)
 {
-	model_ = std::make_shared<Model>(handle);
+	model_ = std::make_shared<Model>(handle,materialType);
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
+
 	pos_ = model_->GetPos();
+
 	scale_ = objInfo.scale;
+
 	isEnable_ = true;
-	name_ = objInfo.name;
 }
 
 ObjectBase::~ObjectBase()
