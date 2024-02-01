@@ -27,9 +27,14 @@ private:
 
 public:
 
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	CheckCollisionModel();
-	//デストラクタ
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~CheckCollisionModel();
 
 	/// <summary>
@@ -76,6 +81,7 @@ public:
 	void FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
 
 	void CheckCollSpecificModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
+
 private:
 
 	float objectHeightY = 0;		//衝突したオブジェクトの高さを保管する
@@ -89,13 +95,12 @@ private:
 	bool moveFlag = false;		//現在移動しているかのフラグ
 	bool hitFlag = false;		//衝突したかのフラグ
 
-	MV1_COLL_RESULT_POLY temp = {};
+	bool aiu = false;
 
 	//モデルとの当たり判定用メソッド
 	std::list<CollModelState> hitDim_;
 	std::list<HITRESULT_LINE> hitLineResult_ = {};
 	CollResultPoly wallHitDim_[max_hit_coll] = {};
 	CollResultPoly floorHitDim_[max_hit_coll] = {};
-	CollResultPoly result = {};
 };
 

@@ -271,7 +271,6 @@ void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 
 				hitFlag = true;
 				maxY = hitLine.Position.y;
-				result.hitDim = hitPoly.hitDim;
 				hitLineResult_.clear();
 			}
 			if (hitFlag) {
@@ -392,6 +391,12 @@ void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> p
 		VECTOR playerHeadPos = VGet(nowPos.x, nowPos.y + player->GetStatus().height, nowPos.z);
 		VECTOR lowPos = VGet(nowPos.x, nowPos.y - distance, nowPos.z);
 		hitLine[model->GetMaterialType()].push_back(MV1CollCheck_Line(model->GetModelHandle(), model->GetColFrameIndex(), playerHeadPos, lowPos));
+		if (hitLine[model->GetMaterialType()].back().HitFlag == 0) {
+			hitLine[model->GetMaterialType()].pop_back();
+		}
+		else {
+			int a = 0;
+		}
 	}
 
 	float nearPosY = 5000.0f;
@@ -401,24 +406,25 @@ void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> p
 
 	//当たり判定の結果から一番近いポリゴンのY座標を取得する
 	for (auto& list : hitLine) {
-		for(auto& result : list.second)
+		for (auto& result : list.second) {
+			
+			if (result.HitFlag == 0) {
+				continue;
+			}
 
-		if (!result.HitFlag) {
-			continue;
-		}
-		
-		distanceY = nowPos.y - result.hitDim->Position->y;
-		if (nearPosY > distanceY) {
-			nearPosY = distanceY;
-			resultY = result.hitDim->Position->y;
-			materialType = list.first;
+			distanceY = nowPos.y - result.HitPosition.y;
+			if (nearPosY > distanceY) {
+				nearPosY = distanceY;
+				resultY = result.HitPosition.y;
+				materialType = list.first;
+			}
 		}
 	}
 
 	//一番近いY座標を丸影のY座標として使う
 	//当たり判定の結果何とも当たっていなかった場合
 	//Y座標を0にする
-	player->SetRoundShadowHeightAndMaterial(resultY,materialType);
+	player->SetRoundShadowHeightAndMaterial(resultY + 1,materialType);
 
 	hitLine.clear();
 }
