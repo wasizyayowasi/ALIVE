@@ -252,7 +252,7 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 			}
 		}
 	}
-
+	
 	//enemy‚ÌShot
 	for (auto& obj : objects_[ObjectType::Enemy]) {
 		if (std::dynamic_pointer_cast<ThrowEnemy>(obj) != nullptr) {
@@ -260,7 +260,6 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 		}
 	}
 
-	
 	//XV
 	for (auto& list : objects_) {
 		for (auto& obj : list.second) {

@@ -32,11 +32,12 @@ void SoundManager::LoadSound()
     Load2DSoundSEFile("checkSoundSE");
     Load2DSoundBGMFile("checkSoundBGM");
 
+    Load3DSoundSEFile("asphaltStep");
+    Load3DSoundSEFile("ironStep");
+
     Load3DSoundSEFile("hit");
-    Load2DSoundSEFile("ironStep");
     Load3DSoundSEFile("pullLever");
     Load3DSoundSEFile("switchOn");
-    Load2DSoundSEFile("asphaltStep");
     Load3DSoundBGMFile("cafe");
 }
 

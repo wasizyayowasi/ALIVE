@@ -76,7 +76,7 @@ void Shot::HitCheck(Player& player)
 	// 音を鳴らして
 	//プレイヤーのベクトルに設定し、存在するフラグをfalseにする
 	if (hit) {
-		VECTOR nockBack = VScale(VNorm(moveVec_),5.0f);
+		VECTOR nockBack = VScale(VNorm(moveVec_),10.0f);
 		player.BulletHitMe(nockBack);
 
 		SoundManager::GetInstance().Set3DSoundInfo(playerPos, 300.0f, "hit");

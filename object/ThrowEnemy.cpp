@@ -7,9 +7,6 @@
 #include "../util/Model.h"
 
 namespace {
-	//モデルの初期回転ベクトル
-	const VECTOR init_rot = { 0.0f,0.0f,-1.0f };
-
 	//敵がプレイヤーを視認できる範囲
 	constexpr float visible_range = 800.0f;
 
@@ -26,9 +23,10 @@ namespace {
 	constexpr float throw_distance = 800.0f;
 }
 
-ThrowEnemy::ThrowEnemy(int handle, Material materialType, LoadObjectInfo objInfo):EnemyBase(handle, materialType, objInfo)
+ ThrowEnemy::ThrowEnemy(int handle, Material materialType, LoadObjectInfo objInfo):EnemyBase(handle, materialType, objInfo)
 {
-	frontVec_ = init_rot;
+	 isCollCheck_ = true;
+	 model_->SetUseCollision(isCollCheck_, true);
 }
 
 ThrowEnemy::~ThrowEnemy()
@@ -39,6 +37,9 @@ void ThrowEnemy::Update(Player& player)
 {
 	//プレイヤーの座標
 	VECTOR playerPos = player.GetStatus().pos;
+
+	//モデルの更新
+	model_->Update();
 
 	//プレイヤーを索敵する
 	SearchForPlayer(playerPos);
@@ -59,16 +60,13 @@ void ThrowEnemy::Update(Player& player)
 		//行列をモデルにセットする
 		MV1SetMatrix(model_->GetModelHandle(), mtx);
 	}
-
-	//モデルの更新
-	model_->Update();
 }
 
 void ThrowEnemy::Draw()
 {
 	model_->Draw();
 
-	DrawLine3D(pos_, VAdd(pos_, VScale(frontVec_, 10.0f)), 0x0000ff);
+//	DrawLine3D(pos_, VScale(frontVec_, 10.0f), 0x0000ff);
 }
 
 void ThrowEnemy::SearchForPlayer(VECTOR playerPos)
@@ -76,8 +74,10 @@ void ThrowEnemy::SearchForPlayer(VECTOR playerPos)
 	//敵からプレイヤーの直線距離
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
 
+	float innerProduct = 0.0f;
+
 	//内積を取得する(返り値はコサイン)
-	innerProduct = VDot(frontVec_, VNorm(VSub(playerPos, pos_)));
+	innerProduct = VDot(VNorm(frontVec_), VNorm(VSub(playerPos, pos_)));
 
 	//上記の結果から度数法に変える
 	float radian = acos(innerProduct);

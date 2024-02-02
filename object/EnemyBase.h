@@ -91,17 +91,11 @@ public:
 
 protected:
 
-	float distanceSize_ = 0.0f;						//敵からプレイヤーの距離
-	float innerProduct = 0.0f;						//内積の結果を入れる
-
-	bool isMove_ = false;							//移動中フラグ
 	bool isDetection_ = false;						//プレイヤーを検知したか
 	bool isThrow_ = false;							//投げるモーション中か
 
 	VECTOR frontVec_ = {};							//敵の正面ベクトルを入れる
 	VECTOR pushVec_ = {};							//プレイヤーが敵にぶつかったときに押すベクトル
-
-	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
 
 	std::shared_ptr<Aster> Aster_;
 };

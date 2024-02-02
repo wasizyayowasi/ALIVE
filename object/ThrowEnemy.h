@@ -43,13 +43,10 @@ public:
 	void Shot(std::shared_ptr<ShotManager> shotManager, VECTOR playerPos, float height);
 
 private:
-	float innerProduct = 0.0f;						//内積の結果を入れる
 
 	bool isDetection_ = false;						//プレイヤーを検知したか
 	bool isThrow_ = false;							//投げるモーション中か
 
-	VECTOR pushVec_ = {};							//プレイヤーが敵にぶつかったときに押すベクトル
-
-	std::list<MV1_COLL_RESULT_POLY_DIM> hitDim_;
+	//VECTOR pushVec_ = {};							//プレイヤーが敵にぶつかったときに押すベクトル
 };
 

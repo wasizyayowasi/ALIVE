@@ -40,7 +40,10 @@ EnemyBase::EnemyBase(int handle, Material materialType, LoadObjectInfo objInfo) 
 {
 	model_->SetAnimation(0, true, false);
 	Aster_ = std::make_shared<Aster>(objInfo.pos);
-	frontVec_ = init_rot;
+
+	//正面ベクトルの取得
+	MATRIX matRotY = MGetRotY(objInfo.rot.y);
+	frontVec_ = VTransform(init_rot, matRotY);
 }
 
 void EnemyBase::Update(Player& player)
@@ -125,6 +128,7 @@ void EnemyBase::SearchForPlayer(VECTOR playerPos)
 {
 	//敵からプレイヤーの直線距離
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos,pos_);
+	float innerProduct = 0.0f;
 
 	//内積を取得する(返り値はコサイン)
 	innerProduct = VDot(frontVec_, VNorm(VSub(playerPos, pos_)));
@@ -263,14 +267,14 @@ MATRIX EnemyBase::CombiningRotAndScallMat(VECTOR distance)
 	//回転行列の取得
 	MATRIX rotMtx = MGetRotVec2(init_rot, distance);
 
+	//正規化した正面ベクトルを取得する
+	frontVec_ = VTransform(init_rot, rotMtx);
+
 	//拡縮行列の取得
 	MATRIX scaleMtx = MGetScale(scale_);
 
 	//回転行列と拡縮行列の掛け算
 	MATRIX mtx = MMult(rotMtx, scaleMtx);
-
-	//正規化した正面ベクトルを取得する
-	frontVec_ = VTransform(init_rot, mtx);
 
 	return mtx;
 }

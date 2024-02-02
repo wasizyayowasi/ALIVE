@@ -28,7 +28,10 @@ namespace {
 	//カメラの移動にかかる合計時間
 	constexpr float total_time = 90.0f;
 
-	constexpr VECTOR temp = { 0,0,1 };
+	//追跡してくる割合
+	constexpr float traking_rate_x = 0.97f;
+	constexpr float traking_rate_y = 0.9f;
+	constexpr float traking_rate_z = 0.98f;
 }
 
 Camera::Camera(VECTOR pos, VECTOR viewPos):updateFunc_(&Camera::TrackingCameraUpdate)
@@ -97,12 +100,14 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos,float playerHeight)
 	//カメラがプレイヤーを追いかける用にする
 	pos_.x = TrackingPosX(playerPos);
 	pos_.y = TrackingPosY(playerPos,playerHeight);
-	pos_.z = TrackingPozZ(playerPos);
+//	pos_.z = TrackingPozZ(playerPos);
+	pos_.z = (pos_.z * traking_rate_z) + ((playerPos.z - 800.0f) * (1 - traking_rate_z));
 
 	//プレイヤーがいた位置を見るようにする
-	cameraViewingPos_.x = (cameraViewingPos_.x * 0.9f) + (playerPos.x * 0.1f);
-	cameraViewingPos_.y = (cameraViewingPos_.y * 0.9f) + ((playerPos.y + playerHeight / 2) * 0.1f);
-	cameraViewingPos_.z = (cameraViewingPos_.z * 0.95f) + (playerPos.z * 0.05f);
+	cameraViewingPos_.x = (cameraViewingPos_.x * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
+	cameraViewingPos_.y = (cameraViewingPos_.y * traking_rate_y) + ((playerPos.y + playerHeight / 2) * (1 - traking_rate_y));
+	//cameraViewingPos_.y = cameraViewingPos_.y;
+	cameraViewingPos_.z = (cameraViewingPos_.z * traking_rate_z) + (playerPos.z * (1 - traking_rate_z));
 
 	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
 }
@@ -208,7 +213,7 @@ void Camera::tempdraw()
 	DrawFormatString(0, 16, 0xffffff, "ポジション　　%f:%f:%f", pos_.x, pos_.y, pos_.z);
 	DrawFormatString(0, 32, 0xffffff, "見ている場所　%f:%f:%f", cameraViewingPos_.x, cameraViewingPos_.y, cameraViewingPos_.z);
 
-	DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
+	//DrawSphere3D(pos_, 16, 32, 0x0000ff, 0x0000ff, true);
 }
 
 //プレイヤーを追跡
@@ -227,8 +232,8 @@ float Camera::TrackingPosX(VECTOR playerPos)
 		return pos_.x + moveVecX;
 	}
 
-	//return (pos_.x * 0.99f) + (playerPos.x * 0.01f);
-	return (pos_.x * 0.9f) + (playerPos.x * 0.1f);
+	return (pos_.x * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
+	//return (pos_.x * 0.9f) + (playerPos.x * 0.1f);
 
 }
 
@@ -255,7 +260,8 @@ float Camera::TrackingPosY(VECTOR playerPos, float playerHeight)
 	}
 	
 
-	return (pos_.y * 0.9f) + ((playerHeadPosY + playerHeight * 2) * 0.1f);
+	return (pos_.y * traking_rate_y + ((playerHeadPosY + playerHeight * 2) * (1 - traking_rate_y)));
+	//return pos_.y;
 }
 
 float Camera::TrackingPozZ(VECTOR playerPos)

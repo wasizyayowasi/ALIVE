@@ -32,7 +32,8 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 
 	//インスタンス化
 	player_ = std::make_shared<Player>();
-	camera_ = std::make_shared<Camera>(player_->GetStatus().pos, VGet(0, 0, 0));
+//	camera_ = std::make_shared<Camera>(player_->GetStatus().pos, VGet(0, 0, 0));
+	camera_ = std::make_shared<Camera>(VGet(0,400,-550), VGet(0, 0, 0));
 	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
 	objManager_ = std::make_shared<ObjectManager>();
 	shotManager_ = std::make_shared<ShotManager>();
@@ -78,7 +79,7 @@ void GameMain::Init()
 	//3Dリスナーの位置を設定する
 	sound.Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
 	//3Dサウンドに関連する情報を設定する
-	sound.Set3DSoundInfo(VGet(575, 120, -60), 10, "cafe");
+	//sound.Set3DSoundInfo(VGet(575, 120, -60), 10, "cafe");
 	//仮でcafeという音楽を流している
 	//sound.PlayBGM("cafe");
 }
@@ -112,15 +113,22 @@ void GameMain::Draw()
 	//オブジェクトの描画
 	objManager_->Draw(player_->GetStatus().pos);
 
+	
+
 	MV1SetPosition(skyHandle_, player_->GetStatus().pos);
 	MV1DrawModel(skyHandle_);
 
+	camera_->tempdraw();
 
 	shotManager_->Draw();
 
 	tutorial_->Draw();
+	VECTOR pos = player_->GetStatus().pos;
+	DrawFormatString(0, 48, 0xffffff, "%.2f,%.2f,%.2f", pos.x, pos.y, pos.z);
 
 	SetDrawScreen(DX_SCREEN_BACK);
+
+	
 
 	//フィルター処理を行うか
 	if (isFilterOn_) {

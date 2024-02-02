@@ -44,6 +44,9 @@ void CorpseRecoveryEnemy::SearchForCorpse(VECTOR CorpsePos)
 	//敵から死体の直線距離
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(CorpsePos, pos_);
 
+	//内積の結果を入れる
+	float innerProduct = 0.0f;
+
 	//内積を取得する(返り値はコサイン)
 	innerProduct = VDot(frontVec_, VNorm(VSub(CorpsePos, pos_)));
 
