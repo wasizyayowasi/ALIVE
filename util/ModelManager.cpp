@@ -10,6 +10,7 @@ namespace {
 	const char* const crank_filepath				= "data/model/other/mv1/crankScaffold.mv1";
 	const char* const signboardType1_filepath		= "data/model/other/mv1/SignBoardType1.mv1";
 	const char* const signboardType2_filepath		= "data/model/other/mv1/SignBoardType2.mv1";
+	const char* const hopStepJump_filepath			= "data/model/other/mv1/HopStepJump.mv1";
 	const char* const fence_filepath				= "data/model/city/container/mv1/FenceType1.mv1";
 
 	//‚Å‚©‚¢ƒrƒ‹
@@ -62,6 +63,7 @@ void ModelManager::LoadModel()
 	modelHandle_[ObjectType::CrankScaffold] = MV1LoadModel(crank_filepath);					//510
 	modelHandle_[ObjectType::SignBoardType1] = MV1LoadModel(signboardType1_filepath);		//103
 	modelHandle_[ObjectType::SignBoardType2] = MV1LoadModel(signboardType2_filepath);		//66
+	modelHandle_[ObjectType::HopStepJump] = MV1LoadModel(hopStepJump_filepath);				//
 	modelHandle_[ObjectType::Fence] = MV1LoadModel(fence_filepath);							//172
 
 	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);			//55

@@ -8,6 +8,7 @@
 #include "../object/OrnamentBase.h"
 
 #include "../gimmick/Elevator.h"
+#include "../gimmick/HopStepJump.h"
 #include "../gimmick/CrankScaffold.h"
 #include "../gimmick/TransparentObject.h"
 #include "../gimmick/PenetrationScaffld.h"
@@ -145,6 +146,11 @@ void ObjectManager::MainStageObjectGenerator()
 		else if (gimmick.first == "PenetrationScaffld") {
 			for (auto& objSecond : gimmick.second) {
 				SortingObject(ObjectBaseType::GimmickBase, ObjectType::PenetrationScaffld, Material::Iron, objSecond);
+			}
+		}
+		else if (gimmick.first == "HopStepJump") {
+			for (auto& objSecond : gimmick.second) {
+				SortingObject(ObjectBaseType::GimmickBase, ObjectType::HopStepJump, Material::Stone, objSecond);
 			}
 		}
 	}
@@ -385,7 +391,7 @@ void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, VECTOR loadObj
 	std::mt19937 value(random());
 
 	std::uniform_int_distribution<> randomPosX(loadObjPos.x - distance, loadObjPos.x);
-	std::uniform_int_distribution<> randomPosZ(loadObjPos.z - distance, loadObjPos.z + distance);
+	std::uniform_int_distribution<> randomPosZ(loadObjPos.z, loadObjPos.z + distance);
 
 	info.pos.x = static_cast<float>(randomPosX(value));
 	info.pos.z = static_cast<float>(randomPosZ(value));
@@ -433,10 +439,10 @@ void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 			float angle = 0.0f;
 			for (int i = 0; i < deathCount; i++) {
 				//一定範囲の中でランダムにスポーンさせる
-				//RandomPositionGenerator(info, loadInfo.pos);
+				RandomPositionGenerator(info, info.pos);
 				
 				//プレイヤーを中心に円周上でスポーンさせる
-				CircumferencePosition(angle, info.pos, info.pos);
+				//CircumferencePosition(angle, info.pos, info.pos);
 
 				//インスタンス化
 				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy),Material::Other, info));
@@ -485,6 +491,9 @@ void ObjectManager::GimmickObjectGenerator(ObjectType objType, Material material
 		break;
 	case ObjectType::PenetrationScaffld:
 		objects_[objType].push_front(std::make_shared<PenetrationScaffld>(model.GetModelHandle(ObjectType::Train), materialType, objInfo));
+		break;
+	case ObjectType::HopStepJump:
+		objects_[objType].push_front(std::make_shared<HopStepJump>(model.GetModelHandle(ObjectType::HopStepJump), materialType, objInfo));
 		break;
 	}
 }

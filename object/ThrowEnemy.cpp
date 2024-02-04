@@ -17,7 +17,7 @@ namespace {
 	constexpr int throw_frame_time = 73;
 
 	//“G‚ÌŽ‹–ìŠp
-	constexpr float viewing_angle = 30.0f;
+	constexpr float viewing_angle = 45.0f;
 
 	//Î‚ð“Š‚°‚é‹——£
 	constexpr float throw_distance = 800.0f;
@@ -66,7 +66,7 @@ void ThrowEnemy::Draw()
 {
 	model_->Draw();
 
-//	DrawLine3D(pos_, VScale(frontVec_, 10.0f), 0x0000ff);
+	DrawLine3D(pos_, VScale(frontVec_, 800.0f), 0x0000ff);
 }
 
 void ThrowEnemy::SearchForPlayer(VECTOR playerPos)
@@ -89,6 +89,12 @@ void ThrowEnemy::SearchForPlayer(VECTOR playerPos)
 		if (distanceSize < throw_distance) {
 			isDetection_ = true;
 		}
+		else {
+			isDetection_ = false;
+		}
+	}
+	else {
+		isDetection_ = false;
 	}
 }
 

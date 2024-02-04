@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gimmick\HopStepJump.cpp" />
     <ClCompile Include="object\CorpseRecoveryEnemy.cpp" />
     <ClCompile Include="gimmick\Elevator.cpp" />
     <ClCompile Include="gimmick\CrankScaffold.cpp" />
@@ -196,6 +197,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gimmick\HopStepJump.h" />
     <ClInclude Include="object\CorpseRecoveryEnemy.h" />
     <ClInclude Include="scene\KeyConfigSceneForSceneTitle.h" />
     <ClInclude Include="scene\SettingSceneForSceneTitle.h" />
