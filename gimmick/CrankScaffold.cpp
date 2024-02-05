@@ -15,6 +15,9 @@ namespace {
 //コンストラクタ
 CrankScaffold::CrankScaffold(int handle, Material materialType, LoadObjectInfo objInfo) : GimmickBase(handle, materialType, objInfo)
 {
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+
 	//初期ポジションの初期化
 	initPos_ = objInfo.pos;
 
@@ -23,16 +26,28 @@ CrankScaffold::CrankScaffold(int handle, Material materialType, LoadObjectInfo o
 
 	//objInfoの名前から末尾の数値を取得する
 	int num = StrUtil::GetNumberFromString(objInfo.name, ".");
+
 	//上記の数値と第一引数の文字列を連結させた文字列を取得する
 	std::string name = StrUtil::GetConcatenateNumAndStrings("Crank", ".", num);
 
 	//クランクの配置データを取得する
-	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(initPos_, name.c_str());
+	auto info = file.GetSpecifiedGimmickInfo(initPos_, name.c_str());
+
 	//インスタンス化
 	crank_ = std::make_shared<ManualCrank>(info);
 
+	//足場の上限のポジション
+	name = StrUtil::GetConcatenateNumAndStrings("CrankUpperLimit", ".", num);
+	upperLimitPos_ = file.GetSpecifiedGimmickInfo(initPos_, name.c_str()).pos;
+
+	//足場の下限のポジション
+	name = StrUtil::GetConcatenateNumAndStrings("CrankLowerLimit", ".", num);
+	lowerLimitPos_ = file.GetSpecifiedGimmickInfo(initPos_, name.c_str()).pos;
+
+	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(upperLimitPos_, lowerLimitPos_);
+
 	//上昇ベクトルの初期化
-	upVec_ = ascent_limit / crank_->GetMaxRotZ();
+	upVec_ = distanceSize / crank_->GetMaxRotZ();
 }
 
 //デストラクタ

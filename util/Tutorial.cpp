@@ -221,7 +221,7 @@ void Tutorial::KeyGraphDraw(int keyNum)
 
 void Tutorial::NoneDraw()
 {
-	fadeTimer_--;
+	fadeTimer_ = (std::max)(fadeTimer_ - 1,0);
 
 	fadeValue_ = (std::max)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 0);
 }
@@ -231,19 +231,44 @@ void Tutorial::SwitchTutorialDraw()
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	fadeTimer_++;
+	//ボタンが押されたか
+	static bool pressedBottan = false;
+
+	fadeTimer_ = (std::min)(fadeTimer_ + 1,255);
 	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
-	if (input.currentInputDevice_) {
-		KeyGraphDraw(static_cast<int>(InputType::death));
+	if (pressedBottan) {
+		if (input.currentInputDevice_) {
+			KeyGraphDraw(static_cast<int>(InputType::activate));
+		}
+		else {
+			//画像描画
+			Graph::DrawRectRotaGraph(UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, controller_graph_chip_size * static_cast<int>(XboxBotton::B), 0, controller_graph_chip_size, controller_graph_chip_size, 1.0f, 0.0f, UIHandle_[UIGraph::XboxBotton], true, false);
+		}
 	}
 	else {
-		//画像描画
-		Graph::DrawRectRotaGraph(UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, controller_graph_chip_size * static_cast<int>(XboxBotton::Y), 0, controller_graph_chip_size, controller_graph_chip_size, 1.0f, 0.0f, UIHandle_[UIGraph::XboxBotton], true, false);
+		if (input.currentInputDevice_) {
+			KeyGraphDraw(static_cast<int>(InputType::death));
+		}
+		else {
+			//画像描画
+			Graph::DrawRectRotaGraph(UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, controller_graph_chip_size * static_cast<int>(XboxBotton::Y), 0, controller_graph_chip_size, controller_graph_chip_size, 1.0f, 0.0f, UIHandle_[UIGraph::XboxBotton], true, false);
+		}
 	}
 
-	//キーに対応した文字列の描画(アクションキーの文字列)
-	DrawStringFToHandle(Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, input.inputNameTable_[InputType::activate].c_str(), 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
+	if (input.IsTriggered(InputType::death)) {
+		pressedBottan = true;
+	}
+
+	if (pressedBottan) {
+		//キーに対応した文字列の描画(アクションキーの文字列)
+		DrawStringFToHandle(Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, input.inputNameTable_[InputType::activate].c_str(), 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
+	}
+	else {
+		//キーに対応した文字列の描画(アクションキーの文字列)
+		DrawStringFToHandle(Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, input.inputNameTable_[InputType::death].c_str(), 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
+	}
+	
 }
 
 void Tutorial::CranckTutorialDraw()
@@ -251,7 +276,18 @@ void Tutorial::CranckTutorialDraw()
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	fadeTimer_++;
+	//ボタンが押されたか
+	static bool pressedBottan = false;
+
+	if (input.IsTriggered(InputType::activate)) {
+		pressedBottan = true;
+	}
+
+	if (pressedBottan) {
+		return;
+	}
+
+	fadeTimer_ = (std::min)(fadeTimer_ + 1,255);
 	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {
@@ -271,7 +307,18 @@ void Tutorial::RunTutorialDraw()
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	fadeTimer_++;
+	//ボタンが押されたか
+	static bool pressedBottan = false;
+
+	if (input.IsTriggered(InputType::dush)) {
+		pressedBottan = true;
+	}
+
+	if (pressedBottan) {
+		return;
+	}
+
+	fadeTimer_ = (std::min)(fadeTimer_ + 1,255);
 	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {
@@ -291,7 +338,18 @@ void Tutorial::JumpTutorialDraw()
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	fadeTimer_++;
+	//ボタンが押されたか
+	static bool pressedBottan = false;
+
+	if (input.IsTriggered(InputType::space)) {
+		pressedBottan = true;
+	}
+
+	if (pressedBottan) {
+		return;
+	}
+
+	fadeTimer_ = (std::min)(fadeTimer_ + 1,255);
 	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {
@@ -314,7 +372,18 @@ void Tutorial::ElevatorTutorialDraw()
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	fadeTimer_++;
+	//ボタンが押されたか
+	static bool pressedBottan = false;
+
+	if (input.IsTriggered(InputType::activate)) {
+		pressedBottan = true;
+	}
+
+	if (pressedBottan) {
+		return;
+	}
+
+	fadeTimer_ = (std::min)(fadeTimer_ + 1,255);
 	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {

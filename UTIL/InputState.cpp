@@ -8,7 +8,6 @@
 #include <cassert>
 
 using json = nlohmann::json;
-using namespace std;
 
 InputState::InputState()
 {
@@ -82,10 +81,8 @@ InputState::InputState()
 	inputNameTable_[InputType::sit]			= "座る";
 	inputNameTable_[InputType::activate]	= "アクション";
 
-
 	currentInput_.resize(static_cast<int>(InputType::max));
 	lastInput_.resize(static_cast<int>(InputType::max));
-
 }
 
 InputState::~InputState()
@@ -230,20 +227,19 @@ void InputState::SavekeyInfo() const
 	};
 
 	//書き出すファイル名を"name"にする(別に無くてもいい)
-	string filename = keySize["name"];
-	string extension = ".json";
+	std::string filename = keySize["name"];
+	std::string extension = ".json";
 	filename += extension;
 	filename = "data/jsonFile/" + filename;
 
 	//出力
-	ofstream writeingFile;
+	std::ofstream writeingFile;
 	//ファイルを開く
-	writeingFile.open(filename, ios::out);
+	writeingFile.open(filename, std::ios::out);
 	//まとめたデータを一列にまとめる
 	writeingFile << keySize.dump() << std::endl;
 	//閉じる
 	writeingFile.close();
-
 }
 
 void InputState::LoadKeyInfo(const char* filename)
@@ -253,12 +249,12 @@ void InputState::LoadKeyInfo(const char* filename)
 	inputMapTable_.clear();
 
 	//読み込むファイルのパスを生成
-	string path = "data/jsonFile/";
+	std::string path = "data/jsonFile/";
 	path += filename;
 	path += ".json";
 
 	//読み込むこと
-	ifstream ifs(path.c_str());
+	std::ifstream ifs(path.c_str());
 	assert(ifs);
 
 	//ビットをシフトする？
@@ -268,7 +264,7 @@ void InputState::LoadKeyInfo(const char* filename)
 	ifs >> json_;
 
 	//名前を取得している(正直いらないけど残してる(笑))
-	string name = json_["name"];
+	std::string name = json_["name"];
 	//inputStateの総数
 	int keyTypeNum = json_["keyTypeNum"];
 

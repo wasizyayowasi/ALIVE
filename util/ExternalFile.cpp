@@ -240,7 +240,7 @@ void ExternalFile::RewritePlayerInfo()
 	   {"runningJumpPower",8.0f},
 	   {"rotSpeed",15.0f},
 	   {"walkSpeed",3.0f},
-	   {"runningSpeed",7.0f},
+	   {"runningSpeed",10.0f},
 	};
 
 	//‘‚«o‚·êŠ‚Ìw’è

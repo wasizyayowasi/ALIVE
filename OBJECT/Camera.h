@@ -45,7 +45,9 @@ public:
 	/// <summary>
 	/// カメラの注視点を逸らす
 	/// </summary>
-	void ChangeOfFocus();
+	/// <param name="playerPos">プレイヤーのポジション</param>
+	/// <param name="playerHeight">プレイヤーの身長</param>
+	void ChangeOfFocus(VECTOR playerPos, float playerHeight);
 
 	/// <summary>
 	/// 目標のポジションまで移動する
@@ -94,15 +96,8 @@ private:
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	float TrackingPosY(VECTOR playerPos, float playerHeight);
 
-	/// <summary>
-	/// プレイヤーのZ座標を追跡
-	/// </summary>
-	/// <param name="playerPos">プレイヤーのポジション</param>
-	float TrackingPozZ(VECTOR playerPos);
-
 private:
 
-	int i = 0;
 	float moveVecZ = 0.0f;
 	float moveVecY = 0.0f;
 	float moveVecX = 0.0f;

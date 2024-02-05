@@ -41,6 +41,8 @@ private:
 	float upVec_ = 0.0f;						//上昇ベクトル
 
 	VECTOR initPos_ = {};						//初期ポジション
+	VECTOR upperLimitPos_ = {};						//初期ポジション
+	VECTOR lowerLimitPos_ = {};						//初期ポジション
 
 	std::shared_ptr<ManualCrank> crank_;		//クランククラスのスマートポインタ
 

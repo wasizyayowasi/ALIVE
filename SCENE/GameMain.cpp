@@ -113,22 +113,22 @@ void GameMain::Draw()
 	//オブジェクトの描画
 	objManager_->Draw(player_->GetStatus().pos);
 
-	
-
+	//スカイドームの描画
 	MV1SetPosition(skyHandle_, player_->GetStatus().pos);
 	MV1DrawModel(skyHandle_);
 
 	camera_->tempdraw();
 
+	//弾の描画
 	shotManager_->Draw();
 
+	//チュートリアルの描画
 	tutorial_->Draw();
+
 	VECTOR pos = player_->GetStatus().pos;
 	DrawFormatString(0, 48, 0xffffff, "%.2f,%.2f,%.2f", pos.x, pos.y, pos.z);
 
 	SetDrawScreen(DX_SCREEN_BACK);
-
-	
 
 	//フィルター処理を行うか
 	if (isFilterOn_) {
@@ -171,12 +171,13 @@ void GameMain::NormalUpdate()
 	//プレイヤーとその他オブジェクトとの衝突判定
 	checkCollisionModel_->CheckCollision(player_,objManager_);
 
-	//カメラの注視点を変更する
-	camera_->ChangeOfFocus();
-
+	//弾の更新
 	shotManager_->Update();
+
+	//弾とプレイヤーの衝突判定
 	shotManager_->Hit(*player_);
 
+	//チュートリアル
 	tutorial_->Update(player_->GetStatus().pos);
 
 	//リスナーの位置と方向を設定
