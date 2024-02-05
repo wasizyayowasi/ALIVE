@@ -125,7 +125,7 @@ void Tutorial::SwitchTutorialDraw()
 	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(type, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second);
+		input.DrawKeyGraph(type, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second,1.2f);
 	}
 	else {
 		//‰æ‘œ•`‰æ
@@ -161,7 +161,7 @@ void Tutorial::CranckTutorialDraw()
 	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(InputType::activate, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second);
+		input.DrawKeyGraph(InputType::activate, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second,1.2f);
 	}
 	else {
 		//‰æ‘œ•`‰æ
@@ -192,7 +192,7 @@ void Tutorial::RunTutorialDraw()
 	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(InputType::dush, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second);
+		input.DrawKeyGraph(InputType::dush, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
 	}
 	else {
 		//‰æ‘œ•`‰æ
@@ -223,7 +223,7 @@ void Tutorial::JumpTutorialDraw()
 	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(InputType::space, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second);
+		input.DrawKeyGraph(InputType::space, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
 	}
 	else {
 		//‰æ‘œ•`‰æ
@@ -254,7 +254,7 @@ void Tutorial::ElevatorTutorialDraw()
 	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
 
 	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(InputType::activate, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second);
+		input.DrawKeyGraph(InputType::activate, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
 	}
 	else {
 		//‰æ‘œ•`‰æ

@@ -42,6 +42,7 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	playerModel_->SetRot(info.rot);
 	playerModel_->SetAnimation(static_cast<int>(PlayerAnimType::wakeUp), false, true);
 
+	//UIを表示する座標を取得
 	menuDrawPos_["タイトル"] = file.GetUIPos("titleDrawPos");
 	menuDrawPos_["ニューゲーム"] = file.GetUIPos("startDrawPos");
 	menuDrawPos_["ゲームを再開する"] = file.GetUIPos("continueDrawPos");
@@ -73,10 +74,10 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	menuName_.push_back("終了");
 
 	//UI画像の作成
-	int font = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
+	fontHandle_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
 	float y = 120.0f;
 	for (auto& menu : menuName_) {
-		UI_->AddMenu(static_cast<float>(Game::screen_width / 2), static_cast<float>(Game::screen_height / 2) + y, 320, 100, menu.c_str(), font);
+		UI_->AddMenu(static_cast<float>(Game::screen_width / 2), static_cast<float>(Game::screen_height / 2) + y, 320, 100, menu.c_str(), fontHandle_);
 		y += 40.0f;
 	}
 }
@@ -107,6 +108,8 @@ void SceneTitle::Update()
 
 void SceneTitle::Draw()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
 	auto& file = ExternalFile::GetInstance();
 
 	//カメラの初期化
@@ -120,6 +123,13 @@ void SceneTitle::Draw()
 
 	//UIの描画
 	UI_->DrawBillBoard(menuDrawPos_,static_cast<float>(UIfadeValue_),200.0f);
+
+	input.DrawKeyGraph(InputType::left, Game::screen_width / 6 * 4, Game::screen_height - 40, 0.8f);
+	input.DrawKeyGraph(InputType::right, Game::screen_width / 7 * 5, Game::screen_height - 40, 0.8f);
+	input.DrawKeyGraph(InputType::space, Game::screen_width / 6 * 5, Game::screen_height - 40, 0.8f);
+
+	DrawStringToHandle(Game::screen_width / 4 * 3 - 25, Game::screen_height - 60, "移動", 0xffffff, fontHandle_);
+	input.DrawName(InputType::space, Game::screen_width / 14 * 12, Game::screen_height - 60, 0xffffff, fontHandle_, true, true, "/");
 
 	//fadeValue_の値によって透過具合が変化するタイトルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);

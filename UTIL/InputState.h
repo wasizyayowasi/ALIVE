@@ -132,7 +132,8 @@ public:
 	/// <param name="type">描画したいkey</param>
 	/// <param name="posX">描画座標X</param>
 	/// <param name="posY">描画座標Y</param>
-	void DrawKeyGraph(InputType type,float posX, float posY);
+	/// <param name="size">描画サイズY</param>
+	void DrawKeyGraph(InputType type,float posX, float posY, float size);
 
 	/// <summary>
 	/// padのボタンの描画

@@ -240,9 +240,6 @@ void KeyConfigScene::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	(this->*drawFunc_)();
-	
-	//----------------以降消去予定
-	DrawString(0, 0, "keyConfig",0xffffff);
 }
 
 void KeyConfigScene::KeyStateDraw()
@@ -272,9 +269,6 @@ void KeyConfigScene::KeyGraphDraw()
 	float graphPosX = static_cast<float>(Game::screen_width) / 4 * 1.5f;
 	float graphPosY = static_cast<float>(Game::screen_height / 2) - (graph_chip_size * 4 + 30.0f);
 
-	//dxlib内の各キー番号を入手する
-	int keyId = 0;
-
 	//for文で何番目かを取得する
 	int keyCount = 0;
 
@@ -285,13 +279,7 @@ void KeyConfigScene::KeyGraphDraw()
 	float graphScale = 1.0f;
 
 	for (auto& key : input.tempMapTable_) {
-		//key番号を取得する
-		keyId = static_cast<int>(keyNum_[key.second.begin()->id]);
-
-		//画像を分割するための配列番号を取得する
-		int graphArrayX = keyId % 9;
-		int graphArrayY = keyId / 9;
-
+		
 		//現在カーソルがあっている場合
 		//サイズと明るさを引く値を変更する
 		if (keyCount == selectNum_) {
@@ -303,11 +291,8 @@ void KeyConfigScene::KeyGraphDraw()
 			subBrightness = 180;
 		}
 
-		//int型にキャストしたgraphChipSize
-		int castGraphChipSize = static_cast<int>(graph_chip_size);
-
-		//分割画像の描画
-		Graph::DrawRectRotaGraph(graphPosX, graphPosY, graphArrayX * castGraphChipSize, graphArrayY * castGraphChipSize, castGraphChipSize, castGraphChipSize, graphScale, 0.0f, keyTypeHandle_, true, false);
+		//keyTypeの描画
+		input.DrawKeyGraph(key.first, graphPosX, graphPosY, graphScale);
 
 		//暗くした画像を画像の上に乗せる
 		SetDrawBlendMode(DX_BLENDMODE_SUB, subBrightness);

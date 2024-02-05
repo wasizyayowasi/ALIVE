@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="util\Effect2D.cpp" />
+    <ClCompile Include="util\EffectManager.cpp" />
     <ClCompile Include="gimmick\HopStepJump.cpp" />
     <ClCompile Include="object\CorpseRecoveryEnemy.cpp" />
     <ClCompile Include="gimmick\Elevator.cpp" />
@@ -197,6 +199,8 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util\Effect2D.h" />
+    <ClInclude Include="util\EffectManager.h" />
     <ClInclude Include="gimmick\HopStepJump.h" />
     <ClInclude Include="object\CorpseRecoveryEnemy.h" />
     <ClInclude Include="scene\KeyConfigSceneForSceneTitle.h" />

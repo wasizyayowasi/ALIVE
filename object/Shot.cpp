@@ -5,6 +5,7 @@
 #include "../util/Util.h"
 #include "../util/Model.h"
 #include "../util/SoundManager.h"
+#include "../util/EffectManager.h"
 
 namespace {
 	//消失ライン
@@ -79,8 +80,12 @@ void Shot::HitCheck(Player& player)
 		VECTOR nockBack = VScale(VNorm(moveVec_),10.0f);
 		player.BulletHitMe(nockBack);
 
+		//サウンドを鳴らす
 		SoundManager::GetInstance().Set3DSoundInfo(playerPos, 300.0f, "hit");
 		SoundManager::GetInstance().PlaySE("hit");
+
+		//エフェクトを出す
+		EffectManager::GetInstance().AddEffect("hit", pos_);
 
 		isEnable_ = false;
 	}

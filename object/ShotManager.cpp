@@ -1,7 +1,6 @@
 #include "ShotManager.h"
 #include "../object/Shot.h"
 
-
 namespace {
 	const char* const shot_filename = "data/model/other/mv1/rock.mv1";
 
@@ -54,10 +53,6 @@ void ShotManager::Fire(VECTOR framePos, VECTOR playerPos,float height)
 	//プレイヤーめがけてショットを撃つ
 	VECTOR distance = VSub(VGet(playerPos.x, playerPos.y + height / 2, playerPos.z), framePos);
 	VECTOR moveVec = VScale(VNorm(distance), shot_speed);
-
-	//正面ベクトル
-//	VECTOR frontVec = VGet(0.0f, 0.0f, -1.0f);
-//	VECTOR moveVec = VScale(frontVec, shot_speed);
 
 	shots_.push_back(std::make_shared<Shot>(shotHandle_, framePos, moveVec));
 }

@@ -470,7 +470,7 @@ int InputState::GetInputNum(int num, InputCategory cat)
 	return keyNum;
 }
 
-void InputState::DrawKeyGraph(InputType type, float posX, float posY)
+void InputState::DrawKeyGraph(InputType type, float posX, float posY,float size)
 {
 	//“ü—Í‘•’u‚Ì”Ô†‚ğæ“¾‚·‚é
 	int num = GetInputNum(static_cast<int>(type), InputCategory::keybd);
@@ -488,7 +488,7 @@ void InputState::DrawKeyGraph(InputType type, float posX, float posY)
 							graphY * keybord_graph_chip_size, 
 							keybord_graph_chip_size,
 							keybord_graph_chip_size,
-							1.2f, 0.0f,
+							size, 0.0f,
 							UIHandle_[InputCategory::keybd],
 							true, false);
 }

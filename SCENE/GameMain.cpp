@@ -3,24 +3,25 @@
 #include "ScenePause.h" 
 #include "SceneManager.h"
 
-#include "../gimmick/GimmickBase.h"
 #include "../gimmick/Switch.h"
+#include "../gimmick/GimmickBase.h"
 
 #include "../object/Player.h"
 #include "../object/Camera.h"
-#include "../object/CharacterBase.h"
 #include "../object/ShotManager.h"
+#include "../object/CharacterBase.h"
 
 #include "../staging/Broom.h"
 #include "../staging/DepthOfField.h"
 
 #include "../util/game.h"
-#include "../util/SoundManager.h"
-#include "../util/InputState.h"
 #include "../util/model.h"
-#include "../util/ExternalFile.h"
-#include "../util/CheckCollisionModel.h"
 #include "../util/Tutorial.h"
+#include "../util/InputState.h"
+#include "../util/ExternalFile.h"
+#include "../util/SoundManager.h"
+#include "../util/EffectManager.h"
+#include "../util/CheckCollisionModel.h"
 
 #include "../object/ObjectManager.h"
 #include "../object/ObjectData.h"
@@ -32,7 +33,6 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 
 	//インスタンス化
 	player_ = std::make_shared<Player>();
-//	camera_ = std::make_shared<Camera>(player_->GetStatus().pos, VGet(0, 0, 0));
 	camera_ = std::make_shared<Camera>(VGet(0,400,-550), VGet(0, 0, 0));
 	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
 	objManager_ = std::make_shared<ObjectManager>();
@@ -113,6 +113,9 @@ void GameMain::Draw()
 	//オブジェクトの描画
 	objManager_->Draw(player_->GetStatus().pos);
 
+	//エフェクトの描画
+	EffectManager::GetInstance().Draw();
+
 	//スカイドームの描画
 	MV1SetPosition(skyHandle_, player_->GetStatus().pos);
 	MV1DrawModel(skyHandle_);
@@ -167,6 +170,9 @@ void GameMain::NormalUpdate()
 
 	//オブジェクトの更新
 	objManager_->Update(*player_,shotManager_);
+
+	//エフェクトの更新
+	EffectManager::GetInstance().Update();
 
 	//プレイヤーとその他オブジェクトとの衝突判定
 	checkCollisionModel_->CheckCollision(player_,objManager_);
