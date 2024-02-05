@@ -126,12 +126,50 @@ public:
 	/// <returns>入力装置の番号</returns>
 	int GetInputNum(int num,InputCategory cat);
 
+	/// <summary>
+	/// key画像の描画
+	/// </summary>
+	/// <param name="type">描画したいkey</param>
+	/// <param name="posX">描画座標X</param>
+	/// <param name="posY">描画座標Y</param>
+	void DrawKeyGraph(InputType type,float posX, float posY);
+
+	/// <summary>
+	/// padのボタンの描画
+	/// </summary>
+	/// <param name="type">描画したいボタン</param>
+	/// <param name="posX">描画座標X</param>
+	/// <param name="posY">描画座標Y</param>
+	void DrawPadGraph(XboxBotton type, float posX, float posY);
+
+	/// <summary>
+	/// 名前の描画
+	/// </summary>
+	/// <param name="type">描画したいkey</param>
+	/// <param name="posX">描画座標X</param>
+	/// <param name="posY">描画座標Y</param>
+	/// <param name="color">色</param>
+	/// <param name="fontHandle">フォント</param>
+	
+	/// <summary>
+	/// 名前の描画
+	/// </summary>
+	/// <param name="type">描画したいkey</param>
+	/// <param name="posX">描画座標X</param>
+	/// <param name="posY">描画座標Y</param>
+	/// <param name="color">色</param>
+	/// <param name="fontHandle">フォント</param>
+	/// <param name="editName">名前を編集するか</param>
+	/// <param name="before">前か後か　true : 前　false：後ろ</param>
+	/// <param name="sign">記号</param>
+	void DrawName(InputType type, float posX, float posY, int color, int fontHandle,bool editName,bool before,std::string sign = "");
 private:
 
 	InputState();
 
 	InputState(const InputState&) = delete;
 	void operator = (const InputState&) = delete;
+
 
 	bool currentInputDevice_ = false;			//true:キーボード　false:パッド
 
@@ -142,6 +180,8 @@ private:
 
 	InputMap_t defaultMapTable_;
 
+	std::map<int, Key> keyNum_;							//キー番号
+	std::map<InputCategory, int> UIHandle_;					//画像
 	std::map<InputType, std::string> inputNameTable_;
 
 	std::vector<bool> currentInput_;

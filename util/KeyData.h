@@ -91,3 +91,11 @@ enum class Key
 	Rwin,
 	App,
 };
+
+//padƒ{ƒ^ƒ“‚Ì—ñ‹“
+enum class XboxBotton {
+	A,
+	B,
+	X,
+	Y,
+};
