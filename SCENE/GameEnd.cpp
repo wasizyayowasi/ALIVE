@@ -36,7 +36,7 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 	objManager_->EndStageObjectGenerator();
 
 	//€‘Ì‚Ì¶¬
-	objManager_->EnemyGenerator()
+	//objManager_->EnemyGenerator();
 }
 
 GameEnd::~GameEnd()

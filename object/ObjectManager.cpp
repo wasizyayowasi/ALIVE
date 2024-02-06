@@ -513,7 +513,7 @@ void ObjectManager::GeneratedForTheNumberOfTimesYouDie(int deathCount, LoadObjec
 		//CircumferencePosition(angle, info.pos, info.pos);
 
 		//インスタンス化
-		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), Material::Other, info));
+		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Player), Material::Other, info));
 		angle -= 15.0f;
 
 		usedEnemyList_[info.name] = true;
@@ -531,7 +531,7 @@ void ObjectManager::GeneratePredeterminedNumberOfTimes(int deathCount, std::stri
 	//文字列の最後の数よりもdeathCountが多ければ
 	//エネミーを召喚する
 	if (num <= deathCount) {
-		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), Material::Other, info));
+		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Player), Material::Other, info));
 		usedEnemyList_[info.name] = true;
 	}
 }
