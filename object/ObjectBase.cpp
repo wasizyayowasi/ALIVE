@@ -5,15 +5,19 @@
 
 ObjectBase::ObjectBase(int handle, Material materialType, LoadObjectInfo objInfo)
 {
+	//モデルの設定
 	model_ = std::make_shared<Model>(handle,materialType);
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
 
+	//ポジション
 	pos_ = model_->GetPos();
 
+	//拡縮率
 	scale_ = objInfo.scale;
 
+	//存在しているフラグ
 	isEnable_ = true;
 }
 

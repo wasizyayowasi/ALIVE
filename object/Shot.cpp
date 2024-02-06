@@ -17,18 +17,23 @@ namespace {
 
 Shot::Shot(int handle,VECTOR initPos, VECTOR moveVec)
 {
+	//モデルのインスタンス化
 	model_ = std::make_shared<Model>(handle,Material::Stone);
 
-	float scale = 10.0f;
-
+	//サイズの調整
+	float scale = 20.0f;
 	model_->SetScale(VGet(scale, scale, scale));
 
+	//ポジション
 	pos_ = initPos;
 
+	//初期位置
 	initialisePos_ = initPos;
 
+	//ベクトル
 	moveVec_ = moveVec;
 
+	//存在しているフラグ
 	isEnable_ = true;
 }
 
@@ -81,11 +86,11 @@ void Shot::HitCheck(Player& player)
 		player.BulletHitMe(nockBack);
 
 		//サウンドを鳴らす
-		SoundManager::GetInstance().Set3DSoundInfo(playerPos, 300.0f, "hit");
+		SoundManager::GetInstance().Set3DSoundInfo(playerPos, 1200.0f, "hit");
 		SoundManager::GetInstance().PlaySE("hit");
 
 		//エフェクトを出す
-		EffectManager::GetInstance().AddEffect("hit", pos_);
+		EffectManager::GetInstance().AddEffect("hit",100.0f, pos_);
 
 		isEnable_ = false;
 	}

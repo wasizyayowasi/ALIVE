@@ -6,9 +6,10 @@
 #include "../util/game.h"
 #include "../util/ModelManager.h"
 #include "../util/FontsManager.h"
-#include "../util/UIItemManager.h"
 #include "../util/ExternalFile.h"
 #include "../util/SoundManager.h"
+#include "../util/EffectManager.h"
+#include "../util/UIItemManager.h"
 
 LoadingScene::LoadingScene(SceneManager& manager):SceneBase(manager)
 {
@@ -41,6 +42,9 @@ void LoadingScene::Init()
 	//サウンドファイルのロード
 	SoundManager::GetInstance().LoadSound();
 	
+	//画像のロード
+	EffectManager::GetInstance().Load();
+
 	//非同期処理を終了する
 	SetUseASyncLoadFlag(false);
 

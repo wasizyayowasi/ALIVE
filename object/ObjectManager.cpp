@@ -217,6 +217,64 @@ void ObjectManager::OpeningStageObjectGenerator()
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Book, Material::Other, objSecond);
 			}
 		}
+		else if (objInfo.first == "BlueContainer") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BlueContainer, Material::Iron, objSecond);
+			}
+		}
+		else if (objInfo.first == "HopStepJump") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::HopStepJump, Material::Stone, objSecond);
+			}
+		}
+		else if (objInfo.first == "TransScaffold") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Trans, Material::Iron, objSecond);
+			}
+		}
+		else if (objInfo.first == "Enemy") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Enemy, Material::Other, objSecond);
+			}
+		}
+		else if (objInfo.first == "Switch") {
+			for (auto& objSecond : objInfo.second) {
+				//SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Switch, Material::Iron, objSecond);
+			}
+		}
+	}
+}
+
+void ObjectManager::EndStageObjectGenerator()
+{
+	auto& file = ExternalFile::GetInstance();
+
+	for (auto& objInfo : file.GetLoadEndingStageObjectInfo()) {
+		if (objInfo.first == "BigBuildingA") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingA, Material::Iron, objSecond);
+			}
+		}
+		else if (objInfo.first == "BuildingC") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingCType1, Material::Iron, objSecond);
+			}
+		}
+		else if (objInfo.first == "Building2A") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingAType2, Material::Iron, objSecond);
+			}
+		}
+		else if (objInfo.first == "street") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Street, Material::Stone, objSecond);
+			}
+		}
+		else if (objInfo.first == "Tile") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Tile, Material::Stone, objSecond);
+			}
+		}
 	}
 }
 
@@ -422,9 +480,6 @@ void ObjectManager::CircumferencePosition(float angle, VECTOR& infoPos, VECTOR p
 //敵生成機
 void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 {
-	//短縮化
-	auto& model = ModelManager::GetInstance();
-
 	//文字列のサイズを取得する
 	int size = static_cast<int>(info.name.size());
 
@@ -436,32 +491,48 @@ void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 
 		//文字列が「ALL」だったら
 		if (str == "ALL") {
-			float angle = 0.0f;
-			for (int i = 0; i < deathCount; i++) {
-				//一定範囲の中でランダムにスポーンさせる
-				RandomPositionGenerator(info, info.pos);
-				
-				//プレイヤーを中心に円周上でスポーンさせる
-				//CircumferencePosition(angle, info.pos, info.pos);
-
-				//インスタンス化
-				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy),Material::Other, info));
-				angle -= 15.0f;
-
-				usedEnemyList_[info.name] = true;
-			}
+			GeneratedForTheNumberOfTimesYouDie(deathCount, info);
 		}
 		else {
-			//最後の文字列をint型の数値に変換する
-			int num = atoi(str.c_str());
-
-			//文字列の最後の数よりもdeathCountが多ければ
-			//エネミーを召喚する
-			if (num <= deathCount) {
-				objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), Material::Other, info));
-				usedEnemyList_[info.name] = true;
-			}
+			GeneratePredeterminedNumberOfTimes(deathCount, str, info);
 		}
+	}
+}
+
+void ObjectManager::GeneratedForTheNumberOfTimesYouDie(int deathCount, LoadObjectInfo info)
+{
+	//短縮化
+	auto& model = ModelManager::GetInstance();
+
+	float angle = 0.0f;
+	for (int i = 0; i < deathCount; i++) {
+		//一定範囲の中でランダムにスポーンさせる
+		RandomPositionGenerator(info, info.pos);
+
+		//プレイヤーを中心に円周上でスポーンさせる
+		//CircumferencePosition(angle, info.pos, info.pos);
+
+		//インスタンス化
+		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), Material::Other, info));
+		angle -= 15.0f;
+
+		usedEnemyList_[info.name] = true;
+	}
+}
+
+void ObjectManager::GeneratePredeterminedNumberOfTimes(int deathCount, std::string str, LoadObjectInfo info)
+{
+	//短縮化
+	auto& model = ModelManager::GetInstance();
+
+	//最後の文字列をint型の数値に変換する
+	int num = atoi(str.c_str());
+
+	//文字列の最後の数よりもdeathCountが多ければ
+	//エネミーを召喚する
+	if (num <= deathCount) {
+		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Enemy), Material::Other, info));
+		usedEnemyList_[info.name] = true;
 	}
 }
 

@@ -6,10 +6,11 @@
 #include <memory>
 #include <map>
 
+class Model;
+class Camera;
+class LightBulb;
 class UIItemManager;
 class ObjectManager;
-class Camera;
-class Model;
 
 class SceneTitle : public SceneBase
 {
@@ -100,12 +101,17 @@ private:
 	int titleHandle_ = -1;						//タイトル画像の保管変数
 	int selectNum_ = 1;							//選択
 
-	std::vector<std::string> menuName_;			//メニューの文字列
-	std::map<std::string, VECTOR> menuDrawPos_;	//メニューを描画する座標
+	float outAngle_ = 0.0f;						//スポットライトの外側の角度
+	float inAngle_ = 0.0f;						//スポットライトの内側の角度
+
 	std::shared_ptr<Camera> camera_;			//カメラのスパートポインタ
 	std::shared_ptr<UIItemManager> UI_;			//UIマネージャーのスマートポインタ
+	std::shared_ptr<LightBulb> lightBulb_;		//電球
+	std::shared_ptr<Model> subPlayerModel_;		//プレイヤーのスマートポインタ
+	std::shared_ptr<Model> mainPlayerModel_;	//プレイヤーのスマートポインタ
 	std::shared_ptr<ObjectManager> objManager_;	//オブジェクトマネージャーのスマートポインタ
-	std::shared_ptr<Model> playerModel_;		//プレイヤーのスマートポインタ
+	std::vector<std::string> menuName_;			//メニューの文字列
+	std::map<std::string, VECTOR> menuDrawPos_;	//メニューを描画する座標
 
 	void (SceneTitle::* updateFunc_)();
 };

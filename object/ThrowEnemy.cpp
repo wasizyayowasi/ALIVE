@@ -8,7 +8,7 @@
 
 namespace {
 	//敵がプレイヤーを視認できる範囲
-	constexpr float visible_range = 800.0f;
+	constexpr float visible_range = 1300.0f;
 
 	//右手のフレーム名
 	const char* const hand_framename = "mixamorig:RightHandIndex2";
@@ -18,9 +18,6 @@ namespace {
 
 	//敵の視野角
 	constexpr float viewing_angle = 45.0f;
-
-	//石を投げる距離
-	constexpr float throw_distance = 800.0f;
 }
 
  ThrowEnemy::ThrowEnemy(int handle, Material materialType, LoadObjectInfo objInfo):EnemyBase(handle, materialType, objInfo)
@@ -86,7 +83,7 @@ void ThrowEnemy::SearchForPlayer(VECTOR playerPos)
 	//視野の範囲内かつ距離が石を投げる距離よりも
 	//短かったらプレイヤーを検知したことにする
 	if (innerProduct < viewing_angle) {
-		if (distanceSize < throw_distance) {
+		if (distanceSize < visible_range) {
 			isDetection_ = true;
 		}
 		else {

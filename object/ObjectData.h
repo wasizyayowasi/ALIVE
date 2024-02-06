@@ -26,6 +26,7 @@ enum class ObjectType{
 	DeadPerson,
 	Enemy,
 	Switch,
+	LightBulb,
 	PenetrationScaffld,
 	HopStepJump,
 	Trans,

@@ -12,6 +12,7 @@
 #include "../util/ExternalFile.h"
 #include "../util/SoundManager.h"
 #include "../util/ModelManager.h"
+#include "../util/EffectManager.h"
 
 #include<algorithm>
 #include<string>
@@ -63,7 +64,6 @@ void Player::Init(LoadObjectInfo info)
 	//ポジションの設定
 	model_->SetPos(info.pos);
 	status_.pos = info.pos;
-//	status_.pos = VGet(0,41,0);
 
 	//回転率の設定
 	model_->SetRot(info.rot);
@@ -235,11 +235,14 @@ void Player::MovingUpdate(const InputState& input)
 		if (movingSpeed > playerInfo_.walkSpeed) {
 			//アニメーションの変更
 			ChangeAnimNo(PlayerAnimType::Run, true, 20);
+			EffectManager::GetInstance().AddEffect("smoke", 100.0f, VGet(status_.pos.x, status_.pos.y + 50.0f, status_.pos.z));
+			EffectManager::GetInstance().AddEffect("leaves", 100.0f, VGet(status_.pos.x, status_.pos.y + 50.0f, status_.pos.z));
 		}
 		else if (movingSpeed <= playerInfo_.walkSpeed) {
 			//アニメーションの変更
 			ChangeAnimNo(PlayerAnimType::Walk, true, 20);
 		}
+		
 	}
 
 	if (VSize(status_.moveVec) == 0.0f) {

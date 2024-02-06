@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="object\LightBulb.cpp" />
     <ClCompile Include="util\Effect2D.cpp" />
     <ClCompile Include="util\EffectManager.cpp" />
     <ClCompile Include="gimmick\HopStepJump.cpp" />
@@ -199,6 +200,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="object\LightBulb.h" />
     <ClInclude Include="util\Effect2D.h" />
     <ClInclude Include="util\EffectManager.h" />
     <ClInclude Include="gimmick\HopStepJump.h" />

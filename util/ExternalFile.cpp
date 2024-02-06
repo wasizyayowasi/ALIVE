@@ -24,6 +24,7 @@ void ExternalFile::LoadFile()
 {
 	//ファイルのロード
 	LoadFileHandle("obj");
+	LoadFileHandle("end");
 	LoadFileHandle("room");
 	LoadFileHandle("UIpos");
 	LoadFileHandle("Enemy");
@@ -44,6 +45,7 @@ void ExternalFile::LoadArrangementData()
 	LoadObjectData("cameraPosition", loadCameraPosInfo_);
 	//マップのリストに格納する
 	LoadObjectDataList("Enemy", loadEnemyInfo_);
+	LoadObjectDataList("end", loadEndStageObjInfo_);
 	LoadObjectDataList("gimmick", loadGimmickInfo_);
 	LoadObjectDataList("obj", loadMainStageObjInfo_);
 	LoadObjectDataList("room", loadOpeningStageObjInfo_);
@@ -118,6 +120,13 @@ LoadObjectInfo ExternalFile::GetSpecifiedInfo(const char* const stage, const cha
 		for (auto& obj : loadOpeningStageObjInfo_) {
 			if (obj.first == name) {
 				info = loadOpeningStageObjInfo_[name].front();
+			}
+		}
+	}
+	else if (stage == "end") {
+		for (auto& obj : loadEndStageObjInfo_) {
+			if (obj.first == name) {
+				info = loadEndStageObjInfo_[name].front();
 			}
 		}
 	}

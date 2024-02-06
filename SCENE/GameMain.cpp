@@ -33,11 +33,11 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 
 	//インスタンス化
 	player_ = std::make_shared<Player>();
-	camera_ = std::make_shared<Camera>(VGet(0,400,-550), VGet(0, 0, 0));
-	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
-	objManager_ = std::make_shared<ObjectManager>();
-	shotManager_ = std::make_shared<ShotManager>();
 	tutorial_ = std::make_shared<Tutorial>();
+	shotManager_ = std::make_shared<ShotManager>();
+	objManager_ = std::make_shared<ObjectManager>();
+	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
+	camera_ = std::make_shared<Camera>(VGet(0,400,-550), VGet(0, 0, 0));
 
 	//プレイヤーの初期化
 	player_->Init(file.GetSpecifiedInfo("main", "Player"));
@@ -51,6 +51,7 @@ GameMain::~GameMain()
 	//ゲームメインが終わるときにプレイ中に死んだ回数と
 	//saveDataに記録されている死亡回数を足す
 	totalDeathNum_ += player_->GetDeathCount();
+	ExternalFile::GetInstance().SetDeathCount(totalDeathNum_);
 	ExternalFile::GetInstance().SaveDataRewriteInfo(checkPoint_, totalDeathNum_);
 }
 

@@ -3,8 +3,8 @@
 #include <list>
 #include <string>
 #include <memory>
-#include <unordered_map>
 #include <DxLib.h>
+#include <unordered_map>
 
 class ObjectBase;
 class Model;
@@ -33,6 +33,11 @@ public:
 	/// オープニングシーンのオブジェクトを生成する
 	/// </summary>
 	void OpeningStageObjectGenerator();
+
+	/// <summary>
+	/// エンディングシーンのオブジェクトを生成する
+	/// </summary>
+	void EndStageObjectGenerator();
 
 	/// <summary>
 	/// 死体生成
@@ -102,13 +107,27 @@ public:
 	/// <param name="loadObjPos"></param>
 	void CircumferencePosition(float angle,VECTOR& infoPos, VECTOR playerPos);
 
-private:
 	/// <summary>
 	/// 敵生成
 	/// </summary>
 	/// <param name="deathCount">今までにプレイヤーが死亡した数</param>
 	/// <param name="info">配置データ</param>
-	void EnemyGenerator(int deathCount,LoadObjectInfo info);
+	void EnemyGenerator(int deathCount, LoadObjectInfo info);
+private:
+	/// <summary>
+	/// 死んだ回数分生成する
+	/// </summary>
+	/// <param name="deathCount">今までにプレイヤーが死亡した数</param>
+	/// <param name="info">配置データ</param>
+	void GeneratedForTheNumberOfTimesYouDie(int deathCount, LoadObjectInfo info);
+
+	/// <summary>
+	/// 既定の回数分生成する
+	/// </summary>
+	/// <param name="deathCount">今までにプレイヤーが死亡した数</param>
+	/// <param name="str">文字列</param>
+	/// <param name="info">配置データ</param>
+	void GeneratePredeterminedNumberOfTimes(int deathCount,std::string str, LoadObjectInfo info);
 
 	/// <summary>
 	/// 置物生成機

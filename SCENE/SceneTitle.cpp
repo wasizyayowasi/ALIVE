@@ -5,8 +5,9 @@
 #include "SelectChapterScene.h"
 #include "SettingSceneForSceneTitle.h"
 
-#include "../object/ObjectManager.h"
 #include "../object/Camera.h"
+#include "../object/LightBulb.h"
+#include "../object/ObjectManager.h"
 
 #include "../util/game.h"
 #include "../util/Model.h"
@@ -26,32 +27,43 @@ namespace {
 SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 {
 	//短縮化
-	auto& file = ExternalFile::GetInstance();
+	auto& file  = ExternalFile::GetInstance();
 	auto& model = ModelManager::GetInstance();
 
 	//インスタンス化
-	UI_ = std::make_shared<UIItemManager>();
-	objManager_ = std::make_shared<ObjectManager>();
-	playerModel_ = std::make_shared<Model>(model.GetModelHandle(ObjectType::Player),Material::Other);
-	camera_ = std::make_shared<Camera>(file.GetCameraTargetPos("start"),file.GetCameraTargetPos("startTargetPos"));
+	UI_					= std::make_shared<UIItemManager>();
+	objManager_			= std::make_shared<ObjectManager>();
+	subPlayerModel_		= std::make_shared<Model>(model.GetModelHandle(ObjectType::Player),Material::Other);
+	mainPlayerModel_	= std::make_shared<Model>(model.GetModelHandle(ObjectType::Player),Material::Other);
+	camera_				= std::make_shared<Camera>(file.GetCameraTargetPos("start"),file.GetCameraTargetPos("startTargetPos"));
+	lightBulb_			= std::make_shared<LightBulb>(model.GetModelHandle(ObjectType::LightBulb), file.GetSpecifiedInfo("title", "LightBulb"));
 
-	//プレイヤーモデルの配置データをセットする
-	auto info = ExternalFile::GetInstance().GetSpecifiedInfo("title", "Player");
-	playerModel_->SetScale(info.scale);
-	playerModel_->SetPos(info.pos);
-	playerModel_->SetRot(info.rot);
-	playerModel_->SetAnimation(static_cast<int>(PlayerAnimType::wakeUp), false, true);
+	//メインプレイヤーモデルの配置データをセットする
+	auto mainPlayerInfo = file.GetSpecifiedInfo("title", "Player");
+	mainPlayerModel_->SetScale(mainPlayerInfo.scale);
+	mainPlayerModel_->SetPos(mainPlayerInfo.pos);
+	mainPlayerModel_->SetRot(mainPlayerInfo.rot);
+	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::wakeUp), false, true);
+
+	//サブプレイヤーモデルの配置データをセットする
+	auto subPlayerInfo = file.GetSpecifiedInfo("title", "SubPlayer");
+	mainPlayerModel_->SetScale(subPlayerInfo.scale);
+	mainPlayerModel_->SetPos(subPlayerInfo.pos);
+	mainPlayerModel_->SetRot(subPlayerInfo.rot);
+	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::jump), false, true);
 
 	//UIを表示する座標を取得
-	menuDrawPos_["タイトル"] = file.GetUIPos("titleDrawPos");
-	menuDrawPos_["ニューゲーム"] = file.GetUIPos("startDrawPos");
-	menuDrawPos_["ゲームを再開する"] = file.GetUIPos("continueDrawPos");
-	menuDrawPos_["設定"] = file.GetUIPos("settingDrawPos");
-	menuDrawPos_["モード"] = file.GetUIPos("windowModeUIPos");
-	menuDrawPos_["BGM"] = file.GetUIPos("BGMUIPos");
-	menuDrawPos_["SE"] = file.GetUIPos("SEUIPos");
-	menuDrawPos_["操作設定"] = file.GetUIPos("advancedSettingUIPos");
-	menuDrawPos_["戻る"] = file.GetUIPos("backUIPos");
+	menuDrawPos_["タイトル"]			= file.GetUIPos("titleDrawPos");
+	menuDrawPos_["ニューゲーム"]		= file.GetUIPos("startDrawPos");
+	menuDrawPos_["ゲームを再開する"]	= file.GetUIPos("continueDrawPos");
+	menuDrawPos_["設定"]				= file.GetUIPos("settingDrawPos");
+	menuDrawPos_["モード"]				= file.GetUIPos("windowModeUIPos");
+	menuDrawPos_["BGM"]					= file.GetUIPos("BGMUIPos");
+	menuDrawPos_["SE"]					= file.GetUIPos("SEUIPos");
+	menuDrawPos_["操作設定"]			= file.GetUIPos("advancedSettingUIPos");
+	menuDrawPos_["戻る"]				= file.GetUIPos("backUIPos");
+
+	SetUseLighting(true);
 
 	//オブジェクトの生成
 	objManager_->OpeningStageObjectGenerator();
@@ -59,10 +71,13 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	//カメラの初期化
 	camera_->Init(VGet(0, 140, 0));
 
+	//カメラのポジションと見る位置の設定
 	camera_->SetCameraTargetPosAndView(file.GetCameraTargetPos("start"), file.GetCameraTargetPos("startTargetPos"),{0,1,0});
 
-	//仮でライト処理を消している
-	SetUseLighting(true);
+	outAngle_ = 90.0f * DX_PI_F / 180.0f;
+	inAngle_ = 30.0f * DX_PI_F / 180.0f;
+	//ChangeLightTypeSpot(lightBulb_->GetFramePos(), lightBulb_->GetFrontVec(), outAngle_, inAngle_, 1000.0f, 0.0f, 0.0006f, 0.0f);
+	//ChangeLightTypePoint(lightBulb_->GetFramePos(), 500.0f, 0.0f, 0.0006f, 0.0f);
 
 	//タイトル画像の読み込み
 	titleHandle_ = LoadGraph("data/graph/title.png");
@@ -103,6 +118,13 @@ void SceneTitle::Update()
 	//カメラの更新
 	camera_->EasingMoveCamera();
 
+	//電球の更新
+	lightBulb_->Update();
+
+	//ライトの更新
+	//SetLightDirection(lightBulb_->GetFrontVec());
+	//SetLightPosition(lightBulb_->GetFramePos());
+
 	(this->*updateFunc_)();
 }
 
@@ -118,8 +140,10 @@ void SceneTitle::Draw()
 	//オブジェクトの描画
 	objManager_->Draw({ 0,0,0 });
 
+	lightBulb_->Draw();
+
 	//モデルの描画
-	playerModel_->Draw();
+	mainPlayerModel_->Draw();
 
 	//UIの描画
 	UI_->DrawBillBoard(menuDrawPos_,static_cast<float>(UIfadeValue_),200.0f);
@@ -196,10 +220,10 @@ void SceneTitle::OpeningSoundUpdate()
 void SceneTitle::OpeningUpdate()
 {
 	//モデルの描画
-	playerModel_->Update();
+	mainPlayerModel_->Update();
 
 	//アニメーションが終了次第
-	if (playerModel_->IsAnimEnd()) {
+	if (mainPlayerModel_->IsAnimEnd()) {
 		updateFunc_ = &SceneTitle::SceneTitleFadeOutUpdate;
 	}
 }

@@ -93,14 +93,14 @@ void SelectChapterScene::NormalUpdate()
 	}
 
 	//チャプター選択
-	if (input.IsTriggered(InputType::left)) {
+	if (input.IsTriggered(InputType::right)) {
 		if (selectNum_ < 2) {
 			model_->ChangeAnimation(static_cast<int>(BookAnim::open), false, false, 10);
 			MV1SetTextureGraphHandle(model_->GetModelHandle(), 0, textureHandle_[(std::min)(selectNum_ + 1, 2)], true);
 		}
 		selectNum_ = (std::min)(selectNum_ + 1, 2);
 	}
-	if (input.IsTriggered(InputType::right)) {
+	if (input.IsTriggered(InputType::left)) {
 		if (selectNum_ > 0) {
 			model_->ChangeAnimation(static_cast<int>(BookAnim::close), false, false, 10);
 			MV1SetTextureGraphHandle(model_->GetModelHandle(), 0, textureHandle_[(std::max)(selectNum_ - 1, 0)], true);

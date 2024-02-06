@@ -133,6 +133,12 @@ public:
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadOpeningStageObjectInfo() { return loadOpeningStageObjInfo_; }
 
 	/// <summary>
+	/// エンディングシーンオブジェクトの配置、回転率、拡縮率を取得する
+	/// </summary>
+	/// <returns>オブジェクトの配置データなどをまとめた変数</returns>
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadEndingStageObjectInfo() { return loadEndStageObjInfo_; }
+
+	/// <summary>
 	/// カメラの座標データを取得する
 	/// </summary>
 	/// <param name="name">名前</param>
@@ -145,6 +151,12 @@ public:
 	/// <param name="name">取得したいUIの名前</param>
 	/// <returns>座標</returns>
 	VECTOR GetUIPos(std::string name);
+
+	/// <summary>
+	/// 死んだ回数をセットする
+	/// </summary>
+	/// <param name="num"></param>
+	void SetDeathCount(int num) { totalDeathNum_ = num; }
 private:
 
 	/// <summary>
@@ -185,6 +197,8 @@ private:
 	ExternalFile(const ExternalFile&) = delete;
 	void operator = (const ExternalFile&) = delete;
 
+	int totalDeathNum_ = 0;			//死んだ回数
+
 	PlayerInfo player_ = {};		//プレイヤーのステータス情報
 	SaveData data_ = {};			//セーブデータ情報
 
@@ -192,6 +206,7 @@ private:
 
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadMainStageObjInfo_;	//メインステージオブジェクトの配置データ
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadOpeningStageObjInfo_;//オープニングステージオブジェクトの配置データ
+	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadEndStageObjInfo_;	//オープニングステージオブジェクトの配置データ
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadGimmickInfo_;		//ギミックの配置データ	
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadCameraGimmickInfo_;	//カメラギミックの配置データ		
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadEnemyInfo_;			//敵の配置データ

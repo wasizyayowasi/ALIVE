@@ -38,6 +38,7 @@ namespace {
 	const char* const woodenBox_filepath			= "data/model/room/mv1/WoodenBox.mv1";
 	const char* const TV_filepath					= "data/model/room/mv1/TV.mv1";
 	const char* const book_filepath					= "data/model/room/mv1/Book.mv1";
+	const char* const lightBulb_filepath			= "data/model/room/mv1/LightBulb.mv1";
 	//‰w
 	const char* const train_filepath				= "data/model/station/mv1/Train.mv1";
 	const char* const station_filepath				= "data/model/station/mv1/Station.mv1";
@@ -90,6 +91,7 @@ void ModelManager::LoadModel()
 	modelHandle_[ObjectType::WoodenBox] = MV1LoadModel(woodenBox_filepath);					//175
 	modelHandle_[ObjectType::TV] = MV1LoadModel(TV_filepath);								//513
 	modelHandle_[ObjectType::Book] = MV1LoadModel(book_filepath);							//172
+	modelHandle_[ObjectType::LightBulb] = MV1LoadModel(lightBulb_filepath);					//172
 
 	modelHandle_[ObjectType::Train] = MV1LoadModel(train_filepath);							//307
 	modelHandle_[ObjectType::Station] = MV1LoadModel(station_filepath);						//713

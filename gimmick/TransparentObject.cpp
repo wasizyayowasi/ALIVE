@@ -58,7 +58,7 @@ void TransparentObject::Update(Player& player)
 		alphaValue_ = (std::min)(alphaValue_ + 0.1f, 1.0f);
 	}
 	else {
-		alphaValue_ = (std::max)(alphaValue_ - 0.1f, 0.0f);
+		alphaValue_ = (std::max)(alphaValue_ - 0.1f, 0.1f);
 	}
 
 	COLOR_F color = {};

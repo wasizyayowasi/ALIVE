@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <map>
 #include <list>
+#include <vector>
 #include <string>
 #include <memory>
 
@@ -9,16 +10,6 @@ class Effect2D;
 
 class EffectManager
 {
-private:
-
-	struct EffectInfo {
-		int numX;			//横の分割数
-		int numY;			//縦の分割数
-		int chipSizeX;		//横のチップサイズ
-		int chipSizeY;		//縦のチップサイズ
-		float size;			//描画サイズ
-	};
-
 public:
 	/// <summary>
 	/// デストラクタ
@@ -35,6 +26,11 @@ public:
 	}
 
 	/// <summary>
+	/// 画像の読み込み
+	/// </summary>
+	void Load();
+
+	/// <summary>
 	/// 更新
 	/// </summary>
 	void Update();
@@ -48,8 +44,9 @@ public:
 	/// エフェクトの追加
 	/// </summary>
 	/// <param name="name">エフェクト名</param>
+	/// <param name="size">描画サイズ</param>
 	/// <param name="pos">座標</param>
-	void AddEffect(std::string name, VECTOR pos);
+	void AddEffect(std::string name, float size, VECTOR pos);
 
 private:
 	/// <summary>
@@ -60,8 +57,10 @@ private:
 	EffectManager(const EffectManager&) = delete;
 	void operator = (const EffectManager&) = delete;
 private:
+	int arrayHandle_[30] = {};
+
+	std::map<std::string, std::vector<int>> handle_ = {};	//画像テーブル
 	std::map<std::string,std::string> filepath_ = {};		//ファイルパス
-	std::map<std::string,EffectInfo> handleInfo_ = {};		//effect情報
 	std::list<std::shared_ptr<Effect2D>> effect2D_ = {};	//effect
 };
 
