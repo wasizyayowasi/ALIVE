@@ -159,6 +159,12 @@ public:
 	VECTOR GetUIPos(std::string name);
 
 	/// <summary>
+	/// €‚ñ‚¾‰ñ”‚Ìæ“¾
+	/// </summary>
+	/// <returns>€‚ñ‚¾‰ñ”</returns>
+	int GetDeathCount() { return totalDeathNum_; }
+
+	/// <summary>
 	/// €‚ñ‚¾‰ñ”‚ğƒZƒbƒg‚·‚é
 	/// </summary>
 	/// <param name="num"></param>

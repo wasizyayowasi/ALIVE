@@ -252,6 +252,11 @@ void ObjectManager::OpeningStageObjectGenerator()
 				//SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Switch, Material::Iron, objSecond);
 			}
 		}
+		else if (objInfo.first == "Door") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Door, Material::Iron, objSecond);
+			}
+		}
 	}
 }
 

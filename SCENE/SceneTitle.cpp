@@ -57,6 +57,7 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	menuDrawPos_["ニューゲーム"]		= file.GetUIPos("startDrawPos");
 	menuDrawPos_["ゲームを再開する"]	= file.GetUIPos("continueDrawPos");
 	menuDrawPos_["設定"]				= file.GetUIPos("settingDrawPos");
+	menuDrawPos_["終了"]				= file.GetUIPos("endDrawPos");
 	menuDrawPos_["モード"]				= file.GetUIPos("windowModeUIPos");
 	menuDrawPos_["BGM"]					= file.GetUIPos("BGMUIPos");
 	menuDrawPos_["SE"]					= file.GetUIPos("SEUIPos");
@@ -140,6 +141,7 @@ void SceneTitle::Draw()
 	//オブジェクトの描画
 	objManager_->Draw({ 0,0,0 });
 
+	//電球の描画
 	lightBulb_->Draw();
 
 	//モデルの描画
@@ -149,11 +151,12 @@ void SceneTitle::Draw()
 	UI_->DrawBillBoard(menuDrawPos_,static_cast<float>(UIfadeValue_),200.0f);
 
 	input.DrawKeyGraph(InputType::left, Game::screen_width / 6 * 4, Game::screen_height - 40, 0.8f);
-	input.DrawKeyGraph(InputType::right, Game::screen_width / 7 * 5, Game::screen_height - 40, 0.8f);
-	input.DrawKeyGraph(InputType::space, Game::screen_width / 6 * 5, Game::screen_height - 40, 0.8f);
+	input.DrawKeyGraph(InputType::down, Game::screen_width / 7 * 5, Game::screen_height - 40, 0.8f);
+	input.DrawKeyGraph(InputType::right, Game::screen_width / 8 * 6, Game::screen_height - 40, 0.8f);
+	input.DrawKeyGraph(InputType::space, Game::screen_width / 8 * 7, Game::screen_height - 40, 0.8f);
 
-	DrawStringToHandle(Game::screen_width / 4 * 3 - 25, Game::screen_height - 60, "移動", 0xffffff, fontHandle_);
-	input.DrawName(InputType::space, Game::screen_width / 14 * 12, Game::screen_height - 60, 0xffffff, fontHandle_, true, true, "/");
+	DrawStringToHandle(Game::screen_width / 10 * 8 - 25, Game::screen_height - 60, "移動", 0xffffff, fontHandle_);
+	input.DrawName(InputType::space, Game::screen_width / 20 * 18, Game::screen_height - 60, 0xffffff, fontHandle_, true, true, "/");
 
 	//fadeValue_の値によって透過具合が変化するタイトルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
@@ -184,21 +187,42 @@ void SceneTitle::UIUpdate()
 	auto& file = ExternalFile::GetInstance();
 	auto& input = InputState::GetInstance();
 
+	//1フレーム前の選択番号を記録する
+	int oldSelectNum = selectNum_;
+
+	if (camera_->GetMoving()) {
+		return;
+	}
+
 	//選択
 	if (input.IsTriggered(InputType::left)) {
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
-		CameraSetting();
 	}
 	if (input.IsTriggered(InputType::right)) {
-		selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
+		selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 2));
+	}
+
+	//終了へ行く
+	if (selectNum_ == 1 || selectNum_ == 3) {
+		if (input.IsTriggered(InputType::down)) {
+			if (selectNum_ == 3) {
+				selectNum_ = 1;
+			}
+			else {
+				selectNum_ = 3;
+			}
+		}
+	}
+
+	//現在のフレームと前のフレームで番号が違ったら
+	//カメラの設定を行う
+	if (selectNum_ != oldSelectNum) {
 		CameraSetting();
 	}
 
 	//決定
 	if (input.IsTriggered(InputType::space)) {
-		if (!camera_->GetMoving()) {
-			updateFunc_ = &SceneTitle::UIFadeOutUpdate;
-		}
+		updateFunc_ = &SceneTitle::UIFadeOutUpdate;
 	}
 }
 
@@ -298,6 +322,12 @@ void SceneTitle::CameraSetting()
 		targetPos = file.GetCameraTargetPos("continue");
 		targetViewPos = file.GetCameraTargetPos("continueTargetPos");
 		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos, { 0,0,1 });
+
+		break;
+	case 3:
+		targetPos = file.GetCameraTargetPos("end");
+		targetViewPos = file.GetCameraTargetPos("endTargetPos");
+		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos, { 0,-1,0 });
 
 		break;
 	}
