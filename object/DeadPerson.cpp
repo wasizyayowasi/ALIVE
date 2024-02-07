@@ -24,7 +24,7 @@ DeadPerson::DeadPerson(int handle,Material materialType, LoadObjectInfo objInfo,
 	case PlayerAnimType::Death:
 		model_->SetUseCollision(true,true,coll_frame_death);
 		break;
-	case PlayerAnimType::idleToSitup:
+	case PlayerAnimType::IdleToSitup:
 		model_->SetUseCollision(true, true, coll_frame_Sit);
 		break;
 	}

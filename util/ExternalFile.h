@@ -14,9 +14,15 @@ struct SaveData {
 class ExternalFile
 {
 public:
-
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~ExternalFile();
 
+	/// <summary>
+	/// インスタンス生成
+	/// </summary>
+	/// <returns></returns>
 	static ExternalFile& GetInstance() {
 		static ExternalFile instance;
 		return instance;

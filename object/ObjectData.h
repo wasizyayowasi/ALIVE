@@ -40,6 +40,7 @@ enum class ObjectType{
 	Train,
 	Station,
 	Fence,
+	CorpseMountain,
 	StoreC,
 	Street,
 	TStreet,
@@ -62,6 +63,8 @@ enum class ObjectType{
 	Book,
 	TunnelWall,
 	TunnelEntrance,
+	WallBack,
+	WallSide,
 	Max,
 };
 

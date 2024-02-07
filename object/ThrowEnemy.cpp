@@ -11,7 +11,8 @@ namespace {
 	constexpr float visible_range = 1300.0f;
 
 	//右手のフレーム名
-	const char* const hand_framename = "mixamorig:RightHandIndex2";
+	//const char* const hand_framename = "mixamorig:RightHandIndex2";
+	const char* const hand_framename = "hand.R_end";
 
 	//物を投げているときのアニメーションフレーム
 	constexpr int throw_frame_time = 73;
@@ -22,8 +23,20 @@ namespace {
 
  ThrowEnemy::ThrowEnemy(int handle, Material materialType, LoadObjectInfo objInfo):EnemyBase(handle, materialType, objInfo)
 {
+	 //衝突判定の設定
 	 isCollCheck_ = true;
 	 model_->SetUseCollision(isCollCheck_, true);
+
+	 //文字列の取得
+	 std::string str = StrUtil::GetStringAfterSign(objInfo.name, "-");
+
+	 //文字列がFakeだったら投げるふりをするフラグを立てる
+	 if (str == "Fake") {
+		 isFakeThrow_ = true;
+	 }
+
+	 //マテリアルの色を変える
+	 MV1SetMaterialDifColor(model_->GetModelHandle(), 8, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
 ThrowEnemy::~ThrowEnemy()
@@ -100,7 +113,7 @@ void ThrowEnemy::Shot(std::shared_ptr<ShotManager> shotManager, VECTOR playerPos
 	//投げるアニメーションが終わったら
 	//投げているという変数をfalseにする
 	if (model_->IsAnimEnd()) {
-		model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), false, false, 5);
+		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Idle), false, false, 5);
 		isThrow_ = false;
 	}
 
@@ -116,8 +129,13 @@ void ThrowEnemy::Shot(std::shared_ptr<ShotManager> shotManager, VECTOR playerPos
 	//投げている途中ではなかったら
 	//アニメーションを投げるアニメーションに変更する
 	if (!isThrow_) {
-		model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Throw), false, false, 5);
+		//model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Throw), false, false, 5);
+		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Throw), false, false, 5);
 		isThrow_ = true;
+	}
+
+	if (isFakeThrow_) {
+		return;
 	}
 
 	//投げているアニメーションの特定フレームで

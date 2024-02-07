@@ -43,14 +43,14 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	mainPlayerModel_->SetScale(mainPlayerInfo.scale);
 	mainPlayerModel_->SetPos(mainPlayerInfo.pos);
 	mainPlayerModel_->SetRot(mainPlayerInfo.rot);
-	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::wakeUp), false, true);
+	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::WakeUp), false, true);
 
 	//サブプレイヤーモデルの配置データをセットする
 	auto subPlayerInfo = file.GetSpecifiedInfo("title", "SubPlayer");
 	mainPlayerModel_->SetScale(subPlayerInfo.scale);
 	mainPlayerModel_->SetPos(subPlayerInfo.pos);
 	mainPlayerModel_->SetRot(subPlayerInfo.rot);
-	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::jump), false, true);
+	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::Jump), false, true);
 
 	//UIを表示する座標を取得
 	menuDrawPos_["タイトル"]			= file.GetUIPos("titleDrawPos");

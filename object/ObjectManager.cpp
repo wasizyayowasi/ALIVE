@@ -75,6 +75,16 @@ void ObjectManager::MainStageObjectGenerator()
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Fence, Material::Iron, objSecond);
 			}
 		}
+		else if (objInfo.first == "WallBack") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WallBack, Material::Stone, objSecond);
+			}
+		}
+		else if (objInfo.first == "WallSide") {
+			for (auto& objSecond : objInfo.second) {
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WallSide, Material::Stone, objSecond);
+			}
+		}
 		else if (objInfo.first == "Street") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Street, Material::Stone, objSecond);
@@ -339,6 +349,17 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 			EnemyGenerator(player.GetDeathCount(), enemy);
 		}
 	}
+
+	for (auto& table : ExternalFile::GetInstance().GetGimmickInfo()) {
+		if (table.first != "CorpseMountain") {
+			continue;
+		}
+		for (auto& corpseMt : table.second) {
+			if (!usedCorpseMtList_[corpseMt.name]) {
+				GenerateCorpseMountain(player.GetDeathCount(), corpseMt);
+			}
+		}
+	}
 }
 
 //•`‰æ
@@ -533,6 +554,25 @@ void ObjectManager::GeneratePredeterminedNumberOfTimes(int deathCount, std::stri
 	if (num <= deathCount) {
 		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Player), Material::Other, info));
 		usedEnemyList_[info.name] = true;
+	}
+}
+
+void ObjectManager::GenerateCorpseMountain(int deathCount, LoadObjectInfo info)
+{
+	//’Zk‰»
+	auto& model = ModelManager::GetInstance();
+
+	std::string str = StrUtil::GetStringAfterSign(info.name, ".");
+	str = StrUtil::GetStringBeforeSign(str, "-");
+
+	//ÅŒã‚Ì•¶š—ñ‚ğintŒ^‚Ì”’l‚É•ÏŠ·‚·‚é
+	int num = atoi(str.c_str());
+
+	//•¶š—ñ‚ÌÅŒã‚Ì”‚æ‚è‚àdeathCount‚ª‘½‚¯‚ê‚Î
+	//ƒGƒlƒ~[‚ğ¢Š«‚·‚é
+	if (num <= deathCount) {
+		objects_[ObjectType::CorpseMountain].push_back(std::make_shared<OrnamentBase>(model.GetModelHandle(ObjectType::CorpseMountain), Material::Other, info));
+		usedCorpseMtList_[info.name] = true;
 	}
 }
 

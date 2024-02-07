@@ -1,7 +1,7 @@
 #include "ModelManager.h"
 
 namespace {
-	const char* const player_model_Filename			= "data/player/mv1/player.mv1";
+	const char* const player_model_Filename			= "data/player/mv1/player1.mv1";
 	const char* const enemy_model_Filename			= "data/enemy/mv1/enemy.mv1";
 	//モデルのファイルパス
 	const char* const switch_filepath				= "data/model/switch.mv1";
@@ -12,7 +12,7 @@ namespace {
 	const char* const signboardType2_filepath		= "data/model/other/mv1/SignBoardType2.mv1";
 	const char* const hopStepJump_filepath			= "data/model/other/mv1/HopStepJump.mv1";
 	const char* const fence_filepath				= "data/model/city/container/mv1/FenceType1.mv1";
-
+	const char* const corpse_mountain_filepath		= "data/model/other/mv1/CorpseMountain.mv1";
 	//でかいビル
 	const char* const big_buildingA_filepath		= "data/model/city/building/mv1/BigBuildingA.mv1";
 	const char* const buildingC_filepath			= "data/model/city//building/mv1/BuildingC.mv1";
@@ -21,8 +21,11 @@ namespace {
 	//道
 	const char* const street_filepath				= "data/model/city//building/mv1/Street.mv1";
 	const char* const T_street_filepath				= "data/model/city//building/mv1/TStreet.mv1";
-	const char* const Tile_filepath					= "data/model/city//building/mv1/Tile.mv1";
-	const char* const TileType2_filepath			= "data/model/city//building/mv1/TileType2.mv1";
+	const char* const tile_filepath					= "data/model/city//building/mv1/Tile.mv1";
+	const char* const tile_type2_filepath			= "data/model/city//building/mv1/TileType2.mv1";
+	//壁
+	const char* const wall_back_filepath			= "data/model/city//building/mv1/WallBack.mv1";
+	const char* const wall_side_filepath			= "data/model/city//building/mv1/WallSide.mv1";
 	//建物
 	const char* const blueContainer_filepath		= "data/model/city/container/mv1/BlueContainer.mv1";
 	const char* const redContainer_filepath			= "data/model/city/container/mv1/RedContainer.mv1";
@@ -66,6 +69,7 @@ void ModelManager::LoadModel()
 	modelHandle_[ObjectType::SignBoardType2] = MV1LoadModel(signboardType2_filepath);		//66
 	modelHandle_[ObjectType::HopStepJump] = MV1LoadModel(hopStepJump_filepath);				//
 	modelHandle_[ObjectType::Fence] = MV1LoadModel(fence_filepath);							//172
+	modelHandle_[ObjectType::CorpseMountain] = MV1LoadModel(corpse_mountain_filepath);		//
 
 	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);			//55
 	modelHandle_[ObjectType::BuildingCType1] = MV1LoadModel(buildingC_filepath);			//59
@@ -74,8 +78,11 @@ void ModelManager::LoadModel()
 
 	modelHandle_[ObjectType::Street] = MV1LoadModel(street_filepath);						//55
 	modelHandle_[ObjectType::TStreet] = MV1LoadModel(T_street_filepath);					//54
-	modelHandle_[ObjectType::Tile] = MV1LoadModel(Tile_filepath);							//58
-	modelHandle_[ObjectType::TileType2] = MV1LoadModel(TileType2_filepath);					//53
+	modelHandle_[ObjectType::Tile] = MV1LoadModel(tile_filepath);							//58
+	modelHandle_[ObjectType::TileType2] = MV1LoadModel(tile_type2_filepath);				//53
+
+	modelHandle_[ObjectType::WallBack] = MV1LoadModel(wall_back_filepath);					//53
+	modelHandle_[ObjectType::WallSide] = MV1LoadModel(wall_side_filepath);					//53
 
 	modelHandle_[ObjectType::BlueContainer] = MV1LoadModel(blueContainer_filepath);			//66
 	modelHandle_[ObjectType::RedContainer] = MV1LoadModel(redContainer_filepath);			//180
@@ -91,7 +98,7 @@ void ModelManager::LoadModel()
 	modelHandle_[ObjectType::WoodenBox] = MV1LoadModel(woodenBox_filepath);					//175
 	modelHandle_[ObjectType::TV] = MV1LoadModel(TV_filepath);								//513
 	modelHandle_[ObjectType::Book] = MV1LoadModel(book_filepath);							//172
-	modelHandle_[ObjectType::LightBulb] = MV1LoadModel(lightBulb_filepath);					//172
+	modelHandle_[ObjectType::LightBulb] = MV1LoadModel(lightBulb_filepath);					//
 
 	modelHandle_[ObjectType::Train] = MV1LoadModel(train_filepath);							//307
 	modelHandle_[ObjectType::Station] = MV1LoadModel(station_filepath);						//713

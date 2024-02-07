@@ -188,7 +188,7 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 			if (!status_.jump.isJump) {
 				PlayerJump(playerInfo_.jumpPower);
 			}
-			ChangeAnimNo(PlayerAnimType::jump, false, 20);
+			ChangeAnimNo(PlayerAnimType::Jump, false, 20);
 			updateFunc_ = &Player::JumpUpdate;
 			return;
 		}
@@ -385,7 +385,7 @@ void Player::JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 void Player::DeathUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
 {
 	//座るアニメーション以外だったら死ぬアニメーションに変える
-	if (status_.animNo != static_cast<int>(PlayerAnimType::idleToSitup)) {
+	if (status_.animNo != static_cast<int>(PlayerAnimType::IdleToSitup)) {
 		//アニメーションの変更
 		ChangeAnimNo(PlayerAnimType::Death, false, 20);
 	}
@@ -426,17 +426,17 @@ void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> o
 	//立ち上がるためのコマンド
 	if (input.IsTriggered(InputType::activate)) {
 		//アニメーションの変更
-		ChangeAnimNo(PlayerAnimType::situpToIdle, false, 20);
+		ChangeAnimNo(PlayerAnimType::SitupToIdle, false, 20);
 	}
 	
 	//立つ家庭のアニメーションが終わったらidleupdateに変更する
-	if (status_.animNo == static_cast<int>(PlayerAnimType::situpToIdle) && model_->IsAnimEnd()) {
+	if (status_.animNo == static_cast<int>(PlayerAnimType::SitupToIdle) && model_->IsAnimEnd()) {
 		updateFunc_ = &Player::NormalUpdate;
 		status_.situation.isSitting = false;
 		return;
 	}
 
-	if (status_.animNo == static_cast<int>(PlayerAnimType::situpToIdle)) return;
+	if (status_.animNo == static_cast<int>(PlayerAnimType::SitupToIdle)) return;
 
 	//死ぬコマンド
 	if (input.IsTriggered(InputType::death)) {
@@ -457,11 +457,11 @@ void Player::IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager>
 	//座っているフラグを立て、アニメーションループ変数を折る
 	if (!status_.situation.isSitting) {
 		status_.situation.isSitting = true;
-		ChangeAnimNo(PlayerAnimType::idleToSitup, false, 20);
+		ChangeAnimNo(PlayerAnimType::IdleToSitup, false, 20);
 	}
 
 	//座る過程のアニメーションが終わったら三角座りにする
-	if (status_.animNo == static_cast<int>(PlayerAnimType::idleToSitup) && model_->IsAnimEnd()) {
+	if (status_.animNo == static_cast<int>(PlayerAnimType::IdleToSitup) && model_->IsAnimEnd()) {
 		model_->SetAnimEndFrame(status_.animNo);
 		updateFunc_ = &Player::SitUpdate;
 	}
@@ -658,7 +658,7 @@ void Player::GoCrankRotationPosition(const InputState& input, std::shared_ptr<Ob
 		angle_ = -90.0f;
 		status_.rot = VGet(0, angle_, 0);
 		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
-		ChangeAnimNo(PlayerAnimType::crank, false, 20);
+		ChangeAnimNo(PlayerAnimType::Crank, false, 20);
 		updateFunc_ = &Player::CrankUpdate;
 	}
 

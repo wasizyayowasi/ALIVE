@@ -1,4 +1,5 @@
 #pragma once
+#include "PlayerData.h"
 #include "CharacterBase.h"
 #include <list>
 #include <memory>

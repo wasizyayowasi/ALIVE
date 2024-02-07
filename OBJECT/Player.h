@@ -42,9 +42,20 @@ private:
 
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Player();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~Player();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="info">配置データ</param>
 	void Init(LoadObjectInfo info);
 
 	/// <summary>

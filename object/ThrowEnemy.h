@@ -46,6 +46,7 @@ private:
 
 	bool isDetection_ = false;						//プレイヤーを検知したか
 	bool isThrow_ = false;							//投げるモーション中か
+	bool isFakeThrow_ = false;						//投げるふりをするか
 
 	//VECTOR pushVec_ = {};							//プレイヤーが敵にぶつかったときに押すベクトル
 };

@@ -130,6 +130,13 @@ private:
 	void GeneratePredeterminedNumberOfTimes(int deathCount,std::string str, LoadObjectInfo info);
 
 	/// <summary>
+	/// 死んだ回数によって補助足場を生成する
+	/// </summary>
+	/// <param name="deathCount">死んだ回数</param>
+	/// <param name="info">配置データ</param>
+	void GenerateCorpseMountain(int deathCount, LoadObjectInfo info);
+
+	/// <summary>
 	/// 置物生成機
 	/// </summary>
 	/// <param name="objType">オブジェクトのタイプ</param>
@@ -148,6 +155,7 @@ private:
 
 	std::list<std::shared_ptr<Model>> checkCollList_;
 	std::unordered_map<std::string, bool>  usedEnemyList_;
+	std::unordered_map<std::string, bool>  usedCorpseMtList_;
 
 	std::unordered_map<ObjectType, std::list<std::shared_ptr<ObjectBase>>> objects_;			//オブジェクトをobjectTypeをキーにlistでもつ
 };

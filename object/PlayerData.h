@@ -4,13 +4,14 @@ enum class PlayerAnimType {
 	Idle,			//待機状態
 	Walk,			//歩く
 	Run,			//走る
-	jump,			//ジャンプ
-	crank,			//クランクを回す
+	Jump,			//ジャンプ
+	Crank,			//クランクを回す
 	Death,			//死ぬ
-	idleToSitup,	//idle状態から座る
-	situpToIdle,	//座っている状態からidle
+	IdleToSitup,	//idle状態から座る
+	SitupToIdle,	//座っている状態からidle
 	LeverOn,		//レバーを起動する
-	wakeUp,			//起き上がる
+	WakeUp,			//起き上がる
+	Throw,			//投げる
 	max
 };
 
