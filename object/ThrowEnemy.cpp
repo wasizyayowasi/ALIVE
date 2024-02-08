@@ -75,8 +75,6 @@ void ThrowEnemy::Update(Player& player)
 void ThrowEnemy::Draw()
 {
 	model_->Draw();
-
-	//DrawLine3D(pos_, VScale(frontVec_, 800.0f), 0x0000ff);
 }
 
 void ThrowEnemy::SearchForPlayer(VECTOR playerPos)

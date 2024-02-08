@@ -12,6 +12,8 @@ enum class PlayerAnimType {
 	LeverOn,		//レバーを起動する
 	WakeUp,			//起き上がる
 	Throw,			//投げる
+	StopTimer,		//タイマーをとめる
+	StopTimerCancel,//タイマーを止める行動をとめる
 	max
 };
 

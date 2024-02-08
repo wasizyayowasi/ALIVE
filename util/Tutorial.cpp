@@ -133,8 +133,8 @@ void Tutorial::CranckTutorialDraw(InputState& input)
 
 	if (pressedBottan) {
 		//•¶š—ñ‚Ì•`‰æ
-		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - keybord_graph_chip_size * 1.6f - 80.0f, "‰E‰ñ“]", 0xffffff, fontPigumo42_);
-		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - keybord_graph_chip_size * 1.6f, "¶‰ñ“]", 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - keybord_graph_chip_size * 1.6f - 80.0f, "¶‰ñ“]", 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - keybord_graph_chip_size * 1.6f, "‰E‰ñ“]", 0xffffff, fontPigumo42_);
 
 		//ƒL[‰æ‘œ‚Ì•`‰æ
 		input.DrawKeyGraph(InputType::up, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second - 80.0f, 1.2f);

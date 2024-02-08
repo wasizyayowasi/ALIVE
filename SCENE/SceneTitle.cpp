@@ -43,7 +43,7 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	mainPlayerModel_->SetScale(mainPlayerInfo.scale);
 	mainPlayerModel_->SetPos(mainPlayerInfo.pos);
 	mainPlayerModel_->SetRot(mainPlayerInfo.rot);
-	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::WakeUp), false, true);
+	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::StopTimer), false, true);
 
 	//サブプレイヤーモデルの配置データをセットする
 	auto subPlayerInfo = file.GetSpecifiedInfo("title", "SubPlayer");
@@ -280,28 +280,33 @@ void SceneTitle::UIUpdate()
 	}
 }
 
-void SceneTitle::OpeningSoundUpdate()
+void SceneTitle::OpeningUpdate()
 {
 	//短縮化
 	auto& sound = SoundManager::GetInstance();
-	int notPlaying = static_cast<int>(SoundPlay::notPlaying);
 
-	//サウンドが鳴り終わったら
-	if (sound.CheckSoundFile("alarm") == notPlaying) {
-		if (sound.CheckSoundFile("stopAlarm") == notPlaying) {
-			sound.PlaySE("stopAlarm");
-			updateFunc_ = &SceneTitle::OpeningUpdate;
-		}
-	}
-}
+	//アニメーション番号チェック
+	bool checkStopTimerAnim = PlayerAnimType::StopTimer == static_cast<PlayerAnimType>(mainPlayerModel_->GetCurrentAnimNo());
+	bool checkStopTimerCancelAnim = PlayerAnimType::StopTimerCancel == static_cast<PlayerAnimType>(mainPlayerModel_->GetCurrentAnimNo());
+	bool checkWakeUpAnim = PlayerAnimType::WakeUp == static_cast<PlayerAnimType>(mainPlayerModel_->GetCurrentAnimNo());
 
-void SceneTitle::OpeningUpdate()
-{
-	//モデルの描画
+	//モデルの更新
 	mainPlayerModel_->Update();
 
-	//アニメーションが終了次第
-	if (mainPlayerModel_->IsAnimEnd()) {
+	//時計をとめるアニメーションの後仰向けに戻る
+	if (mainPlayerModel_->IsAnimEnd() && checkStopTimerAnim) {
+		sound.StopSE("alarm");
+		sound.PlaySE("stopAlarm");
+		mainPlayerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::StopTimerCancel), false, false, 10);
+	}
+
+	//仰向けになるアニメーションが終わった後
+	if (mainPlayerModel_->IsAnimEnd() && checkStopTimerCancelAnim) {
+		mainPlayerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::WakeUp), false, false, 10);
+	}
+
+	//起き上がるアニメーションが終わったら
+	if (mainPlayerModel_->IsAnimEnd() && checkWakeUpAnim) {
 		updateFunc_ = &SceneTitle::SceneTitleFadeOutUpdate;
 	}
 }
@@ -336,7 +341,7 @@ void SceneTitle::SceneChange()
 		break;
 	case 1:
 		ExternalFile::GetInstance().ClearSaveData();
-		updateFunc_ = &SceneTitle::OpeningSoundUpdate;
+		updateFunc_ = &SceneTitle::OpeningUpdate;
 		SoundManager::GetInstance().PlaySE("alarm");
 		break;
 	case 2:

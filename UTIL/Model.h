@@ -66,6 +66,12 @@ public:
 	VECTOR GetRot()const { return rot_; }
 
 	/// <summary>
+	/// 現在のアニメーション番号を取得する
+	/// </summary>
+	/// <returns>アニメーション番号</returns>
+	int GetCurrentAnimNo() { return animNext_.animNo; }
+
+	/// <summary>
 	/// アニメーションの再生時間を取得する
 	/// </summary>
 	/// <returns>一アニメーションの再生時間</returns>

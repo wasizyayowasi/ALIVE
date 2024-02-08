@@ -64,11 +64,6 @@ private:
 	void UIUpdate();
 
 	/// <summary>
-	/// オープニングサウンドの更新
-	/// </summary>
-	void OpeningSoundUpdate();
-
-	/// <summary>
 	/// オープニングの更新
 	/// </summary>
 	void OpeningUpdate();
