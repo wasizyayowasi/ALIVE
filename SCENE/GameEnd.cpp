@@ -35,8 +35,9 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 	//オブジェクトの生成
 	objManager_->EndStageObjectGenerator();
 
+	info = file.GetSpecifiedInfo("end", "EnemySpawn");
 	//死体の生成
-	//objManager_->EnemyGenerator(file.GetDeathCount());
+	objManager_->EnemyGenerator(file.GetDeathCount(),info);
 }
 
 GameEnd::~GameEnd()

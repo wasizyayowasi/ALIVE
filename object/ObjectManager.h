@@ -113,6 +113,13 @@ public:
 	/// <param name="deathCount">今までにプレイヤーが死亡した数</param>
 	/// <param name="info">配置データ</param>
 	void EnemyGenerator(int deathCount, LoadObjectInfo info);
+
+	/// <summary>
+	/// エンディングの敵の生成
+	/// </summary>
+	/// <param name="deathCount">死んだ回数</param>
+	/// <param name="info">配置データ</param>
+	void EndEnemyGenerator(int deathCount, LoadObjectInfo info);
 private:
 	/// <summary>
 	/// 死んだ回数分生成する

@@ -70,8 +70,11 @@ void LoadingScene::Update()
 	}
 	else {
 		if (aSyncLoadNum_ < 1) {
-			//manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
+#ifdef _DEBUG
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager_)));
+#else
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
+#endif
 		}
 	}
 }

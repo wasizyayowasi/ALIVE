@@ -1,7 +1,8 @@
 #pragma once
-#include "KeyData.h"
 #include <DxLib.h>
 #include <map>
+
+class InputState;
 
 class Tutorial
 {
@@ -42,44 +43,49 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// キーの画像を描画する
-	/// </summary>
-	/// <param name="num">キーの番号</param>
-	void KeyGraphDraw(int keyNum);
-
-	/// <summary>
 	/// 何も描画しない
 	/// </summary>
-	void NoneDraw();
+	/// <param name="input">InputStateクラスの参照</param>
+	void NoneDraw(InputState& input);
 
 	/// <summary>
 	/// スイッチのチュートリアル
 	/// </summary>
-	void SwitchTutorialDraw();
+	/// <param name="input">InputStateクラスの参照</param>
+	void SwitchTutorialDraw(InputState& input);
 
 	/// <summary>
 	/// クランクのチュートリアル
 	/// </summary>
-	void CranckTutorialDraw();
+	/// <param name="input">InputStateクラスの参照</param>
+	void CranckTutorialDraw(InputState& input);
 
 	/// <summary>
 	/// 走る動作のチュートリアル
 	/// </summary>
-	void RunTutorialDraw();
+	/// <param name="input">InputStateクラスの参照</param>
+	void RunTutorialDraw(InputState& input);
 
 	/// <summary>
 	/// ジャンプのチュートリアル
 	/// </summary>
-	void JumpTutorialDraw();
+	/// <param name="input">InputStateクラスの参照</param>
+	void JumpTutorialDraw(InputState& input);
 
 	/// <summary>
 	/// エレベーターのチュートリアル
 	/// </summary>
-	void ElevatorTutorialDraw();
+	/// <param name="input">InputStateクラスの参照</param>
+	void ElevatorTutorialDraw(InputState& input);
 
+	/// <summary>
+	/// 死体の足場のチュートリアル
+	/// </summary>
+	/// <param name="input">InputStateクラスの参照</param>
+	void CorpseScaffoldDraw(InputState& input);
 private:
 	
-	int fotnPigumo42_ = 0;
+	int fontPigumo42_ = 0;
 
 	static constexpr int fadeInterval_ = 5;
 	int fadeTimer_ = 0;
@@ -91,7 +97,7 @@ private:
 
 	VECTOR tutorialDrawPos_ = {};
 
-	void(Tutorial::* drawFunc_)();
+	void(Tutorial::* drawFunc_)(InputState& input);
 
 };
 

@@ -186,7 +186,7 @@ void Camera::EasingMoveCamera()
 	//ƒJƒƒ‰‚Ìî•ñ‚ÌXV
 	SetCameraPositionAndTargetAndUpVec(pos_, cameraViewingPos_, upVec_);
 
-	if (elapsedTime_ == total_time) {
+	if (elapsedTime_ >= total_time - 20) {
 		isMoving_ = false;
 	}
 	else {

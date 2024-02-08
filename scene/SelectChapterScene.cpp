@@ -108,6 +108,10 @@ void SelectChapterScene::NormalUpdate()
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
 
+	if (input.IsTriggered(InputType::down)) {
+		manager_.PopFrontScene();
+	}
+
 	//Œˆ’è
 	if (input.IsTriggered(InputType::space)) {
 		updateFunc_ = &SelectChapterScene::FadeOutUpdate;

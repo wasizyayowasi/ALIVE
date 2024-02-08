@@ -6,6 +6,7 @@
 #include "Util.h"
 #include "game.h"
 
+#include <string>
 #include <algorithm>
 
 namespace {
@@ -33,7 +34,7 @@ Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)
 	UIPos_[UIGraph::XboxBotton].first = Game::screen_width / 2 - controller_graph_chip_size;
 	UIPos_[UIGraph::XboxBotton].second = Game::screen_height - controller_graph_chip_size;
 
-	fotnPigumo42_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
+	fontPigumo42_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
 }
 
 Tutorial::~Tutorial()
@@ -70,6 +71,9 @@ void Tutorial::Update(VECTOR pos)
 		else if (tutorialInfo.name == "ElevatorTutorial") {
 			drawFunc_ = &Tutorial::ElevatorTutorialDraw;
 		}
+		else if (tutorialInfo.name == "CorpseScaffoldTutorial") {
+			drawFunc_ = &Tutorial::CorpseScaffoldDraw;
+		}
 		tutorialDrawPos_ = tutorialInfo.pos;
 	}
 	else {
@@ -79,45 +83,22 @@ void Tutorial::Update(VECTOR pos)
 
 void Tutorial::Draw()
 {
+	auto& input = InputState::GetInstance();
+
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
-	(this->*drawFunc_)();
+	(this->*drawFunc_)(input);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void Tutorial::KeyGraphDraw(int keyNum)
-{
-	//短縮化
-	auto& input = InputState::GetInstance();
-
-	//番号
-	int num = 0;
-
-	//入力装置の番号を取得する
-	num = input.GetInputNum(keyNum, InputCategory::keybd);
-
-	//入力装置の番号を自作の画像の番号に変換する
-	//num = static_cast<int>(keyNum_[num]);
-
-	//画像の任意のキーが何列目の何行目にあるか取得する
-	int GraphX = num % 9;
-	int GraphY = num / 9;
-
-	//キー画像の描画
-	Graph::DrawRectRotaGraph(UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, GraphX * keybord_graph_chip_size, GraphY * keybord_graph_chip_size, keybord_graph_chip_size, keybord_graph_chip_size, 1.2f, 0.0f, UIHandle_[UIGraph::KeyBord], true, false);
-}
-
-void Tutorial::NoneDraw()
+void Tutorial::NoneDraw(InputState& input)
 {
 	fadeTimer_ = (std::max)(fadeTimer_ - 1,0);
 
 	fadeValue_ = (std::max)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 0);
 }
 
-void Tutorial::SwitchTutorialDraw()
+void Tutorial::SwitchTutorialDraw(InputState& input)
 {
-	//短縮化
-	auto& input = InputState::GetInstance();
-
 	static InputType type = InputType::death;
 	static XboxBotton bottanType = XboxBotton::Y;
 
@@ -141,11 +122,8 @@ void Tutorial::SwitchTutorialDraw()
 	input.DrawName(type, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"),false,false);
 }
 
-void Tutorial::CranckTutorialDraw()
+void Tutorial::CranckTutorialDraw(InputState& input)
 {
-	//短縮化
-	auto& input = InputState::GetInstance();
-
 	//ボタンが押されたか
 	static bool pressedBottan = false;
 
@@ -154,6 +132,14 @@ void Tutorial::CranckTutorialDraw()
 	}
 
 	if (pressedBottan) {
+		//文字列の描画
+		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - keybord_graph_chip_size * 1.6f - 80.0f, "右回転", 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - keybord_graph_chip_size * 1.6f, "左回転", 0xffffff, fontPigumo42_);
+
+		//キー画像の描画
+		input.DrawKeyGraph(InputType::up, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second - 80.0f, 1.2f);
+		input.DrawKeyGraph(InputType::down, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
+
 		return;
 	}
 
@@ -172,11 +158,8 @@ void Tutorial::CranckTutorialDraw()
 	input.DrawName(InputType::activate, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"),false,false);
 }
 
-void Tutorial::RunTutorialDraw()
+void Tutorial::RunTutorialDraw(InputState& input)
 {
-	//短縮化
-	auto& input = InputState::GetInstance();
-
 	//ボタンが押されたか
 	static bool pressedBottan = false;
 
@@ -203,11 +186,8 @@ void Tutorial::RunTutorialDraw()
 	input.DrawName(InputType::dush, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"),false,false);
 }
 
-void Tutorial::JumpTutorialDraw()
+void Tutorial::JumpTutorialDraw(InputState& input)
 {
-	//短縮化
-	auto& input = InputState::GetInstance();
-
 	//ボタンが押されたか
 	static bool pressedBottan = false;
 
@@ -234,11 +214,8 @@ void Tutorial::JumpTutorialDraw()
 	input.DrawName(InputType::space, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"),true,false,"/");
 }
 
-void Tutorial::ElevatorTutorialDraw()
+void Tutorial::ElevatorTutorialDraw(InputState& input)
 {
-	//短縮化
-	auto& input = InputState::GetInstance();
-
 	//ボタンが押されたか
 	static bool pressedBottan = false;
 
@@ -263,4 +240,35 @@ void Tutorial::ElevatorTutorialDraw()
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
 	input.DrawName(InputType::activate, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"),false,false);
+}
+
+void Tutorial::CorpseScaffoldDraw(InputState& input)
+{
+	//ボタンが押されたか
+	static bool pressedBottan = false;
+
+	if (input.IsTriggered(InputType::death)) {
+		pressedBottan = true;
+	}
+
+	if (pressedBottan) {
+		std::string str = "死体は足場として使える";
+		int width = GetDrawStringWidthToHandle(str.c_str(), str.size(), fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2 - width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, str.c_str(), 0xffffff, fontPigumo42_);
+		return;
+	}
+
+	fadeTimer_ = (std::min)(fadeTimer_ + 1, 255);
+	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
+
+	if (input.currentInputDevice_) {
+		input.DrawKeyGraph(InputType::death, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
+	}
+	else {
+		//画像描画
+		input.DrawPadGraph(XboxBotton::Y, UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second);
+	}
+
+	//キーに対応した文字列の描画(アクションキーの文字列)
+	input.DrawName(InputType::death, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"), false, false);
 }

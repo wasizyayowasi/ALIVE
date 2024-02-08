@@ -525,6 +525,27 @@ void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 	}
 }
 
+void ObjectManager::EndEnemyGenerator(int deathCount, LoadObjectInfo info)
+{
+	//短縮化
+	auto& model = ModelManager::GetInstance();
+
+	float angle = 0.0f;
+	for (int i = 0; i < deathCount; i++) {
+		//一定範囲の中でランダムにスポーンさせる
+		RandomPositionGenerator(info, info.pos);
+
+		//プレイヤーを中心に円周上でスポーンさせる
+		//CircumferencePosition(angle, info.pos, info.pos);
+
+		//インスタンス化
+		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Player), Material::Other, info));
+		angle -= 15.0f;
+
+		usedEnemyList_[info.name] = true;
+	}
+}
+
 void ObjectManager::GeneratedForTheNumberOfTimesYouDie(int deathCount, LoadObjectInfo info)
 {
 	//短縮化

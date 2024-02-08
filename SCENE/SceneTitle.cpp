@@ -47,15 +47,15 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 
 	//サブプレイヤーモデルの配置データをセットする
 	auto subPlayerInfo = file.GetSpecifiedInfo("title", "SubPlayer");
-	mainPlayerModel_->SetScale(subPlayerInfo.scale);
-	mainPlayerModel_->SetPos(subPlayerInfo.pos);
-	mainPlayerModel_->SetRot(subPlayerInfo.rot);
-	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::Jump), false, true);
+	subPlayerModel_->SetScale(subPlayerInfo.scale);
+	subPlayerModel_->SetPos(subPlayerInfo.pos);
+	subPlayerModel_->SetRot(subPlayerInfo.rot);
+	subPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::Jump), false, true);
 
 	//UIを表示する座標を取得
 	menuDrawPos_["タイトル"]			= file.GetUIPos("titleDrawPos");
 	menuDrawPos_["ニューゲーム"]		= file.GetUIPos("startDrawPos");
-	menuDrawPos_["ゲームを再開する"]	= file.GetUIPos("continueDrawPos");
+	menuDrawPos_["再開する"]			= file.GetUIPos("continueDrawPos");
 	menuDrawPos_["設定"]				= file.GetUIPos("settingDrawPos");
 	menuDrawPos_["終了"]				= file.GetUIPos("endDrawPos");
 	menuDrawPos_["モード"]				= file.GetUIPos("windowModeUIPos");
@@ -75,17 +75,72 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	//カメラのポジションと見る位置の設定
 	camera_->SetCameraTargetPosAndView(file.GetCameraTargetPos("start"), file.GetCameraTargetPos("startTargetPos"),{0,1,0});
 
+	//スポットライトに変更する。ライトの設定
 	outAngle_ = 90.0f * DX_PI_F / 180.0f;
 	inAngle_ = 30.0f * DX_PI_F / 180.0f;
-	//ChangeLightTypeSpot(lightBulb_->GetFramePos(), lightBulb_->GetFrontVec(), outAngle_, inAngle_, 1000.0f, 0.0f, 0.0006f, 0.0f);
-	//ChangeLightTypePoint(lightBulb_->GetFramePos(), 500.0f, 0.0f, 0.0006f, 0.0f);
+	ChangeLightTypeSpot(lightBulb_->GetFramePos(), lightBulb_->GetFrontVec(), outAngle_, inAngle_, 600.0f, 0.0f, 0.003f, 0.0f);
+
+	//ライトのディフューズカラーの設定
+	SetLightDifColor(GetColorF(0.87f, 0.72f, 0.52f, 1.0f));
+
+	//ディレクションライト角度取得
+	VECTOR dir = {};
+	dir.x = -33 / DX_PI_F * 180.0f;
+	dir.y = -33 / DX_PI_F * 180.0f;
+	dir.z = -33 / DX_PI_F * 180.0f;
+
+	//ディレクションライトの作成
+	lightHandle_.push_back(CreateDirLightHandle(dir));
+	lightDir_.push_back(dir);
+	SetLightDifColorHandle(lightHandle_[0], GetColorF(0.41f, 0.41f, 0.41f, 1.0f));
+
+	//ディレクションライト角度取得
+	dir.x = 33 / DX_PI_F * 180.0f;
+	dir.y = -33 / DX_PI_F * 180.0f;
+	dir.z = 33 / DX_PI_F * 180.0f;
+
+	//ディレクションライトの作成
+	lightHandle_.push_back(CreateDirLightHandle(dir));
+	lightDir_.push_back(dir);
+	SetLightDifColorHandle(lightHandle_[1], GetColorF(0.41f, 0.41f, 0.41f, 1.0f));
+
+	//カメラ情報の設定
+	CameraInfo info = {};
+
+	//設定オブジェクトを見るカメラ
+	info.targetPos = file.GetCameraTargetPos("setting");
+	info.targetView = file.GetCameraTargetPos("settingTargetPos");
+	info.upVec = VGet(0, 1, 0);
+
+	cameraInfo_.push_back(info);
+
+	//ベッドを見るカメラ
+	info.targetPos = file.GetCameraTargetPos("start");
+	info.targetView = file.GetCameraTargetPos("startTargetPos");
+	info.upVec = VGet(0, 1, 0);
+
+	cameraInfo_.push_back(info);
+
+	//本を見るカメラ
+	info.targetPos = file.GetCameraTargetPos("continue");
+	info.targetView = file.GetCameraTargetPos("continueTargetPos");
+	info.upVec = VGet(0, 0, 1);
+
+	cameraInfo_.push_back(info);
+
+	//扉を見るカメラ
+	info.targetPos = file.GetCameraTargetPos("end");
+	info.targetView = file.GetCameraTargetPos("endTargetPos");
+	info.upVec = VGet(0, 1, 0);
+
+	cameraInfo_.push_back(info);
 
 	//タイトル画像の読み込み
 	titleHandle_ = LoadGraph("data/graph/title.png");
 
 	//UI文字列の作成
 	menuName_.push_back("ニューゲーム");
-	menuName_.push_back("ゲームを再開する");
+	menuName_.push_back("再開する");
 	menuName_.push_back("設定");
 	menuName_.push_back("終了");
 
@@ -100,6 +155,11 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 
 SceneTitle::~SceneTitle()
 {
+	for (auto& light : lightHandle_) {
+		DeleteLightHandle(light);
+	}
+
+	DeleteGraph(titleHandle_);
 }
 
 void SceneTitle::Init()
@@ -123,8 +183,12 @@ void SceneTitle::Update()
 	lightBulb_->Update();
 
 	//ライトの更新
-	//SetLightDirection(lightBulb_->GetFrontVec());
-	//SetLightPosition(lightBulb_->GetFramePos());
+	SetLightDirection(lightBulb_->GetFrontVec());
+	SetLightPosition(lightBulb_->GetFramePos());
+
+	//ライトの方向設定
+	SetLightDirectionHandle(lightHandle_[0], lightDir_[0]);
+	SetLightDirectionHandle(lightHandle_[1], lightDir_[1]);
 
 	(this->*updateFunc_)();
 }
@@ -146,15 +210,17 @@ void SceneTitle::Draw()
 
 	//モデルの描画
 	mainPlayerModel_->Draw();
+	subPlayerModel_->Draw();
 
 	//UIの描画
 	UI_->DrawBillBoard(menuDrawPos_,static_cast<float>(UIfadeValue_),200.0f);
 
-	input.DrawKeyGraph(InputType::left, Game::screen_width / 6 * 4, Game::screen_height - 40, 0.8f);
-	input.DrawKeyGraph(InputType::down, Game::screen_width / 7 * 5, Game::screen_height - 40, 0.8f);
+	//キー画像描画
+	input.DrawKeyGraph(InputType::left, Game::screen_width / 7 * 5, Game::screen_height - 40, 0.8f);
 	input.DrawKeyGraph(InputType::right, Game::screen_width / 8 * 6, Game::screen_height - 40, 0.8f);
 	input.DrawKeyGraph(InputType::space, Game::screen_width / 8 * 7, Game::screen_height - 40, 0.8f);
 
+	//文字列の描画
 	DrawStringToHandle(Game::screen_width / 10 * 8 - 25, Game::screen_height - 60, "移動", 0xffffff, fontHandle_);
 	input.DrawName(InputType::space, Game::screen_width / 20 * 18, Game::screen_height - 60, 0xffffff, fontHandle_, true, true, "/");
 
@@ -199,25 +265,13 @@ void SceneTitle::UIUpdate()
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
 	if (input.IsTriggered(InputType::right)) {
-		selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 2));
-	}
-
-	//終了へ行く
-	if (selectNum_ == 1 || selectNum_ == 3) {
-		if (input.IsTriggered(InputType::down)) {
-			if (selectNum_ == 3) {
-				selectNum_ = 1;
-			}
-			else {
-				selectNum_ = 3;
-			}
-		}
+		selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
 	}
 
 	//現在のフレームと前のフレームで番号が違ったら
 	//カメラの設定を行う
 	if (selectNum_ != oldSelectNum) {
-		CameraSetting();
+		camera_->SetCameraTargetPosAndView(cameraInfo_[selectNum_].targetPos, cameraInfo_[selectNum_].targetView, cameraInfo_[selectNum_].upVec);
 	}
 
 	//決定
@@ -286,49 +340,11 @@ void SceneTitle::SceneChange()
 		SoundManager::GetInstance().PlaySE("alarm");
 		break;
 	case 2:
+		Init();
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<SelectChapterScene>(manager_)));
 		break;
 	case 3:
 		manager_.SetEndFlag(true);
-		break;
-	}
-}
-
-void SceneTitle::CameraSetting()
-{
-	//短縮化
-	auto& file = ExternalFile::GetInstance();
-
-	//目標座標
-	VECTOR targetPos = {};
-
-	//見る目標座標
-	VECTOR targetViewPos = {};
-
-	switch (selectNum_) {
-	case 0:
-		targetPos = file.GetCameraTargetPos("setting");
-		targetViewPos = file.GetCameraTargetPos("settingTargetPos");
-		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos, { 0,1,0 });
-
-		break;
-	case 1:
-		targetPos = file.GetCameraTargetPos("start");
-		targetViewPos = file.GetCameraTargetPos("startTargetPos");
-		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos, { 0,1,0 });
-
-		break;
-	case 2:
-		targetPos = file.GetCameraTargetPos("continue");
-		targetViewPos = file.GetCameraTargetPos("continueTargetPos");
-		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos, { 0,0,1 });
-
-		break;
-	case 3:
-		targetPos = file.GetCameraTargetPos("end");
-		targetViewPos = file.GetCameraTargetPos("endTargetPos");
-		camera_->SetCameraTargetPosAndView(targetPos, targetViewPos, { 0,-1,0 });
-
 		break;
 	}
 }

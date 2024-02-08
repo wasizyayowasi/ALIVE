@@ -1,10 +1,10 @@
 #pragma once
 #include "SceneBase.h"
-#include <DxLib.h>
+#include <map>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-#include <map>
+#include <DxLib.h>
 
 class Model;
 class Camera;
@@ -14,6 +14,12 @@ class ObjectManager;
 
 class SceneTitle : public SceneBase
 {
+private:
+	struct CameraInfo {
+		VECTOR targetPos;	//目的の場所
+		VECTOR targetView;	//見る場所
+		VECTOR upVec;		//カメラの上方向
+	};
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -82,11 +88,6 @@ private:
 	/// </summary>
 	void SceneChange();
 
-	/// <summary>
-	/// カメラの設定
-	/// </summary>
-	void CameraSetting();
-
 private:
 
 	int handle[99] = {};
@@ -110,7 +111,12 @@ private:
 	std::shared_ptr<Model> subPlayerModel_;		//プレイヤーのスマートポインタ
 	std::shared_ptr<Model> mainPlayerModel_;	//プレイヤーのスマートポインタ
 	std::shared_ptr<ObjectManager> objManager_;	//オブジェクトマネージャーのスマートポインタ
+
 	std::vector<std::string> menuName_;			//メニューの文字列
+	std::vector<int> lightHandle_;				//ライトハンドル
+	std::vector<VECTOR> lightDir_;				//ライトのディレクション(方向)
+	std::vector<CameraInfo> cameraInfo_;		//カメラの情報
+
 	std::map<std::string, VECTOR> menuDrawPos_;	//メニューを描画する座標
 
 	void (SceneTitle::* updateFunc_)();
