@@ -257,7 +257,7 @@
     <ClInclude Include="scene\GameMain.h" />
     <ClInclude Include="scene\SceneBase.h" />
     <ClInclude Include="scene\SceneManager.h" />
-    <ClInclude Include="util\game.h" />
+    <ClInclude Include="util\Game.h" />
     <ClInclude Include="util\InputState.h" />
     <ClInclude Include="util\Model.h" />
   </ItemGroup>

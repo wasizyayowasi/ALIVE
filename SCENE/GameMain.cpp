@@ -205,6 +205,8 @@ void GameMain::NormalUpdate()
 										VGet(info.pos.x, info.pos.y + info.scale.y, info.pos.z), 600);
 
 	if (result.HitNum > 0) {
+		totalDeathNum_ += player_->GetDeathCount();
+		ExternalFile::GetInstance().SetDeathCount(totalDeathNum_);
 		updateFunc_ = &GameMain::FadeOutUpdate;
 	}
 

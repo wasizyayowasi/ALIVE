@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneBase.h"
 #include <memory>
+#include <vector>
 
 class Model;
 class Camera;
@@ -44,14 +45,18 @@ private:
 	void fadeOutUpdate();
 private:
 
+	int divisionNum_ = 0;												//分割数
+
 	static constexpr int fadeInterval_ = 60;
 	int fadeTimer_ = fadeInterval_;
 	int fadeValue_ = 255;
 	int fadeColor_ = 0x000000;
 
-	std::shared_ptr<Camera> camera_;			//カメラのポインタ
-	std::shared_ptr<Model> playerModel_;		//モデルのポインタ
-	std::shared_ptr<ObjectManager> objManager_;	//オブジェクトマネージャーのポインタ
+	std::shared_ptr<Camera> camera_;									//カメラのポインタ
+	std::shared_ptr<Model> playerModel_;								//プレイヤーモデルのポインタ
+	std::shared_ptr<ObjectManager> objManager_;							//オブジェクトマネージャーのポインタ
+
+	std::vector<std::pair<bool,std::shared_ptr<Model>>> corpseModel_;	//死体モデルのポインタ
 
 	void (GameEnd::* updateFunc_)();
 

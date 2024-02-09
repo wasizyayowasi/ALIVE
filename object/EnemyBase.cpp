@@ -44,6 +44,9 @@ EnemyBase::EnemyBase(int handle, Material materialType, LoadObjectInfo objInfo) 
 	//正面ベクトルの取得
 	MATRIX matRotY = MGetRotY(objInfo.rot.y);
 	frontVec_ = VTransform(init_rot, matRotY);
+
+	//マテリアルの色を変える
+	MV1SetMaterialDifColor(model_->GetModelHandle(), 8, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
 void EnemyBase::Update(Player& player)
@@ -278,4 +281,3 @@ MATRIX EnemyBase::CombiningRotAndScallMat(VECTOR distance)
 
 	return mtx;
 }
-

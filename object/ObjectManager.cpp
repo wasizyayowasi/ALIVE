@@ -296,10 +296,10 @@ void ObjectManager::EndStageObjectGenerator()
 void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int animNo)
 {
 	//死体を一つ生成する
-	objects_[ObjectType::DeadPerson].push_back(std::make_shared<DeadPerson>(handle,Material::Other, objInfo, animNo));
+	objects_[ObjectType::DeadPerson].push_back(std::make_shared<DeadPerson>(handle, Material::Other, objInfo, animNo));
 
 	//死体が4個未満だったらリターン
-	if(objects_[ObjectType::DeadPerson].size() < 4) return;
+	if (objects_[ObjectType::DeadPerson].size() < 4) return;
 
 	//死体のリストの一番先頭(古い)死体を削除する
 	objects_[ObjectType::DeadPerson].remove(objects_[ObjectType::DeadPerson].front());
@@ -307,7 +307,7 @@ void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int 
 }
 
 //更新
-void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManager)
+void ObjectManager::Update(Player& player, std::shared_ptr<ShotManager> shotManager)
 {
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
 	for (auto& list : objects_) {
@@ -331,7 +331,7 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 			}
 		}
 	}
-	
+
 	//enemyのShot
 	for (auto& obj : objects_[ObjectType::Enemy]) {
 		if (std::dynamic_pointer_cast<ThrowEnemy>(obj) != nullptr) {
@@ -348,7 +348,7 @@ void ObjectManager::Update(Player& player,std::shared_ptr<ShotManager> shotManag
 			}
 		}
 	}
-	
+
 	for (auto& enemy : ExternalFile::GetInstance().GetEnemyInfo(playerPos)) {
 		if (!usedEnemyList_[enemy.name]) {
 			EnemyGenerator(player.GetDeathCount(), enemy);
@@ -465,7 +465,6 @@ void ObjectManager::AddCheckCollModel()
 	}
 }
 
-//一定範囲内でランダムに召喚ポジションを取得する
 void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, VECTOR loadObjPos)
 {
 
@@ -482,7 +481,6 @@ void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, VECTOR loadObj
 
 }
 
-//エネミーを召喚させるポジションを角度によって取得する
 void ObjectManager::CircumferencePosition(float angle, VECTOR& infoPos, VECTOR playerPos)
 {
 	VECTOR pos = {};
@@ -503,7 +501,6 @@ void ObjectManager::CircumferencePosition(float angle, VECTOR& infoPos, VECTOR p
 	infoPos = pos;
 }
 
-//敵生成機
 void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 {
 	//文字列のサイズを取得する
@@ -532,14 +529,10 @@ void ObjectManager::EndEnemyGenerator(int deathCount, LoadObjectInfo info)
 
 	float angle = 0.0f;
 	for (int i = 0; i < deathCount; i++) {
-		//一定範囲の中でランダムにスポーンさせる
-		RandomPositionGenerator(info, info.pos);
-
-		//プレイヤーを中心に円周上でスポーンさせる
-		//CircumferencePosition(angle, info.pos, info.pos);
+		info.pos.x += angle;
 
 		//インスタンス化
-		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Player), Material::Other, info));
+		objects_[ObjectType::Enemy].push_back(std::make_shared<EnemyBase>(model.GetModelHandle(ObjectType::Player), Material::Other, info));
 		angle -= 15.0f;
 
 		usedEnemyList_[info.name] = true;

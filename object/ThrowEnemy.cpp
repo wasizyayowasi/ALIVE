@@ -11,7 +11,6 @@ namespace {
 	constexpr float visible_range = 1300.0f;
 
 	//右手のフレーム名
-	//const char* const hand_framename = "mixamorig:RightHandIndex2";
 	const char* const hand_framename = "hand.R_end";
 
 	//物を投げているときのアニメーションフレーム

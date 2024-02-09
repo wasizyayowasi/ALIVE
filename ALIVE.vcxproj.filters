@@ -224,7 +224,7 @@
     <ClInclude Include="scene\GameEnd.h">
       <Filter>ヘッダー ファイル\scene</Filter>
     </ClInclude>
-    <ClInclude Include="util\game.h">
+    <ClInclude Include="util\Game.h">
       <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
     <ClInclude Include="util\InputState.h">
