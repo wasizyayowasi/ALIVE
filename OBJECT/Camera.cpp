@@ -38,8 +38,6 @@ Camera::Camera(VECTOR pos, VECTOR viewPos):updateFunc_(&Camera::TrackingCameraUp
 {
 	pos_ = pos;
 
-	initPos_ = pos;
-
 	cameraViewingPos_ = viewPos;
 }
 
@@ -97,12 +95,15 @@ void Camera::TrackingCameraUpdate(VECTOR playerPos,float playerHeight)
 	//カメラがプレイヤーを追いかける用にする
 	pos_.x = TrackingPosX(playerPos);
 	pos_.y = TrackingPosY(playerPos,playerHeight);
-	pos_.z = (pos_.z * traking_rate_z) + ((playerPos.z - 800.0f) * (1 - traking_rate_z));
+	pos_.z = (pos_.z * traking_rate_z) + ((playerPos.z + init_pos.z) * (1 - traking_rate_z));
 
 	//プレイヤーがいた位置を見るようにする
 	cameraViewingPos_.x = (cameraViewingPos_.x * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
 	cameraViewingPos_.y = (cameraViewingPos_.y * traking_rate_y) + ((playerPos.y + playerHeight / 2) * (1 - traking_rate_y));
 	cameraViewingPos_.z = (cameraViewingPos_.z * traking_rate_z) + (playerPos.z * (1 - traking_rate_z));
+	//cameraViewingPos_.x = cameraViewingPos_.x;
+	//cameraViewingPos_.y = cameraViewingPos_.y;
+	//cameraViewingPos_.z = cameraViewingPos_.z;
 
 	//カメラの注視点を変更する
 	ChangeOfFocus(playerPos, playerHeight);
@@ -147,16 +148,16 @@ void Camera::ChangeOfFocus(VECTOR playerPos, float playerHeight)
 
 	GetJoypadDirectInputState(DX_INPUT_PAD1, &input_);
 
-	if (input_.Ry < 0 || input.IsPressed(InputType::upArrow)) {
+	if (input_.Ry < 0 || input.IsPressed(InputType::UpArrow)) {
 		cameraViewingPos_.y = ((cameraViewingPos_.y + add_focus) * traking_rate_y) + ((playerPos.y + playerHeight / 2) * (1 - traking_rate_y));
 	}
-	if (input_.Ry > 0 || input.IsPressed(InputType::downArrow)) {
+	if (input_.Ry > 0 || input.IsPressed(InputType::DownArrow)) {
 		cameraViewingPos_.y = ((cameraViewingPos_.y - add_focus) * traking_rate_y) + ((playerPos.y + playerHeight / 2) * (1 - traking_rate_y));
 	}
-	if (input_.Rx < 0 || input.IsPressed(InputType::leftArrow)) {
+	if (input_.Rx < 0 || input.IsPressed(InputType::LeftArrow)) {
 		cameraViewingPos_.x = ((cameraViewingPos_.x - add_focus) * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
 	} 
-	if (input_.Rx > 0 || input.IsPressed(InputType::rightArrow)) {
+	if (input_.Rx > 0 || input.IsPressed(InputType::RightArrow)) {
 		cameraViewingPos_.x = ((cameraViewingPos_.x + add_focus) * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
 	}
 
@@ -209,7 +210,7 @@ void Camera::SetCameraTargetPosAndView(VECTOR targetPos, VECTOR targetViewPos, V
 	elapsedTime_ = 0.0f;
 }
 
-void Camera::tempdraw()
+void Camera::DebugDraw()
 {
 	DrawFormatString(0, 16, 0xffffff, "ポジション　　%f:%f:%f", pos_.x, pos_.y, pos_.z);
 	DrawFormatString(0, 32, 0xffffff, "見ている場所　%f:%f:%f", cameraViewingPos_.x, cameraViewingPos_.y, cameraViewingPos_.z);
@@ -256,6 +257,5 @@ float Camera::TrackingPosY(VECTOR playerPos, float playerHeight)
 		}
 	}
 	
-
 	return (pos_.y * traking_rate_y + ((playerHeadPosY + playerHeight * 2) * (1 - traking_rate_y)));
 }

@@ -1,8 +1,8 @@
 #include "ModelManager.h"
 
 namespace {
-	const char* const player_model_Filename			= "data/player/mv1/player1.mv1";
-	const char* const enemy_model_Filename			= "data/enemy/mv1/enemy.mv1";
+	const char* const player_model_Filename			= "data/model/player/mv1/player1.mv1";
+	const char* const board_enemy_model_Filename	= "data/model/player/mv1/SignBoardPlayer.mv1";
 	//モデルのファイルパス
 	const char* const switch_filepath				= "data/model/switch.mv1";
 	const char* const trans_scaffold_filepath		= "data/model/other/mv1/TransScaffold.mv1";
@@ -13,6 +13,7 @@ namespace {
 	const char* const hopStepJump_filepath			= "data/model/other/mv1/HopStepJump.mv1";
 	const char* const fence_filepath				= "data/model/city/container/mv1/FenceType1.mv1";
 	const char* const corpse_mountain_filepath		= "data/model/other/mv1/CorpseMountain.mv1";
+	const char* const whiteBoard_filepath			= "data/model/other/mv1/WhiteBoard.mv1";
 	//でかいビル
 	const char* const big_buildingA_filepath		= "data/model/city/building/mv1/BigBuildingA.mv1";
 	const char* const buildingC_filepath			= "data/model/city//building/mv1/BuildingC.mv1";
@@ -61,7 +62,7 @@ ModelManager::~ModelManager()
 void ModelManager::LoadModel()
 {
 	modelHandle_[ObjectType::Player] = MV1LoadModel(player_model_Filename);					//67
-	modelHandle_[ObjectType::Enemy] = MV1LoadModel(enemy_model_Filename);					//57
+	modelHandle_[ObjectType::BoardEnemy] = MV1LoadModel(board_enemy_model_Filename);		//67
 	modelHandle_[ObjectType::Switch] = MV1LoadModel(switch_filepath);						//54
 	modelHandle_[ObjectType::Trans] = MV1LoadModel(trans_scaffold_filepath);				//58
 	modelHandle_[ObjectType::Elevator] = MV1LoadModel(elevator_filepath);					//178
@@ -71,6 +72,7 @@ void ModelManager::LoadModel()
 	modelHandle_[ObjectType::HopStepJump] = MV1LoadModel(hopStepJump_filepath);				//
 	modelHandle_[ObjectType::Fence] = MV1LoadModel(fence_filepath);							//172
 	modelHandle_[ObjectType::CorpseMountain] = MV1LoadModel(corpse_mountain_filepath);		//
+	modelHandle_[ObjectType::WhiteBoard] = MV1LoadModel(whiteBoard_filepath);				//
 
 	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);			//55
 	modelHandle_[ObjectType::BuildingCType1] = MV1LoadModel(buildingC_filepath);			//59

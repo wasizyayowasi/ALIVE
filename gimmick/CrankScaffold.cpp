@@ -1,10 +1,11 @@
 #include "CrankScaffold.h"
 #include "ManualCrank.h"
 
+#include "../util/Util.h"
 #include "../util/Model.h"
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
-#include "../util/Util.h"
+#include "../util/SoundManager.h"
 
 #include "../object/Player.h"
 
@@ -58,6 +59,9 @@ CrankScaffold::~CrankScaffold()
 //更新
 void CrankScaffold::Update(Player& player)
 {
+	//短縮化
+	auto& sound = SoundManager::GetInstance();
+
 	//クランクとプレイヤーの衝突判定を行い
 	//当たっていた場合プレイヤーに当たっていたクラスのポインターを
 	//セットする
@@ -65,11 +69,25 @@ void CrankScaffold::Update(Player& player)
 		player.SetCrankPointer(crank_);
 	}
 
+	float nowRotZ = crank_->GetRotZ();
+
+	if (oldRotZ_ != nowRotZ) {
+		if (crank_->GetMaxRotZ() == crank_->GetRotZ() || crank_->GetRotZ() == 0) {
+			if (!sound.CheckSoundFile("stopCrank")) {
+				sound.Set3DSoundInfo(pos_, 1500.0f, "stopCrank");
+				sound.PlaySE("stopCrank");
+			}
+		}
+	}
+
 	//移動
 	pos_.y = crank_->GetRotZ()* upVec_ + initPos_.y;
 
 	//ポジションのセット
 	model_->SetPos(pos_);
+
+	//Z回転の値を残しておく
+	oldRotZ_ = crank_->GetRotZ();
 }
 
 //描画

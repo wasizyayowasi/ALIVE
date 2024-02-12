@@ -7,21 +7,21 @@
 
 enum class InputType
 {
-	pause,			// ポーズボタン
-	up,				//上
-	down,			//下
-	left,			//左
-	right,			//右
-	upArrow,		//上
-	downArrow,		//下
-	leftArrow,		//左
-	rightArrow,		//右
-	space,			//space
-	death,			//死亡入力
-	dush,			//走る
-	sit,			//座る
-	activate,		//運ぶ
-	creative,		//デバッグ用
+	Pause,			// ポーズボタン
+	Up,				//上
+	Down,			//下
+	Left,			//左
+	Right,			//右
+	UpArrow,		//上
+	DownArrow,		//下
+	LeftArrow,		//左
+	RightArrow,		//右
+	Space,			//space
+	Death,			//死亡入力
+	Dush,			//走る
+	Sit,			//座る
+	Activate,		//運ぶ
+	Creative,		//デバッグ用
 	max,			//最大入力インデックス
 };
 
@@ -129,19 +129,20 @@ public:
 	/// <summary>
 	/// key画像の描画
 	/// </summary>
-	/// <param name="type">描画したいkey</param>
+	/// <param name="type">描画したいkey　castでint型にした値</param>
 	/// <param name="posX">描画座標X</param>
 	/// <param name="posY">描画座標Y</param>
 	/// <param name="size">描画サイズY</param>
-	void DrawKeyGraph(InputType type,float posX, float posY, float size);
+	void DrawKeyGraph(int type,float posX, float posY, float size);
 
 	/// <summary>
 	/// padのボタンの描画
 	/// </summary>
-	/// <param name="type">描画したいボタン</param>
+	/// <param name="type">描画したいボタン castでint型にした値</param>
 	/// <param name="posX">描画座標X</param>
 	/// <param name="posY">描画座標Y</param>
-	void DrawPadGraph(XboxBotton type, float posX, float posY);
+	/// <param name="scale">描画サイズY</param>
+	void DrawPadGraph(int type, float posX, float posY,float scale);
 
 	/// <summary>
 	/// 名前の描画
@@ -155,7 +156,7 @@ public:
 	/// <summary>
 	/// 名前の描画
 	/// </summary>
-	/// <param name="type">描画したいkey</param>
+	/// <param name="type">描画したいkey　castでint型にした値</param>
 	/// <param name="posX">描画座標X</param>
 	/// <param name="posY">描画座標Y</param>
 	/// <param name="color">色</param>
@@ -163,7 +164,7 @@ public:
 	/// <param name="editName">名前を編集するか</param>
 	/// <param name="before">前か後か　true : 前　false：後ろ</param>
 	/// <param name="sign">記号</param>
-	void DrawName(InputType type, float posX, float posY, int color, int fontHandle,bool editName,bool before,std::string sign = "");
+	void DrawName(int type, float posX, float posY, int color, int fontHandle,bool editName,bool before,std::string sign = "");
 private:
 
 	InputState();

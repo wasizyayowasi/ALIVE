@@ -144,6 +144,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="object\LightBulb.cpp" />
+    <ClCompile Include="object\Player.cpp" />
+    <ClCompile Include="object\SignBoardEnemy.cpp" />
+    <ClCompile Include="scene\SceneMovie.cpp" />
     <ClCompile Include="util\Effect2D.cpp" />
     <ClCompile Include="util\EffectManager.cpp" />
     <ClCompile Include="gimmick\HopStepJump.cpp" />
@@ -176,7 +179,6 @@
     <ClCompile Include="util\FontsManager.cpp" />
     <ClCompile Include="gimmick\GimmickBase.cpp" />
     <ClCompile Include="gimmick\Switch.cpp" />
-    <ClCompile Include="util\EffekseerManager.cpp" />
     <ClCompile Include="object\EnemyBase.cpp" />
     <ClCompile Include="scene\DebugScene.cpp" />
     <ClCompile Include="util\DrawFunctions.cpp" />
@@ -191,7 +193,6 @@
     <ClCompile Include="staging\DepthOfField.cpp" />
     <ClCompile Include="object\Camera.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="object\Player.cpp" />
     <ClCompile Include="scene\GameEnd.cpp" />
     <ClCompile Include="scene\GameMain.cpp" />
     <ClCompile Include="scene\SceneBase.cpp" />
@@ -201,6 +202,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="object\LightBulb.h" />
+    <ClInclude Include="object\Player.h" />
+    <ClInclude Include="object\SignBoardEnemy.h" />
+    <ClInclude Include="scene\SceneMovie.h" />
     <ClInclude Include="util\Effect2D.h" />
     <ClInclude Include="util\EffectManager.h" />
     <ClInclude Include="gimmick\HopStepJump.h" />
@@ -238,7 +242,6 @@
     <ClInclude Include="util\FontsManager.h" />
     <ClInclude Include="gimmick\GimmickBase.h" />
     <ClInclude Include="gimmick\Switch.h" />
-    <ClInclude Include="util\EffekseerManager.h" />
     <ClInclude Include="object\EnemyBase.h" />
     <ClInclude Include="scene\DebugScene.h" />
     <ClInclude Include="util\DrawFunctions.h" />
@@ -252,7 +255,6 @@
     <ClInclude Include="staging\Broom.h" />
     <ClInclude Include="staging\DepthOfField.h" />
     <ClInclude Include="object\Camera.h" />
-    <ClInclude Include="object\Player.h" />
     <ClInclude Include="scene\GameEnd.h" />
     <ClInclude Include="scene\GameMain.h" />
     <ClInclude Include="scene\SceneBase.h" />

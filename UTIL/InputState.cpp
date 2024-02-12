@@ -29,49 +29,49 @@ InputState::InputState()
 	UIHandle_[InputCategory::pad] = LoadGraph(xbox_Botton_filepath);
 
 	//ポーズ
-	defaultMapTable_[InputType::pause] =		{ {InputCategory::keybd,KEY_INPUT_TAB},
+	defaultMapTable_[InputType::Pause] =		{ {InputCategory::keybd,KEY_INPUT_TAB},
 												{InputCategory::pad,PAD_INPUT_8} };
 	//上
-	defaultMapTable_[InputType::up] =			{ {InputCategory::keybd,KEY_INPUT_W},
+	defaultMapTable_[InputType::Up] =			{ {InputCategory::keybd,KEY_INPUT_W},
 												{InputCategory::pad,PAD_INPUT_UP} };
 	//下
-	defaultMapTable_[InputType::down] =			{ {InputCategory::keybd,KEY_INPUT_S},
+	defaultMapTable_[InputType::Down] =			{ {InputCategory::keybd,KEY_INPUT_S},
 												{InputCategory::pad,PAD_INPUT_DOWN} };
 	//左
-	defaultMapTable_[InputType::left] =			{ {InputCategory::keybd,KEY_INPUT_A},
+	defaultMapTable_[InputType::Left] =			{ {InputCategory::keybd,KEY_INPUT_A},
 												{InputCategory::pad,PAD_INPUT_LEFT} };
 	//右
-	defaultMapTable_[InputType::right] =		{ {InputCategory::keybd,KEY_INPUT_D},
+	defaultMapTable_[InputType::Right] =		{ {InputCategory::keybd,KEY_INPUT_D},
 												{InputCategory::pad,PAD_INPUT_RIGHT} };
 	//上矢印
-	defaultMapTable_[InputType::upArrow] =		{ {InputCategory::keybd,KEY_INPUT_UP}};
+	defaultMapTable_[InputType::UpArrow] =		{ {InputCategory::keybd,KEY_INPUT_UP}};
 
 	//下矢印
-	defaultMapTable_[InputType::downArrow] =	{ {InputCategory::keybd,KEY_INPUT_DOWN}};
+	defaultMapTable_[InputType::DownArrow] =	{ {InputCategory::keybd,KEY_INPUT_DOWN}};
 
 	//左矢印
-	defaultMapTable_[InputType::leftArrow] =	{ {InputCategory::keybd,KEY_INPUT_LEFT}};
+	defaultMapTable_[InputType::LeftArrow] =	{ {InputCategory::keybd,KEY_INPUT_LEFT}};
 
 	//右矢印
-	defaultMapTable_[InputType::rightArrow] =	{ {InputCategory::keybd,KEY_INPUT_RIGHT}};
+	defaultMapTable_[InputType::RightArrow] =	{ {InputCategory::keybd,KEY_INPUT_RIGHT}};
 
 	//Space
-	defaultMapTable_[InputType::space] =		{ {InputCategory::keybd,KEY_INPUT_SPACE},
+	defaultMapTable_[InputType::Space] =		{ {InputCategory::keybd,KEY_INPUT_SPACE},
 												{InputCategory::pad,PAD_INPUT_1} };
 	//死亡
-	defaultMapTable_[InputType::death] =		{ {InputCategory::keybd,KEY_INPUT_Z},
+	defaultMapTable_[InputType::Death] =		{ {InputCategory::keybd,KEY_INPUT_Z},
 												{InputCategory::pad,PAD_INPUT_4} };
 	//shift
-	defaultMapTable_[InputType::dush] =			{ {InputCategory::keybd,KEY_INPUT_LSHIFT},
+	defaultMapTable_[InputType::Dush] =			{ {InputCategory::keybd,KEY_INPUT_LSHIFT},
 												{InputCategory::pad,PAD_INPUT_3} };
 	//sit
-	defaultMapTable_[InputType::sit] =			{ {InputCategory::keybd,KEY_INPUT_E},
+	defaultMapTable_[InputType::Sit] =			{ {InputCategory::keybd,KEY_INPUT_E},
 												{InputCategory::pad,PAD_INPUT_6} };
 	//activate
-	defaultMapTable_[InputType::activate] =		{ {InputCategory::keybd,KEY_INPUT_F},
+	defaultMapTable_[InputType::Activate] =		{ {InputCategory::keybd,KEY_INPUT_F},
 												{InputCategory::pad,PAD_INPUT_2} };
 	//creative
-	defaultMapTable_[InputType::creative] =		{ {InputCategory::keybd,KEY_INPUT_Q},
+	defaultMapTable_[InputType::Creative] =		{ {InputCategory::keybd,KEY_INPUT_Q},
 												{InputCategory::pad,PAD_INPUT_5} };
 
 	inputMapTable_ = defaultMapTable_;
@@ -83,20 +83,20 @@ InputState::InputState()
 	tempMapTable_ = inputMapTable_;
 
 	//入力タイプの名前のテーブルを作る
-	inputNameTable_[InputType::pause]		= "ポーズ";
-	inputNameTable_[InputType::up]			= "上へ移動";
-	inputNameTable_[InputType::down]		= "下へ移動";
-	inputNameTable_[InputType::left]		= "左へ移動";
-	inputNameTable_[InputType::right]		= "右へ移動";
-	inputNameTable_[InputType::upArrow]		= "上を見る";
-	inputNameTable_[InputType::downArrow]	= "下を見る";
-	inputNameTable_[InputType::leftArrow]	= "左を見る";
-	inputNameTable_[InputType::rightArrow]	= "右を見る";
-	inputNameTable_[InputType::space]		= "決定/ジャンプ";
-	inputNameTable_[InputType::death]		= "死亡";
-	inputNameTable_[InputType::dush]		= "走る";
-	inputNameTable_[InputType::sit]			= "座る";
-	inputNameTable_[InputType::activate]	= "アクション";
+	inputNameTable_[InputType::Pause]		= "ポーズ";
+	inputNameTable_[InputType::Up]			= "上へ移動";
+	inputNameTable_[InputType::Down]		= "下へ移動";
+	inputNameTable_[InputType::Left]		= "左へ移動";
+	inputNameTable_[InputType::Right]		= "右へ移動";
+	inputNameTable_[InputType::UpArrow]		= "上を見る";
+	inputNameTable_[InputType::DownArrow]	= "下を見る";
+	inputNameTable_[InputType::LeftArrow]	= "左を見る";
+	inputNameTable_[InputType::RightArrow]	= "右を見る";
+	inputNameTable_[InputType::Space]		= "決定/ジャンプ";
+	inputNameTable_[InputType::Death]		= "死亡";
+	inputNameTable_[InputType::Dush]		= "走る";
+	inputNameTable_[InputType::Sit]			= "座る";
+	inputNameTable_[InputType::Activate]	= "アクション";
 
 	currentInput_.resize(static_cast<int>(InputType::max));
 	lastInput_.resize(static_cast<int>(InputType::max));
@@ -422,7 +422,7 @@ void InputState::LoadKeyInfo(const char* filename)
 		std::unordered_map<int, int> pad;
 
 		//読み込んだ情報を一時保管するための変数
-		InputInfo tempInfo;
+		InputInfo tempInfo = {};
 
 		//データを取得
 		int type = info["inputType"];
@@ -460,7 +460,7 @@ int InputState::GetInputNum(int num, InputCategory cat)
 
 	auto type = static_cast<InputType>(num);
 
-	for (auto key : inputMapTable_[type]) {
+	for (auto& key : inputMapTable_[type]) {
 		if (key.cat == cat) {
 			keyNum = static_cast<int>(key.id);
 			break;
@@ -470,10 +470,10 @@ int InputState::GetInputNum(int num, InputCategory cat)
 	return keyNum;
 }
 
-void InputState::DrawKeyGraph(InputType type, float posX, float posY,float size)
+void InputState::DrawKeyGraph(int type, float posX, float posY,float size)
 {
 	//入力装置の番号を取得する
-	int num = GetInputNum(static_cast<int>(type), InputCategory::keybd);
+	int num = GetInputNum(type, InputCategory::keybd);
 
 	//入力装置の番号を自作の画像の番号に変換する
 	num = static_cast<int>(keyNum_[num]);
@@ -493,20 +493,20 @@ void InputState::DrawKeyGraph(InputType type, float posX, float posY,float size)
 							true, false);
 }
 
-void InputState::DrawPadGraph(XboxBotton type, float posX, float posY)
+void InputState::DrawPadGraph(int type, float posX, float posY, float scale)
 {
 	//画像の描画
 	Graph::DrawRectRotaGraph(posX, posY,
 							static_cast<int>(type) * controller_graph_chip_size, 0,
 							controller_graph_chip_size, controller_graph_chip_size,
-							1.0f, 0.0f, 
+							scale, 0.0f, 
 							UIHandle_[InputCategory::pad], true, false);
 }
 
-void InputState::DrawName(InputType type, float posX, float posY, int color, int fontHandle, bool editName, bool before, std::string sign)
+void InputState::DrawName(int type, float posX, float posY, int color, int fontHandle, bool editName, bool before, std::string sign)
 {
 	//名前
-	std::string name = inputNameTable_[type].c_str();
+	std::string name = inputNameTable_[static_cast<InputType>(type)].c_str();
 
 	//名前を修正するか
 	if (editName) {

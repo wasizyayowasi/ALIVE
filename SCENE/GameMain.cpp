@@ -32,15 +32,14 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	auto& file = ExternalFile::GetInstance();
 
 	//インスタンス化
-	player_ = std::make_shared<Player>();
+	player_ = std::make_shared<Player>(file.GetSpecifiedInfo("main", "Player"));
 	tutorial_ = std::make_shared<Tutorial>();
 	shotManager_ = std::make_shared<ShotManager>();
 	objManager_ = std::make_shared<ObjectManager>();
 	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
-	camera_ = std::make_shared<Camera>(VGet(0,400,-550), VGet(0, 0, 0));
 
-	//プレイヤーの初期化
-	player_->Init(file.GetSpecifiedInfo("main", "Player"));
+	VECTOR pos = VAdd(player_->GetStatus().pos, VGet(0, 300, -550));
+	camera_ = std::make_shared<Camera>(pos, player_->GetStatus().pos);
 
 	//ゲームオブジェクトの生成
 	objManager_->MainStageObjectGenerator();
@@ -50,9 +49,7 @@ GameMain::~GameMain()
 {
 	//ゲームメインが終わるときにプレイ中に死んだ回数と
 	//saveDataに記録されている死亡回数を足す
-	totalDeathNum_ += player_->GetDeathCount();
-	ExternalFile::GetInstance().SetDeathCount(totalDeathNum_);
-	ExternalFile::GetInstance().SaveDataRewriteInfo(checkPoint_, totalDeathNum_);
+	ExternalFile::GetInstance().SaveDataRewriteInfo(totalDeathNum_);
 }
 
 void GameMain::Init()
@@ -65,24 +62,10 @@ void GameMain::Init()
 	//1mの範囲を設定する
 	Set3DSoundOneMetre(10.0f);
 
-	//セーブデータの内容を読み取る
-	//死亡回数
-	totalDeathNum_ = ExternalFile::GetInstance().GetSaveData().totalDeathNum;
-
 	skyHandle_ = MV1LoadModel("data/model/skyDorm/SkyDorm.mv1");
 	float scale = 30.0f;
 	MV1SetScale(skyHandle_, VGet(scale, scale, scale));
 	MV1SetPosition(skyHandle_, VGet(0, 200, 0));
-
-	//短縮化
-	auto& sound = SoundManager::GetInstance();
-
-	//3Dリスナーの位置を設定する
-	sound.Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
-	//3Dサウンドに関連する情報を設定する
-	//sound.Set3DSoundInfo(VGet(575, 120, -60), 10, "cafe");
-	//仮でcafeという音楽を流している
-	//sound.PlayBGM("cafe");
 }
 
 void GameMain::End()
@@ -121,7 +104,9 @@ void GameMain::Draw()
 	MV1SetPosition(skyHandle_, player_->GetStatus().pos);
 	MV1DrawModel(skyHandle_);
 
-	camera_->tempdraw();
+#ifdef _DEBUG
+	camera_->DebugDraw();
+#endif // _DEBUG
 
 	//弾の描画
 	shotManager_->Draw();
@@ -129,8 +114,10 @@ void GameMain::Draw()
 	//チュートリアルの描画
 	tutorial_->Draw();
 
+#ifdef _DEBUG
 	VECTOR pos = player_->GetStatus().pos;
 	DrawFormatString(0, 48, 0xffffff, "%.2f,%.2f,%.2f", pos.x, pos.y, pos.z);
+#endif // _DEBUG
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
@@ -167,7 +154,7 @@ void GameMain::NormalUpdate()
 	isFilterOn_ = false;
 
 	//プレイヤーの更新
-	player_->Update(input, objManager_);
+	player_->Update(objManager_);
 
 	//オブジェクトの更新
 	objManager_->Update(*player_,shotManager_);
@@ -192,7 +179,7 @@ void GameMain::NormalUpdate()
 	SoundManager::GetInstance().Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
 
 	//ポーズシーンを開く
-	if (input.IsTriggered(InputType::pause)) {
+	if (input.IsTriggered(InputType::Pause)) {
 		isFilterOn_ = true;
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}

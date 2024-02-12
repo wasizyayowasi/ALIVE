@@ -31,16 +31,22 @@ void ScenePause::Init()
 	menuName_.push_back("戻る");
 	menuName_.push_back("設定");
 	menuName_.push_back("タイトルへ");
+#ifdef _DEBUG
 	menuName_.push_back("デバッグシーンへ");
+#endif // _DEBUG
 
 	//UI画像の作成
 	int font = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
 	int y = 100;
+#ifdef _DEBUG
+#else
+	y += 40;
+#endif // _DEBUG
+
 	for (auto& menu : menuName_) {
 		UI_->AddMenu(static_cast<float>(Game::screen_width / 2), static_cast<float>(Game::screen_height / 2 + y), 640, 200, menu.c_str(), font);
 		y += 40;
 	}
-
 }
 
 void ScenePause::End()
@@ -55,15 +61,15 @@ void ScenePause::Update()
 	//TODO:まとめる
 	//項目選択
 	{
-		if (input.IsTriggered(InputType::up)) {
+		if (input.IsTriggered(InputType::Up)) {
 			selectNum_ = (std::max)(selectNum_ - 1, 0);
 		}
-		if (input.IsTriggered(InputType::down)) {
-			selectNum_ = (std::min)(selectNum_ + 1, 3);
+		if (input.IsTriggered(InputType::Down)) {
+			selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size()) - 1);
 		}
 	}
 	
-	if (input.IsTriggered(InputType::space)) {
+	if (input.IsTriggered(InputType::Space)) {
 		 switch(selectNum_) {
 		//一個前のシーン(メインシーン)へ遷移
 		case 0:
@@ -85,7 +91,7 @@ void ScenePause::Update()
 	}
 
 	//一個前のシーン(メインシーン)へ遷移
-	if (input.IsTriggered(InputType::pause)) {
+	if (input.IsTriggered(InputType::Pause)) {
 		manager_.PopFrontScene();
 	}
 }

@@ -280,6 +280,10 @@ void KeyConfigScene::KeyGraphDraw()
 
 	for (auto& key : input.tempMapTable_) {
 		
+		if (key.first == InputType::Creative) {
+			continue;
+		}
+
 		//現在カーソルがあっている場合
 		//サイズと明るさを引く値を変更する
 		if (keyCount == selectNum_) {
@@ -292,7 +296,7 @@ void KeyConfigScene::KeyGraphDraw()
 		}
 
 		//keyTypeの描画
-		input.DrawKeyGraph(key.first, graphPosX, graphPosY, graphScale);
+		input.DrawKeyGraph(static_cast<int>(key.first), graphPosX, graphPosY, graphScale);
 
 		//暗くした画像を画像の上に乗せる
 		SetDrawBlendMode(DX_BLENDMODE_SUB, subBrightness);
@@ -387,7 +391,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	const int keyNum = static_cast<int>(input.inputNameTable_.size() + 2);
 
 	//選択操作
-	if (input.IsTriggered(InputType::up)) {
+	if (input.IsTriggered(InputType::Up)) {
 		if (selectNum_ == (keyNum - 1) / 2) {
 			selectNum_ += keyNum / 2;
 		}
@@ -395,7 +399,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 			selectNum_ = ((selectNum_ - 1) + keyNum) % keyNum;
 		}
 	}
-	else if (input.IsTriggered(InputType::down)) {
+	else if (input.IsTriggered(InputType::Down)) {
 		if (selectNum_ + 1 == (keyNum - 1) / 2) {
 			selectNum_ += keyNum / 2;
 		}
@@ -403,7 +407,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 			selectNum_ = (selectNum_ + 1) % keyNum;
 		}
 	}
-	else if (input.IsTriggered(InputType::left) || input.IsTriggered(InputType::right)) {
+	else if (input.IsTriggered(InputType::Left) || input.IsTriggered(InputType::Right)) {
 		if (selectNum_ < keyNum - 2) {
 			selectNum_ = (selectNum_ + ((keyNum - 2) / 2)) % (keyNum - 2);
 		}
@@ -411,7 +415,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 
 	//キーの変更を保存する
 	if (selectNum_ == input.inputNameTable_.size()) {
-		if (input.IsTriggered(InputType::space)) {
+		if (input.IsTriggered(InputType::Space)) {
 
 			//仮のキー情報を実際に参照しているキー情報に代入する
 			input.CommitChangedInputInfo();
@@ -424,7 +428,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 
 	//仮キー情報を消去してポーズシーンに戻る
 	if (selectNum_ == input.inputNameTable_.size() + 1) {
-		if (input.IsTriggered(InputType::space)) {
+		if (input.IsTriggered(InputType::Space)) {
 			input.ResetInputInfo();
 			updateFunc_ = &KeyConfigScene::FadeOutUpdate;
 			return;
@@ -432,7 +436,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	}
 	
 	//どのキーを変更するかを仮決定
-	if (input.IsTriggered(InputType::space)) {
+	if (input.IsTriggered(InputType::Space)) {
 		isEditing_ = !isEditing_;
 		drawFunc_ = &KeyConfigScene::ChangeKeyPopUpText;
 		changeKeyUpdateFunc_ = &KeyConfigScene::ChangeKeyborardUpdate;
@@ -441,7 +445,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	}
 
 	//ひとつ前のシーンに戻る
-	if (input.IsTriggered(InputType::pause)) {
+	if (input.IsTriggered(InputType::Pause)) {
 		updateFunc_ = &KeyConfigScene::FadeOutUpdate;
 		input.RollbackChangedInputInfo();
 		return;
@@ -475,7 +479,7 @@ void KeyConfigScene::ChangeKeyborardUpdate()
 	}
 
 	//メンバ関数ポインタを変更するキーを選択する関数に変更する
-	if (input.IsTriggered(InputType::pause)) {
+	if (input.IsTriggered(InputType::Pause)) {
 		drawFunc_ = &KeyConfigScene::KeyStateDraw;
 		changeKeyUpdateFunc_ = &KeyConfigScene::SelectChangeKeyUpdate;
 		isEditing_ = !isEditing_;
@@ -511,7 +515,7 @@ void KeyConfigScene::ControllerUpdate()
 
 	//仮キー情報を消去してポーズシーンに戻る
 	if (selectNum_ == 0) {
-		if (input.IsTriggered(InputType::space)) {
+		if (input.IsTriggered(InputType::Space)) {
 			input.ResetInputInfo();
 			updateFunc_ = &KeyConfigScene::FadeOutUpdate;
 			return;
@@ -519,7 +523,7 @@ void KeyConfigScene::ControllerUpdate()
 	}
 
 	//ひとつ前のシーンに戻る
-	if (input.IsTriggered(InputType::pause)) {
+	if (input.IsTriggered(InputType::Pause)) {
 		updateFunc_ = &KeyConfigScene::FadeOutUpdate;
 		input.RollbackChangedInputInfo();
 		return;

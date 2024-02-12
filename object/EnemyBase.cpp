@@ -45,6 +45,8 @@ EnemyBase::EnemyBase(int handle, Material materialType, LoadObjectInfo objInfo) 
 	MATRIX matRotY = MGetRotY(objInfo.rot.y);
 	frontVec_ = VTransform(init_rot, matRotY);
 
+	initFrontVec_ = frontVec_;
+
 	//マテリアルの色を変える
 	MV1SetMaterialDifColor(model_->GetModelHandle(), 8, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 }

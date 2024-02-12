@@ -1,6 +1,7 @@
 #include "SceneTitle.h"
 #include "GameMain.h"
 #include "ScenePause.h"
+#include "SceneMovie.h"
 #include "SceneManager.h"
 #include "SelectChapterScene.h"
 #include "SettingSceneForSceneTitle.h"
@@ -215,14 +216,26 @@ void SceneTitle::Draw()
 	//UIの描画
 	UI_->DrawBillBoard(menuDrawPos_,static_cast<float>(UIfadeValue_),200.0f);
 
-	//キー画像描画
-	input.DrawKeyGraph(InputType::left, Game::screen_width / 7 * 5, Game::screen_height - 40, 0.8f);
-	input.DrawKeyGraph(InputType::right, Game::screen_width / 8 * 6, Game::screen_height - 40, 0.8f);
-	input.DrawKeyGraph(InputType::space, Game::screen_width / 8 * 7, Game::screen_height - 40, 0.8f);
+	if (input.LastInputDevice()) {
+		//キー画像描画
+		input.DrawKeyGraph(static_cast<int>(InputType::Up)	 , Game::screen_width / 128 * 92 , Game::screen_height - 90, 0.8f);
+		input.DrawKeyGraph(static_cast<int>(InputType::Left) , Game::screen_width / 128 * 87 , Game::screen_height - 40, 0.8f);
+		input.DrawKeyGraph(static_cast<int>(InputType::Down) , Game::screen_width / 128 * 92 , Game::screen_height - 40, 0.8f);
+		input.DrawKeyGraph(static_cast<int>(InputType::Right), Game::screen_width / 128 * 97 , Game::screen_height - 40, 0.8f);
+		input.DrawKeyGraph(static_cast<int>(InputType::Space), Game::screen_width / 128 * 112, Game::screen_height - 40, 0.8f);
+	}
+	else {
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Up)     , Game::screen_width / 128 * 92 , Game::screen_height - 90, 0.66f);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Left)	, Game::screen_width / 128 * 87 , Game::screen_height - 40, 0.66f);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Down)   , Game::screen_width / 128 * 92 , Game::screen_height - 40, 0.66f);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Right)  , Game::screen_width / 128 * 97 , Game::screen_height - 40, 0.66f);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::A)      , Game::screen_width / 128 * 112, Game::screen_height - 40, 0.66f);
+	}
+	
 
 	//文字列の描画
 	DrawStringToHandle(Game::screen_width / 10 * 8 - 25, Game::screen_height - 60, "移動", 0xffffff, fontHandle_);
-	input.DrawName(InputType::space, Game::screen_width / 20 * 18, Game::screen_height - 60, 0xffffff, fontHandle_, true, true, "/");
+	input.DrawName(static_cast<int>(InputType::Space), Game::screen_width / 20 * 18, Game::screen_height - 60, 0xffffff, fontHandle_, true, true, "/");
 
 	//fadeValue_の値によって透過具合が変化するタイトルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
@@ -261,10 +274,10 @@ void SceneTitle::UIUpdate()
 	}
 
 	//選択
-	if (input.IsTriggered(InputType::left)) {
+	if (input.IsTriggered(InputType::Left)) {
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
-	if (input.IsTriggered(InputType::right)) {
+	if (input.IsTriggered(InputType::Right)) {
 		selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
 	}
 
@@ -275,8 +288,12 @@ void SceneTitle::UIUpdate()
 	}
 
 	//決定
-	if (input.IsTriggered(InputType::space)) {
+	if (input.IsTriggered(InputType::Space)) {
 		updateFunc_ = &SceneTitle::UIFadeOutUpdate;
+	}
+
+	if (input.IsTriggered(InputType::Pause)) {
+		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneMovie>(manager_)));
 	}
 }
 
@@ -340,7 +357,6 @@ void SceneTitle::SceneChange()
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<SettingSceneForSceneTitle>(manager_)));
 		break;
 	case 1:
-		ExternalFile::GetInstance().ClearSaveData();
 		updateFunc_ = &SceneTitle::OpeningUpdate;
 		SoundManager::GetInstance().PlaySE("alarm");
 		break;

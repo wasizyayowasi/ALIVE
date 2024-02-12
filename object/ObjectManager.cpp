@@ -6,6 +6,7 @@
 #include "../object/ObjectBase.h"
 #include "../object/DeadPerson.h"
 #include "../object/OrnamentBase.h"
+#include "../object/SignBoardEnemy.h"
 
 #include "../gimmick/Elevator.h"
 #include "../gimmick/HopStepJump.h"
@@ -224,7 +225,7 @@ void ObjectManager::OpeningStageObjectGenerator()
 		}
 		else if (objInfo.first == "Book") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Book, Material::Other, objSecond);
+				//SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Book, Material::Other, objSecond);
 			}
 		}
 		else if (objInfo.first == "BlueContainer") {
@@ -240,16 +241,6 @@ void ObjectManager::OpeningStageObjectGenerator()
 		else if (objInfo.first == "TransScaffold") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Trans, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "Enemy") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Enemy, Material::Other, objSecond);
-			}
-		}
-		else if (objInfo.first == "Switch") {
-			for (auto& objSecond : objInfo.second) {
-				//SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Switch, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "Door") {
@@ -442,7 +433,7 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(ObjectType typ
 std::list<std::shared_ptr<ObjectBase>> ObjectManager::GetSpecificObject(ObjectType type)
 {
 
-	std::list<std::shared_ptr<ObjectBase>> obj;
+	std::list<std::shared_ptr<ObjectBase>> obj = {};
 
 	if (objects_.count(type) > 0) {
 		obj = objects_[type];
@@ -503,6 +494,9 @@ void ObjectManager::CircumferencePosition(float angle, VECTOR& infoPos, VECTOR p
 
 void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 {
+	//íZèkâª
+	auto& model = ModelManager::GetInstance();
+
 	//ï∂éöóÒÇÃÉTÉCÉYÇéÊìæÇ∑ÇÈ
 	int size = static_cast<int>(info.name.size());
 
@@ -516,10 +510,16 @@ void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 		if (str == "ALL") {
 			GeneratedForTheNumberOfTimesYouDie(deathCount, info);
 		}
+		else if (info.name == "SignBoardEnemy") {
+			objects_[ObjectType::Enemy].push_back(std::make_shared<SignBoardEnemy>(model.GetModelHandle(ObjectType::BoardEnemy), Material::Other, info));
+			usedEnemyList_[info.name] = true;
+		}
 		else {
 			GeneratePredeterminedNumberOfTimes(deathCount, str, info);
 		}
 	}
+
+	
 }
 
 void ObjectManager::EndEnemyGenerator(int deathCount, LoadObjectInfo info)

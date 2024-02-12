@@ -26,34 +26,21 @@ namespace {
 
 	//プレイヤーの高さ
 	constexpr float player_hegiht = 130.0f;
+
+	//初期正面ベクトル
+	constexpr VECTOR front_vec = { 0,0,-1 };
 }
 
-Player::Player():updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObjectUpdate)
-{
-	//ジャンプ情報の初期
-	status_.jump.isJump = false;
-	status_.jump.jumpVec = 0.0f;
-	//プレイヤーの高さの設定
-	status_.height = player_hegiht;
-}
-
-/// <summary>
-/// デストラクタ
-/// </summary>
-Player::~Player()
-{
-}
-
-void Player::Init(LoadObjectInfo info)
+Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObject)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
 
 	//プレイヤー情報の初期化
 	playerInfo_ = ExternalFile::GetInstance().GetPlayerInfo();
-	
+
 	//プレイヤーモデルの生成
-	model_ = std::make_shared<Model>(model.GetModelHandle(ObjectType::Player),Material::Other);
+	model_ = std::make_shared<Model>(model.GetModelHandle(ObjectType::Player), Material::Other);
 
 	//アニメーションの設定
 	model_->SetAnimation(static_cast<int>(PlayerAnimType::Idle), true, false);
@@ -69,17 +56,32 @@ void Player::Init(LoadObjectInfo info)
 	model_->SetRot(info.rot);
 
 	//コリジョンフレームの設定
-	model_->SetUseCollision(true,true,"Character");
+	model_->SetUseCollision(true, true, "Character");
 
 	scale_ = info.scale;
+
+	//ジャンプ情報の初期
+	status_.jump.isJump = false;
+	status_.jump.jumpVec = 0.0f;
+	//プレイヤーの高さの設定
+	status_.height = player_hegiht;
+
+	tentativeRot_ = front_vec;
 }
 
-void Player::Update(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+/// <summary>
+/// デストラクタ
+/// </summary>
+Player::~Player()
+{
+}
+
+void Player::Update(std::shared_ptr<ObjectManager> objManager)
 {
 	//プレイヤーのアニメーション更新
 	model_->Update();
 	
-	(this->*updateFunc_)(input,objManager);
+	(this->*updateFunc_)(objManager);
 }
 
 
@@ -90,8 +92,6 @@ void Player::Draw()
 
 	//影もどきの描画
 	DrawPolygon3D();
-
-	DrawFormatString(0, 64, 0xffffff, "%.2f,%.2f,%.2f", status_.pos.x,status_.pos.y,status_.pos.z);
 }
 
 void Player::SetPos(VECTOR pos)
@@ -107,19 +107,20 @@ void Player::SetJumpInfo(bool isJump, float jumpVec)
 }
 
 //HACK:↓汚い、気に食わない
-/// <summary>
-/// アニメーションがidle状態の時に行われる
-/// </summary>
-/// <param name="input">外部装置の入力情報を参照する</param>
-void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+void Player::NormalUpdate(std::shared_ptr<ObjectManager> objManager)
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
+#ifdef _DEBUG
 	//削除予定
-	if (input.IsTriggered(InputType::creative)) {
+	if (input.IsTriggered(InputType::Creative)) {
 		debugCreativeMode = !debugCreativeMode;
 	}
+#endif
 	
 	//オブジェクトに対してアクションを起こす
-	if (input.IsTriggered(InputType::activate)) {
+	if (input.IsTriggered(InputType::Activate)) {
 		status_.moveVec = VGet(0, 0, 0);
 		if (status_.situation.isCanBeCarried) {
 			(this->*carryUpdateFunc_)();
@@ -141,8 +142,8 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 		lever_.reset();
 	}
 
-	if (input.IsTriggered(InputType::sit)) {
-		updateFunc_ = &Player::IdleToSitup;
+	if (input.IsTriggered(InputType::Sit)) {
+		updateFunc_ = &Player::IdleToSitupUpdate;
 		return;
 	}
 
@@ -158,9 +159,10 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 	}
 
 	ChangeAnimIdle();
-	MovingUpdate(input);
-	StepFootSound();
+	MovingUpdate();
+	FootStepSound();
 
+#ifdef _DEBUG
 	//空中にいるとき
 	//重力をベクトルに足してポジションに足す
 	if (!debugCreativeMode) {
@@ -173,6 +175,20 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 			status_.jump.jumpVec = 0.0f;
 		}
 	}
+#else
+	//空中にいるとき
+	//重力をベクトルに足してポジションに足す
+	if (status_.jump.isJump) {
+		status_.jump.jumpVec += gravity;
+		status_.pos.y += status_.jump.jumpVec;
+		model_->SetPos(status_.pos);
+	}
+	else {
+		status_.jump.jumpVec = 0.0f;
+	}
+#endif // _DEBUG
+
+	
 	
 
 	//持ち運び中だったら
@@ -181,26 +197,37 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 		return;
 	}
 
-	//メンバ関数ポインタをrunningJumpUpdate、
-	//jumpUpdateのどちらかに変更する
+#ifdef _DEBUG
+	//メンバ関数ポインタをjumpUpdateに変更する
 	if (!debugCreativeMode) {
-		if (input.IsTriggered(InputType::space)) {
+		if (input.IsTriggered(InputType::Space)) {
 			if (!status_.jump.isJump) {
 				PlayerJump(playerInfo_.jumpPower);
 			}
 			ChangeAnimNo(PlayerAnimType::Jump, false, 20);
 			updateFunc_ = &Player::JumpUpdate;
 			return;
-		}
+}
 	}
 	else {
-		if (input.IsPressed(InputType::space)) {
+		if (input.IsPressed(InputType::Space)) {
 			status_.moveVec.y = 10.0;
 		}
 	}
+#else
+	//メンバ関数ポインタをjumpUpdateに変更する
+	if (input.IsTriggered(InputType::Space)) {
+		if (!status_.jump.isJump) {
+			PlayerJump(playerInfo_.jumpPower);
+		}
+		ChangeAnimNo(PlayerAnimType::Jump, false, 20);
+		updateFunc_ = &Player::JumpUpdate;
+		return;
+	}
+#endif // _DEBUG
 
 	//メンバ関数ポインタをDeathUpdateに変更する
-	if (input.IsTriggered(InputType::death)) {
+	if (input.IsTriggered(InputType::Death)) {
 		deathCount_++;
 		updateFunc_ = &Player::DeathUpdate;
 		status_.moveVec = VGet(0, 0, 0);
@@ -209,9 +236,6 @@ void Player::NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager
 
 }
 
-/// <summary>
-/// アニメーションをidleに戻す関数
-/// </summary>
 void Player::ChangeAnimIdle()
 {
 	//待機アニメーションに戻す
@@ -221,22 +245,25 @@ void Player::ChangeAnimIdle()
 }
 
 //HACK:↓汚い、気に食わない
-/// <summary>
-/// プレイヤーを移動させるための関数
-/// </summary>
-/// <param name="input">外部装置の入力情報を参照する</param>
-void Player::MovingUpdate(const InputState& input)
+void Player::MovingUpdate()
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
+	//移動スピードの取得
+	float movingSpeed = Move();
 	
-	float movingSpeed = Move(input);
+	//tempRotationUpdate();
 	
+	//model_->SetPos(VAdd(status_.pos,status_.moveVec));
+
 	//HACK：もっといいアニメーション番号変更があるはず
 	if (movingSpeed != 0.0f) {
 		if (movingSpeed > playerInfo_.walkSpeed) {
 			//アニメーションの変更
 			ChangeAnimNo(PlayerAnimType::Run, true, 20);
-			EffectManager::GetInstance().AddEffect("smoke", 100.0f, VGet(status_.pos.x, status_.pos.y + 50.0f, status_.pos.z));
-			EffectManager::GetInstance().AddEffect("leaves", 100.0f, VGet(status_.pos.x, status_.pos.y + 50.0f, status_.pos.z));
+			//EffectManager::GetInstance().AddEffect("smoke", 100.0f, VGet(status_.pos.x, status_.pos.y + 50.0f, status_.pos.z));
+			//EffectManager::GetInstance().AddEffect("leaves", 100.0f, VGet(status_.pos.x, status_.pos.y + 50.0f, status_.pos.z));
 		}
 		else if (movingSpeed <= playerInfo_.walkSpeed) {
 			//アニメーションの変更
@@ -254,13 +281,17 @@ void Player::MovingUpdate(const InputState& input)
 	status_.moveVec = VScale(VNorm(status_.moveVec), movingSpeed);
 }
 
-float Player::Move(const InputState& input) {
+float Player::Move()
+{
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//キーの押下をブール型に格納
-	bool pressedUp = input.IsPressed(InputType::up);
-	bool pressedDown = input.IsPressed(InputType::down);
-	bool pressedLeft = input.IsPressed(InputType::left);
-	bool pressedRight = input.IsPressed(InputType::right);
-	bool pressedShift = input.IsPressed(InputType::dush);
+	bool pressedUp = input.IsPressed(InputType::Up);
+	bool pressedDown = input.IsPressed(InputType::Down);
+	bool pressedLeft = input.IsPressed(InputType::Left);
+	bool pressedRight = input.IsPressed(InputType::Right);
+	bool pressedShift = input.IsPressed(InputType::Dush);
 
 	status_.moveVec = VGet(0,0,0);
 
@@ -274,32 +305,40 @@ float Player::Move(const InputState& input) {
 
 	//HACK：汚い、リファクタリング必須
 	if (pressedUp) {
-		status_.moveVec.z = movingSpeed;
+		status_.moveVec.z += movingSpeed;
 		targetAngle_ = 180.0f;
+//		tentativeRot_ = { -0.01f,0,0.99f };
 	}
 	if (pressedDown) {
-		status_.moveVec.z = -movingSpeed;
+		status_.moveVec.z -= movingSpeed;
 		targetAngle_ = 0.0f;
+//		tentativeRot_ = { 0,0,-1 };
 	}
 	if (pressedLeft) {
-		status_.moveVec.x = -movingSpeed;
+		status_.moveVec.x -= movingSpeed;
 		targetAngle_ = 90.0f;
+//		tentativeRot_ = { -1,0,0 };
 	}
 	if (pressedRight) {
-		status_.moveVec.x = movingSpeed;
+		status_.moveVec.x += movingSpeed;
 		targetAngle_ = 270.0f;
+//		tentativeRot_ = { 1,0,0 };
 	}
 	if (pressedUp && pressedRight) {
 		targetAngle_ = 225.0f;
+//		tentativeRot_ = { 1,0,1 };
 	}
 	if (pressedUp && pressedLeft) {
 		targetAngle_ = 135.0f;
+//		tentativeRot_ = { -1,0,1 };
 	}
 	if (pressedDown && pressedLeft) {
 		targetAngle_ = 45.0f;
+//		tentativeRot_ = { -1,0,-1 };
 	}
 	if (pressedDown && pressedRight) {
 		targetAngle_ = 315.0f;
+//		tentativeRot_ = { 1,0,-1 };
 	}
 
 	//回転処理
@@ -314,10 +353,6 @@ float Player::Move(const InputState& input) {
 
 }
 
-//完成品だから今後いじらなくていいと思う
-/// <summary>
-/// プレイヤーの回転処理を行う関数
-/// </summary>
 void Player::RotationUpdate()
 {
 	//一回転の角度
@@ -358,12 +393,34 @@ void Player::RotationUpdate()
 	model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 }
 
+void Player::tempRotationUpdate()
+{
+	//行列
+	MATRIX mtx = {};
+
+	//回転行列の取得
+	MATRIX rotMtx = MGetRotVec2(front_vec, VNorm(tentativeRot_));
+
+	//拡縮行列の取得
+	MATRIX scaleMtx = MGetScale(scale_);
+
+	//平行移動行列
+	MATRIX moveMtx = MGetTranslate(status_.pos);
+
+	//回転行列と拡縮行列の乗算
+	mtx = MMult(rotMtx, scaleMtx);
+
+	//（回転行列と拡縮行列）と平行移動行列の乗算
+	mtx = MMult(mtx, moveMtx);
+
+	MV1SetMatrix(model_->GetModelHandle(),mtx);
+}
+
 //HACK:↓汚い、気に食わない
-/// 走りジャンプではないときのジャンプ
-void Player::JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+void Player::JumpUpdate(std::shared_ptr<ObjectManager> objManager)
 {
 	//プレイヤー移動関数
-	Move(input);
+	Move();
 
 	//ジャンプ処理
 	{
@@ -382,7 +439,7 @@ void Player::JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> 
 }
 
 // プレイヤーの死体に与える情報を作る関数
-void Player::DeathUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+void Player::DeathUpdate(std::shared_ptr<ObjectManager> objManager)
 {
 	//座るアニメーション以外だったら死ぬアニメーションに変える
 	if (status_.animNo != static_cast<int>(PlayerAnimType::IdleToSitup)) {
@@ -391,23 +448,21 @@ void Player::DeathUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 	}
 
 	if (model_->IsAnimEnd()) {
-		DeathPersonPostProsessing(objManager);
+		CorpsePostProsessing(objManager);
 	}
-
 }
 
 //死体の後処理
-void Player::DeathPersonPostProsessing(std::shared_ptr<ObjectManager> objManager)
+void Player::CorpsePostProsessing(std::shared_ptr<ObjectManager> objManager)
 {
-//	status_.pos = checkPoint_;				//チェックポイントにプレイヤーを帰す
-
-	DeadPersonGenerater(objManager);			//死体を生成する関数
+	//死体を生成する関数
+	CorpseGenerater(objManager);			
 
 	updateFunc_ = &Player::NormalUpdate;
 }
 
 // プレイヤーの死体をvector配列で管理する関数
-void Player::DeadPersonGenerater(std::shared_ptr<ObjectManager> objManager)
+void Player::CorpseGenerater(std::shared_ptr<ObjectManager> objManager)
 {
 	LoadObjectInfo info;
 	info.rot = MathUtil::VECTORDegreeToRadian(status_.rot);
@@ -420,11 +475,13 @@ void Player::DeadPersonGenerater(std::shared_ptr<ObjectManager> objManager)
 	objManager->DeadPersonGenerator(model_->GetModelHandle(),info, status_.animNo);
 }
 
-// プレイヤーに座るアニメーションをさせる関数
-void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+void Player::SitUpdate(std::shared_ptr<ObjectManager> objManager)
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//立ち上がるためのコマンド
-	if (input.IsTriggered(InputType::activate)) {
+	if (input.IsTriggered(InputType::Sit)) {
 		//アニメーションの変更
 		ChangeAnimNo(PlayerAnimType::SitupToIdle, false, 20);
 	}
@@ -439,8 +496,8 @@ void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> o
 	if (status_.animNo == static_cast<int>(PlayerAnimType::SitupToIdle)) return;
 
 	//死ぬコマンド
-	if (input.IsTriggered(InputType::death)) {
-		DeathUpdate(input,objManager);
+	if (input.IsTriggered(InputType::Death)) {
+		DeathUpdate(objManager);
 		status_.situation.isSitting = false;
 		updateFunc_ = &Player::NormalUpdate;
 		return;
@@ -448,8 +505,10 @@ void Player::SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> o
 
 }
 
-void Player::IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+void Player::IdleToSitupUpdate(std::shared_ptr<ObjectManager> objManager)
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
 
 	status_.moveVec = VGet(0.0f, 0.0f, 0.0f);
 
@@ -465,7 +524,6 @@ void Player::IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager>
 		model_->SetAnimEndFrame(status_.animNo);
 		updateFunc_ = &Player::SitUpdate;
 	}
-
 }
 
 void Player::SetCarryInfo(bool isCarry, std::shared_ptr<ObjectBase>model) {
@@ -484,7 +542,7 @@ void Player::SetLeverPointer(std::shared_ptr<Lever> lever)
 	status_.situation.isGimmickCanBeOperated = true;
 }
 
-void Player::CarryObjectUpdate()
+void Player::CarryObject()
 {
 	
 	if (!status_.situation.isCanBeCarried) return;
@@ -493,12 +551,11 @@ void Player::CarryObjectUpdate()
 
 	deadPersonModelPointer_->SetIsTransit(true);
 
-	carryUpdateFunc_ = &Player::DropOffObjectUpdate;
+	carryUpdateFunc_ = &Player::DropOffObject;
 
 }
 
-//運んでいたオブジェクトを下ろす処理
-void Player::DropOffObjectUpdate()
+void Player::DropOffObject()
 {
 	if (status_.situation.isCanBeCarried) {
 		status_.situation.isCanBeCarried = false;
@@ -512,24 +569,33 @@ void Player::DropOffObjectUpdate()
 	status_.situation.isInTransit = false;
 	status_.situation.isCanBeCarried = false;
 
-	carryUpdateFunc_ = &Player::CarryObjectUpdate;
+	carryUpdateFunc_ = &Player::CarryObject;
 
 }
 
-void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager) 
+void Player::CrankUpdate(std::shared_ptr<ObjectManager> objManager) 
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+	auto& sound = SoundManager::GetInstance();
 
 	status_.moveVec = VGet(0, 0, 0);
 
+	float oldRotZ = crank_->GetRotZ();
 	float rotZ = crank_->GetRotZ();
 
-	if (input.IsPressed(InputType::down)) {
+	if (input.IsPressed(InputType::Down)) {
 		rotZ = (std::max)(rotZ - 3.0f, crank_->GetMaxRotZ());
 		CrankRotationUpdate(rotZ);
 	}
-	else if (input.IsPressed(InputType::up)) {
+	else if (input.IsPressed(InputType::Up)) {
 		rotZ = (std::min)(rotZ + 3.0f, 0.0f);
 		CrankRotationUpdate(rotZ);
+	}
+
+	if (oldRotZ != rotZ && !sound.CheckSoundFile("crank")) {
+		sound.Set3DSoundInfo(crank_->GetStandingPosition(), 1500.0f, "crank");
+		sound.PlaySE("crank");
 	}
 
 	int naturalNumber = static_cast<int>((std::max)(rotZ, -rotZ));
@@ -537,7 +603,7 @@ void Player::CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 
 	model_->SetAnimationFrame(animTime);
 
-	if (input.IsTriggered(InputType::activate)) {
+	if (input.IsTriggered(InputType::Activate)) {
 		status_.situation.isGimmickCanBeOperated = false;
 		crank_.reset();
 		updateFunc_ = &Player::NormalUpdate;
@@ -574,8 +640,11 @@ void Player::CrankRotationUpdate(float rotZ) {
 
 }
 
-void Player::BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+void Player::BulletHitMeUpdate(std::shared_ptr<ObjectManager> objManager)
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//重力
 	status_.jump.jumpVec += gravity;
 	status_.moveVec.y = status_.jump.jumpVec;
@@ -600,8 +669,11 @@ void Player::BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectMa
 
 }
 
-void Player::GoLeverPullPosition(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+void Player::GoLeverPullPosition(std::shared_ptr<ObjectManager> objManager)
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//クランクの立ってほしいポジションを取得する
 	VECTOR standPos = lever_->GetStandingPosition();
 	//立ってほしいポジションとプレイヤーの距離のサイズを取得する
@@ -628,7 +700,7 @@ void Player::GoLeverPullPosition(const InputState& input, std::shared_ptr<Object
 	}
 }
 
-void Player::LeverUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+void Player::LeverUpdate(std::shared_ptr<ObjectManager> objManager)
 {
 	if (!lever_->IsOn()) {
 		updateFunc_ = &Player::NormalUpdate;
@@ -636,7 +708,7 @@ void Player::LeverUpdate(const InputState& input, std::shared_ptr<ObjectManager>
 }
 
 //クランクを回すためにクランクを回すポジションへと移動する
-void Player::GoCrankRotationPosition(const InputState& input, std::shared_ptr<ObjectManager> objManager)
+void Player::GoCrankRotationPosition(std::shared_ptr<ObjectManager> objManager)
 {
 	//クランクの立ってほしいポジションを取得する
 	VECTOR standPos = crank_->GetStandingPosition();
@@ -666,6 +738,10 @@ void Player::GoCrankRotationPosition(const InputState& input, std::shared_ptr<Ob
 
 void Player::BulletHitMe(VECTOR moveVec)
 {
+	if (updateFunc_ == &Player::DeathUpdate) {
+		return;
+	}
+
 	status_.moveVec = moveVec;
 
 	updateFunc_ = &Player::BulletHitMeUpdate;
@@ -690,10 +766,14 @@ float Player::PlayerSpeed(bool pressedShift)
 {
 	//シフトが押されているかどうか
 	if (pressedShift) {
+#ifdef _DEBUG
 		if (debugCreativeMode) {
 			return playerInfo_.runningSpeed * 3;
 		}
 		return playerInfo_.runningSpeed;
+#else
+		return playerInfo_.runningSpeed;
+#endif // _DEBUG
 	} 
 	
 	return playerInfo_.walkSpeed;
@@ -706,42 +786,40 @@ void Player::PlayerJump(float jumpPower) {
 	status_.jump.isJump = true;
 }
 
-void Player::StepFootSound()
+void Player::FootStepSound()
 {
-	bool tem = false;
+	bool playSound = false;
 
 	switch (static_cast<PlayerAnimType>(status_.animNo))
 	{
 	case PlayerAnimType::Walk:
 
 		if (model_->GetSpecifiedAnimTime(80) || model_->GetSpecifiedAnimTime(160)) {
-			tem = true;
+			playSound = true;
 		}
 
 		break;
 	case PlayerAnimType::Run:
 
 		if (model_->GetSpecifiedAnimTime(6) || model_->GetSpecifiedAnimTime(45)) {
-			tem = true;
+			playSound = true;
 		}
 
 		break;
 	}
 
-	if (!tem) {
+	if (!playSound) {
 		return;
 	}
-
-	float aiu = 1500.0f;
 
 	switch (materialSteppedOn_)
 	{
 	case Material::Iron:
-		SoundManager::GetInstance().Set3DSoundInfo(status_.pos, aiu, "ironStep");
+		SoundManager::GetInstance().Set3DSoundInfo(status_.pos, 1500.0f, "ironStep");
 		SoundManager::GetInstance().PlaySE("ironStep");
 		break;
 	case Material::Stone:
-		SoundManager::GetInstance().Set3DSoundInfo(status_.pos, aiu, "asphaltStep");
+		SoundManager::GetInstance().Set3DSoundInfo(status_.pos, 1500.0f, "asphaltStep");
 		SoundManager::GetInstance().PlaySE("asphaltStep");
 		break;
 	}

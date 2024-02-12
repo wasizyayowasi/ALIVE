@@ -38,6 +38,7 @@ void ExternalFile::LoadFile()
 void ExternalFile::LoadArrangementData()
 {
 	LoadPlayerInfo("player");
+	LoadSaveDataInfo("saveData");
 	//マップに格納する
 	LoadObjectData("UIpos", loadUIInfo_);
 	LoadObjectData("startPos", loadStartPos_);
@@ -50,11 +51,6 @@ void ExternalFile::LoadArrangementData()
 	LoadObjectDataList("obj", loadMainStageObjInfo_);
 	LoadObjectDataList("room", loadOpeningStageObjInfo_);
 	LoadObjectDataList("cameraGimmick", loadCameraGimmickInfo_);
-}
-
-void ExternalFile::LoadSaveData()
-{
-	LoadSaveDataInfo("saveData");
 }
 
 void ExternalFile::LoadFileHandle(std::string name)
@@ -165,7 +161,7 @@ LoadObjectInfo ExternalFile::GetTutorialObjInfo(VECTOR pos)
 	float distanceSize = 0.0f;
 	float min = 10000.0f;
 
-	for (auto tutorial : loadTutorialInfo_) {
+	for (auto& tutorial : loadTutorialInfo_) {
 		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorial.second.pos, pos);
 
 		if (min > distanceSize) {
@@ -177,21 +173,12 @@ LoadObjectInfo ExternalFile::GetTutorialObjInfo(VECTOR pos)
 	return info;
 }
 
-void ExternalFile::ClearSaveData()
-{
-	data_.checkPoint = VGet(0, 0, 0);
-	data_.totalDeathNum = 0;
-}
-
 //セーブデータの書き出し
-void ExternalFile::SaveDataRewriteInfo(VECTOR pos, int num)
+void ExternalFile::SaveDataRewriteInfo(int num)
 {
 	json saveData = {
 		{"name","saveData"},
-		{"checkPointX",pos.x},
-		{"checkPointY",pos.y},
-		{"checkPointZ",pos.z},
-		{"totalDeath",num},
+		{"pastTotalDeath",pastTotalDeathNum_},
 	};
 
 	string filename = saveData["name"];
@@ -215,8 +202,8 @@ VECTOR ExternalFile::GetCameraTargetPos(std::string name)
 {
 	VECTOR pos = {};
 
-	for (auto data : loadCameraPosInfo_) {
-		auto keyName = data.first;
+	for (auto& data : loadCameraPosInfo_) {
+		auto& keyName = data.first;
 		if (keyName == name) {
 			pos = data.second.pos;
 		}
@@ -229,14 +216,20 @@ VECTOR ExternalFile::GetUIPos(std::string name)
 {
 	VECTOR pos = {};
 
-	for (auto data : loadUIInfo_) {
-		auto keyName = data.first;
+	for (auto& data : loadUIInfo_) {
+		auto& keyName = data.first;
 		if (keyName == name) {
 			pos = data.second.pos;
 		}
 	}
 
 	return pos;
+}
+
+void ExternalFile::SetDeathCount(int num)
+{
+	pastTotalDeathNum_.pop_front();
+	pastTotalDeathNum_.push_back(num);
 }
 
 //プレイヤーのステータスを書き出す
@@ -300,10 +293,16 @@ void ExternalFile::LoadSaveDataInfo(const char* const filename)
 	json json;
 	ifs >> json;
 
-	data_.checkPoint.x = json["checkPointX"];
-	data_.checkPoint.y = json["checkPointY"];
-	data_.checkPoint.z = json["checkPointZ"];
-	data_.totalDeathNum = json["totalDeath"];
+	//pastTotalDeathNum1_.push_back(11);
+	//pastTotalDeathNum1_.push_back(2);
+	//pastTotalDeathNum1_.push_back(8);
+	//pastTotalDeathNum1_.push_back(26);
+	//pastTotalDeathNum1_.push_back(5);
+
+	for (int i = 0; i < 5; i++) {
+		pastTotalDeathNum_.push_back(json["pastTotalDeath"][i]);
+	}
+	//totalDeathNum_ = json["totalDeath"];
 
 	ifs.close();
 }
@@ -313,9 +312,6 @@ void ExternalFile::LoadObjectDataList(std::string name, std::unordered_map<std::
 {
 	//読み込んだデータのハンドルを取得
 	auto dataHandle = loadFile_[name.c_str()];
-	bool mki = CheckHandleASyncLoad(loadFile_[name.c_str()]);
-	bool loading = CheckHandleASyncLoad(dataHandle);
-	assert(loading != true);
 
 	//データ数の取得
 	int dataNum = 0;
@@ -370,9 +366,6 @@ void ExternalFile::LoadObjectData(std::string name, std::unordered_map<std::stri
 {
 	//読み込んだデータのハンドルを取得
 	auto dataHandle = loadFile_[name.c_str()];
-	bool mki = CheckHandleASyncLoad(loadFile_[name.c_str()]);
-	bool loading = CheckHandleASyncLoad(dataHandle);
-	assert(loading != true);
 
 	//データ数の取得
 	int dataNum = 0;

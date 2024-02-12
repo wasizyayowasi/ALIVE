@@ -52,7 +52,7 @@ public:
 	void ChangeChapter();
 
 private:
-	//è¡Ç∑Ç©Ç‡ÇµÇÍÇ»Ç¢
+	void SlideInBook();
 	void NormalUpdate();
 	void FadeOutUpdate();
 private:

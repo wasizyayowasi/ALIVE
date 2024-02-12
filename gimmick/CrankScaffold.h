@@ -38,6 +38,7 @@ public:
 	std::shared_ptr<Model> AddCollModel();
 private:
 
+	float oldRotZ_ = 0.0f;
 	float upVec_ = 0.0f;						//上昇ベクトル
 
 	VECTOR initPos_ = {};						//初期ポジション

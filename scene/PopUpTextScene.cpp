@@ -29,7 +29,7 @@ void PopUpTextScene::Update()
 	//íZèkâª
 	auto& input = InputState::GetInstance();
 
-	if (input.IsTriggered(InputType::space)) {
+	if (input.IsTriggered(InputType::Space)) {
 		manager_.PopFrontScene();
 	}
 }

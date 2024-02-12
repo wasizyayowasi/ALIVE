@@ -98,4 +98,8 @@ enum class XboxBotton {
 	B,
 	X,
 	Y,
+	Up,
+	Down,
+	Left,
+	Right,
 };

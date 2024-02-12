@@ -22,6 +22,9 @@ namespace {
 
 Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)
 {
+	//短縮化
+	auto& input = InputState::GetInstance();
+
 	//UI画像の読み込み
 	UIHandle_[UIGraph::XboxBotton] = Graph::LoadGraph(xbox_Botton_filepath);
 	UIHandle_[UIGraph::KeyBord] = Graph::LoadGraph(key_filepath);
@@ -33,6 +36,15 @@ Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)
 	//padのボタンを描画する位置
 	UIPos_[UIGraph::XboxBotton].first = Game::screen_width / 2 - controller_graph_chip_size;
 	UIPos_[UIGraph::XboxBotton].second = Game::screen_height - controller_graph_chip_size;
+
+	//配列の準備
+	pushBottan_[static_cast<int>(InputType::Activate)]	= false;
+	pushBottan_[static_cast<int>(InputType::Space)]		= false;
+	pushBottan_[static_cast<int>(InputType::Death)]		= false;
+	pushBottan_[static_cast<int>(InputType::Dush)]		= false;
+
+	nextDisplayBottanType_ = static_cast<int>(XboxBotton::Y);
+	nextDisplayKeyType_ = static_cast<int>(InputType::Death);
 
 	fontPigumo42_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
 }
@@ -85,190 +97,172 @@ void Tutorial::Draw()
 {
 	auto& input = InputState::GetInstance();
 
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
 	(this->*drawFunc_)(input);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void Tutorial::NoneDraw(InputState& input)
 {
-	fadeTimer_ = (std::max)(fadeTimer_ - 1,0);
-
-	fadeValue_ = (std::max)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 0);
+	for (auto& bottan : pushBottan_) {
+		bottan.second = false;
+	}
 }
 
 void Tutorial::SwitchTutorialDraw(InputState& input)
 {
-	static InputType type = InputType::death;
-	static XboxBotton bottanType = XboxBotton::Y;
 
-	fadeTimer_ = (std::min)(fadeTimer_ + 1,255);
-	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
+	static std::string str = "死体を持つ";
 
 	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(type, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second,1.2f);
+		input.DrawKeyGraph(nextDisplayKeyType_, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second,1.2f);
 	}
 	else {
 		//画像描画
-		input.DrawPadGraph(bottanType, UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second);
+		input.DrawPadGraph(nextDisplayBottanType_, UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second,1.0f);
 	}
 
-	if (input.IsTriggered(InputType::death)) {
-		type = InputType::activate;
-		bottanType = XboxBotton::B;
+	if (input.IsTriggered(InputType::Death)) {
+		nextDisplayKeyType_ = static_cast<int>(InputType::Activate);
+		nextDisplayBottanType_ = static_cast<int>(XboxBotton::B);
+		str = "死体を持つ";
+	}
+
+	if (input.IsTriggered(InputType::Activate)) {
+		str = "死体を置く";
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(type, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"),false,false);
+	if (nextDisplayKeyType_ == static_cast<int>(InputType::Death) || nextDisplayBottanType_ == static_cast<int>(XboxBotton::Y)) {
+		input.DrawName(nextDisplayKeyType_, static_cast<float>(Game::screen_width / 2), Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_, false, false);
+	}
+	else {
+		DrawStringToHandle(Game::screen_width / 2, static_cast<int>(Game::screen_height - keybord_graph_chip_size * 1.6f), str.c_str(), 0xffffff, fontPigumo42_);
+	}
 }
 
 void Tutorial::CranckTutorialDraw(InputState& input)
 {
-	//ボタンが押されたか
-	static bool pressedBottan = false;
-
-	if (input.IsTriggered(InputType::activate)) {
-		pressedBottan = true;
+	if (input.IsTriggered(InputType::Activate)) {
+		pushBottan_[static_cast<int>(InputType::Death)] = true;
 	}
 
-	if (pressedBottan) {
+	if (pushBottan_[static_cast<int>(InputType::Death)]) {
 		//文字列の描画
-		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - keybord_graph_chip_size * 1.6f - 80.0f, "左回転", 0xffffff, fontPigumo42_);
-		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - keybord_graph_chip_size * 1.6f, "右回転", 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f) - 80, "左回転", 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f), "右回転", 0xffffff, fontPigumo42_);
 
-		//キー画像の描画
-		input.DrawKeyGraph(InputType::up, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second - 80.0f, 1.2f);
-		input.DrawKeyGraph(InputType::down, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
+		if (input.currentInputDevice_) {
+			//キー画像の描画
+			input.DrawKeyGraph(static_cast<int>(InputType::Up), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second - 80.0f, 1.2f);
+			input.DrawKeyGraph(static_cast<int>(InputType::Down), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
+		}
+		else {
+			input.DrawPadGraph(static_cast<int>(XboxBotton::Up),UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second - 80.0f, 1.0f);
+			input.DrawPadGraph(static_cast<int>(XboxBotton::Down),UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
+		}
 
 		return;
 	}
 
-	fadeTimer_ = (std::min)(fadeTimer_ + 1,255);
-	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
-
 	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(InputType::activate, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second,1.2f);
+		input.DrawKeyGraph(static_cast<int>(InputType::Activate), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second,1.2f);
 	}
 	else {
 		//画像描画
-		input.DrawPadGraph(XboxBotton::B, UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::B), UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(InputType::activate, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"),false,false);
+	DrawStringToHandle(Game::screen_width / 2, Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f), "クランクを回す", 0xffffff, fontPigumo42_);
 }
 
 void Tutorial::RunTutorialDraw(InputState& input)
 {
-	//ボタンが押されたか
-	static bool pressedBottan = false;
-
-	if (input.IsTriggered(InputType::dush)) {
-		pressedBottan = true;
+	if (input.IsTriggered(InputType::Dush)) {
+		pushBottan_[static_cast<int>(InputType::Dush)] = true;
 	}
 
-	if (pressedBottan) {
+	if (pushBottan_[static_cast<int>(InputType::Dush)]) {
 		return;
 	}
 
-	fadeTimer_ = (std::min)(fadeTimer_ + 1,255);
-	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
-
 	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(InputType::dush, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
+		input.DrawKeyGraph(static_cast<int>(InputType::Dush), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
 	}
 	else {
 		//画像描画
-		input.DrawPadGraph(XboxBotton::X, UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::X), UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(InputType::dush, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"),false,false);
+	input.DrawName(static_cast<int>(InputType::Dush), static_cast<float>(Game::screen_width / 2), Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_,false,false);
 }
 
 void Tutorial::JumpTutorialDraw(InputState& input)
 {
-	//ボタンが押されたか
-	static bool pressedBottan = false;
 
-	if (input.IsTriggered(InputType::space)) {
-		pressedBottan = true;
+	if (input.IsTriggered(InputType::Space)) {
+		pushBottan_[static_cast<int>(InputType::Space)] = true;
 	}
 
-	if (pressedBottan) {
+	if (pushBottan_[static_cast<int>(InputType::Space)]) {
 		return;
 	}
 
-	fadeTimer_ = (std::min)(fadeTimer_ + 1,255);
-	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
-
 	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(InputType::space, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
+		input.DrawKeyGraph(static_cast<int>(InputType::Space), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
 	}
 	else {
 		//画像描画
-		input.DrawPadGraph(XboxBotton::A, UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::A), UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(InputType::space, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"),true,false,"/");
+	input.DrawName(static_cast<int>(InputType::Space), static_cast<float>(Game::screen_width / 2), Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_,true,false,"/");
 }
 
 void Tutorial::ElevatorTutorialDraw(InputState& input)
 {
-	//ボタンが押されたか
-	static bool pressedBottan = false;
-
-	if (input.IsTriggered(InputType::activate)) {
-		pressedBottan = true;
+	if (input.IsTriggered(InputType::Activate)) {
+		pushBottan_[static_cast<int>(InputType::Activate)] = true;
 	}
 
-	if (pressedBottan) {
+	if (pushBottan_[static_cast<int>(InputType::Activate)]) {
 		return;
 	}
 
-	fadeTimer_ = (std::min)(fadeTimer_ + 1,255);
-	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
-
 	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(InputType::activate, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
+		input.DrawKeyGraph(static_cast<int>(InputType::Activate), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
 	}
 	else {
 		//画像描画
-		input.DrawPadGraph(XboxBotton::B, UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::B), UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(InputType::activate, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"),false,false);
+	DrawStringToHandle(Game::screen_width / 2, static_cast<int>(Game::screen_height - keybord_graph_chip_size * 1.6f), "レバーを引く", 0xffffff, fontPigumo42_);
 }
 
 void Tutorial::CorpseScaffoldDraw(InputState& input)
 {
-	//ボタンが押されたか
-	static bool pressedBottan = false;
-
-	if (input.IsTriggered(InputType::death)) {
-		pressedBottan = true;
+	if (input.IsTriggered(InputType::Death)) {
+		pushBottan_[static_cast<int>(InputType::Death)] = true;
 	}
 
-	if (pressedBottan) {
+	if (pushBottan_[static_cast<int>(InputType::Death)]) {
 		std::string str = "死体は足場として使える";
-		int width = GetDrawStringWidthToHandle(str.c_str(), str.size(), fontPigumo42_);
-		DrawStringToHandle(Game::screen_width / 2 - width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, str.c_str(), 0xffffff, fontPigumo42_);
+		int width = GetDrawStringWidthToHandle(str.c_str(), static_cast<int>(str.size()), fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2 - width / 2, Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f), str.c_str(), 0xffffff, fontPigumo42_);
 		return;
 	}
 
-	fadeTimer_ = (std::min)(fadeTimer_ + 1, 255);
-	fadeValue_ = (std::min)(static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_))), 255);
-
 	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(InputType::death, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
+		input.DrawKeyGraph(static_cast<int>(InputType::Death), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
 	}
 	else {
 		//画像描画
-		input.DrawPadGraph(XboxBotton::Y, UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Y), UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(InputType::death, Game::screen_width / 2, Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"), false, false);
+	input.DrawName(static_cast<int>(InputType::Death), static_cast<float>(Game::screen_width / 2), Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_, false, false);
 }

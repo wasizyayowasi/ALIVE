@@ -14,6 +14,8 @@ enum class PlayerAnimType {
 	Throw,			//投げる
 	StopTimer,		//タイマーをとめる
 	StopTimerCancel,//タイマーを止める行動をとめる
+	Put,			//物を置く
+	Pull,			//物を引く
 	max
 };
 

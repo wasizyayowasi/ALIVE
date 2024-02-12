@@ -24,11 +24,10 @@ SoundManager::~SoundManager()
 
 void SoundManager::LoadSound()
 {
-    //LoadSoundConfig();
+    LoadSoundConfig();
+    Load2DSoundSEFile("pull");
     Load2DSoundSEFile("alarm");
     Load2DSoundSEFile("stopAlarm");
-    Load2DSoundSEFile("crank");
-    Load2DSoundSEFile("door");
     Load2DSoundSEFile("checkSoundSE");
     Load2DSoundBGMFile("checkSoundBGM");
 
@@ -36,9 +35,11 @@ void SoundManager::LoadSound()
     Load3DSoundSEFile("ironStep");
 
     Load3DSoundSEFile("hit");
-    Load3DSoundSEFile("pullLever");
+    Load3DSoundSEFile("door");
+    Load3DSoundSEFile("crank");
     Load3DSoundSEFile("switchOn");
-    Load3DSoundBGMFile("cafe");
+    Load3DSoundSEFile("pullLever");
+    Load3DSoundSEFile("stopCrank");
 }
 
 void SoundManager::ChangeVolumeMem()

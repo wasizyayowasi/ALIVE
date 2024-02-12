@@ -95,6 +95,7 @@ protected:
 	bool isDetection_ = false;						//プレイヤーを検知したか
 	bool isThrow_ = false;							//投げるモーション中か
 
+	VECTOR initFrontVec_ = {};						//初期正面ベクトル
 	VECTOR frontVec_ = {};							//敵の正面ベクトルを入れる
 	VECTOR pushVec_ = {};							//プレイヤーが敵にぶつかったときに押すベクトル
 

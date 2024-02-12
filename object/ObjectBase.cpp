@@ -39,6 +39,11 @@ void ObjectBase::UpdateForCorpse(std::shared_ptr<ObjectBase> pointer)
 {
 }
 
+std::shared_ptr<Model> ObjectBase::GetModelPointer()
+{
+	return model_;
+}
+
 std::shared_ptr<Model> ObjectBase::AddCollModel()
 {
 	return nullptr;

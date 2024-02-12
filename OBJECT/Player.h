@@ -4,7 +4,6 @@
 #include <DxLib.h>
 #include <memory>
 
-class InputState;
 class Model;
 class ObjectManager;
 class ObjectBase;
@@ -45,7 +44,8 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Player();
+	/// <param name="info">配置データ</param>
+	Player(LoadObjectInfo info);
 
 	/// <summary>
 	/// デストラクタ
@@ -53,17 +53,11 @@ public:
 	virtual ~Player();
 
 	/// <summary>
-	/// 初期化
-	/// </summary>
-	/// <param name="info">配置データ</param>
-	void Init(LoadObjectInfo info);
-
-	/// <summary>
 	/// プレイヤーの更新を行う
 	/// </summary>
 	/// <param name="input">外部装置の入力情報を参照する</param>
 	/// <param name="models">衝突判定を行うモデルのvector型の配列</param>
-	void Update(const InputState& input,std::shared_ptr<ObjectManager> objManager);
+	void Update(std::shared_ptr<ObjectManager> objManager);
 
 	/// <summary>
 	/// プレイヤー関連の描画
@@ -111,81 +105,146 @@ public:
 	/// <param name="crank"></param>
 	void SetCrankPointer(std::shared_ptr<ManualCrank> crank);
 
+	/// <summary>
+	/// レバーのポインタを設定する
+	/// </summary>
 	void SetLeverPointer(std::shared_ptr<Lever> lever);
 
+	/// <summary>
+	/// モデルポインターを取得する
+	/// </summary>
+	/// <param name="height"></param>
+	/// <param name="materialType"></param>
 	std::shared_ptr<Model> GetModelPointer() { return model_; }
 
+	/// <summary>
+	/// 弾に当たったらノックバックを追加する
+	/// </summary>
 	void BulletHitMe(VECTOR moveVec);
 
+	/// <summary>
+	/// 地面に描画する影の高さを設定する
+	/// </summary>
+	/// <param name="height">高さ</param>
+	/// <param name="materialType">今踏んでいるオブジェクトが何出てきているか</param>
 	void SetRoundShadowHeightAndMaterial(float height, Material materialType);
 
-private:
-	//通常更新
-	void NormalUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	/// <summary>
+	/// 影を描画する高さを取得する
+	/// </summary>
+	/// <returns>影を描画する高さ</returns>
+	float GetRoundShadowHeight() { return roundShadowHeight_; }
 
-	//待機処理
+private:
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="objManager">objManagerのポインタ</param>
+	void NormalUpdate(std::shared_ptr<ObjectManager> objManager);
+
+	/// <summary>
+	/// アニメーションをidleに変更する
+	/// </summary>
 	void ChangeAnimIdle();
 
-	//移動処理
-	void MovingUpdate(const InputState& input);
+	/// <summary>
+	/// 移動の更新
+	/// </summary>
+	void MovingUpdate();
 
-	//移動
-	float Move(const InputState& input);
+	/// <summary>
+	/// 移動
+	/// </summary>
+	float Move();
 
-	//回転処理
+	/// <summary>
+	/// 回転処理
+	/// </summary>
 	void RotationUpdate();
+
+	void tempRotationUpdate();
 
 	/// <summary>
 	/// 走りジャンプではないときのジャンプ
 	/// </summary>
 	/// <param name="input">外部装置の入力情報を参照する</param>
-	void JumpUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	void JumpUpdate(std::shared_ptr<ObjectManager> objManager);
 
 	/// <summary>
 	/// プレイヤーの死体に与える情報を作る関数
 	/// </summary>
 	/// <param name="input">外部装置の入力情報を参照する</param>
-	void DeathUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	void DeathUpdate(std::shared_ptr<ObjectManager> objManager);
 
-	//死体の後処理
-	void DeathPersonPostProsessing(std::shared_ptr<ObjectManager> objManager);
+	/// <summary>
+	/// 死体の後処理
+	/// </summary>
+	/// <param name="objManager">objManagerのポインタ</param>
+	void CorpsePostProsessing(std::shared_ptr<ObjectManager> objManager);
 
 	/// <summary>
 	/// プレイヤーの死体をvector配列で管理する関数
 	/// </summary>
-	void DeadPersonGenerater(std::shared_ptr<ObjectManager> objManager);
+	/// <param name="objManager">objManagerのポインタ</param>
+	void CorpseGenerater(std::shared_ptr<ObjectManager> objManager);
 
 	/// <summary>
 	/// プレイヤーに座るアニメーションをさせる関数
 	/// </summary>
-	/// <param name="input">外部装置の入力情報を参照する</param>
-	void SitUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	/// <param name="objManager">objManagerのポインタ</param>
+	void SitUpdate(std::shared_ptr<ObjectManager> objManager);
 
-	//座っている途中
-	void IdleToSitup(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	/// <summary>
+	/// 座っている途中の更新
+	/// </summary>
+	/// <param name="objManager">objManagerのポインタ</param>
+	void IdleToSitupUpdate(std::shared_ptr<ObjectManager> objManager);
 
-	//持ち運ぶ
-	void CarryObjectUpdate();
+	/// <summary>
+	/// 荷物を運ぶ
+	/// </summary>
+	void CarryObject();
 
-	//荷物を下ろす
-	void DropOffObjectUpdate();
+	/// <summary>
+	/// 荷物をおろす
+	/// </summary>
+	void DropOffObject();
 
-	//クランクを回す
-	void GoCrankRotationPosition(const InputState& input, std::shared_ptr<ObjectManager> objManager);
-	void CrankUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	/// <summary>
+	/// クランクを回すポジションまで行く
+	/// </summary>
+	/// <param name="objManager">objManagerのポインタ</param>
+	void GoCrankRotationPosition(std::shared_ptr<ObjectManager> objManager);
+
+	/// <summary>
+	/// クランクの更新
+	/// </summary>
+	/// <param name="objManager">objManagerのポインタ</param>
+	void CrankUpdate(std::shared_ptr<ObjectManager> objManager);
+
 	/// <summary>
 	/// クランクを回転させるアップデート
 	/// </summary>
+	/// <param name="rotZ">Zの回転率</param>
 	void CrankRotationUpdate(float rotZ);
 
 	/// <summary>
 	/// 投擲物との衝突アップデート
 	/// </summary>
-	void BulletHitMeUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	/// <param name="objManager">objManagerのポインタ</param> 
+	void BulletHitMeUpdate(std::shared_ptr<ObjectManager> objManager);
 
-	//レバーを倒す
-	void GoLeverPullPosition(const InputState& input, std::shared_ptr<ObjectManager> objManager);
-	void LeverUpdate(const InputState& input, std::shared_ptr<ObjectManager> objManager);
+	/// <summary>
+	/// レバーを倒すポジションへ行く
+	/// </summary>
+	/// <param name="objManager">objManagerのポインタ</param>
+	void GoLeverPullPosition(std::shared_ptr<ObjectManager> objManager);
+
+	/// <summary>
+	/// レバーの更新
+	/// </summary>
+	/// <param name="objManager">objManagerのポインタ</param>
+	void LeverUpdate(std::shared_ptr<ObjectManager> objManager);
 
 private:
 	/// <summary>
@@ -203,7 +262,7 @@ private:
 	/// <summary>
 	/// 足ふみの音
 	/// </summary>
-	void StepFootSound();
+	void FootStepSound();
 
 	/// <summary>
 	/// アニメーションの変更を行う
@@ -234,6 +293,8 @@ private:
 
 	bool debugCreativeMode = false;
 
+	VECTOR tentativeRot_ = {};
+
 	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};						//中間ポイント
 	VECTOR scale_ = {0.0f,0.0f, 0.0f};							//拡縮率
 
@@ -247,7 +308,7 @@ private:
 	std::shared_ptr<Lever> lever_;								//クランククラスのポインタ
 	std::shared_ptr<ObjectBase> deadPersonModelPointer_;		//持ち運ぶ死体のモデルポインタ
 
-	void(Player::* updateFunc_)(const InputState& input, std::shared_ptr<ObjectManager> objManager);		//メンバ関数ポインタ
+	void(Player::* updateFunc_)(std::shared_ptr<ObjectManager> objManager);		//メンバ関数ポインタ
 	void(Player::* carryUpdateFunc_)();		//メンバ関数ポインタ
 };
 

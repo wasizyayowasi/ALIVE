@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <string>
 
-SelectChapterScene::SelectChapterScene(SceneManager& manager) : SceneBase(manager),updateFunc_(&SelectChapterScene::NormalUpdate)
+SelectChapterScene::SelectChapterScene(SceneManager& manager) : SceneBase(manager),updateFunc_(&SelectChapterScene::SlideInBook)
 {
 }
 
@@ -52,8 +52,6 @@ void SelectChapterScene::Update()
 
 void SelectChapterScene::Draw()
 {
-	DrawString(0, 0, "aaaaaaaaaaaaaaaaaaaa", 0xffffff);
-
 	model_->Draw();
 
 	//画面全体を真っ黒に塗りつぶす
@@ -77,6 +75,25 @@ void SelectChapterScene::ChangeChapter()
 	file.SetPlayerInfo(startPos);
 }
 
+void SelectChapterScene::SlideInBook()
+{
+	//プレイヤーの座標をスクリーン座標にする
+	VECTOR screenPos = ConvWorldPosToScreenPos(model_->GetPos());
+
+	//int型のスクリーン座標
+	int castScreenPosX = static_cast<int>(screenPos.x);
+
+	//画面の半分のサイズ(横)
+	int screenWidthHalf = Game::screen_width / 2;
+
+	if (castScreenPosX >= screenWidthHalf - 1 && castScreenPosX <= screenWidthHalf + 1) {
+		updateFunc_ = &SelectChapterScene::NormalUpdate;
+	}
+	else {
+		model_->SetPos(VAdd(model_->GetPos(), { -1,0,0 }));
+	}
+}
+
 void SelectChapterScene::NormalUpdate()
 {
 	//モデルの更新
@@ -93,14 +110,14 @@ void SelectChapterScene::NormalUpdate()
 	}
 
 	//チャプター選択
-	if (input.IsTriggered(InputType::right)) {
+	if (input.IsTriggered(InputType::Right)) {
 		if (selectNum_ < 2) {
 			model_->ChangeAnimation(static_cast<int>(BookAnim::open), false, false, 10);
 			MV1SetTextureGraphHandle(model_->GetModelHandle(), 0, textureHandle_[(std::min)(selectNum_ + 1, 2)], true);
 		}
 		selectNum_ = (std::min)(selectNum_ + 1, 2);
 	}
-	if (input.IsTriggered(InputType::left)) {
+	if (input.IsTriggered(InputType::Left)) {
 		if (selectNum_ > 0) {
 			model_->ChangeAnimation(static_cast<int>(BookAnim::close), false, false, 10);
 			MV1SetTextureGraphHandle(model_->GetModelHandle(), 0, textureHandle_[(std::max)(selectNum_ - 1, 0)], true);
@@ -108,12 +125,12 @@ void SelectChapterScene::NormalUpdate()
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
 
-	if (input.IsTriggered(InputType::down)) {
+	if (input.IsTriggered(InputType::Down)) {
 		manager_.PopFrontScene();
 	}
 
 	//決定
-	if (input.IsTriggered(InputType::space)) {
+	if (input.IsTriggered(InputType::Space)) {
 		updateFunc_ = &SelectChapterScene::FadeOutUpdate;
 	}
 }

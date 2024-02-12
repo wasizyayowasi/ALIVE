@@ -66,9 +66,6 @@
     <ClCompile Include="util\Model.cpp">
       <Filter>ソース ファイル\util</Filter>
     </ClCompile>
-    <ClCompile Include="object\Player.cpp">
-      <Filter>ソース ファイル\object</Filter>
-    </ClCompile>
     <ClCompile Include="object\Camera.cpp">
       <Filter>ソース ファイル\object</Filter>
     </ClCompile>
@@ -110,9 +107,6 @@
     </ClCompile>
     <ClCompile Include="scene\SettingScene.cpp">
       <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="util\EffekseerManager.cpp">
-      <Filter>ソース ファイル\util</Filter>
     </ClCompile>
     <ClCompile Include="util\FontsManager.cpp">
       <Filter>ソース ファイル\util</Filter>
@@ -210,6 +204,15 @@
     <ClCompile Include="object\LightBulb.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="object\Player.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="object\SignBoardEnemy.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\SceneMovie.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scene\SceneManager.h">
@@ -232,9 +235,6 @@
     </ClInclude>
     <ClInclude Include="util\Model.h">
       <Filter>ヘッダー ファイル\util</Filter>
-    </ClInclude>
-    <ClInclude Include="object\Player.h">
-      <Filter>ヘッダー ファイル\object</Filter>
     </ClInclude>
     <ClInclude Include="object\Camera.h">
       <Filter>ヘッダー ファイル\object</Filter>
@@ -279,9 +279,6 @@
       <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
     <ClInclude Include="util\FontsManager.h">
-      <Filter>ヘッダー ファイル\util</Filter>
-    </ClInclude>
-    <ClInclude Include="util\EffekseerManager.h">
       <Filter>ヘッダー ファイル\util</Filter>
     </ClInclude>
     <ClInclude Include="util\DrawFunctions.h">
@@ -390,6 +387,15 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="object\LightBulb.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="object\Player.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="object\SignBoardEnemy.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\SceneMovie.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

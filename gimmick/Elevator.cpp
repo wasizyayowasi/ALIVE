@@ -109,6 +109,7 @@ void Elevator::Update(Player& player)
 	}
 
 	if (model_->IsAnimEnd()) {
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
 		SoundManager::GetInstance().StopSE("door");
 	}
 }
@@ -139,6 +140,7 @@ void Elevator::Move()
 
 	//移動終了後アニメーションを変更する
 	if (elapsedTime_ == 180.0f) {
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
 		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, 10);
 	}
@@ -164,6 +166,7 @@ void Elevator::TargetPosition()
 			if (maxSize < distanceSize) {
 				maxSize = distanceSize;
 				targetPos_ = stopPos;
+				SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
 				SoundManager::GetInstance().PlaySE("door");
 				model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 				elapsedTime_ = 0;
@@ -182,6 +185,7 @@ void Elevator::TargetPosition()
 		else {
 			targetPos_ = levers_.back()->GetElevatorStopPoint();
 		}
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
 		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 		elapsedTime_ = 0;
@@ -197,6 +201,7 @@ void Elevator::TargetPosition()
 		else {
 			targetPos_ = levers_.front()->GetElevatorStopPoint();
 		}
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
 		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 		elapsedTime_ = 0;

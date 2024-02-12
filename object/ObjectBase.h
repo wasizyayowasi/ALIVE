@@ -70,8 +70,6 @@ public:
 	/// <param name="isTransit">true：運んでいる　false：運んでいない</param>
 	void SetIsTransit(bool isTransit) { isTransit_ = isTransit; }
 
-	//有効なオブジェクト化無効なオブジェクト化を設定する
-	
 	/// <summary>
 	/// 現在、このオブジェクトが有効か無効か
 	/// </summary>
@@ -82,7 +80,7 @@ public:
 	/// モデルのスマートポインタを取得する
 	/// </summary>
 	/// <returns>モデルポインタ</returns>
-	std::shared_ptr<Model> GetModelPointer() { return model_; }
+	std::shared_ptr<Model> GetModelPointer();
 
 	/// <summary>
 	/// 衝突判定を行うモデルを追加する

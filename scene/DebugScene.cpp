@@ -37,14 +37,14 @@ void DebugScene::Update()
 	auto& input = InputState::GetInstance();
 
 	//TODO:‚Ü‚Æ‚ß‚é
-	if (input.IsTriggered(InputType::up)) {
+	if (input.IsTriggered(InputType::Up)) {
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
-	if (input.IsTriggered(InputType::down)) {
+	if (input.IsTriggered(InputType::Down)) {
 		selectNum_ = (std::min)(selectNum_ + 1,4);
 	}
 
-	if (input.IsTriggered(InputType::space)) {
+	if (input.IsTriggered(InputType::Space)) {
 		switch (selectNum_) {
 		case 0:
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));

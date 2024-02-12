@@ -1,15 +1,11 @@
 #pragma once
-#include <unordered_map>
-#include <list>
-#include <string>
-#include <DxLib.h>
 #include "../object/PlayerData.h"
 #include "../object/ObjectData.h"
-
-struct SaveData {
-	VECTOR checkPoint;
-	int totalDeathNum;
-};
+#include <list>
+#include <deque>
+#include <string>
+#include <DxLib.h>
+#include <unordered_map>
 
 class ExternalFile
 {
@@ -37,11 +33,6 @@ public:
 	/// 配置データを読み込む
 	/// </summary>
 	void LoadArrangementData();
-
-	/// <summary>
-	/// セーブデータを読み込む
-	/// </summary>
-	void LoadSaveData();
 
 	/// <summary>
 	/// ファイルを読み込む
@@ -91,16 +82,10 @@ public:
 	LoadObjectInfo GetTutorialObjInfo(VECTOR pos);
 
 	/// <summary>
-	/// セーブデータを削除する
-	/// </summary>
-	void ClearSaveData();
-
-	/// <summary>
 	/// セーブデータの書き出し
 	/// </summary>
-	/// <param name="pos">ポジション</param>
 	/// <param name="num">死亡回数</param>
-	void SaveDataRewriteInfo(VECTOR pos, int num);
+	void SaveDataRewriteInfo(int num);
 
 	/// <summary>
 	/// プレイヤーに関する情報を取得する
@@ -117,8 +102,8 @@ public:
 	/// <summary>
 	/// savedataを取得する
 	/// </summary>
-	/// <returns>saveData</returns>
-	SaveData GetSaveData() { return data_; }
+	/// <returns>過去の死亡回数</returns>
+	std::deque<int> GetTotalDeathNum() { return pastTotalDeathNum_; }
 
 	/// <summary>
 	/// オブジェクトの配置情報を取得
@@ -159,16 +144,10 @@ public:
 	VECTOR GetUIPos(std::string name);
 
 	/// <summary>
-	/// 死んだ回数の取得
-	/// </summary>
-	/// <returns>死んだ回数</returns>
-	int GetDeathCount() { return totalDeathNum_; }
-
-	/// <summary>
 	/// 死んだ回数をセットする
 	/// </summary>
 	/// <param name="num"></param>
-	void SetDeathCount(int num) { totalDeathNum_ = num; }
+	void SetDeathCount(int num);
 private:
 
 	/// <summary>
@@ -209,10 +188,9 @@ private:
 	ExternalFile(const ExternalFile&) = delete;
 	void operator = (const ExternalFile&) = delete;
 
-	int totalDeathNum_ = 0;			//死んだ回数
-
 	PlayerInfo player_ = {};		//プレイヤーのステータス情報
-	SaveData data_ = {};			//セーブデータ情報
+
+	std::deque<int> pastTotalDeathNum_ = {};
 
 	std::unordered_map<std::string, int> loadFile_;										//ロードしたファイル
 

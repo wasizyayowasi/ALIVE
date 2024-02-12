@@ -80,7 +80,7 @@ public:
 	/// <param name="upVec">カメラの上方向ベクトル</param>
 	void SetCameraTargetPosAndView(VECTOR targetPos, VECTOR targetViewPos, VECTOR upVec);
 
-	void tempdraw();
+	void DebugDraw();
 
 private:
 
@@ -107,8 +107,6 @@ private:
 	bool isMoving_ = false;
 
 	DINPUT_JOYSTATE input_ = {};
-
-	VECTOR initPos_ = {};						//初期ポジション
 
 	VECTOR pos_ = {};							//カメラのポジション
 	VECTOR upVec_ = {0,1,0};					//カメラの見る目標位置

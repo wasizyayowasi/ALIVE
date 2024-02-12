@@ -1,6 +1,6 @@
 #pragma once
-#include <DxLib.h>
 #include <map>
+#include <DxLib.h>
 
 class InputState;
 
@@ -85,12 +85,12 @@ public:
 	void CorpseScaffoldDraw(InputState& input);
 private:
 	
-	int fontPigumo42_ = 0;
+	int fontPigumo42_ = -1;								//フォントハンドル
 
-	static constexpr int fadeInterval_ = 5;
-	int fadeTimer_ = 0;
-	int fadeValue_ = 0;
-	int fadeColor_ = 0x000000;
+	int nextDisplayKeyType_ = 0;						//InputTypeをint型に変換したもの
+	int nextDisplayBottanType_ = 0;						//XboxBottanをint型に変換したもの
+
+	std::map<int, bool> pushBottan_;					//押されたボタン
 
 	std::map<UIGraph,int> UIHandle_;					//画像
 	std::map<UIGraph, std::pair<float, float>> UIPos_;	//UIの画面ポジション pairの中身｜first：X｜second：Y

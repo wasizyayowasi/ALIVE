@@ -116,7 +116,7 @@ bool Switch::ElevatorCollResult()
 	}
 
 	if (stateFunc_ == &Switch::OffAnim) {
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1000, "switchOn");
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "switchOn");
 		SoundManager::GetInstance().PlaySE("switchOn");
 	}
 
@@ -146,7 +146,7 @@ bool Switch::TransCollResult()
 	}
 
 	if (stateFunc_ == &Switch::OffAnim) {
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1000, "switchOn");
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "switchOn");
 		SoundManager::GetInstance().PlaySE("switchOn");
 	}
 

@@ -176,17 +176,17 @@ void SettingScene::NormalUpdate()
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	if (input.IsTriggered(InputType::up)) {
+	if (input.IsTriggered(InputType::Up)) {
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
-	else if (input.IsTriggered(InputType::down)) {
+	else if (input.IsTriggered(InputType::Down)) {
 		selectNum_ = (std::min)(selectNum_ + 1, 4);
 	}
 
 	ChangeUpdateFunc();
 
 	//シーン切り替え
-	if (input.IsTriggered(InputType::pause)) {
+	if (input.IsTriggered(InputType::Pause)) {
 		nextScene_ = std::make_shared<ScenePause>(manager_);
 		updateFunc_ = &SettingScene::GaussFadeOutUpdate;
 	}
@@ -218,11 +218,11 @@ void SettingScene::BGMUpdate()
 	auto& sound = SoundManager::GetInstance();
 
 	//BGM音量調整
-	if (input.IsTriggered(InputType::left)) {
+	if (input.IsTriggered(InputType::Left)) {
 		volumeBGM_ = (max)(volumeBGM_ - 1, 1);
 		sound.PlayBGM("checkSoundBGM");
 	}
-	if (input.IsTriggered(InputType::right)) {
+	if (input.IsTriggered(InputType::Right)) {
 		volumeBGM_ = (min)(volumeBGM_ + 1, 10);
 		sound.PlayBGM("checkSoundBGM");
 	}
@@ -238,11 +238,11 @@ void SettingScene::SEUpdate()
 	auto& sound = SoundManager::GetInstance();
 
 	//SE音量調整
-	if (input.IsTriggered(InputType::left)) {
+	if (input.IsTriggered(InputType::Left)) {
 		volumeSE_ = (max)(volumeSE_ - 1, 1);
 		sound.PlaySE("checkSoundSE");
 	}
-	if (input.IsTriggered(InputType::right)) {
+	if (input.IsTriggered(InputType::Right)) {
 		volumeSE_ = (min)(volumeSE_ + 1, 10);
 		sound.PlaySE("checkSoundSE");
 	}
@@ -256,11 +256,11 @@ void SettingScene::ChangeWindowUpdate()
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	if (input.IsTriggered(InputType::left)) {
+	if (input.IsTriggered(InputType::Left)) {
 		windowModeText_ = "≪  ウィンドウモード  ≫";
 		manager_.ChangeWindowMode(true);
 	}
-	if (input.IsTriggered(InputType::right)) {
+	if (input.IsTriggered(InputType::Right)) {
 		windowModeText_ = "≪  フルスクリーン  ≫";
 		manager_.ChangeWindowMode(false);
 	}
@@ -282,13 +282,13 @@ void SettingScene::ChangeUpdateFunc()
 		SEUpdate();
 		break;
 	case 3:
-		if (input.IsTriggered(InputType::space)) {
+		if (input.IsTriggered(InputType::Space)) {
 			nextScene_ = std::make_shared<KeyConfigScene>(manager_);
 			updateFunc_ = &SettingScene::GaussFadeOutUpdate;
 		}
 		break;
 	case 4:
-		if (input.IsTriggered(InputType::space)) {
+		if (input.IsTriggered(InputType::Space)) {
 			nextScene_ = std::make_shared<ScenePause>(manager_);
 			updateFunc_ = &SettingScene::GaussFadeOutUpdate;
 		}

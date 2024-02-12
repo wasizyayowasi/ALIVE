@@ -69,6 +69,16 @@ void ThrowEnemy::Update(Player& player)
 		//行列をモデルにセットする
 		MV1SetMatrix(model_->GetModelHandle(), mtx);
 	}
+	else {
+		//回転行列と拡縮行列の合成
+		MATRIX mtx = CombiningRotAndScallMat(initFrontVec_);
+
+		//回転行列と拡縮行列を掛けた行列に平行移動行列をかける
+		mtx = MMult(mtx, MGetTranslate(pos_));
+
+		//行列をモデルにセットする
+		MV1SetMatrix(model_->GetModelHandle(), mtx);
+	}
 }
 
 void ThrowEnemy::Draw()
@@ -126,7 +136,6 @@ void ThrowEnemy::Shot(std::shared_ptr<ShotManager> shotManager, VECTOR playerPos
 	//投げている途中ではなかったら
 	//アニメーションを投げるアニメーションに変更する
 	if (!isThrow_) {
-		//model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Throw), false, false, 5);
 		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Throw), false, false, 5);
 		isThrow_ = true;
 	}
