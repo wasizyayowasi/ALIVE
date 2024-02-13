@@ -69,6 +69,9 @@ Elevator::~Elevator()
 //更新
 void Elevator::Update(Player& player)
 {
+	//短縮化
+	auto& sound = SoundManager::GetInstance();
+
 	//プレイヤーのポジションの取得
 	VECTOR playerPos = player.GetStatus().pos;
 
@@ -109,8 +112,12 @@ void Elevator::Update(Player& player)
 	}
 
 	if (model_->IsAnimEnd()) {
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
-		SoundManager::GetInstance().StopSE("door");
+		sound.Set3DSoundInfo(pos_, 1500.0f, "door");
+		sound.StopSE("door");
+	}
+
+	if (sound.CheckSoundFile("door")) {
+		sound.StopSE("door");
 	}
 }
 

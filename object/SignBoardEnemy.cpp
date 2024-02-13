@@ -28,5 +28,5 @@ void SignBoardEnemy::Draw()
 
 	VECTOR screenPos = ConvWorldPosToScreenPos(framePos);
 
-	DrawFormatStringToHandle(screenPos.x, screenPos.y, 0x000000, FontsManager::GetInstance().GetFontHandle("ピグモ 0021"), "%d", deathCount_);
+	DrawFormatStringFToHandle(screenPos.x, screenPos.y, 0x000000, FontsManager::GetInstance().GetFontHandle("ピグモ 0021"), "%d", deathCount_);
 }

@@ -59,6 +59,6 @@ void SceneMovie::Draw()
 
 	std::string str = "再生中";
 
-	int width = GetDrawStringWidthToHandle(str.c_str(), str.size(), FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
+	int width = GetDrawStringWidthToHandle(str.c_str(), static_cast<int>(str.size()), FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
 	DrawStringToHandle(Game::screen_width - width * 2, Game::screen_height - 100, str.c_str(), 0xff0000, FontsManager::GetInstance().GetFontHandle("ピグモ 0042"));
 }

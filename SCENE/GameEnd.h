@@ -53,15 +53,16 @@ private:
 	/// </summary>
 	void WhiteBoardUpdate();
 
-	void fadeInUpdate();
-	void normalUpdate();
-	void fadeOutUpdate();
+	void FadeInUpdate();
+	void NormalUpdate();
+	void FadeOutUpdate();
 private:
 
 	int pigumo21FontHandle_ = -1;										//ピグモ21のフォントハンドル
 	int pigumo42FontHandle_ = -1;										//ピグモ42のフォントハンドル
 	int divisionNum_ = 0;												//分割数
 	int corpseNum_ = 0;													//操作する死体の番号
+	int currentDivisionNum_ = 1;										//現在の分割数
 
 	static constexpr int fadeInterval_ = 60;
 	int fadeTimer_ = fadeInterval_;

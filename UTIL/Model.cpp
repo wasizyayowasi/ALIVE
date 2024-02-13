@@ -42,7 +42,7 @@ void Model::SetUseCollision(bool isUse, bool isNeedUpdate,std::string collFrameN
 
 	//collFrameNameに指定のフレームが入っているか
 	//文字列のサイズを取ることで調べる
-	int size = collFrameName.size();
+	int size = static_cast<int>(collFrameName.size());
 
 	//指定が無ければ既定のフレームを衝突判定に使う
 	std::string frameName = collision_frame_name;

@@ -29,7 +29,7 @@ namespace {
 	constexpr int division_height = 15;
 }
 
-GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEnd::fadeInUpdate)
+GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEnd::FadeInUpdate)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -144,16 +144,23 @@ void GameEnd::Draw()
 	//int型のスクリーン座標
 	int castScreenPosX = static_cast<int>(screenPos.x);
 
+	//色
+	int color = 0x0000ff;
+
 	for (int i = 0; i < file.GetTotalDeathNum().size();i++) {
 
 		barGraphHeight_[i] = (std::max)(barGraphHeight_[i] - 1, Game::screen_height / division_height * 12 - file.GetTotalDeathNum()[i] * bar_graph_height);
+
+		if (static_cast<int>(file.GetTotalDeathNum().size() - 1) - i == 0) {
+			color = 0xff0000;
+		}
 
 		//棒グラフの描画
 		DrawBox(Game::screen_width / division_width * (i + 3) - bar_graph_width - (Game::screen_width / 2 - castScreenPosX),
 				barGraphHeight_[i],
 				Game::screen_width / division_width * (i + 3) + bar_graph_width - (Game::screen_width / 2 - castScreenPosX),
 				Game::screen_height / division_height * 12,
-				0x0000ff, true);
+				color, true);
 
 		//フォントを適用した文字列のサイズを取得
 		int size = GetDrawFormatStringWidthToHandle(pigumo42FontHandle_,"%d体", file.GetTotalDeathNum()[i]);
@@ -166,7 +173,7 @@ void GameEnd::Draw()
 		if (4 - i == 0) {
 			DrawVStringToHandle(Game::screen_width / division_width * (i + 3) - 10 - (Game::screen_width / 2 - castScreenPosX),
 								Game::screen_height / division_height * 12 + 15,
-								"今日", 0xff0000, pigumo21FontHandle_);
+								"今回", 0xff0000, pigumo21FontHandle_);
 			continue;
 		}
 
@@ -174,7 +181,7 @@ void GameEnd::Draw()
 								  Game::screen_height / division_height * 12+15,
 								  0x000000,
 								  pigumo21FontHandle_,
-								  "%d日前", 4 - i);
+								  "%d回前", 4 - i);
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
@@ -231,7 +238,7 @@ void GameEnd::CorpseUpdate(VECTOR playerPos)
 
 		//死体を5個足元に置いた後、まだ手元に死体が残っていたら
 		//操作する死体の番号範囲を変える
-		if ((corpseModel_.size() - 1 - corpseNum_ + 1) % 5 > 0) {
+		if ((static_cast<int>(corpseModel_.size()) - 1 - corpseNum_ + 1) / 5 > 0) {
 			corpseNum_ += 5;
 		}
 
@@ -288,20 +295,20 @@ void GameEnd::WhiteBoardUpdate()
 
 	//ホワイトボードが画面外に出たらフェードアウトする
 	if (castScreenPosX < -Game::screen_width / 2) {
-		updateFunc_ = &GameEnd::fadeOutUpdate;
+		updateFunc_ = &GameEnd::FadeOutUpdate;
 	}
 }
 
-void GameEnd::fadeInUpdate()
+void GameEnd::FadeInUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) {
-		updateFunc_ = &GameEnd::normalUpdate;
+		updateFunc_ = &GameEnd::NormalUpdate;
 		fadeValue_ = 0;
 	}
 }
 
-void GameEnd::normalUpdate()
+void GameEnd::NormalUpdate()
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
@@ -351,7 +358,7 @@ void GameEnd::normalUpdate()
 
 	//プレイヤーの座標を元に取得したスクリーン座標を
 	//上記のサイズで余りを求める
-	int errorRange = static_cast<int>(screenPos.x) % divisionPosX;
+	int errorRange = static_cast<int>(screenPos.x) % (divisionPosX * currentDivisionNum_);
 
 	if (screenPos.x > 50 && screenPos.x < Game::screen_width - 50) {
 		//誤差範囲内だったら、プレイヤーのアニメーションを変更する
@@ -361,6 +368,8 @@ void GameEnd::normalUpdate()
 
 			//フラグを立てる
 			isPutting_ = true;
+
+			currentDivisionNum_++;
 		}
 	}
 
@@ -383,7 +392,7 @@ void GameEnd::normalUpdate()
 	}
 }
 
-void GameEnd::fadeOutUpdate()
+void GameEnd::FadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) {

@@ -99,7 +99,7 @@ void SettingScene::Draw()
 
 	//現在の画面モードを表示
 	int pigumo42 = font.GetFontHandle(pigumo42_font_name);
-	float windowModeFontSize = font.GetStringSize(windowModeText_.c_str(), pigumo42_font_name);
+	int windowModeFontSize = font.GetStringSize(windowModeText_.c_str(), pigumo42_font_name);
 
 	int alpha[3];
 
@@ -113,7 +113,7 @@ void SettingScene::Draw()
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha[0]);
-	DrawStringFToHandle(Game::screen_width / 2 - windowModeFontSize / 2, Game::screen_height / 3, windowModeText_.c_str(), 0xffffff, pigumo42);
+	DrawStringToHandle(Game::screen_width / 2 - windowModeFontSize / 2, Game::screen_height / 3, windowModeText_.c_str(), 0xffffff, pigumo42);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	//円を描画する位置
