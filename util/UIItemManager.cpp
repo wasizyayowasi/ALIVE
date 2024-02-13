@@ -29,7 +29,7 @@ void UIItemManager::AlphaChangeDraw(int selectNum, int fadeAlphaValue)
 			scale = 0.7f;
 			alpha = notCurrentNum * fadeAlphaValue;
 		}
-		UIMenu_[i]->AlphaChangeDraw(scale,alpha);
+		UIMenu_[i]->AlphaChangeDraw(scale, static_cast<int>(alpha));
 	}
 }
 
@@ -51,7 +51,7 @@ void UIItemManager::ChangePosDraw(float centerPosX, float centerPosY)
 
 }
 
-void UIItemManager::DrawBillBoard(std::map<std::string, VECTOR> drawPos,float alpha, float size)
+void UIItemManager::DrawBillBoard(std::map<std::string, VECTOR> drawPos,int alpha, float size)
 {
 	for (int i = 0; i < UIMenu_.size(); i++) {
 		//âÊëúÇ…èëÇ©ÇÍÇΩï∂éöÇéÊìæ
@@ -64,7 +64,7 @@ void UIItemManager::DrawBillBoard(std::map<std::string, VECTOR> drawPos,float al
 
 void UIItemManager::AlphaChangeDrawBillBoard(std::map<std::string, VECTOR> drawPos, int selectNum,int fadeValue, float size)
 {
-	int alpha = 100;
+	float alpha = 100;
 
 	float currentNum = 250.0f / 255.0f;
 	float notCurrentNum = 100.0f / 255.0f;
@@ -82,7 +82,7 @@ void UIItemManager::AlphaChangeDrawBillBoard(std::map<std::string, VECTOR> drawP
 		std::string name = UIMenu_[i]->GetString();
 
 		//âÊëúÇ3DãÛä‘Ç…ï`âÊÇ∑ÇÈ
-		UIMenu_[i]->DrawBillboard(drawPos[name], alpha, size);
+		UIMenu_[i]->DrawBillboard(drawPos[name], static_cast<int>(alpha), size);
 	}
 }
 
@@ -101,7 +101,7 @@ void UIItemManager::AddingMenuWithSplitStr(float centerPosX, float centerPosY, i
 	auto& font = FontsManager::GetInstance();
 
 	//ï∂éöÇÃêîÇéÊìæ
-	int num = str.size();
+	int num = static_cast<int>(str.size());
 	float size = 0.0f;
 
 	for (int i = 0; i < num; i++) {

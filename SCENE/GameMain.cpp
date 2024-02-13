@@ -11,9 +11,6 @@
 #include "../object/ShotManager.h"
 #include "../object/CharacterBase.h"
 
-#include "../staging/Broom.h"
-#include "../staging/DepthOfField.h"
-
 #include "../util/game.h"
 #include "../util/model.h"
 #include "../util/Tutorial.h"

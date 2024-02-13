@@ -214,7 +214,7 @@ void SceneTitle::Draw()
 	subPlayerModel_->Draw();
 
 	//UI‚Ì•`‰æ
-	UI_->DrawBillBoard(menuDrawPos_,static_cast<float>(UIfadeValue_),200.0f);
+	UI_->DrawBillBoard(menuDrawPos_,UIfadeValue_,200.0f);
 
 	if (input.LastInputDevice()) {
 		//ƒL[‰æ‘œ•`‰æ

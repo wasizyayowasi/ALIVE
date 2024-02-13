@@ -39,7 +39,7 @@ void FontsManager::AddFonts(const char* const filename, const char* const extens
 // フォントを適用したテキストの横幅を取得する
 int FontsManager::GetStringSize(const char* const string, const char* const filename)
 {
-	int strWidth = GetDrawStringWidthToHandle(string, strlen(string), fontHandle_[filename]);
+	int strWidth = GetDrawStringWidthToHandle(string, static_cast<int>(strlen(string)), fontHandle_[filename]);
 	return strWidth;
 }
 

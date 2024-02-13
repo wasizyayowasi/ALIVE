@@ -41,7 +41,7 @@ void DebugScene::Update()
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
 	if (input.IsTriggered(InputType::Down)) {
-		selectNum_ = (std::min)(selectNum_ + 1,4);
+		selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(sceneName_.size()) - 1);
 	}
 
 	if (input.IsTriggered(InputType::Space)) {

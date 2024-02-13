@@ -30,7 +30,7 @@ InputState::InputState()
 
 	//É|Å[ÉY
 	defaultMapTable_[InputType::Pause] =		{ {InputCategory::keybd,KEY_INPUT_TAB},
-												{InputCategory::pad,PAD_INPUT_8} };
+												{InputCategory::pad,PAD_INPUT_10} };
 	//è„
 	defaultMapTable_[InputType::Up] =			{ {InputCategory::keybd,KEY_INPUT_W},
 												{InputCategory::pad,PAD_INPUT_UP} };
@@ -57,19 +57,19 @@ InputState::InputState()
 
 	//Space
 	defaultMapTable_[InputType::Space] =		{ {InputCategory::keybd,KEY_INPUT_SPACE},
-												{InputCategory::pad,PAD_INPUT_1} };
+												{InputCategory::pad,PAD_INPUT_2} };
 	//éÄñS
 	defaultMapTable_[InputType::Death] =		{ {InputCategory::keybd,KEY_INPUT_Z},
 												{InputCategory::pad,PAD_INPUT_4} };
 	//shift
 	defaultMapTable_[InputType::Dush] =			{ {InputCategory::keybd,KEY_INPUT_LSHIFT},
-												{InputCategory::pad,PAD_INPUT_3} };
+												{InputCategory::pad,PAD_INPUT_1} };
 	//sit
 	defaultMapTable_[InputType::Sit] =			{ {InputCategory::keybd,KEY_INPUT_E},
 												{InputCategory::pad,PAD_INPUT_6} };
 	//activate
 	defaultMapTable_[InputType::Activate] =		{ {InputCategory::keybd,KEY_INPUT_F},
-												{InputCategory::pad,PAD_INPUT_2} };
+												{InputCategory::pad,PAD_INPUT_3} };
 	//creative
 	defaultMapTable_[InputType::Creative] =		{ {InputCategory::keybd,KEY_INPUT_Q},
 												{InputCategory::pad,PAD_INPUT_5} };

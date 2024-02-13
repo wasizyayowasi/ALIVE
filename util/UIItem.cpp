@@ -13,13 +13,13 @@ UIItem::~UIItem()
 void UIItem::AlphaChangeDraw(float scale,int alpha)
 {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraph(centerPosX_, centerPosY_, scale, 0.0f, makeScreenHandle_, true, false);
+	DrawRotaGraphF(centerPosX_, centerPosY_, scale, 0.0f, makeScreenHandle_, true, false);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 void UIItem::ChangePosDraw(float centerPosX, float centerPosY)
 {
-	DrawRotaGraph(centerPosX, centerPosY, 1.0f, 0.0f, makeScreenHandle_, true);
+	DrawRotaGraphF(centerPosX, centerPosY, 1.0f, 0.0f, makeScreenHandle_, true);
 }
 
 void UIItem::DrawBillboard(VECTOR drawPos,int alpha, float size)

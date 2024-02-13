@@ -39,7 +39,7 @@ namespace StrUtil
 	int StrUtil::GetNumberFromString(std::string name, std::string sign)
 	{
 		//文字列の数を取得
-		int strSize = name.size();
+		int strSize = static_cast<int>(name.size());
 
 		//文字列の数が0以下だったら0を返す
 		if (strSize <= 0) {
@@ -47,7 +47,7 @@ namespace StrUtil
 		}
 
 		//文字列から第二引数がある番号を取得する
-		int searchStrNum = name.find(sign);
+		int searchStrNum = static_cast<int>(name.find(sign));
 
 		//上記で取得した番号から第一引数の文字列の末尾までを取得
 		auto str = name.substr(searchStrNum + 1, strSize);
@@ -83,10 +83,10 @@ namespace StrUtil
 	std::string GetStringAfterSign(std::string name, std::string sign)
 	{
 		//文字列のサイズを取得
-		int size = name.size();
+		int size = static_cast<int>(name.size());
 
 		//「.」が文字列の何番目かを取得する
-		int dotNum = name.find(sign);
+		int dotNum = static_cast<int>(name.find(sign));
 
 		//「.」以降から最後までの文字列を取得する
 		std::string str = name.substr(dotNum + 1, size);
@@ -97,7 +97,7 @@ namespace StrUtil
 	std::string GetStringBeforeSign(std::string name, std::string sign)
 	{
 		//「.」が文字列の何番目かを取得する
-		int dotNum = name.find(sign);
+		int dotNum = static_cast<int>(name.find(sign));
 
 		//「.」以降から最後までの文字列を取得する
 		std::string str = name.substr(0, dotNum);

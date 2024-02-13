@@ -60,7 +60,7 @@ void SceneManager::Update()
 	//先頭にあるシーンの更新
 	scenes_.front()->Update();
 
-	debugUpdateTime_ = GetNowHiPerformanceCount() - start;
+	debugUpdateTime_ = static_cast<int>(GetNowHiPerformanceCount() - start);
 }
 
 void SceneManager::Draw()
@@ -69,11 +69,11 @@ void SceneManager::Draw()
 	LONGLONG start = GetNowHiPerformanceCount();
 
 	//シーンすべての描画
-	for (int i = scenes_.size() - 1; i >= 0; --i) {
+	for (int i = static_cast<int>(scenes_.size() - 1); i >= 0; --i) {
 		scenes_[i]->Draw();
 	}
 
-	debugDrawTime_ = GetNowHiPerformanceCount() - start;
+	debugDrawTime_ = static_cast<int>(GetNowHiPerformanceCount() - start);
 
 #ifdef _DEBUG
 	float rate = static_cast<float>(debugUpdateTime_ + debugDrawTime_) / 16666.6f;
