@@ -21,7 +21,6 @@ private:
 
 	struct Situation {
 		bool isMoving = false;					//移動中か
-		bool isSitting = false;					//座っているか
 		bool isClim = false;					//登れるか
 		bool isInTransit = false;				//運送中か
 		bool isCanBeCarried = false;			//持ち運ぶことが出来るか
@@ -187,18 +186,6 @@ private:
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
 	void CorpseGenerater(std::shared_ptr<ObjectManager> objManager);
-
-	/// <summary>
-	/// プレイヤーに座るアニメーションをさせる関数
-	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param>
-	void SitUpdate(std::shared_ptr<ObjectManager> objManager);
-
-	/// <summary>
-	/// 座っている途中の更新
-	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param>
-	void IdleToSitupUpdate(std::shared_ptr<ObjectManager> objManager);
 
 	/// <summary>
 	/// 荷物を運ぶ

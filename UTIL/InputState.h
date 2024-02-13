@@ -19,7 +19,7 @@ enum class InputType
 	Space,			//space
 	Death,			//死亡入力
 	Dush,			//走る
-	Sit,			//座る
+//	Sit,			//座る
 	Activate,		//運ぶ
 	Creative,		//デバッグ用
 	max,			//最大入力インデックス

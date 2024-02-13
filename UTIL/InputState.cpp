@@ -64,9 +64,9 @@ InputState::InputState()
 	//shift
 	defaultMapTable_[InputType::Dush] =			{ {InputCategory::keybd,KEY_INPUT_LSHIFT},
 												{InputCategory::pad,PAD_INPUT_1} };
-	//sit
-	defaultMapTable_[InputType::Sit] =			{ {InputCategory::keybd,KEY_INPUT_E},
-												{InputCategory::pad,PAD_INPUT_6} };
+	////sit
+	//defaultMapTable_[InputType::Sit] =			{ {InputCategory::keybd,KEY_INPUT_E},
+	//											{InputCategory::pad,PAD_INPUT_6} };
 	//activate
 	defaultMapTable_[InputType::Activate] =		{ {InputCategory::keybd,KEY_INPUT_F},
 												{InputCategory::pad,PAD_INPUT_3} };
@@ -95,7 +95,7 @@ InputState::InputState()
 	inputNameTable_[InputType::Space]		= "決定/ジャンプ";
 	inputNameTable_[InputType::Death]		= "死亡";
 	inputNameTable_[InputType::Dush]		= "走る";
-	inputNameTable_[InputType::Sit]			= "座る";
+//	inputNameTable_[InputType::Sit]			= "座る";
 	inputNameTable_[InputType::Activate]	= "アクション";
 
 	currentInput_.resize(static_cast<int>(InputType::max));
