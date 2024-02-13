@@ -40,7 +40,7 @@ public:
 	/// <param name="drawPos">描画座標</param>
 	/// <param name="alpha">アルファ値</param>
 	/// /// <param name="size">サイズ</param>
-	void DrawBillBoard(std::map<std::string,VECTOR> drawPos, float alpha,float size);
+	void DrawBillBoard(std::map<std::string,VECTOR> drawPos, int alpha,float size);
 
 	/// <summary>
 	/// 画像を3D空間に描画する

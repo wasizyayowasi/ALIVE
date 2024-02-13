@@ -69,12 +69,6 @@
     <ClCompile Include="object\Camera.cpp">
       <Filter>ソース ファイル\object</Filter>
     </ClCompile>
-    <ClCompile Include="staging\DepthOfField.cpp">
-      <Filter>ソース ファイル\stanging</Filter>
-    </ClCompile>
-    <ClCompile Include="staging\Broom.cpp">
-      <Filter>ソース ファイル\stanging</Filter>
-    </ClCompile>
     <ClCompile Include="SCENE\ScenePause.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
@@ -238,12 +232,6 @@
     </ClInclude>
     <ClInclude Include="object\Camera.h">
       <Filter>ヘッダー ファイル\object</Filter>
-    </ClInclude>
-    <ClInclude Include="staging\Broom.h">
-      <Filter>ヘッダー ファイル\stanging</Filter>
-    </ClInclude>
-    <ClInclude Include="staging\DepthOfField.h">
-      <Filter>ヘッダー ファイル\stanging</Filter>
     </ClInclude>
     <ClInclude Include="SCENE\ScenePause.h">
       <Filter>ヘッダー ファイル\scene</Filter>
