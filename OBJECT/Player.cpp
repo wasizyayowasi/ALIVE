@@ -48,6 +48,8 @@ Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpda
 	//プレイヤーの大きさの調整
 	model_->SetScale(info.scale);
 
+	info.pos = { 14643,778,239 };
+
 	//ポジションの設定
 	model_->SetPos(info.pos);
 	status_.pos = info.pos;
@@ -228,7 +230,9 @@ void Player::NormalUpdate(std::shared_ptr<ObjectManager> objManager)
 
 	//メンバ関数ポインタをDeathUpdateに変更する
 	if (input.IsTriggered(InputType::Death)) {
-		deathCount_++;
+		if(deathCount_ < 100){
+			deathCount_++;
+		}
 		updateFunc_ = &Player::DeathUpdate;
 		status_.moveVec = VGet(0, 0, 0);
 		return;

@@ -1,5 +1,6 @@
 #pragma once
 #include "EnemyBase.h"
+#include <DxLib.h>
 
 class SignBoardEnemy : public EnemyBase
 {
@@ -28,6 +29,10 @@ public:
 	/// </summary>
 	void Draw();
 private:
-	int deathCount_ = 0;		//€‚ñ‚¾‰ñ”
+	int numModel_[2] = {};							//”‚Ìƒ‚ƒfƒ‹
+	int deathCount_ = 0;							//€‚ñ‚¾‰ñ”
+
+	VECTOR numScale_ = { 80.0f,80.0f, 80.0f };		//”‚ÌŠgk—¦
+	VECTOR numRot_	 = { 0.0f,0.0f, -15.0f };		//”‚Ì‰ñ“]—¦
 };
 

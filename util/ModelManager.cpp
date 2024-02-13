@@ -14,6 +14,7 @@ namespace {
 	const char* const fence_filepath				= "data/model/city/container/mv1/FenceType1.mv1";
 	const char* const corpse_mountain_filepath		= "data/model/other/mv1/CorpseMountain.mv1";
 	const char* const whiteBoard_filepath			= "data/model/other/mv1/WhiteBoard.mv1";
+	const char* const number_filepath				= "data/model/other/mv1/Number.mv1";
 	//‚Å‚©‚¢ƒrƒ‹
 	const char* const big_buildingA_filepath		= "data/model/city/building/mv1/BigBuildingA.mv1";
 	const char* const buildingC_filepath			= "data/model/city//building/mv1/BuildingC.mv1";
@@ -73,6 +74,7 @@ void ModelManager::LoadModel()
 	modelHandle_[ObjectType::Fence] = MV1LoadModel(fence_filepath);							//172
 	modelHandle_[ObjectType::CorpseMountain] = MV1LoadModel(corpse_mountain_filepath);		//
 	modelHandle_[ObjectType::WhiteBoard] = MV1LoadModel(whiteBoard_filepath);				//
+	modelHandle_[ObjectType::Number] = MV1LoadModel(number_filepath);						//
 
 	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);			//55
 	modelHandle_[ObjectType::BuildingCType1] = MV1LoadModel(buildingC_filepath);			//59

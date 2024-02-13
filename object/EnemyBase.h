@@ -90,6 +90,17 @@ public:
 	/// <returns>回転行列と拡縮行列を合成した結果</returns>
 	MATRIX CombiningRotAndScallMat(VECTOR distance);
 
+	/// <summary>
+	/// 落ち影の頂点のポジションを取得する
+	/// </summary>
+	/// <param name="angle">角度</param>
+	/// <returns>ポジション</returns>
+	VECTOR VertexPosition(float angle);
+
+	/// <summary>
+	/// 落ち影もどきの描画
+	/// </summary>
+	void DrawPolygon3D();
 protected:
 
 	bool isDetection_ = false;						//プレイヤーを検知したか

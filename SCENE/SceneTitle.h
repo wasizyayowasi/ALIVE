@@ -54,6 +54,11 @@ public:
 
 private:
 	/// <summary>
+	/// 選択番号の更新
+	/// </summary>
+	void SelectNumUpdate();
+
+	/// <summary>
 	/// フェードイン
 	/// </summary>
 	void FadeInUpdate();

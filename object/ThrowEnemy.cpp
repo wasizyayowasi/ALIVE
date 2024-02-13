@@ -83,7 +83,11 @@ void ThrowEnemy::Update(Player& player)
 
 void ThrowEnemy::Draw()
 {
+	//ƒ‚ƒfƒ‹‚Ì•`‰æ
 	model_->Draw();
+
+	//—Ž‚¿‰e‚Ì•`‰æ
+	DrawPolygon3D();
 }
 
 void ThrowEnemy::SearchForPlayer(VECTOR playerPos)

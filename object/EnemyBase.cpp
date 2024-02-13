@@ -283,3 +283,94 @@ MATRIX EnemyBase::CombiningRotAndScallMat(VECTOR distance)
 
 	return mtx;
 }
+
+//プレイヤーの落ち影に使用する頂点を取得
+VECTOR EnemyBase::VertexPosition(float angle)
+{
+
+	VECTOR pos = {};
+
+	//度数法を弧度法に変換する
+	float radian = MathUtil::DegreeToRadian(angle);
+
+	//角度による座標を取得する
+	pos.x = sin(radian);
+	pos.z = cos(radian);
+	pos.y = 0.0f;
+
+	//ポジションを25倍する(サイズ調整)
+	pos = VScale(pos, 25.0f);
+
+	//プレイヤーのポジションと上記で取得したポジションを足す
+	pos = VAdd(pos_, pos);
+
+	//Y座標は線とポリゴンの当たり判定で取得した
+	//一番近いポリゴンのY座標を代入する
+	pos.y = pos_.y;
+
+	return pos;
+}
+
+//落ち影を作成、描画
+void EnemyBase::DrawPolygon3D()
+{
+	//頂点の数分配列を作る
+	VERTEX3D vertex[7] = {};
+	//三角形を作成する順番を保存する配列
+	WORD index[18] = {};
+
+	//カラー
+	COLOR_U8 difColor = GetColorU8(51, 51, 51, 125);
+	COLOR_U8 spcColor = GetColorU8(0, 0, 0, 0);
+
+	//法線ベクトル
+	VECTOR norm = VGet(0.0f, 1.0f, 0.0f);
+
+	//角度に寄って頂点の位置を変更する
+	float angle = 0.0f;
+
+	//六角形の中心座標を取得
+	vertex[0].pos = VGet(pos_.x, pos_.y, pos_.z);
+	vertex[0].norm = norm;
+	vertex[0].dif = difColor;
+	vertex[0].spc = GetColorU8(0, 0, 0, 0);
+	vertex[0].u = 0.0f;
+	vertex[0].v = 0.0f;
+	vertex[0].su = 0.0f;
+	vertex[0].sv = 0.0f;
+
+	//角度ごとの頂点を取得
+	for (int i = 1; i < 7; i++) {
+		vertex[i].pos = VertexPosition(angle);
+		vertex[i].norm = norm;
+		vertex[i].dif = difColor;
+		vertex[i].spc = spcColor;
+		vertex[i].u = 0.0f;
+		vertex[i].v = 0.0f;
+		vertex[i].su = 0.0f;
+		vertex[i].sv = 0.0f;
+		angle += 60.0f;
+	}
+
+	//三角形を作成する順番
+	index[0] = 0;
+	index[1] = 1;
+	index[2] = 2;
+	index[3] = 0;
+	index[4] = 2;
+	index[5] = 3;
+	index[6] = 0;
+	index[7] = 3;
+	index[8] = 4;
+	index[9] = 0;
+	index[10] = 4;
+	index[11] = 5;
+	index[12] = 0;
+	index[13] = 5;
+	index[14] = 6;
+	index[15] = 0;
+	index[16] = 6;
+	index[17] = 1;
+
+	DrawPolygonIndexed3D(vertex, 7, index, 6, DX_NONE_GRAPH, true);
+}

@@ -248,6 +248,47 @@ void SceneTitle::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
+void SceneTitle::SelectNumUpdate()
+{
+	//短縮化
+	auto& input = InputState::GetInstance();
+
+	bool isTriggerLeft = input.IsTriggered(InputType::Left);
+	bool isTriggerRight = input.IsTriggered(InputType::Right);
+	bool isTriggerUp = input.IsTriggered(InputType::Up);
+	bool isTriggerDown = input.IsTriggered(InputType::Down);
+
+	switch (selectNum_)
+	{
+	case 0:
+		if (isTriggerRight || isTriggerDown) {
+			selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
+		}
+		break;
+	case 1:
+		if (isTriggerRight) {
+			selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
+		}
+		else if (isTriggerLeft) {
+			selectNum_ = (std::max)(selectNum_ - 1, 0);
+		}
+		break;
+	case 2:
+		if (isTriggerRight) {
+			selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
+		}
+		else if (isTriggerLeft || isTriggerDown) {
+			selectNum_ = (std::max)(selectNum_ - 1, 0);
+		}
+		break;
+	case 3:
+		if (isTriggerLeft) {
+			selectNum_ = (std::max)(selectNum_ - 1, 0);
+		}
+		break;
+	}
+}
+
 void SceneTitle::FadeInUpdate()
 {
 	//フェードイン
@@ -274,12 +315,7 @@ void SceneTitle::UIUpdate()
 	}
 
 	//選択
-	if (input.IsTriggered(InputType::Left)) {
-		selectNum_ = (std::max)(selectNum_ - 1, 0);
-	}
-	if (input.IsTriggered(InputType::Right)) {
-		selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
-	}
+	SelectNumUpdate();
 
 	//現在のフレームと前のフレームで番号が違ったら
 	//カメラの設定を行う
@@ -292,6 +328,7 @@ void SceneTitle::UIUpdate()
 		updateFunc_ = &SceneTitle::UIFadeOutUpdate;
 	}
 
+	//動画を再生する
 	if (input.IsTriggered(InputType::Pause)) {
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneMovie>(manager_)));
 	}

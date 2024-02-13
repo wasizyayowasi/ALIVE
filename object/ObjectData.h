@@ -68,6 +68,7 @@ enum class ObjectType{
 	WallBack,
 	WallSide,
 	BoardEnemy,
+	Number,
 	Max,
 };
 
