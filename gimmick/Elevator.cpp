@@ -112,11 +112,6 @@ void Elevator::Update(Player& player)
 	}
 
 	if (model_->IsAnimEnd()) {
-		sound.Set3DSoundInfo(pos_, 1500.0f, "door");
-		sound.StopSE("door");
-	}
-
-	if (sound.CheckSoundFile("door")) {
 		sound.StopSE("door");
 	}
 }
@@ -146,7 +141,7 @@ void Elevator::Move()
 	pos_.y = Easing::InOutCubic(elapsedTime_, total_time, targetPos_.y, pos_.y);
 
 	//移動終了後アニメーションを変更する
-	if (elapsedTime_ == 180.0f) {
+	if (elapsedTime_ == 180.0f && isDeparture_) {
 		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
 		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, 10);
@@ -196,6 +191,7 @@ void Elevator::TargetPosition()
 		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 		elapsedTime_ = 0;
+		isDeparture_ = true;
 	}
 
 	//レバーが引かれたらアニメーションを変更して
@@ -212,6 +208,7 @@ void Elevator::TargetPosition()
 		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 		elapsedTime_ = 0;
+		isDeparture_ = true;
 	}
 }
 

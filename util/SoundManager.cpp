@@ -20,6 +20,9 @@ SoundManager::SoundManager()
 
 SoundManager::~SoundManager()
 {
+    for (auto& sound : nameAndHandleTable_) {
+        DeleteSoundMem(sound.second);
+    }
 }
 
 void SoundManager::LoadSound()
