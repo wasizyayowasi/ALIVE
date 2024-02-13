@@ -144,11 +144,6 @@ void Player::NormalUpdate(std::shared_ptr<ObjectManager> objManager)
 		lever_.reset();
 	}
 
-	if (input.IsTriggered(InputType::Sit)) {
-		updateFunc_ = &Player::IdleToSitupUpdate;
-		return;
-	}
-
 	status_.situation.isGimmickCanBeOperated = false;
 
 	if (status_.situation.isInTransit) {
@@ -477,57 +472,6 @@ void Player::CorpseGenerater(std::shared_ptr<ObjectManager> objManager)
 	info.pos = putPos;
 
 	objManager->DeadPersonGenerator(model_->GetModelHandle(),info, status_.animNo);
-}
-
-void Player::SitUpdate(std::shared_ptr<ObjectManager> objManager)
-{
-	//短縮化
-	auto& input = InputState::GetInstance();
-
-	//立ち上がるためのコマンド
-	if (input.IsTriggered(InputType::Sit)) {
-		//アニメーションの変更
-		ChangeAnimNo(PlayerAnimType::SitupToIdle, false, 20);
-	}
-	
-	//立つ家庭のアニメーションが終わったらidleupdateに変更する
-	if (status_.animNo == static_cast<int>(PlayerAnimType::SitupToIdle) && model_->IsAnimEnd()) {
-		updateFunc_ = &Player::NormalUpdate;
-		status_.situation.isSitting = false;
-		return;
-	}
-
-	if (status_.animNo == static_cast<int>(PlayerAnimType::SitupToIdle)) return;
-
-	//死ぬコマンド
-	if (input.IsTriggered(InputType::Death)) {
-		DeathUpdate(objManager);
-		status_.situation.isSitting = false;
-		updateFunc_ = &Player::NormalUpdate;
-		return;
-	}
-
-}
-
-void Player::IdleToSitupUpdate(std::shared_ptr<ObjectManager> objManager)
-{
-	//短縮化
-	auto& input = InputState::GetInstance();
-
-	status_.moveVec = VGet(0.0f, 0.0f, 0.0f);
-
-	//アニメーションを座る過程のアニメーションに変更
-	//座っているフラグを立て、アニメーションループ変数を折る
-	if (!status_.situation.isSitting) {
-		status_.situation.isSitting = true;
-		ChangeAnimNo(PlayerAnimType::IdleToSitup, false, 20);
-	}
-
-	//座る過程のアニメーションが終わったら三角座りにする
-	if (status_.animNo == static_cast<int>(PlayerAnimType::IdleToSitup) && model_->IsAnimEnd()) {
-		model_->SetAnimEndFrame(status_.animNo);
-		updateFunc_ = &Player::SitUpdate;
-	}
 }
 
 void Player::SetCarryInfo(bool isCarry, std::shared_ptr<ObjectBase>model) {

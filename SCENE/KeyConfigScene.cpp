@@ -409,7 +409,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 	}
 	else if (input.IsTriggered(InputType::Left) || input.IsTriggered(InputType::Right)) {
 		if (selectNum_ < keyNum - 2) {
-			selectNum_ = (selectNum_ + ((keyNum - 2) / 2)) % (keyNum - 2);
+			selectNum_ = (selectNum_ + 7) % (keyNum - 1);
 		}
 	}
 
