@@ -17,13 +17,10 @@
 #include "../util/SoundManager.h"
 #include "../util/ExternalFile.h"
 #include "../util/ModelManager.h"
+#include "../util/GraphManager.h"
 #include "../util/UIItemManager.h"
 
 #include <algorithm>
-
-namespace {
-	const char* const enemy_model_Filename = "data/player/mv1/player.mv1";
-}
 
 SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 {
@@ -62,9 +59,6 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	//カメラの配置等の設定
 	CameraSettingPos();
 
-	//タイトル画像の読み込み
-	titleHandle_ = LoadGraph("data/graph/title.png");
-
 	//UIを表示する座標を取得
 	menuDrawPos_["タイトル"] = file.GetUIPos("titleDrawPos");
 	menuDrawPos_["ニューゲーム"] = file.GetUIPos("startDrawPos");
@@ -97,8 +91,6 @@ SceneTitle::~SceneTitle()
 	for (auto& light : lightHandle_) {
 		DeleteLightHandle(light);
 	}
-
-	DeleteGraph(titleHandle_);
 }
 
 void SceneTitle::Init()
@@ -176,7 +168,7 @@ void SceneTitle::Draw()
 
 	//fadeValue_の値によって透過具合が変化するタイトルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
-	DrawBillboard3D(menuDrawPos_["タイトル"], 0.5f, 0.5f, 300.0f, 0.0f, titleHandle_, true);
+	DrawBillboard3D(menuDrawPos_["タイトル"], 0.5f, 0.5f, 300.0f, 0.0f, GraphManager::GetInstance().GetGraph("title"), true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	//黒いフェード用boxの描画

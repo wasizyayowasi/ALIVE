@@ -1,19 +1,16 @@
 #include "InputState.h"
 #include "Util.h"
 #include "DrawFunctions.h"
+#include "GraphManager.h"
 
 #include <DxLib.h>
 #include <cassert>
-#include<iostream>
+#include <iostream>
 #include <fstream>
 #include <cassert>
 #include <nlohmann/json.hpp>
 
 namespace {
-	//xboxのボタン画像のファイルパス
-	const char* const xbox_Botton_filepath = "data/graph/ControllerBotton.png";
-	const char* const key_filepath = "data/graph/key2.png";
-
 	//キーボード画像のチップサイズ
 	constexpr int keybord_graph_chip_size = 59;
 	//パッド画像のチップサイズ
@@ -24,10 +21,6 @@ using json = nlohmann::json;
 
 InputState::InputState()
 {
-	//UI画像の読み込み
-	UIHandle_[InputCategory::keybd] = LoadGraph(key_filepath);
-	UIHandle_[InputCategory::pad] = LoadGraph(xbox_Botton_filepath);
-
 	//ポーズ
 	defaultMapTable_[InputType::Pause] =		{ {InputCategory::keybd,KEY_INPUT_TAB},
 												{InputCategory::pad,PAD_INPUT_10} };
@@ -64,9 +57,6 @@ InputState::InputState()
 	//shift
 	defaultMapTable_[InputType::Dush] =			{ {InputCategory::keybd,KEY_INPUT_LSHIFT},
 												{InputCategory::pad,PAD_INPUT_1} };
-	////sit
-	//defaultMapTable_[InputType::Sit] =			{ {InputCategory::keybd,KEY_INPUT_E},
-	//											{InputCategory::pad,PAD_INPUT_6} };
 	//activate
 	defaultMapTable_[InputType::Activate] =		{ {InputCategory::keybd,KEY_INPUT_F},
 												{InputCategory::pad,PAD_INPUT_3} };
@@ -95,7 +85,6 @@ InputState::InputState()
 	inputNameTable_[InputType::Space]		= "決定/ジャンプ";
 	inputNameTable_[InputType::Death]		= "死亡";
 	inputNameTable_[InputType::Dush]		= "走る";
-//	inputNameTable_[InputType::Sit]			= "座る";
 	inputNameTable_[InputType::Activate]	= "アクション";
 
 	currentInput_.resize(static_cast<int>(InputType::max));
@@ -220,9 +209,6 @@ InputState::InputState()
 
 InputState::~InputState()
 {
-	for (auto& graph : UIHandle_) {
-		DeleteGraph(graph.second);
-	}
 }
 
 bool InputState::IsTriggered(InputType type) const
@@ -489,7 +475,7 @@ void InputState::DrawKeyGraph(int type, float posX, float posY,float size)
 							keybord_graph_chip_size,
 							keybord_graph_chip_size,
 							size, 0.0f,
-							UIHandle_[InputCategory::keybd],
+							GraphManager::GetInstance().GetGraph("key"),
 							true, false);
 }
 
@@ -500,7 +486,8 @@ void InputState::DrawPadGraph(int type, float posX, float posY, float scale)
 							static_cast<int>(type) * controller_graph_chip_size, 0,
 							controller_graph_chip_size, controller_graph_chip_size,
 							scale, 0.0f, 
-							UIHandle_[InputCategory::pad], true, false);
+							GraphManager::GetInstance().GetGraph("controllerBotton"),
+							true, false);
 }
 
 void InputState::DrawName(int type, float posX, float posY, int color, int fontHandle, bool editName, bool before, std::string sign)

@@ -19,7 +19,6 @@ enum class InputType
 	Space,			//space
 	Death,			//死亡入力
 	Dush,			//走る
-//	Sit,			//座る
 	Activate,		//運ぶ
 	Creative,		//デバッグ用
 	max,			//最大入力インデックス
@@ -183,7 +182,6 @@ private:
 	InputMap_t defaultMapTable_;
 
 	std::map<int, Key> keyNum_;							//キー番号
-	std::map<InputCategory, int> UIHandle_;					//画像
 	std::map<InputType, std::string> inputNameTable_;
 
 	std::vector<bool> currentInput_;

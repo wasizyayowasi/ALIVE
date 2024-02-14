@@ -4,12 +4,13 @@
 #include "PopUpTextScene.h"
 #include "SettingSceneForSceneTitle.h"
 
-#include"../util/game.h"
-#include"../util/InputState.h"
-#include"../util/FontsManager.h"
-#include"../util/DrawFunctions.h"
-#include "../util/UIItemManager.h"
+#include "../util/game.h"
+#include "../util/InputState.h"
+#include "../util/FontsManager.h"
+#include "../util/DrawFunctions.h"
 #include "../util/ExternalFile.h"
+#include "../util/GraphManager.h"
+#include "../util/UIItemManager.h"
 
 #include <DxLib.h>
 #include <algorithm>
@@ -160,11 +161,8 @@ KeyConfigSceneForSceneTitle::~KeyConfigSceneForSceneTitle()
 
 void KeyConfigSceneForSceneTitle::Init()
 {
-	//画像の読み込み
-	controllerHandle_ = LoadGraph("data/graph/controller.png");
-
 	//キーグラフを分割して読み込む
-	LoadDivGraph("data/graph/key2.png",117,9,13,graph_chip_size, graph_chip_size,keyTypeHandle1_);
+	LoadDivGraph("data/graph/key2.png",117,9,13,graph_chip_size, graph_chip_size,keyTypeHandle_);
 
 	//フォントの作成
 	fontHandleSize21_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0021");
@@ -229,9 +227,8 @@ void KeyConfigSceneForSceneTitle::End()
 
 	//現在のキー入力情報を外部データとして書き出す
 	input.SavekeyInfo();
-	DeleteGraph(controllerHandle_);
 
-	for (auto& graph : keyTypeHandle1_) {
+	for (auto& graph : keyTypeHandle_) {
 		DeleteGraph(graph);
 	}
 }
@@ -296,7 +293,7 @@ void KeyConfigSceneForSceneTitle::KeyGraphDraw()
 		}
 
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alphaValue));
-		DrawBillboard3D(pos, 0.5f, 0.5f, graphScale, 0.0f, keyTypeHandle1_[keyNum], true);
+		DrawBillboard3D(pos, 0.5f, 0.5f, graphScale, 0.0f, keyTypeHandle_[keyNum], true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		pos.y -= 5.5f;
@@ -315,7 +312,7 @@ void KeyConfigSceneForSceneTitle::ControllerDraw()
 
 	//コントローラー画像の描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
-	DrawBillboard3D(pos, 0.5f, 0.5f, 90.0f, 0.0f, controllerHandle_, true);
+	DrawBillboard3D(pos, 0.5f, 0.5f, 90.0f, 0.0f, GraphManager::GetInstance().GetGraph("controller"), true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	//UIの描画
@@ -346,7 +343,7 @@ void KeyConfigSceneForSceneTitle::ChangeKeyPopUpText()
 	int num = static_cast<int>(keyNum_[input.tempMapTable_.find(static_cast<InputType>(selectNum_))->second.begin()->id]);
 	
 	//選択したキーの画像を出力
-	DrawRotaGraphF(Game::screen_width / 6 + strWidth * 2.5f, static_cast<float>(Game::screen_height / 5 - graph_chip_size / 2), 1.0f, 0.0f, keyTypeHandle1_[num], true);
+	DrawRotaGraphF(Game::screen_width / 6 + strWidth * 2.5f, static_cast<float>(Game::screen_height / 5 - graph_chip_size / 2), 1.0f, 0.0f, keyTypeHandle_[num], true);
 
 
 	//文字列

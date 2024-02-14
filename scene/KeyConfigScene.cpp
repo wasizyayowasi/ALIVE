@@ -3,10 +3,11 @@
 #include "SettingScene.h"
 #include "PopUpTextScene.h"
 
-#include"../util/InputState.h"
-#include"../util/game.h"
-#include"../util/DrawFunctions.h"
-#include"../util/FontsManager.h"
+#include "../util/game.h"
+#include "../util/InputState.h"
+#include "../util/FontsManager.h"
+#include "../util/GraphManager.h"
+#include "../util/DrawFunctions.h"
 #include "../util/UIItemManager.h"
 
 #include <DxLib.h>
@@ -168,12 +169,6 @@ void KeyConfigScene::Init()
 	KeyUI_ = std::make_shared<UIItemManager>();
 	PadUI_ = std::make_shared<UIItemManager>();
 
-	//画像の読み込み
-	controllerHandle_ = Graph::LoadGraph("data/graph/controller.png");
-
-	//キーグラフを読み込む
-	keyTypeHandle_ = Graph::LoadGraph("data/graph/key2.png");
-
 	//スクリーンサイズのハンドルを作成
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
 
@@ -216,8 +211,6 @@ void KeyConfigScene::End()
 	//現在のキー入力情報を外部データとして書き出す
 	input.SavekeyInfo();
 	DeleteGraph(makeScreenHandle_);
-	DeleteGraph(keyTypeHandle_);
-	DeleteGraph(controllerHandle_);
 }
 
 void KeyConfigScene::Update()
@@ -326,7 +319,7 @@ void KeyConfigScene::ControllerDraw()
 	PadUI_->AlphaChangeDraw(selectNum_, fadeValue_);
 
 	//操作説明画像の描画
-	DrawGraph(0, 0, controllerHandle_, true);
+	DrawGraph(0, 0, GraphManager::GetInstance().GetGraph("controller"), true);
 
 	//書き込みスクリーンを裏のスクリーンに変更する
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -361,16 +354,10 @@ void KeyConfigScene::ChangeKeyPopUpText()
 	//int型にキャストしたgraphChipSize
 	int castGraphChipSize = static_cast<int>(graph_chip_size);
 
-	//選択したキーの画像を出力
-	Graph::DrawRectRotaGraph(	static_cast<float>(Game::screen_width / 6) + strWidth * 2.5f,
-								static_cast<float>(Game::screen_height / 5) - graph_chip_size / 2,
-								x * castGraphChipSize,
-								y * castGraphChipSize,
-								castGraphChipSize, 
-								castGraphChipSize,
-								1.0f, 0.0f, 
-								keyTypeHandle_, true, false);
-
+	//キー画像の描画
+	input.DrawKeyGraph( selectNum_, static_cast<float>(Game::screen_width / 6) + strWidth * 2.5f,
+						static_cast<float>(Game::screen_height / 5) - graph_chip_size / 2,
+						1.0f);
 
 	//文字列
 	text = "変更したいキーを入力してください";

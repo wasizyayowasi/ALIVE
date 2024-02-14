@@ -10,10 +10,6 @@
 #include <algorithm>
 
 namespace {
-	//xboxのボタン画像のファイルパス
-	const char* const xbox_Botton_filepath = "data/graph/ControllerBotton.png";
-	const char* const key_filepath = "data/graph/key2.png";
-
 	//キーボード画像のチップサイズ
 	constexpr int keybord_graph_chip_size = 59;
 	//パッド画像のチップサイズ
@@ -24,10 +20,6 @@ Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
-
-	//UI画像の読み込み
-	UIHandle_[UIGraph::XboxBotton] = Graph::LoadGraph(xbox_Botton_filepath);
-	UIHandle_[UIGraph::KeyBord] = Graph::LoadGraph(key_filepath);
 
 	//キーボードの画像を描画する位置
 	UIPos_[UIGraph::KeyBord].first = Game::screen_width / 2 - keybord_graph_chip_size;
@@ -51,10 +43,6 @@ Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)
 
 Tutorial::~Tutorial()
 {
-	//画像の削除
-	for (auto& handle : UIHandle_) {
-		DeleteGraph(handle.second);
-	}
 }
 
 void Tutorial::Update(VECTOR pos)

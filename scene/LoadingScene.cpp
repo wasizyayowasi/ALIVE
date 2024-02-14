@@ -8,6 +8,7 @@
 #include "../util/FontsManager.h"
 #include "../util/ExternalFile.h"
 #include "../util/SoundManager.h"
+#include "../util/GraphManager.h"
 #include "../util/EffectManager.h"
 #include "../util/UIItemManager.h"
 
@@ -43,6 +44,9 @@ void LoadingScene::Init()
 	SoundManager::GetInstance().LoadSound();
 	
 	//画像のロード
+	GraphManager::GetInstance().Load();
+
+	//エッフェクト画像のロード
 	EffectManager::GetInstance().Load();
 
 	//非同期処理を終了する

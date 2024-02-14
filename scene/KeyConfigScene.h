@@ -86,11 +86,9 @@ private:
 
 private:
 
-	int controllerHandle_ = -1;				//コントローラー画像
 	int fontHandleSize21_ = -1;				//フォント16サイズを保管する変数
 	int fontHandleSize42_ = -1;				//フォント32サイズを保管する変数
 	int makeScreenHandle_ = -1;				//作成したハンドルを保管する変数
-	int keyTypeHandle_ = -1;				//keyTypeを描画するためのグラフを受け取るためのhandle
 	int textColor_ = 0xffffff;				//カラー
 	int selectNum_ = 0;						//現在の選択番号
 

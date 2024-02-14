@@ -1,0 +1,42 @@
+#pragma once
+#include <map>
+#include <string>
+
+class GraphManager
+{
+public:
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	virtual ~GraphManager();
+
+	static GraphManager& GetInstance() {
+		static GraphManager instance;
+		return instance;
+	}
+
+	/// <summary>
+	/// 画像を読み込む
+	/// </summary>
+	void Load();
+	
+	/// <summary>
+	/// 画像を取得する
+	/// </summary>
+	/// <param name="name">画像の名前</param>
+	/// <returns>画像ハンドル</returns>
+	int GetGraph(std::string name);
+
+private:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	GraphManager() = default;
+
+	GraphManager(const GraphManager&) = delete;
+	void operator = (const GraphManager&) = delete;
+
+	std::map<std::string, int> graphHandle_ = {};		//グラフテーブル
+
+};
+

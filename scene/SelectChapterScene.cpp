@@ -10,6 +10,7 @@
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
 #include "../util/ModelManager.h"
+#include "../util/GraphManager.h"
 
 #include <algorithm>
 #include <string>
@@ -45,11 +46,6 @@ void SelectChapterScene::Init()
 
 	//目標の座標の取得
 	targetPosX_ = file.GetSpecifiedInfo("title", "BookPutPos").pos.x;
-
-	//画像のロード
-	textureHandle_[0] = LoadGraph("data/model/room/texture/Chapter1.png");
-	textureHandle_[1] = LoadGraph("data/model/room/texture/Chapter2.png");
-	textureHandle_[2] = LoadGraph("data/model/room/texture/Chapter3.png");
 
 	model_->SetAnimation(static_cast<int>(BookAnim::normal), false, false);
 }
@@ -115,11 +111,12 @@ void SelectChapterScene::SlideInBook()
 
 void SelectChapterScene::NormalUpdate()
 {
-	//モデルの更新
-	model_->Update();
-
 	//短縮化
 	auto& input = InputState::GetInstance();
+	auto& graph = GraphManager::GetInstance();
+
+	//モデルの更新
+	model_->Update();
 
 	if (model_->IsAnimEnd()) {
 		model_->ChangeAnimation(static_cast<int>(BookAnim::normal), false, false, 10);
@@ -132,17 +129,20 @@ void SelectChapterScene::NormalUpdate()
 	if (input.IsTriggered(InputType::Right)) {
 		if (selectNum_ < 2) {
 			model_->ChangeAnimation(static_cast<int>(BookAnim::open), false, false, 10);
-			MV1SetTextureGraphHandle(model_->GetModelHandle(), 0, textureHandle_[(std::min)(selectNum_ + 1, 2)], true);
 		}
 		selectNum_ = (std::min)(selectNum_ + 1, 2);
 	}
 	if (input.IsTriggered(InputType::Left)) {
 		if (selectNum_ > 0) {
 			model_->ChangeAnimation(static_cast<int>(BookAnim::close), false, false, 10);
-			MV1SetTextureGraphHandle(model_->GetModelHandle(), 0, textureHandle_[(std::max)(selectNum_ - 1, 0)], true);
 		}
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
+
+	//画像名の文字列の取得
+	std::string str = "chapter" + std::to_string(selectNum_ + 1);
+
+	MV1SetTextureGraphHandle(model_->GetModelHandle(), 0, graph.GetGraph(str), true);
 
 	//戻る
 	if (input.IsTriggered(InputType::Down)) {

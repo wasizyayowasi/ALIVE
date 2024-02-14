@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="util\GraphManager.cpp" />
     <ClCompile Include="object\LightBulb.cpp" />
     <ClCompile Include="object\Player.cpp" />
     <ClCompile Include="object\SignBoardEnemy.cpp" />
@@ -199,6 +200,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util\GraphManager.h" />
     <ClInclude Include="object\LightBulb.h" />
     <ClInclude Include="object\Player.h" />
     <ClInclude Include="object\SignBoardEnemy.h" />
@@ -217,8 +219,8 @@
     <ClInclude Include="gimmick\TransparentObject.h" />
     <ClInclude Include="gimmick\ManualCrank.h" />
     <ClInclude Include="gimmick\Lever.h" />
-    <ClInclude Include="KeyData.h" />
     <ClInclude Include="scene\LoadingScene.h" />
+    <ClInclude Include="util\KeyData.h" />
     <ClInclude Include="util\ModelManager.h" />
     <ClInclude Include="object\Shot.h" />
     <ClInclude Include="object\ShotManager.h" />

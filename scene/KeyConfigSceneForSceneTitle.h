@@ -87,8 +87,7 @@ private:
 
 private:
 
-	int keyTypeHandle1_[117] = {};			//keyTypeを描画するためのグラフを受け取るためのhandle
-	int controllerHandle_ = -1;				//コントローラー画像
+	int keyTypeHandle_[117] = {};			//keyTypeを描画するためのグラフを受け取るためのhandle
 	int fontHandleSize21_ = -1;				//フォント16サイズを保管する変数
 	int fontHandleSize42_ = -1;				//フォント32サイズを保管する変数
 	int selectNum_ = 0;						//現在の選択番号

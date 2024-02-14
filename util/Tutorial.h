@@ -92,7 +92,6 @@ private:
 
 	std::map<int, bool> pushBottan_;					//押されたボタン
 
-	std::map<UIGraph,int> UIHandle_;					//画像
 	std::map<UIGraph, std::pair<float, float>> UIPos_;	//UIの画面ポジション pairの中身｜first：X｜second：Y
 
 	VECTOR tutorialDrawPos_ = {};
