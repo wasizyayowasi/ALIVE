@@ -54,6 +54,16 @@ public:
 
 private:
 	/// <summary>
+	/// ライトの設定
+	/// </summary>
+	void LightSetting();
+
+	/// <summary>
+	/// カメラの配置等の設定
+	/// </summary>
+	void CameraSettingPos();
+
+	/// <summary>
 	/// 選択番号の更新
 	/// </summary>
 	void SelectNumUpdate();

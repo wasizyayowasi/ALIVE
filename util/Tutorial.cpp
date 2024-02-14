@@ -65,7 +65,7 @@ void Tutorial::Update(VECTOR pos)
 
 	distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorialInfo.pos, pos);
 
-	float range = VSize(tutorialInfo.scale) / 3;
+	float range = VSize(tutorialInfo.scale) / 2;
 
 	if (range > distanceSize) {
 		if (tutorialInfo.name == "CrankTutorial") {

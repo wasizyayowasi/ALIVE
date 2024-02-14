@@ -6,12 +6,18 @@
 
 #include "../util/game.h"
 #include "../util/Model.h"
+#include "../UTIL/Easing.h"
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
 #include "../util/ModelManager.h"
 
 #include <algorithm>
 #include <string>
+
+namespace {
+	//総時間
+	constexpr float total_time = 60.0f;
+}
 
 SelectChapterScene::SelectChapterScene(SceneManager& manager) : SceneBase(manager),updateFunc_(&SelectChapterScene::SlideInBook)
 {
@@ -27,13 +33,20 @@ void SelectChapterScene::Init()
 	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(ObjectType::Book),Material::Other);
 
 	//オブジェクト配置データ
-	auto info = ExternalFile::GetInstance().GetSpecifiedInfo("title", "Book");
+	auto& file = ExternalFile::GetInstance();
+
+	//モデル配置情報の取得
+	auto info = file.GetSpecifiedInfo("title", "Book");
 
 	//モデルの情報設定
 	model_->SetPos(info.pos);
 	model_->SetRot(info.rot);
 	model_->SetScale(info.scale);
 
+	//目標の座標の取得
+	targetPosX_ = file.GetSpecifiedInfo("title", "BookPutPos").pos.x;
+
+	//画像のロード
 	textureHandle_[0] = LoadGraph("data/model/room/texture/Chapter1.png");
 	textureHandle_[1] = LoadGraph("data/model/room/texture/Chapter2.png");
 	textureHandle_[2] = LoadGraph("data/model/room/texture/Chapter3.png");
@@ -52,6 +65,7 @@ void SelectChapterScene::Update()
 
 void SelectChapterScene::Draw()
 {
+	//モデルの描画
 	model_->Draw();
 
 	//画面全体を真っ黒に塗りつぶす
@@ -77,20 +91,25 @@ void SelectChapterScene::ChangeChapter()
 
 void SelectChapterScene::SlideInBook()
 {
-	//プレイヤーの座標をスクリーン座標にする
-	VECTOR screenPos = ConvWorldPosToScreenPos(model_->GetPos());
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
 
-	//int型のスクリーン座標
-	int castScreenPosX = static_cast<int>(screenPos.x);
+	//モデルの座標
+	VECTOR pos = model_->GetPos();
 
-	//画面の半分のサイズ(横)
-	int screenWidthHalf = Game::screen_width / 2;
+	//時間を増加させる
+	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
 
-	if (castScreenPosX >= screenWidthHalf - 1 && castScreenPosX <= screenWidthHalf + 1) {
+	//イージング
+	pos.x = Easing::InOutCubic(elapsedTime_, total_time, targetPosX_, model_->GetPos().x);
+
+	//モデルのポジション座標
+	model_->SetPos(pos);
+
+	if (elapsedTime_ == total_time) {
 		updateFunc_ = &SelectChapterScene::NormalUpdate;
-	}
-	else {
-		model_->SetPos(VAdd(model_->GetPos(), { -1,0,0 }));
+		targetPosX_ = file.GetSpecifiedInfo("title", "Book").pos.x;
+		elapsedTime_ = 0;
 	}
 }
 
@@ -125,13 +144,36 @@ void SelectChapterScene::NormalUpdate()
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
 
+	//戻る
 	if (input.IsTriggered(InputType::Down)) {
-		manager_.PopFrontScene();
+		updateFunc_ = &SelectChapterScene::SlideOutBook;
 	}
 
 	//決定
 	if (input.IsTriggered(InputType::Space)) {
 		updateFunc_ = &SelectChapterScene::FadeOutUpdate;
+	}
+}
+
+void SelectChapterScene::SlideOutBook()
+{
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+
+	//モデルの座標
+	VECTOR pos = model_->GetPos();
+
+	//時間を増加させる
+	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
+
+	//イージング
+	pos.x = Easing::InOutCubic(elapsedTime_, total_time, targetPosX_, model_->GetPos().x);
+
+	//モデルのポジション座標
+	model_->SetPos(pos);
+
+	if (elapsedTime_ == total_time) {
+		manager_.PopFrontScene();
 	}
 }
 

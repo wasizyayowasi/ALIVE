@@ -53,95 +53,33 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	subPlayerModel_->SetRot(subPlayerInfo.rot);
 	subPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::Jump), false, true);
 
-	//UIを表示する座標を取得
-	menuDrawPos_["タイトル"]			= file.GetUIPos("titleDrawPos");
-	menuDrawPos_["ニューゲーム"]		= file.GetUIPos("startDrawPos");
-	menuDrawPos_["再開する"]			= file.GetUIPos("continueDrawPos");
-	menuDrawPos_["設定"]				= file.GetUIPos("settingDrawPos");
-	menuDrawPos_["終了"]				= file.GetUIPos("endDrawPos");
-	menuDrawPos_["モード"]				= file.GetUIPos("windowModeUIPos");
-	menuDrawPos_["BGM"]					= file.GetUIPos("BGMUIPos");
-	menuDrawPos_["SE"]					= file.GetUIPos("SEUIPos");
-	menuDrawPos_["操作設定"]			= file.GetUIPos("advancedSettingUIPos");
-	menuDrawPos_["戻る"]				= file.GetUIPos("backUIPos");
-
-	SetUseLighting(true);
-
 	//オブジェクトの生成
 	objManager_->OpeningStageObjectGenerator();
 
-	//カメラの初期化
-	camera_->Init(VGet(0, 140, 0));
+	//ライトの設定
+	LightSetting();
 
-	//カメラのポジションと見る位置の設定
-	camera_->SetCameraTargetPosAndView(file.GetCameraTargetPos("start"), file.GetCameraTargetPos("startTargetPos"),{0,1,0});
-
-	//スポットライトに変更する。ライトの設定
-	outAngle_ = 90.0f * DX_PI_F / 180.0f;
-	inAngle_ = 30.0f * DX_PI_F / 180.0f;
-	ChangeLightTypeSpot(lightBulb_->GetFramePos(), lightBulb_->GetFrontVec(), outAngle_, inAngle_, 600.0f, 0.0f, 0.003f, 0.0f);
-
-	//ライトのディフューズカラーの設定
-	SetLightDifColor(GetColorF(0.87f, 0.72f, 0.52f, 1.0f));
-
-	//ディレクションライト角度取得
-	VECTOR dir = {};
-	dir.x = -33 / DX_PI_F * 180.0f;
-	dir.y = -33 / DX_PI_F * 180.0f;
-	dir.z = -33 / DX_PI_F * 180.0f;
-
-	//ディレクションライトの作成
-	lightHandle_.push_back(CreateDirLightHandle(dir));
-	lightDir_.push_back(dir);
-	SetLightDifColorHandle(lightHandle_[0], GetColorF(0.41f, 0.41f, 0.41f, 1.0f));
-
-	//ディレクションライト角度取得
-	dir.x = 33 / DX_PI_F * 180.0f;
-	dir.y = -33 / DX_PI_F * 180.0f;
-	dir.z = 33 / DX_PI_F * 180.0f;
-
-	//ディレクションライトの作成
-	lightHandle_.push_back(CreateDirLightHandle(dir));
-	lightDir_.push_back(dir);
-	SetLightDifColorHandle(lightHandle_[1], GetColorF(0.41f, 0.41f, 0.41f, 1.0f));
-
-	//カメラ情報の設定
-	CameraInfo info = {};
-
-	//設定オブジェクトを見るカメラ
-	info.targetPos = file.GetCameraTargetPos("setting");
-	info.targetView = file.GetCameraTargetPos("settingTargetPos");
-	info.upVec = VGet(0, 1, 0);
-
-	cameraInfo_.push_back(info);
-
-	//ベッドを見るカメラ
-	info.targetPos = file.GetCameraTargetPos("start");
-	info.targetView = file.GetCameraTargetPos("startTargetPos");
-	info.upVec = VGet(0, 1, 0);
-
-	cameraInfo_.push_back(info);
-
-	//本を見るカメラ
-	info.targetPos = file.GetCameraTargetPos("continue");
-	info.targetView = file.GetCameraTargetPos("continueTargetPos");
-	info.upVec = VGet(0, 0, 1);
-
-	cameraInfo_.push_back(info);
-
-	//扉を見るカメラ
-	info.targetPos = file.GetCameraTargetPos("end");
-	info.targetView = file.GetCameraTargetPos("endTargetPos");
-	info.upVec = VGet(0, 1, 0);
-
-	cameraInfo_.push_back(info);
+	//カメラの配置等の設定
+	CameraSettingPos();
 
 	//タイトル画像の読み込み
 	titleHandle_ = LoadGraph("data/graph/title.png");
 
+	//UIを表示する座標を取得
+	menuDrawPos_["タイトル"] = file.GetUIPos("titleDrawPos");
+	menuDrawPos_["ニューゲーム"] = file.GetUIPos("startDrawPos");
+	menuDrawPos_["シーン選択"] = file.GetUIPos("continueDrawPos");
+	menuDrawPos_["設定"] = file.GetUIPos("settingDrawPos");
+	menuDrawPos_["終了"] = file.GetUIPos("endDrawPos");
+	menuDrawPos_["モード"] = file.GetUIPos("windowModeUIPos");
+	menuDrawPos_["BGM"] = file.GetUIPos("BGMUIPos");
+	menuDrawPos_["SE"] = file.GetUIPos("SEUIPos");
+	menuDrawPos_["操作設定"] = file.GetUIPos("advancedSettingUIPos");
+	menuDrawPos_["戻る"] = file.GetUIPos("backUIPos");
+
 	//UI文字列の作成
 	menuName_.push_back("ニューゲーム");
-	menuName_.push_back("再開する");
+	menuName_.push_back("シーン選択");
 	menuName_.push_back("設定");
 	menuName_.push_back("終了");
 
@@ -232,7 +170,6 @@ void SceneTitle::Draw()
 		input.DrawPadGraph(static_cast<int>(XboxBotton::A)      , Game::screen_width / 128 * 112, Game::screen_height - 40, 0.66f);
 	}
 	
-
 	//文字列の描画
 	DrawStringToHandle(Game::screen_width / 10 * 8 - 25, Game::screen_height - 60, "移動", 0xffffff, fontHandle_);
 	input.DrawName(static_cast<int>(InputType::Space), Game::screen_width / 20 * 18, Game::screen_height - 60, 0xffffff, fontHandle_, true, true, "/");
@@ -248,10 +185,88 @@ void SceneTitle::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
+void SceneTitle::LightSetting()
+{
+	SetUseLighting(true);
+
+	//スポットライトに変更する。ライトの設定
+	outAngle_ = 90.0f * DX_PI_F / 180.0f;
+	inAngle_ = 30.0f * DX_PI_F / 180.0f;
+	ChangeLightTypeSpot(lightBulb_->GetFramePos(), lightBulb_->GetFrontVec(), outAngle_, inAngle_, 600.0f, 0.0f, 0.003f, 0.0f);
+
+	//ライトのディフューズカラーの設定
+	SetLightDifColor(GetColorF(0.87f, 0.72f, 0.52f, 1.0f));
+
+	//ディレクションライト角度取得
+	VECTOR dir = {};
+	dir.x = -33 / DX_PI_F * 180.0f;
+	dir.y = -33 / DX_PI_F * 180.0f;
+	dir.z = -33 / DX_PI_F * 180.0f;
+
+	//ディレクションライトの作成
+	lightHandle_.push_back(CreateDirLightHandle(dir));
+	lightDir_.push_back(dir);
+	SetLightDifColorHandle(lightHandle_[0], GetColorF(0.41f, 0.41f, 0.41f, 1.0f));
+
+	//ディレクションライト角度取得
+	dir.x = 33 / DX_PI_F * 180.0f;
+	dir.y = -33 / DX_PI_F * 180.0f;
+	dir.z = 33 / DX_PI_F * 180.0f;
+
+	//ディレクションライトの作成
+	lightHandle_.push_back(CreateDirLightHandle(dir));
+	lightDir_.push_back(dir);
+	SetLightDifColorHandle(lightHandle_[1], GetColorF(0.41f, 0.41f, 0.41f, 1.0f));
+}
+
+void SceneTitle::CameraSettingPos()
+{
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+
+	//カメラの初期化
+	camera_->Init(VGet(0, 140, 0));
+
+	//カメラのポジションと見る位置の設定
+	camera_->SetCameraTargetPosAndView(file.GetCameraTargetPos("start"), file.GetCameraTargetPos("startTargetPos"), { 0,1,0 });
+
+	//カメラ情報の設定
+	CameraInfo info = {};
+
+	//設定オブジェクトを見るカメラ
+	info.targetPos = file.GetCameraTargetPos("setting");
+	info.targetView = file.GetCameraTargetPos("settingTargetPos");
+	info.upVec = VGet(0, 1, 0);
+
+	cameraInfo_.push_back(info);
+
+	//ベッドを見るカメラ
+	info.targetPos = file.GetCameraTargetPos("start");
+	info.targetView = file.GetCameraTargetPos("startTargetPos");
+	info.upVec = VGet(0, 1, 0);
+
+	cameraInfo_.push_back(info);
+
+	//本を見るカメラ
+	info.targetPos = file.GetCameraTargetPos("continue");
+	info.targetView = file.GetCameraTargetPos("continueTargetPos");
+	info.upVec = VGet(0, 0, 1);
+
+	cameraInfo_.push_back(info);
+
+	//扉を見るカメラ
+	info.targetPos = file.GetCameraTargetPos("end");
+	info.targetView = file.GetCameraTargetPos("endTargetPos");
+	info.upVec = VGet(0, 1, 0);
+
+	cameraInfo_.push_back(info);
+}
+
 void SceneTitle::SelectNumUpdate()
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
+	auto& file = ExternalFile::GetInstance();
 
 	bool isTriggerLeft = input.IsTriggered(InputType::Left);
 	bool isTriggerRight = input.IsTriggered(InputType::Right);
@@ -262,28 +277,28 @@ void SceneTitle::SelectNumUpdate()
 	{
 	case 0:
 		if (isTriggerRight || isTriggerDown) {
-			selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
+			selectNum_ = 1;
 		}
 		break;
 	case 1:
 		if (isTriggerRight) {
-			selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
+			selectNum_ = 2;
 		}
 		else if (isTriggerLeft) {
-			selectNum_ = (std::max)(selectNum_ - 1, 0);
+			selectNum_ = 0;
 		}
 		break;
 	case 2:
 		if (isTriggerRight) {
-			selectNum_ = (std::min)(selectNum_ + 1, static_cast<int>(menuName_.size() - 1));
+			selectNum_ = 3;
 		}
 		else if (isTriggerLeft || isTriggerDown) {
-			selectNum_ = (std::max)(selectNum_ - 1, 0);
+			selectNum_ = 1;
 		}
 		break;
 	case 3:
 		if (isTriggerLeft) {
-			selectNum_ = (std::max)(selectNum_ - 1, 0);
+			selectNum_ = 2;
 		}
 		break;
 	}

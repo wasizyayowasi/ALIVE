@@ -65,7 +65,7 @@ void Lever::Draw()
 bool Lever::CollCheck(VECTOR playerPos)
 {
 	//プレイヤーとレバーモデルの衝突判定
-	auto result = MV1CollCheck_Sphere(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, 50.0f);
+	auto result = MV1CollCheck_Sphere(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, 100.0f);
 
 	if (result.HitNum > 0) {
 		MV1CollResultPolyDimTerminate(result);
