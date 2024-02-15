@@ -55,6 +55,8 @@ void Tutorial::Update(VECTOR pos)
 
 	float range = VSize(tutorialInfo.scale) / 2;
 
+	tutorialInfo.name = StrUtil::GetStringBeforeSign(tutorialInfo.name, ".");
+
 	if (range > distanceSize) {
 		if (tutorialInfo.name == "CrankTutorial") {
 			drawFunc_ = &Tutorial::CranckTutorialDraw;
