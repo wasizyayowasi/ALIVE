@@ -125,8 +125,8 @@ private:
 		unsigned short volumeBGM;
 	};
 
-	int volumeSE_ = 125;
-	int volumeBGM_ = 125;
+	int volumeSE_ = 255;
+	int volumeBGM_ = 255;
 
 	std::unordered_map<std::string, int> nameAndHandleTable_;
 

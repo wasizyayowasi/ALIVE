@@ -32,7 +32,7 @@ private:
 
 	int materialNum_ = 0;				//マテリアルの数
 
-	float alphaValue_ = 1.0f;			//アルファ値
+	float alphaValue_ = 0.3f;			//アルファ値
 
 	bool alphaValueIncrease_ = false;	//アルファ値の増加
 };

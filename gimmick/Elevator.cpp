@@ -106,6 +106,14 @@ void Elevator::Update(Player& player)
 		switch_->DeleteHitResult();
 	}
 
+	if (model_->GetCurrentAnimNo() == static_cast<int>(ElevatorAnimType::open) || model_->GetCurrentAnimNo() == static_cast<int>(ElevatorAnimType::close)) {
+		if (!isPlaySound_ && isDeparture_) {
+			SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
+			SoundManager::GetInstance().PlaySE("door");
+			isPlaySound_ = true;
+		}
+	}
+
 	//アニメーションが終了次第、移動を開始する
 	if (model_->IsAnimEnd()) {
 		Move();
@@ -113,6 +121,8 @@ void Elevator::Update(Player& player)
 
 	if (model_->IsAnimEnd()) {
 		sound.StopSE("door");
+		isPlaySound_ = false;
+		//isDeparture_ = false;
 	}
 }
 
@@ -142,8 +152,6 @@ void Elevator::Move()
 
 	//移動終了後アニメーションを変更する
 	if (elapsedTime_ == 180.0f) {
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
-		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, 10);
 	}
 
@@ -168,10 +176,9 @@ void Elevator::TargetPosition()
 			if (maxSize < distanceSize) {
 				maxSize = distanceSize;
 				targetPos_ = stopPos;
-				SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
-				SoundManager::GetInstance().PlaySE("door");
 				model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 				elapsedTime_ = 0;
+				isDeparture_ = true;
 			}
 		}
 	}
@@ -186,10 +193,9 @@ void Elevator::TargetPosition()
 		else {
 			targetPos_ = levers_.back()->GetElevatorStopPoint();
 		}
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
-		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 		elapsedTime_ = 0;
+		isDeparture_ = true;
 	}
 
 	//レバーが引かれたらアニメーションを変更して
@@ -202,10 +208,9 @@ void Elevator::TargetPosition()
 		else {
 			targetPos_ = levers_.front()->GetElevatorStopPoint();
 		}
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
-		SoundManager::GetInstance().PlaySE("door");
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 		elapsedTime_ = 0;
+		isDeparture_ = true;
 	}
 }
 

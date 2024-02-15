@@ -162,7 +162,7 @@ KeyConfigSceneForSceneTitle::~KeyConfigSceneForSceneTitle()
 void KeyConfigSceneForSceneTitle::Init()
 {
 	//キーグラフを分割して読み込む
-	LoadDivGraph("data/graph/key2.png",117,9,13,graph_chip_size, graph_chip_size,keyTypeHandle_);
+	LoadDivGraph("data/graph/key.png",117,9,13,graph_chip_size, graph_chip_size,keyTypeHandle_);
 
 	//フォントの作成
 	fontHandleSize21_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0021");
@@ -187,7 +187,7 @@ void KeyConfigSceneForSceneTitle::Init()
 	for (auto& input : input.inputNameTable_) {
 		keyDrawPos_[input.second] = pos;
 		pos.y -= 5.5f;
-		if (no == inputSize / 2 - 1) {
+		if (no == inputSize / 2) {
 			pos = file.GetUIPos("keyConfTurnBackPos");
 		}
 		no++;
@@ -207,7 +207,7 @@ void KeyConfigSceneForSceneTitle::Init()
 		namePosY += graph_chip_size + graph_gap_size;
 	
 		//inputstate.tempmaptableの半分を超えたら折り返す
-		if (nameNo == input.tempMapTable_.size() / 2 - 1) {
+		if (nameNo == inputSize / 2) {
 			namePosY =  static_cast<float>(Game::screen_height / 2) - (graph_chip_size * 4.0f + 30.0f);
 			namePosX += static_cast<float>(Game::screen_width / 4) * 1.5f;
 		}
@@ -384,7 +384,7 @@ void KeyConfigSceneForSceneTitle::SelectChangeKeyUpdate()
 	}
 	else if (input.IsTriggered(InputType::Left) || input.IsTriggered(InputType::Right)) {
 		if (selectNum_ < keyNum - 2) {
-			selectNum_ = (selectNum_ + ((keyNum - 2) / 2)) % (keyNum - 2);
+			selectNum_ = (selectNum_ + 7) % (keyNum - 1);
 		}
 	}
 

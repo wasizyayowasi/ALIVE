@@ -23,18 +23,18 @@ void PenetrationScaffld::Update(Player& player)
 	COLOR_F color = {};
 
 	//アルファ値を増減する
-	if (alphaValueIncrease_) {
-		alphaValue_ = (std::min)(alphaValue_ + 0.001f, 1.0f);
-		if (alphaValue_ == 1.0f) {
-			alphaValueIncrease_ = false;
-		}
-	}
-	else {
-		alphaValue_ = (std::max)(alphaValue_ - 0.001f, 0.8f);
-		if (alphaValue_ == 0.8f) {
-			alphaValueIncrease_ = true;
-		}
-	}
+//	if (alphaValueIncrease_) {
+//		alphaValue_ = (std::min)(alphaValue_ + 0.001f, 1.0f);
+//		if (alphaValue_ == 1.0f) {
+//			alphaValueIncrease_ = false;
+//		}
+//	}
+//	else {
+//		alphaValue_ = (std::max)(alphaValue_ - 0.001f, 0.8f);
+//		if (alphaValue_ == 0.8f) {
+//			alphaValueIncrease_ = true;
+//		}
+//	}
 
 	//マテリアルのアルファ値を変更する
 	for (int i = 0; i < materialNum_; i++) {

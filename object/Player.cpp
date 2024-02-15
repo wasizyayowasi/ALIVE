@@ -48,7 +48,7 @@ Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpda
 	//プレイヤーの大きさの調整
 	model_->SetScale(info.scale);
 
-	info.pos = { 14643,778,239 };
+	//info.pos = { 14643,778,239 };
 
 	//ポジションの設定
 	model_->SetPos(info.pos);
@@ -629,7 +629,7 @@ void Player::GoLeverPullPosition(std::shared_ptr<ObjectManager> objManager)
 
 	//distanceSizeが一定の範囲外だったら
 	//一定の速度で立ってほしいポジションに向かう
-	if (distanceSize > 3.0f) {
+	if (distanceSize > 30.0f) {
 		VECTOR distance = VNorm(VSub(standPos, status_.pos));
 		VECTOR moveVec = VScale(distance, playerInfo_.walkSpeed);
 		status_.pos = VAdd(status_.pos, moveVec);
