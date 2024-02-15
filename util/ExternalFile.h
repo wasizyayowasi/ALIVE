@@ -94,10 +94,16 @@ public:
 	PlayerInfo GetPlayerInfo() { return player_; }
 
 	/// <summary>
-	/// プレイヤーの開始座標を変更する
+	/// 開始場所の名前を設定する
 	/// </summary>
-	/// <param name="startPos">開始場所</param>
-	void SetPlayerInfo(VECTOR startPos);
+	/// <param name="name">開始場所の名前</param>
+	void SetStartName(std::string name);
+
+	/// <summary>
+	/// 開始場所の名前を取得する
+	/// </summary>
+	/// <returns>開始場所の名前</returns>
+	std::string GetStartName() { return startPosName_; }
 
 	/// <summary>
 	/// savedataを取得する
@@ -189,6 +195,8 @@ private:
 	void operator = (const ExternalFile&) = delete;
 
 	PlayerInfo player_ = {};		//プレイヤーのステータス情報
+
+	std::string startPosName_ = {};	//開始位置の名前
 
 	std::deque<int> pastTotalDeathNum_ = {};
 

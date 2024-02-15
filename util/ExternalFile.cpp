@@ -151,6 +151,10 @@ std::list<LoadObjectInfo> ExternalFile::GetEnemyInfo(VECTOR playerPos)
 
 VECTOR ExternalFile::GetStartPos(std::string name)
 {
+	if (static_cast<int>(name.size()) == 0) {
+		return loadStartPos_["Chapter0"].pos;
+	}
+
 	return loadStartPos_[name].pos;
 }
 
@@ -193,9 +197,9 @@ void ExternalFile::SaveDataRewriteInfo(int num)
 
 }
 
-void ExternalFile::SetPlayerInfo(VECTOR startPos)
+void ExternalFile::SetStartName(std::string name)
 {
-	loadMainStageObjInfo_["Player"].front().pos = startPos;
+	startPosName_ = name;
 }
 
 VECTOR ExternalFile::GetCameraTargetPos(std::string name)

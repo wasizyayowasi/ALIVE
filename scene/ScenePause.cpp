@@ -5,12 +5,13 @@
 #include "SettingScene.h"
 #include "DebugScene.h"
 
-#include "../util/InputState.h"
-#include "../util/game.h"
-#include "../util/FontsManager.h"
-#include "../util/UIItemManager.h"
 #include "../util/Util.h"
+#include "../util/game.h"
+#include "../util/InputState.h"
 #include "../util/ExternalFile.h"
+#include "../util/FontsManager.h"
+#include "../util/GraphManager.h"
+#include "../util/UIItemManager.h"
 
 #include <algorithm>
 
@@ -102,6 +103,9 @@ void ScenePause::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND,0);
+
+	//ƒ^ƒCƒgƒ‹‰æ‘œ‚Ì•`‰æ
+	DrawRotaGraph(Game::screen_width / 2, Game::screen_height / 3, 1.0f, 0.0f, GraphManager::GetInstance().GetGraph("title"), true);
 
 	//UI‚Ì•`‰æ
 	UI_->AlphaChangeDraw(selectNum_,255);

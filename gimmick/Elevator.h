@@ -70,6 +70,7 @@ private:
 
 	bool isDeparture_ = false;						//エレベーターが出発しているかどうか
 	bool isPlaySound_ = false;						//サウンドが再生中か
+	bool isOnSwitch_ = false;						//スイッチを押しているか
 
 	VECTOR targetPos_ = {};							//現在向かっているポジション
 

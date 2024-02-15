@@ -148,6 +148,11 @@ void Tutorial::CranckTutorialDraw(InputState& input)
 			input.DrawPadGraph(static_cast<int>(XboxBotton::Down),UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
 		}
 
+		if (input.IsTriggered(InputType::Up) || input.IsTriggered(InputType::Down)) {
+			pushBottan_[static_cast<int>(InputType::Activate)] = true;
+			pushBottan_[static_cast<int>(InputType::Death)] = false;
+		}
+		
 		return;
 	}
 
@@ -159,8 +164,14 @@ void Tutorial::CranckTutorialDraw(InputState& input)
 		input.DrawPadGraph(static_cast<int>(XboxBotton::B), UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
 	}
 
-	//キーに対応した文字列の描画(アクションキーの文字列)
-	DrawStringToHandle(Game::screen_width / 2, Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f), "クランクを回す", 0xffffff, fontPigumo42_);
+	if (pushBottan_[static_cast<int>(InputType::Activate)]) {
+		//キーに対応した文字列の描画(アクションキーの文字列)
+		DrawStringToHandle(Game::screen_width / 2, Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f), "手を放す", 0xffffff, fontPigumo42_);
+	}
+	else {
+		//キーに対応した文字列の描画(アクションキーの文字列)
+		DrawStringToHandle(Game::screen_width / 2, Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f), "クランクを回す", 0xffffff, fontPigumo42_);
+	}
 }
 
 void Tutorial::RunTutorialDraw(InputState& input)

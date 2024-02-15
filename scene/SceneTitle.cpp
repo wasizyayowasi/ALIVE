@@ -258,7 +258,6 @@ void SceneTitle::SelectNumUpdate()
 {
 	//íZèkâª
 	auto& input = InputState::GetInstance();
-	auto& file = ExternalFile::GetInstance();
 
 	bool isTriggerLeft = input.IsTriggered(InputType::Left);
 	bool isTriggerRight = input.IsTriggered(InputType::Right);
@@ -273,24 +272,24 @@ void SceneTitle::SelectNumUpdate()
 		}
 		break;
 	case 1:
-		if (isTriggerRight) {
+		if (isTriggerUp) {
 			selectNum_ = 2;
 		}
 		else if (isTriggerLeft) {
 			selectNum_ = 0;
 		}
-		break;
-	case 2:
-		if (isTriggerRight) {
+		else if (isTriggerRight) {
 			selectNum_ = 3;
 		}
-		else if (isTriggerLeft || isTriggerDown) {
+		break;
+	case 2:
+		if (isTriggerLeft || isTriggerDown) {
 			selectNum_ = 1;
 		}
 		break;
 	case 3:
-		if (isTriggerLeft) {
-			selectNum_ = 2;
+		if (isTriggerLeft || isTriggerDown) {
+			selectNum_ = 1;
 		}
 		break;
 	}

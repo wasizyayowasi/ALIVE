@@ -78,11 +78,8 @@ void SelectChapterScene::ChangeChapter()
 	//選ばれているチャプターの文字列を取得する
 	std::string str = "Chapter" + std::to_string(selectNum_);
 
-	//スタートポジションを取得する
-	VECTOR startPos = file.GetStartPos(str);
-
 	//プレイヤーの開始位置を設定する
-	file.SetPlayerInfo(startPos);
+	file.SetStartName(str);
 }
 
 void SelectChapterScene::SlideInBook()

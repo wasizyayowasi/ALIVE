@@ -70,7 +70,7 @@ Elevator::~Elevator()
 void Elevator::Update(Player& player)
 {
 	//短縮化
-	auto& sound = SoundManager::GetInstance();
+ 	auto& sound = SoundManager::GetInstance();
 
 	//プレイヤーのポジションの取得
 	VECTOR playerPos = player.GetStatus().pos;
@@ -96,33 +96,19 @@ void Elevator::Update(Player& player)
 	}
 
 	//ターゲットポジションの変更
-	if (targetPos_.y == pos_.y && !isDeparture_) {
+	if (targetPos_.y == pos_.y && !isDeparture_ && !isOnSwitch_) {
 		TargetPosition();
 	}
 	else {
 		if (!switch_->ElevatorCollResult()) {
-			isDeparture_ = false;
+			isOnSwitch_ = false;
 		}
 		switch_->DeleteHitResult();
-	}
-
-	if (model_->GetCurrentAnimNo() == static_cast<int>(ElevatorAnimType::open) || model_->GetCurrentAnimNo() == static_cast<int>(ElevatorAnimType::close)) {
-		if (!isPlaySound_ && isDeparture_) {
-			SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
-			SoundManager::GetInstance().PlaySE("door");
-			isPlaySound_ = true;
-		}
 	}
 
 	//アニメーションが終了次第、移動を開始する
 	if (model_->IsAnimEnd()) {
 		Move();
-	}
-
-	if (model_->IsAnimEnd()) {
-		sound.StopSE("door");
-		isPlaySound_ = false;
-		//isDeparture_ = false;
 	}
 }
 
@@ -151,8 +137,15 @@ void Elevator::Move()
 	pos_.y = Easing::InOutCubic(elapsedTime_, total_time, targetPos_.y, pos_.y);
 
 	//移動終了後アニメーションを変更する
-	if (elapsedTime_ == 180.0f) {
+	if (elapsedTime_ == 180.0f && isDeparture_) {
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, 10);
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
+		SoundManager::GetInstance().PlaySE("door");
+		isDeparture_ = false;
+	}
+
+	if (model_->IsAnimEnd() && model_->GetCurrentAnimNo() == static_cast<int>(ElevatorAnimType::open)) {
+		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::openIdle), true, false, 10);
 	}
 
 	//ポジションの設定
@@ -169,10 +162,15 @@ void Elevator::TargetPosition()
 	float maxSize = 0.0f;
 
 	//一番遠いレバーが所持しているポジションを取得する
-	if (switch_->ElevatorCollResult()) {
+	if (switch_->ElevatorCollResult() && !isOnSwitch_) {
 		for (auto lever : levers_) {
+			//レバーが持っている停止ポジションの取得
 			VECTOR stopPos = lever->GetElevatorStopPoint();
+
+			//現在のポジションから停止ポジションまでの距離を取得
 			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(pos_, stopPos);
+
+			//距離が一番遠いポジションを取得する
 			if (maxSize < distanceSize) {
 				maxSize = distanceSize;
 				targetPos_ = stopPos;
@@ -181,6 +179,7 @@ void Elevator::TargetPosition()
 				isDeparture_ = true;
 			}
 		}
+		isOnSwitch_ = true;
 	}
 
 	//レバーが引かれたらアニメーションを変更して
@@ -211,6 +210,11 @@ void Elevator::TargetPosition()
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
 		elapsedTime_ = 0;
 		isDeparture_ = true;
+	}
+
+	if (isDeparture_) {
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
+		SoundManager::GetInstance().PlaySE("door");
 	}
 }
 

@@ -503,19 +503,21 @@ void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 	//「.」以降の文字列によって
 	//エネミーの召喚パターンを変更する
 	if (size > 0) {
-		std::string str = StrUtil::GetStringAfterSign(info.name, ".");
-		str = StrUtil::GetStringBeforeSign(str, "-");
+		std::string numStr = StrUtil::GetStringAfterSign(info.name, ".");
+		numStr = StrUtil::GetStringBeforeSign(numStr, "-");
+
+		std::string str = StrUtil::GetStringBeforeSign(info.name, ".");
 
 		//文字列が「ALL」だったら
-		if (str == "ALL") {
+		if (numStr == "ALL") {
 			GeneratedForTheNumberOfTimesYouDie(deathCount, info);
 		}
-		else if (info.name == "SignBoardEnemy") {
+		else if (str == "SignBoardEnemy") {
 			objects_[ObjectType::Enemy].push_back(std::make_shared<SignBoardEnemy>(model.GetModelHandle(ObjectType::BoardEnemy), Material::Other, info));
 			usedEnemyList_[info.name] = true;
 		}
 		else {
-			GeneratePredeterminedNumberOfTimes(deathCount, str, info);
+			GeneratePredeterminedNumberOfTimes(deathCount, numStr, info);
 		}
 	}
 

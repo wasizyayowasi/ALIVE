@@ -35,6 +35,7 @@ Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpda
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
+	auto& file = ExternalFile::GetInstance();
 
 	//プレイヤー情報の初期化
 	playerInfo_ = ExternalFile::GetInstance().GetPlayerInfo();
@@ -48,11 +49,13 @@ Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpda
 	//プレイヤーの大きさの調整
 	model_->SetScale(info.scale);
 
-	//info.pos = { 14643,778,239 };
+
+	VECTOR startPos = file.GetStartPos(file.GetStartName());
+	//startPos = { 14643,778,239 };
 
 	//ポジションの設定
-	model_->SetPos(info.pos);
-	status_.pos = info.pos;
+	model_->SetPos(startPos);
+	status_.pos = startPos;
 
 	//回転率の設定
 	model_->SetRot(info.rot);
@@ -76,6 +79,7 @@ Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpda
 /// </summary>
 Player::~Player()
 {
+	ExternalFile::GetInstance().SetStartName("");
 }
 
 void Player::Update(std::shared_ptr<ObjectManager> objManager)
@@ -640,10 +644,10 @@ void Player::GoLeverPullPosition(std::shared_ptr<ObjectManager> objManager)
 	else {
 		model_->SetPos(standPos);
 		angle_ = 0.0f;
+		lever_->OnAnimation();
 		status_.rot = VGet(0, angle_, 0);
 		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 		ChangeAnimNo(PlayerAnimType::LeverOn, false, 10);
-		lever_->OnAnimation();
 		updateFunc_ = &Player::LeverUpdate;
 	}
 }

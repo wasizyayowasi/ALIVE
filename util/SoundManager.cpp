@@ -222,5 +222,7 @@ void SoundManager::Set3DSoundListenerInfo(VECTOR pos, VECTOR rot)
 
 int SoundManager::CheckSoundFile(std::string name)
 {
-    return DxLib::CheckSoundMem(nameAndHandleTable_[name]);
+    int check = DxLib::CheckSoundMem(nameAndHandleTable_[name]);
+
+    return check;
 }
