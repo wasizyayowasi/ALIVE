@@ -7,17 +7,11 @@
 #include "../util/Model.h"
 
 namespace {
-	//敵がプレイヤーを視認できる範囲
-	constexpr float visible_range = 1300.0f;
-
 	//右手のフレーム名
 	const char* const hand_framename = "hand.R_end";
 
 	//物を投げているときのアニメーションフレーム
 	constexpr int throw_frame_time = 73;
-
-	//敵の視野角
-	constexpr float viewing_angle = 45.0f;
 }
 
  ThrowEnemy::ThrowEnemy(int handle, Material materialType, LoadObjectInfo objInfo):EnemyBase(handle, materialType, objInfo)
@@ -30,7 +24,8 @@ namespace {
 	 std::string str = StrUtil::GetStringAfterSign(objInfo.name, "-");
 
 	 //文字列がFakeだったら投げるふりをするフラグを立てる
-	 if (str == "Fake") {
+	 if (str == "Fake")
+	 {
 		 isFakeThrow_ = true;
 	 }
 
@@ -53,7 +48,16 @@ void ThrowEnemy::Update(Player& player)
 	//プレイヤーを索敵する
 	SearchForPlayer(playerPos);
 
-	if (isDetection_) {
+	//投げるアニメーションが終わったら
+	//投げているというフラグをfalseにする
+	if (model_->IsAnimEnd() && isThrow_)
+	{
+		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Idle), true, false, 20);
+		isThrow_ = false;
+	}
+
+	if (isDetection_)
+	{
 		//プレイヤーと敵の距離
 		VECTOR distance = VNorm(VSub(playerPos, pos_));
 
@@ -69,16 +73,17 @@ void ThrowEnemy::Update(Player& player)
 		//行列をモデルにセットする
 		MV1SetMatrix(model_->GetModelHandle(), mtx);
 	}
-	else {
-		//回転行列と拡縮行列の合成
-		MATRIX mtx = CombiningRotAndScallMat(initFrontVec_);
-
-		//回転行列と拡縮行列を掛けた行列に平行移動行列をかける
-		mtx = MMult(mtx, MGetTranslate(pos_));
-
-		//行列をモデルにセットする
-		MV1SetMatrix(model_->GetModelHandle(), mtx);
-	}
+//	else 
+//	{
+//		//回転行列と拡縮行列の合成
+//		MATRIX mtx = CombiningRotAndScallMat(initFrontVec_);
+//
+//		//回転行列と拡縮行列を掛けた行列に平行移動行列をかける
+//		mtx = MMult(mtx, MGetTranslate(pos_));
+//
+//		//行列をモデルにセットする
+//		MV1SetMatrix(model_->GetModelHandle(), mtx);
+//	}
 }
 
 void ThrowEnemy::Draw()
@@ -90,68 +95,30 @@ void ThrowEnemy::Draw()
 	DrawPolygon3D();
 }
 
-void ThrowEnemy::SearchForPlayer(VECTOR playerPos)
-{
-	//敵からプレイヤーの直線距離
-	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
-
-	float innerProduct = 0.0f;
-
-	//内積を取得する(返り値はコサイン)
-	innerProduct = VDot(VNorm(frontVec_), VNorm(VSub(playerPos, pos_)));
-
-	//上記の結果から度数法に変える
-	float radian = acos(innerProduct);
-	innerProduct = radian / DX_PI_F * 180.0f;
-
-	//視野の範囲内かつ距離が石を投げる距離よりも
-	//短かったらプレイヤーを検知したことにする
-	if (innerProduct < viewing_angle) {
-		if (distanceSize < visible_range) {
-			isDetection_ = true;
-		}
-		else {
-			isDetection_ = false;
-		}
-	}
-	else {
-		isDetection_ = false;
-	}
-}
-
 void ThrowEnemy::Shot(std::shared_ptr<ShotManager> shotManager, VECTOR playerPos, float height)
 {
-	//投げるアニメーションが終わったら
-	//投げているという変数をfalseにする
-	if (model_->IsAnimEnd()) {
-		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Idle), false, false, 5);
-		isThrow_ = false;
-	}
-
 	//プレイヤーを検知しているかどうか
 	//検知していなかったらreturn
-	if (!isDetection_) {
+	if (!isDetection_)
+	{
 		return;
 	}
 
-	//プレイヤーのポジションとエネミーの距離のサイズを取得
-	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
-
-	//投げている途中ではなかったら
 	//アニメーションを投げるアニメーションに変更する
-	if (!isThrow_) {
-		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Throw), false, false, 5);
-		isThrow_ = true;
-	}
+	model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Throw), false, false, 5);
 
-	if (isFakeThrow_) {
+	//投げるふりをする敵だった場合リターンする
+	if (isFakeThrow_)
+	{
 		return;
 	}
 
 	//投げているアニメーションの特定フレームで
 	//弾を発射する
-	if (model_->GetSpecifiedAnimTime(throw_frame_time)) {
+	if (model_->GetSpecifiedAnimTime(throw_frame_time))
+	{
 		VECTOR framePos = model_->GetFrameLocalPosition(hand_framename);
-		shotManager->Fire(framePos, playerPos, height);
+		//shotManager->Fire(framePos, playerPos, height);
+		isThrow_ = true;
 	}
 }

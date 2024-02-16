@@ -1,6 +1,6 @@
 #include "Player.h"
 
-#include "../object/DeadPerson.h"
+#include "../object/Corpse.h"
 #include "../object/ObjectManager.h"
 
 #include "../gimmick/ManualCrank.h"

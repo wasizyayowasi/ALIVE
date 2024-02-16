@@ -89,7 +89,7 @@ void Switch::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 	MV1RefreshCollInfo(deadPerson->GetModelPointer()->GetModelHandle(), deadPerson->GetModelPointer()->GetColFrameIndex());
 
 	//Ž‚¿‰^‚Ñ’†‚¾‚Á‚½‚çˆÈ~‚Ìˆ—‚ðs‚í‚È‚¢
-	if (deadPerson->IsTransit()) {
+	if (deadPerson->GetIsTransit()) {
 		return;
 	}
 

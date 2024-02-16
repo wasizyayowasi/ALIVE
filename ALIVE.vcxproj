@@ -151,7 +151,6 @@
     <ClCompile Include="util\Effect2D.cpp" />
     <ClCompile Include="util\EffectManager.cpp" />
     <ClCompile Include="gimmick\HopStepJump.cpp" />
-    <ClCompile Include="object\CorpseRecoveryEnemy.cpp" />
     <ClCompile Include="gimmick\Elevator.cpp" />
     <ClCompile Include="gimmick\CrankScaffold.cpp" />
     <ClCompile Include="gimmick\TransparentObject.cpp" />
@@ -170,7 +169,7 @@
     <ClCompile Include="scene\PopUpTextScene.cpp" />
     <ClCompile Include="util\Tutorial.cpp" />
     <ClCompile Include="util\Aster.cpp" />
-    <ClCompile Include="object\DeadPerson.cpp" />
+    <ClCompile Include="object\Corpse.cpp" />
     <ClCompile Include="object\ObjectManager.cpp" />
     <ClCompile Include="object\ObjectBase.cpp" />
     <ClCompile Include="object\OrnamentBase.cpp" />
@@ -208,7 +207,6 @@
     <ClInclude Include="util\Effect2D.h" />
     <ClInclude Include="util\EffectManager.h" />
     <ClInclude Include="gimmick\HopStepJump.h" />
-    <ClInclude Include="object\CorpseRecoveryEnemy.h" />
     <ClInclude Include="scene\KeyConfigSceneForSceneTitle.h" />
     <ClInclude Include="scene\SettingSceneForSceneTitle.h" />
     <ClInclude Include="object\ThrowEnemy.h" />
@@ -231,7 +229,7 @@
     <ClInclude Include="util\Aster.h" />
     <ClInclude Include="util\StatePattern.h" />
     <ClInclude Include="object\PlayerData.h" />
-    <ClInclude Include="object\DeadPerson.h" />
+    <ClInclude Include="object\Corpse.h" />
     <ClInclude Include="object\ObjectManager.h" />
     <ClInclude Include="object\ObjectData.h" />
     <ClInclude Include="object\ObjectBase.h" />

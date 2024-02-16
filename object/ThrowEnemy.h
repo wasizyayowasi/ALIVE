@@ -29,12 +29,6 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// プレイヤーを索敵する
-	/// </summary>
-	/// <param name="playerPos">プレイヤーの座標</param>
-	void SearchForPlayer(VECTOR playerPos);
-
-	/// <summary>
 	/// 敵が弾を撃つ処理
 	/// </summary>
 	/// <param name="shotManager">弾を管理するクラスのポインタ</param>
@@ -43,11 +37,6 @@ public:
 	void Shot(std::shared_ptr<ShotManager> shotManager, VECTOR playerPos, float height);
 
 private:
-
-	bool isDetection_ = false;						//プレイヤーを検知したか
-	bool isThrow_ = false;							//投げるモーション中か
 	bool isFakeThrow_ = false;						//投げるふりをするか
-
-	//VECTOR pushVec_ = {};							//プレイヤーが敵にぶつかったときに押すベクトル
 };
 

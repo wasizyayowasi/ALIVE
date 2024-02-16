@@ -1,6 +1,8 @@
 #pragma once
+
 #include "PlayerData.h"
 #include "CharacterBase.h"
+
 #include <list>
 #include <memory>
 #include <unordered_map>
@@ -8,15 +10,15 @@
 class Aster;
 class ShotManager;
 
-//エネミーのアニメーションタイプ
-enum class EnemyAnimType {
-	Idle,
-	Walk,
-	Run,
-	Death,
-	Throw,
-	max,
-};
+////エネミーのアニメーションタイプ
+//enum class EnemyAnimType {
+//	Idle,
+//	Walk,
+//	Run,
+//	Death,
+//	Throw,
+//	max,
+//};
 
 class EnemyBase : public CharacterBase
 {
@@ -32,7 +34,7 @@ public:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~EnemyBase() {};
+	virtual ~EnemyBase();
 
 	/// <summary>
 	/// 更新
@@ -85,9 +87,9 @@ public:
 	void Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos, float height);
 
 	/// <summary>
-	/// 回転行列と拡縮行列の合成
+	/// 回転行列と拡縮行列を乗算した行列を取得する
 	/// </summary>
-	/// <returns>回転行列と拡縮行列を合成した結果</returns>
+	/// <returns>回転行列と拡縮行列を乗算した行列</returns>
 	MATRIX CombiningRotAndScallMat(VECTOR distance);
 
 	/// <summary>

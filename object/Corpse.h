@@ -3,7 +3,7 @@
 
 class Model;
 
-class DeadPerson final : public CharacterBase
+class Corpse final : public CharacterBase
 {
 public:
 	/// <summary>
@@ -13,12 +13,12 @@ public:
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
 	/// <param name="animNo">アニメーション番号</param>
-	DeadPerson(int handle, Material materialType, LoadObjectInfo objInfo, int animNo);
+	Corpse(int handle, Material materialType, LoadObjectInfo objInfo, int animNo);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~DeadPerson();
+	virtual ~Corpse();
 
 	/// <summary>
 	/// 更新
@@ -30,9 +30,5 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw()override;
-private:
-
-	MV1_COLL_RESULT_POLY_DIM hitDim_ = {};
-
 };
 

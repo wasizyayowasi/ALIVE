@@ -1,21 +1,22 @@
 #include "EnemyBase.h"
+
 #include "Player.h"
 #include "ShotManager.h"
-#include "../util/Model.h"
-#include "../object/ObjectManager.h"
-#include "../util/Aster.h"
+#include "ObjectManager.h"
 
 #include "../util/Util.h"
+#include "../util/Model.h"
+#include "../util/Aster.h"
 
 namespace {
 	//モデルの初期回転ベクトル
-	const VECTOR init_rot = { 0.0f,0.0f,-1.0f };
+	const VECTOR model_front_vec = { 0.0f,0.0f,-1.0f };
 
 	//敵の視野角
-	constexpr float viewing_angle = 30.0f;
+	constexpr float viewing_angle = 45.0f;
 
 	//敵がプレイヤーを視認できる範囲
-	constexpr float visible_range = 500.0f;
+	constexpr float visible_range = 1300.0f;
 
 	//敵のスピード
 	constexpr float move_speed = 3.0f;
@@ -36,31 +37,41 @@ namespace {
 	constexpr float throw_distance = 800.0f;
 }
 
+//コンストラクタ
 EnemyBase::EnemyBase(int handle, Material materialType, LoadObjectInfo objInfo) : CharacterBase(handle, materialType, objInfo)
 {
-	model_->SetAnimation(0, true, false);
+	//インスタンス化（使っていない）
 	Aster_ = std::make_shared<Aster>(objInfo.pos);
+
+	//アニメーションの設定
+	model_->SetAnimation(static_cast<int>(PlayerAnimType::Idle), true, false);
 
 	//正面ベクトルの取得
 	MATRIX matRotY = MGetRotY(objInfo.rot.y);
-	frontVec_ = VTransform(init_rot, matRotY);
+	frontVec_ = VTransform(model_front_vec, matRotY);
 
+	//初期正面ベクトルの設定
 	initFrontVec_ = frontVec_;
 
 	//マテリアルの色を変える
 	MV1SetMaterialDifColor(model_->GetModelHandle(), 8, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
+//デストラクタ
+EnemyBase::~EnemyBase()
+{
+}
+
+//更新
 void EnemyBase::Update(Player& player)
 {
 	//モデルの更新
 	model_->Update();
 
-	if (isThrow_) {
+	if (isThrow_)
+	{
 		return;
 	}
-
-	isDetection_ = false;
 
 	//プレイヤーの座標
 	VECTOR playerPos = player.GetStatus().pos;
@@ -68,14 +79,31 @@ void EnemyBase::Update(Player& player)
 	//プレイヤーを索敵する
 	SearchForPlayer(playerPos);
 
+	//プレイヤーを検知していなかったら
+	//待機アニメーションに変更する
+	if (!isDetection_)
+	{
+		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Idle), true, false, 20);
+	}
+
+	//投げるアニメーションが終わったら
+	//投げているというフラグをfalseにする
+	if (model_->IsAnimEnd() && isThrow_)
+	{
+		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Idle), true, false, 20);
+		isThrow_ = false;
+	}
+
 	//索敵
-	if (!IsThereAnObject(playerPos)) {
+	if (!IsThereAnObject(playerPos))
+	{
 		if (isDetection_) {
 			//プレイヤーを追跡する
 			TrackingUpdate(playerPos);
 		}
 	}
-	else{
+	else
+	{
 		if (isDetection_) {
 			//目標マスの中心座標を取得
 			Aster_->LocationInformation(playerPos, pos_);
@@ -88,13 +116,15 @@ void EnemyBase::Update(Player& player)
 	//敵からプレイヤーの直線距離
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
 
-	if (distanceSize < within_reach) {
+	if (distanceSize < within_reach)
+	{
 		pushVec_ = VScale(VNorm(frontVec_), 10);
 	}
 
 	float pushVecSize = VSize(pushVec_);
 
-	if (pushVecSize > 1.0f) {
+	if (pushVecSize > 1.0f)
+	{
 		ThrustAway(player);
 	}
 }
@@ -138,26 +168,18 @@ void EnemyBase::SearchForPlayer(VECTOR playerPos)
 	//内積を取得する(返り値はコサイン)
 	innerProduct = VDot(frontVec_, VNorm(VSub(playerPos, pos_)));
 
-	//上記の結果から度数法に変える
+	//上記の結果を度数法に変える
 	float radian = acos(innerProduct);
 	innerProduct = radian / DX_PI_F * 180.0f;
 
-	//視野の範囲内かつ距離が石を投げる距離よりも
+	//視野の範囲内かつ距離がプレイヤーを視認できる距離よりも
 	//短かったらプレイヤーを検知したことにする
-	if (innerProduct < viewing_angle) {
-		if (distanceSize < throw_distance) {
-			isDetection_ = true;
-		}
-	}
-
-	//敵の視野角よりも外側にいるまたは
-	//敵からプレイヤーの距離が指定範囲より大きかったら
-	//idleアニメーション、それ以外だったら歩きアニメーションに変更する
-	if (innerProduct > viewing_angle || distanceSize > visible_range) {
-		model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Idle), true, false, 20);
+	if (innerProduct < viewing_angle && distanceSize < visible_range)
+	{
+		isDetection_ = true;
 	}
 	else {
-		model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Walk), true, false, 20);
+		isDetection_ = false;
 	}
 }
 
@@ -170,7 +192,8 @@ void EnemyBase::ThrustAway(Player& player)
 
 	//カメラ側の一定ラインを過ぎると
 	//Z座標のベクトルを0にする
-	if (nockback.z < -250.0f) {
+	if (nockback.z < -250.0f)
+	{
 		pushVec_.z = 0.0f;
 	}
 
@@ -200,7 +223,8 @@ void EnemyBase::RoutingUpdate(Player& player)
 	//行列をモデルにセットする
 	MV1SetMatrix(model_->GetModelHandle(), mtx);
 
-	if (size > 5.0f) {
+	if (size > 5.0f)
+	{
 		//正規化
 		VECTOR norm = VNorm(distance);
 		//移動ベクトルを作成
@@ -213,7 +237,7 @@ void EnemyBase::RoutingUpdate(Player& player)
 bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 {
 	//エネミーとプレイヤーの距離
-	VECTOR distance = VSub(playerPos, pos_);
+	VECTOR distance = VSub(pos_,playerPos);
 
 	//エネミーとプレイヤーの距離のベクトルサイズ
 	int size = static_cast<int>(VSize(distance) / 50);
@@ -221,12 +245,14 @@ bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 	//エネミーとプレイヤーの距離の正規化
 	VECTOR norm = VNorm(distance);
 	
+	//敵からプレイヤーの直線状にオブジェクトがあるか
 	bool noObject = false;
 
-	for (int i = 0; i < size; i++) {
-		VECTOR PointPos = VScale(norm, 50.0f * i);
-		PointPos = VAdd(pos_, PointPos);
-		noObject = Aster_->SearchBlockadeMode(PointPos);
+	for (int i = 1; i < size; i++)
+	{
+		VECTOR pointPos = VScale(norm, 50.0f * i);
+		pointPos = VAdd(pos_, pointPos);
+		noObject = Aster_->SearchBlockadeMode(pointPos);
 		if (noObject) {
 			break;
 		}
@@ -235,45 +261,38 @@ bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 	return noObject;
 }
 
-void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos,float height)
+void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos, float height)
 {
 	//プレイヤーを検知しているかどうか
 	//検知していなかったらreturn
-	if (!isDetection_) return;
+	if (!isDetection_)
+	{
+		return;
+	}
 
-	//プレイヤーのポジションとエネミーの距離のサイズを取得
-	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
-
-	//距離のサイズがプレイヤーを視認できる距離よりも大きかったら
+	//今、投げているフラグがtrueではなかったら
 	//アニメーションを投げるアニメーションに変更する
-	if (distanceSize > visible_range) {
-		if (!isThrow_) {
-			model_->ChangeAnimation(static_cast<int>(EnemyAnimType::Throw), false, false, 5);
-			isThrow_ = true;
-		}
-	}
-
-	//投げるアニメーションが終わったら
-	//投げているという変数をfalseにする
-	if (model_->IsAnimEnd()) {
-		isThrow_ = false;
-	}
+	model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Throw), false, false, 5);
 
 	//投げているアニメーションの特定フレームで
 	//弾を発射する
-	if (model_->GetSpecifiedAnimTime(throw_frame_time)) {
+	//投げているフラグをtrueにする
+	if (model_->GetSpecifiedAnimTime(throw_frame_time))
+	{
 		VECTOR framePos = model_->GetFrameLocalPosition(hand_framename);
 		shotManager->Fire(framePos, playerPos, height);
+		isThrow_ = true;
 	}
 }
 
+//回転行列と拡縮行列を乗算した行列を取得する
 MATRIX EnemyBase::CombiningRotAndScallMat(VECTOR distance)
 {
 	//回転行列の取得
-	MATRIX rotMtx = MGetRotVec2(init_rot, distance);
+	MATRIX rotMtx = MGetRotVec2(model_front_vec, distance);
 
 	//正規化した正面ベクトルを取得する
-	frontVec_ = VTransform(init_rot, rotMtx);
+	frontVec_ = VTransform(model_front_vec, rotMtx);
 
 	//拡縮行列の取得
 	MATRIX scaleMtx = MGetScale(scale_);
@@ -330,7 +349,7 @@ void EnemyBase::DrawPolygon3D()
 	float angle = 0.0f;
 
 	//六角形の中心座標を取得
-	vertex[0].pos = VGet(pos_.x, pos_.y, pos_.z);
+	vertex[0].pos = VGet(pos_.x, pos_.y + 5.0f, pos_.z);
 	vertex[0].norm = norm;
 	vertex[0].dif = difColor;
 	vertex[0].spc = GetColorU8(0, 0, 0, 0);

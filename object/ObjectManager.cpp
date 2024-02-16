@@ -4,7 +4,7 @@
 #include "../object/EnemyBase.h"
 #include "../object/ThrowEnemy.h"
 #include "../object/ObjectBase.h"
-#include "../object/DeadPerson.h"
+#include "../object/Corpse.h"
 #include "../object/OrnamentBase.h"
 #include "../object/SignBoardEnemy.h"
 
@@ -287,7 +287,7 @@ void ObjectManager::EndStageObjectGenerator()
 void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int animNo)
 {
 	//死体を一つ生成する
-	objects_[ObjectType::DeadPerson].push_back(std::make_shared<DeadPerson>(handle, Material::Other, objInfo, animNo));
+	objects_[ObjectType::DeadPerson].push_back(std::make_shared<Corpse>(handle, Material::Other, objInfo, animNo));
 
 	//死体が4個未満だったらリターン
 	if (objects_[ObjectType::DeadPerson].size() < 4) return;
@@ -302,7 +302,7 @@ void ObjectManager::Update(Player& player, std::shared_ptr<ShotManager> shotMana
 {
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
 	for (auto& list : objects_) {
-		list.second.remove_if([](std::shared_ptr<ObjectBase> obj) {return !obj->IsEnabled(); });
+		list.second.remove_if([](std::shared_ptr<ObjectBase> obj) {return !obj->GetIsEnabled(); });
 	}
 
 	float distanceSize = 0.0f;
@@ -382,7 +382,7 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
 
 	for (auto& obj : objects_) {
 		for (auto& model : obj.second) {
-			if (model->IsCollCheck()) {
+			if (model->GetIsCollCheck()) {
 				checkCollList_.push_back(model->GetModelPointer());
 			}
 		}
