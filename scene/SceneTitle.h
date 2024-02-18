@@ -15,10 +15,11 @@ class ObjectManager;
 class SceneTitle : public SceneBase
 {
 private:
+	//計　36byte
 	struct CameraInfo {
-		VECTOR targetPos;	//目的の場所
-		VECTOR targetView;	//見る場所
-		VECTOR upVec;		//カメラの上方向
+		VECTOR targetPos;	//目的の場所		//12byte
+		VECTOR targetView;	//見る場所			//12byte
+		VECTOR upVec;		//カメラの上方向	//12byte
 	};
 public:
 	/// <summary>
@@ -99,8 +100,6 @@ private:
 	void SceneChange();
 
 private:
-
-	int handle[99] = {};
 
 	static constexpr int fadeInterval_ = 30;	//インターバル
 	int fadeTimer_ = 0;							//フェードする時間

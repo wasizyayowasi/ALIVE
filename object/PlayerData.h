@@ -19,10 +19,11 @@ enum class PlayerAnimType {
 	max
 };
 
+//åvÅ@20byte
 struct PlayerInfo {
-	float jumpPower;
-	float runningJumpPower;
-	float rotSpeed;
-	float walkSpeed;
-	float runningSpeed;
+	float jumpPower;			//4byte
+	float runningJumpPower;		//4byte
+	float rotSpeed;				//4byte
+	float walkSpeed;			//4byte
+	float runningSpeed;			//4byte
 };

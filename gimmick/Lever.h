@@ -20,8 +20,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="info">配置データ</param>
-	/// <param name="stopPos">エレベーターの停止位置</param>
-	Lever(LoadObjectInfo info,VECTOR stopPos);
+	Lever(LoadObjectInfo info);
 
 	/// <summary>
 	/// デストラクタ
@@ -44,12 +43,6 @@ public:
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <returns>true : 当たっている  false : 当たっていない</returns>
 	bool CollCheck(VECTOR playerPos);
-
-	/// <summary>
-	/// エレベータの停止位置の取得
-	/// </summary>
-	/// <returns>エレベータの停止位置</returns>
-	VECTOR GetElevatorStopPoint() { return elevatorStopPosition_; }
 
 	/// <summary>
 	/// モデルポインタの取得
@@ -83,7 +76,6 @@ private:
 	bool isOn_ = false;							//レバーが起動しているかどうか
 
 	VECTOR pos_ = {};							//ポジション
-	VECTOR elevatorStopPosition_ = {};			//エレベータの停止ポジション
 	VECTOR standingPos_ = {};					//エレベータの停止ポジション
 
 	std::shared_ptr<Model> model_;				//モデルクラスのスマートポインタ

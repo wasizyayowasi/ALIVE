@@ -9,20 +9,23 @@ class Player;
 class Model;
 class ObjectManager;
 
-constexpr int max_hit_coll = 2048;
+namespace {
+	//最大衝突数
+	constexpr int max_hit_coll = 2048;
+}
 
 class CheckCollisionModel
 {
 private:
 
 	struct CollModelState {
-		MV1_COLL_RESULT_POLY_DIM hitDim;
-		std::shared_ptr<Model> model;
+		MV1_COLL_RESULT_POLY_DIM hitDim;		//108byte
+		std::shared_ptr<Model> model;			//わからん
 	};
 
 	struct CollResultPoly {
-		MV1_COLL_RESULT_POLY* hitDim;
-		std::shared_ptr<Model> model;
+		MV1_COLL_RESULT_POLY* hitDim;			//104byte
+		std::shared_ptr<Model> model;			//わからん
 	};
 
 public:
@@ -78,29 +81,40 @@ public:
 	/// </summary>
 	void CheckStepDifference(std::shared_ptr<Player> player);
 
+	/// <summary>
+	/// プレイヤーの下に影もどきを描画したいために
+	/// プレイヤーの真下の一番近いポリゴンの高さを取得する
+	/// </summary>
+	/// <param name="player">プレイヤーのポインタ</param>
+	/// <param name="objManager">オブジェクトマネージャーのポインタ</param>
 	void FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
 
-	void CheckCollSpecificModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
+	/// <summary>
+	/// 死体との衝突判定
+	/// </summary>
+	/// <param name="player">プレイヤーのポインタ</param>
+	/// <param name="objManager">オブジェクトマネージャーのポインタ</param>
+	void CheckCollCorpseModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
 
 private:
 
-	float objectHeightY = 0;		//衝突したオブジェクトの高さを保管する
+	int hitWallNum = 0;									//壁と衝突したポリゴンの数
+	int hitFloorNum = 0;								//床と衝突したポリゴンの数
 
-	bool isGoUpStep_ = false;	//段差を上ることが出来る
+	float objectHeightY = 0;							//衝突したオブジェクトの高さを保管する
 
-	VECTOR oldPos = {};			//現在のプレイヤーの座標
-	VECTOR nowPos = {};			//プレイヤーの移動量と現在の座標を足して結果
-	int hitWallNum = 0;			//壁と衝突したポリゴンの数
-	int hitFloorNum = 0;		//床と衝突したポリゴンの数
-	bool moveFlag = false;		//現在移動しているかのフラグ
-	bool hitFlag = false;		//衝突したかのフラグ
+	bool isGoUpStep_ = false;							//段差を上ることが出来る
+	bool moveFlag = false;								//現在移動しているかのフラグ
+	bool hitFlag = false;								//衝突したかのフラグ
 
-	bool aiu = false;
+	VECTOR oldPos = {};									//現在のプレイヤーの座標
+	VECTOR nowPos = {};									//プレイヤーの移動量と現在の座標を足して結果
 
 	//モデルとの当たり判定用メソッド
-	std::list<CollModelState> hitDim_;
-	std::list<HITRESULT_LINE> hitLineResult_ = {};
-	CollResultPoly wallHitDim_[max_hit_coll] = {};
-	CollResultPoly floorHitDim_[max_hit_coll] = {};
+	std::list<CollModelState> hitDim_;					//球とモデルの衝突判定用
+	std::list<HITRESULT_LINE> hitLineResult_ = {};		//ポジゴンと線の衝突判定用
+
+	CollResultPoly wallHitDim_[max_hit_coll] = {};		//壁の衝突結果用配列
+	CollResultPoly floorHitDim_[max_hit_coll] = {};		//床の衝突結果用配列
 };
 

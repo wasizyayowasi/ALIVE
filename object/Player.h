@@ -13,29 +13,31 @@ class Lever;
 class Player
 {
 private:
-
+	//計　6byte
 	struct JumpInfo {
-		float jumpVec = 0.0f;					//ジャンプベクトル
-		bool isJump = false;					//ジャンプ中かどうか
+		float jumpVec = 0.0f;					//ジャンプベクトル		//4byte
+		bool isJump = false;					//ジャンプ中かどうか	//2byte
 	};
 
+	//計　10byte
 	struct Situation {
-		bool isMoving = false;					//移動中か
-		bool isClim = false;					//登れるか
-		bool isInTransit = false;				//運送中か
-		bool isCanBeCarried = false;			//持ち運ぶことが出来るか
-		bool isGimmickCanBeOperated = false;	//ギミックを操作中か
+		bool isMoving = false;					//移動中か					//2byte			
+		bool isClim = false;					//登れるか					//2byte
+		bool isInTransit = false;				//運送中か					//2byte
+		bool isCanBeCarried = false;			//持ち運ぶことが出来るか	//2byte
+		bool isGimmickCanBeOperated = false;	//ギミックを操作中か		//2byte
 	};
 
+	//計　62byte
 	struct PlayerStatus {
-		VECTOR pos;
-		VECTOR rot;
-		VECTOR moveVec;
-		float height;
-		int animNo;
-		bool isAnimLoop;
-		JumpInfo jump;
-		Situation situation;
+		int animNo;								//アニメーション番号				//4byte
+		float height;							//高さ								//4byte
+		VECTOR pos;								//ポジション						//12byte
+		VECTOR rot;								//回転								//12byte
+		VECTOR moveVec;							//移動ベクトル						//12byte
+		JumpInfo jump;							//ジャンプ							//6byte
+		Situation situation;					//シチュエーション					//10byte
+		bool isAnimLoop;						//アニメーションのループが必要か	//2byte
 	};
 
 public:

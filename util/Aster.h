@@ -1,20 +1,19 @@
 #pragma once
+#include <list>
 #include <DxLib.h>
 #include <unordered_map>
-#include <list>
-
-
 
 class Aster
 {
 private:
-
+	//メモリに保存されない(コンパイラ時に展開)
 	enum class MasuMode {
 		normalMode,				//通常モード
 		doneMode,				//済みモード
 		blockadeMode,			//封鎖モード
 	};
 
+	//メモリに保存されない(コンパイラ時に展開)
 	enum class Direction {
 		left,					//左
 		topLeft,				//左上
@@ -26,45 +25,76 @@ private:
 		bottomLeft,				//左下
 	};
 
+	//計　20byte
 	struct MasuState {
-		VECTOR centerPos;		//中心座標
-		MasuMode masuMode;		//升のモード
-		int x;					//2次元配列のX
-		int z;					//2次元配列のY
+		VECTOR centerPos;		//中心座標			//12byte
+		MasuMode masuMode;		//升のモード		//メモリに保存されない(コンパイラ時に展開)
+		int x;					//2次元配列のX		//4byte
+		int z;					//2次元配列のY		//4byte
 	};
 
+	//計　20byte
 	struct Score {
-		int moveCost;			//移動コスト
-		int estimationCost;		//推定コスト
-		int score;				//プレイヤーを追跡するうえで得点を付ける
-		int currentIndex;		//移動先のインデックス
-		int destinationIndex;	//移動先のインデックス
-		Direction dir;			//方角
+		int moveCost;			//移動コスト								//4byte
+		int estimationCost;		//推定コスト								//4byte
+		int score;				//プレイヤーを追跡するうえで得点を付ける	//4byte
+		int currentIndex;		//移動先のインデックス						//4byte
+		int destinationIndex;	//移動先のインデックス						//4byte
+		Direction dir;			//方角										//メモリに保存されない(コンパイラ時に展開)
 	};
-
-	struct DesinationState {
-		int index;
-		int score;
-	};
-
 public:
-	Aster(VECTOR pos);
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	Aster();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~Aster();
 
-	//初期化
+	/// <summary>
+	/// 経路探索を行う配列の初期化
+	/// </summary>
+	/// <param name="pos">ポジション</param>
+	void ArrayInit(VECTOR pos);
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// 現在のインデックス情報を更新する
+	/// </summary>
+	/// <param name="playerPos">プレイヤーのポジション</param>
+	/// <param name="enemyPos">敵のポジション</param>
+	void CurrentIndexUpdate(VECTOR playerPos, VECTOR enemyPos);
 
 	/// <summary>
 	/// ポジション情報を元に配列の何番目に存在するか取得する
 	/// </summary>
-	/// <param name="pos">ポジション</param>
-	/// <param name="pos">ポジション</param>
-	void LocationInformation(VECTOR playerPos,VECTOR enemyPos);
+	/// <param name="playerPos">プレイヤーのポジション</param>
+	/// <param name="enemyPos">敵のポジション</param>
+	/// <returns>プレイヤーは移動したか true:した　false：していない</returns>
+	bool LocationInformation(VECTOR playerPos,VECTOR enemyPos);
+
+	/// <summary>
+	/// 目的地の座標を取得する
+	/// </summary>
+	/// /// <param name="playerPos">プレイヤーのポジション</param>
+	/// <returns>目的地のポジション</returns>
+	VECTOR GetDestinationCoordinates(VECTOR playerPos);
 
 	/// <summary>
 	/// 経路探索
@@ -79,7 +109,7 @@ public:
 	/// <summary>
 	/// 周囲の升を検索する
 	/// </summary>
-	void SearchSurrroundingSquares(bool skipCheckLeft, bool skipCheckRight, bool skipCheckTop, bool skipCheckBottom);
+	void SearchSurroundingSquares(bool skipCheckLeft, bool skipCheckRight, bool skipCheckTop, bool skipCheckBottom);
 
 	/// <summary>
 	/// 升のスコアを取得する
@@ -96,17 +126,22 @@ public:
 	int SearchCurrentIndex(VECTOR pos);
 
 	/// <summary>
-	/// 目的地の座標を取得する
+	/// 敵からプレイヤーに向かうルートがないか取得する
 	/// </summary>
-	/// <returns></returns>
-	VECTOR GetDestinationCoordinates(VECTOR playerPos, VECTOR enemyPos);
+	/// <returns>true:ない　false:ある</returns>
+	bool GetIsRouteEmpty();
 
-
+	/// <summary>
+	/// 引数のポジションのマスがblockmodeか判断する
+	/// </summary>
+	/// <param name="pos">ポジション</param>
+	/// <returns>true：blockmode　false：blockmodeではない</returns>
 	bool SearchBlockadeMode(VECTOR pos);
 private:
 
-	int enemyIndex_ = 0;
-	int playerIndex_ = 0;
+	int routeSearchEnemyIndex_ = 0;
+	int currentEnemyIndex_ = 0;
+	int currentPlayerIndex_ = 0;
 	int moveCount_ = 0;
 
 	int tempIndex_ = 0;

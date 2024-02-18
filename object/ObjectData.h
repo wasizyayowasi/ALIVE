@@ -23,7 +23,7 @@ enum class Material {
 //オブジェクトのタイプ
 enum class ObjectType{
 	Player,
-	DeadPerson,
+	Corpse,
 	Enemy,
 	Switch,
 	LightBulb,
@@ -69,12 +69,14 @@ enum class ObjectType{
 	WallSide,
 	BoardEnemy,
 	Number,
+	Lever,
 	Max,
 };
 
+//計　76byte
 struct LoadObjectInfo {
-	std::string name;	//オブジェクトの名前
-	VECTOR pos = {};	//ポジション
-	VECTOR rot = {};	//回転率
-	VECTOR scale = {};	//拡縮率
+	std::string name;	//オブジェクトの名前	//40byte
+	VECTOR pos = {};	//ポジション			//12byte
+	VECTOR rot = {};	//回転率				//12byte
+	VECTOR scale = {};	//拡縮率				//12byte
 };

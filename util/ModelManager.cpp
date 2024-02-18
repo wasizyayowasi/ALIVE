@@ -5,6 +5,7 @@ namespace {
 	const char* const board_enemy_model_Filename	= "data/model/player/mv1/SignBoardPlayer.mv1";
 	//モデルのファイルパス
 	const char* const switch_filepath				= "data/model/switch.mv1";
+	const char* const lever_filepath				= "data/model/other/mv1/Lever.mv1";
 	const char* const trans_scaffold_filepath		= "data/model/other/mv1/TransScaffold.mv1";
 	const char* const elevator_filepath				= "data/model/other/mv1/Elevator.mv1";
 	const char* const crank_filepath				= "data/model/other/mv1/crankScaffold.mv1";
@@ -75,6 +76,7 @@ void ModelManager::LoadModel()
 	modelHandle_[ObjectType::CorpseMountain] = MV1LoadModel(corpse_mountain_filepath);		//
 	modelHandle_[ObjectType::WhiteBoard] = MV1LoadModel(whiteBoard_filepath);				//
 	modelHandle_[ObjectType::Number] = MV1LoadModel(number_filepath);						//
+	modelHandle_[ObjectType::Lever] = MV1LoadModel(lever_filepath);							//
 
 	modelHandle_[ObjectType::BigBuildingA] = MV1LoadModel(big_buildingA_filepath);			//55
 	modelHandle_[ObjectType::BuildingCType1] = MV1LoadModel(buildingC_filepath);			//59

@@ -41,7 +41,10 @@ namespace {
 EnemyBase::EnemyBase(int handle, Material materialType, LoadObjectInfo objInfo) : CharacterBase(handle, materialType, objInfo)
 {
 	//インスタンス化（使っていない）
-	Aster_ = std::make_shared<Aster>(objInfo.pos);
+	Aster_ = std::make_shared<Aster>();
+
+	//Asterの初期化
+	Aster_->ArrayInit(objInfo.pos);
 
 	//アニメーションの設定
 	model_->SetAnimation(static_cast<int>(PlayerAnimType::Idle), true, false);
@@ -67,6 +70,9 @@ void EnemyBase::Update(Player& player)
 {
 	//モデルの更新
 	model_->Update();
+
+	//Asterの更新
+	Aster_->Update();
 
 	if (isThrow_)
 	{
@@ -95,7 +101,7 @@ void EnemyBase::Update(Player& player)
 	}
 
 	//索敵
-	if (!IsThereAnObject(playerPos))
+   	if (IsThereAnObject(playerPos))
 	{
 		if (isDetection_) {
 			//プレイヤーを追跡する
@@ -104,13 +110,17 @@ void EnemyBase::Update(Player& player)
 	}
 	else
 	{
-		if (isDetection_) {
-			//目標マスの中心座標を取得
-			Aster_->LocationInformation(playerPos, pos_);
-
-			//経路探索
-			RoutingUpdate(player);
+		if (Aster_->LocationInformation(playerPos, pos_)) {
+			Aster_->RouteSearch();
 		}
+	}
+
+	if (!Aster_->GetIsRouteEmpty()) {
+		//現在のインデックス情報を更新する
+		Aster_->CurrentIndexUpdate(playerPos, pos_);
+
+		//移動
+		RoutingUpdate(playerPos);
 	}
 
 	//敵からプレイヤーの直線距離
@@ -129,12 +139,18 @@ void EnemyBase::Update(Player& player)
 	}
 }
 
+//描画
 void EnemyBase::Draw()
 {
 	model_->Draw();
-//	Aster_->Draw();
+	Aster_->Draw();
+
+	for (auto& marker : pointPos_) {
+		DrawSphere3D(marker, 16, 32, 0x0000ff, 0x0000ff, true);
+	}
 }
 
+// プレイヤーを追跡する
 void EnemyBase::TrackingUpdate(VECTOR playerPos)
 {
 	//プレイヤーと自分の差を算出する
@@ -159,10 +175,11 @@ void EnemyBase::TrackingUpdate(VECTOR playerPos)
 	MV1SetMatrix(model_->GetModelHandle(), mtx);
 }
 
+//プレイヤーを索敵する
 void EnemyBase::SearchForPlayer(VECTOR playerPos)
 {
 	//敵からプレイヤーの直線距離
-	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos,pos_);
+	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
 	float innerProduct = 0.0f;
 
 	//内積を取得する(返り値はコサイン)
@@ -200,13 +217,11 @@ void EnemyBase::ThrustAway(Player& player)
 	player.SetMoveVec(VAdd(player.GetStatus().moveVec, pushVec_));
 }
 
-void EnemyBase::RoutingUpdate(Player& player)
+//ルート通りに移動する
+void EnemyBase::RoutingUpdate(VECTOR playerPos)
 {
-	//プレイヤーの座標
-	VECTOR playerPos = player.GetStatus().pos;
-
 	//エネミーが次に目指す升の中心座標
-	VECTOR targetPos = Aster_->GetDestinationCoordinates(playerPos,pos_);
+	VECTOR targetPos = Aster_->GetDestinationCoordinates(playerPos);
 
 	//目標地点とポジションの距離を取得
 	VECTOR distance = VSub(targetPos, pos_);
@@ -223,7 +238,7 @@ void EnemyBase::RoutingUpdate(Player& player)
 	//行列をモデルにセットする
 	MV1SetMatrix(model_->GetModelHandle(), mtx);
 
-	if (size > 5.0f)
+	if (size > 1.0f)
 	{
 		//正規化
 		VECTOR norm = VNorm(distance);
@@ -234,10 +249,11 @@ void EnemyBase::RoutingUpdate(Player& player)
 	}
 }
 
+//敵からプレイヤーの直線距離にオブジェクトがあるか
 bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 {
 	//エネミーとプレイヤーの距離
-	VECTOR distance = VSub(pos_,playerPos);
+	VECTOR distance = VSub(playerPos, pos_);
 
 	//エネミーとプレイヤーの距離のベクトルサイズ
 	int size = static_cast<int>(VSize(distance) / 50);
@@ -246,21 +262,39 @@ bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 	VECTOR norm = VNorm(distance);
 	
 	//敵からプレイヤーの直線状にオブジェクトがあるか
-	bool noObject = false;
+	bool noObject = true;
 
+	//敵からプレイヤーの距離を50で割っていき
+	//敵からプレイヤーの間にオブジェクトがあるか判断する
 	for (int i = 1; i < size; i++)
 	{
+		//敵からプレイヤーの距離を50×iで分割する
 		VECTOR pointPos = VScale(norm, 50.0f * i);
+
+		//敵の座標とpoint座標を足す
 		pointPos = VAdd(pos_, pointPos);
-		noObject = Aster_->SearchBlockadeMode(pointPos);
-		if (noObject) {
+
+		//オブジェクトがあるか取得する
+		noObject = !Aster_->SearchBlockadeMode(pointPos);
+
+		//オブジェクトがあったらブレイクする
+		if (!noObject) {
+
+			//経路探索の結果がなかったら
+			//経路探索用の配列を初期化する
+			if (Aster_->GetIsRouteEmpty()) {
+				Aster_->ArrayInit(playerPos);
+			}
+
 			break;
 		}
 	}
 
+	//結果を返す
 	return noObject;
 }
 
+//弾を発射する
 void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos, float height)
 {
 	//プレイヤーを検知しているかどうか

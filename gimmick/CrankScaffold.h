@@ -29,21 +29,13 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw()override;
-
-	/// <summary>
-	/// 衝突判定を行うモデルの追加
-	/// </summary>
-	/// <returns>モデルポインタ</returns>
-	std::shared_ptr<Model> AddCollModel();
+	void Draw()override;;
 private:
 
-	float oldRotZ_ = 0.0f;
+	float oldRotZ_ = 0.0f;						//古いZの回転
 	float upVec_ = 0.0f;						//上昇ベクトル
 
 	VECTOR initPos_ = {};						//初期ポジション
-	VECTOR upperLimitPos_ = {};						//初期ポジション
-	VECTOR lowerLimitPos_ = {};						//初期ポジション
 
 	std::shared_ptr<ManualCrank> crank_;		//クランククラスのスマートポインタ
 

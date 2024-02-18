@@ -287,13 +287,13 @@ void ObjectManager::EndStageObjectGenerator()
 void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int animNo)
 {
 	//死体を一つ生成する
-	objects_[ObjectType::DeadPerson].push_back(std::make_shared<Corpse>(handle, Material::Other, objInfo, animNo));
+	objects_[ObjectType::Corpse].push_back(std::make_shared<Corpse>(handle, Material::Other, objInfo, animNo));
 
 	//死体が4個未満だったらリターン
-	if (objects_[ObjectType::DeadPerson].size() < 4) return;
+	if (objects_[ObjectType::Corpse].size() < 4) return;
 
 	//死体のリストの一番先頭(古い)死体を削除する
-	objects_[ObjectType::DeadPerson].remove(objects_[ObjectType::DeadPerson].front());
+	objects_[ObjectType::Corpse].remove(objects_[ObjectType::Corpse].front());
 
 }
 
@@ -311,10 +311,10 @@ void ObjectManager::Update(Player& player, std::shared_ptr<ShotManager> shotMana
 	//死体とその他のオブジェクトの衝突判定を行う
 	for (auto& list : objects_) {
 		for (auto& obj : list.second) {
-			if (list.first == ObjectType::DeadPerson) {
+			if (list.first == ObjectType::Corpse) {
 				continue;
 			}
-			for (auto& deadperson : objects_[ObjectType::DeadPerson]) {
+			for (auto& deadperson : objects_[ObjectType::Corpse]) {
 				distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
 				if (distanceSize < 4000.0f) {
 					obj->UpdateForCorpse(deadperson);

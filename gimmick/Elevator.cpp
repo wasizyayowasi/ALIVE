@@ -25,6 +25,9 @@ namespace {
 //コンストラクタ
 Elevator::Elevator(int handle,Material materialType, LoadObjectInfo objInfo):GimmickBase(handle, materialType, objInfo)
 {
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+
 	//ポジションの初期化
 	pos_ = objInfo.pos;
 
@@ -41,7 +44,7 @@ Elevator::Elevator(int handle,Material materialType, LoadObjectInfo objInfo):Gim
 	std::string switchName = StrUtil::GetConcatenateNumAndStrings("ElevatorSwitch", ".", elevatorNum);
 
 	//上記で連結した名前を持つデータを取得してインスタンス化する
-	switch_ = std::make_shared<Switch>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, switchName.c_str()));
+	switch_ = std::make_shared<Switch>(file.GetSpecifiedGimmickInfo(pos_, switchName.c_str()));
 
 	//エレベーターの番号と文字列を連結させた文字列を取得する
 	std::string pointName = StrUtil::GetConcatenateNumAndStrings("ElevatorPoint", ".", elevatorNum);
@@ -50,15 +53,34 @@ Elevator::Elevator(int handle,Material materialType, LoadObjectInfo objInfo):Gim
 	std::string leverName = StrUtil::GetConcatenateNumAndStrings("ElevatorLever", ".", elevatorNum);
 
 	//レバーのインスタンス化
-	for (int i = 0; i < 2; i++) {
-		std::string specificPointName = StrUtil::GetConcatenateNumAndStrings(pointName, "-", i);
+	for (int i = 0; i < 2; i++)
+	{
 		std::string specificLeverName = StrUtil::GetConcatenateNumAndStrings(leverName, "-", i);
-		VECTOR stopPoint = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, specificPointName.c_str()).pos;
-		levers_.push_back(std::make_shared<Lever>(ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, specificLeverName.c_str()), stopPoint));
+		levers_.push_back(std::make_shared<Lever>(file.GetSpecifiedGimmickInfo(pos_, specificLeverName.c_str())));
+	}
+
+	//停止ポジションの取得
+	for (int i = 0; i < 2; i++)
+	{
+		std::string specificPointName = StrUtil::GetConcatenateNumAndStrings(pointName, "-", i);
+		stopPos_[static_cast<ElevatorState>(i)] = file.GetSpecifiedGimmickInfo(pos_, specificPointName.c_str()).pos;
 	}
 
 	//アニメーションの設定
 	model_->SetAnimation(static_cast<int>(ElevatorAnimType::openIdle), true, false);
+
+	//停止ポジションとの距離を取得
+	float upperDistanceSize = MathUtil::GetSizeOfDistanceTwoPoints(pos_, stopPos_[ElevatorState::upper]);
+	float lowerDistanceSize = MathUtil::GetSizeOfDistanceTwoPoints(pos_, stopPos_[ElevatorState::lower]);
+
+	//現在のポジションと停止ポジションとの距離が近い方の状態を保存する
+	if (upperDistanceSize > lowerDistanceSize) {
+		state_ = ElevatorState::lower;
+	}
+	else
+	{
+		state_ = ElevatorState::upper;
+	}
 }
 
 //デストラクタ
@@ -158,63 +180,53 @@ void Elevator::Move()
 //移動先のポジションを取得する
 void Elevator::TargetPosition()
 {
-	float distanceSize = {};
-	float maxSize = 0.0f;
-
 	//一番遠いレバーが所持しているポジションを取得する
-	if (switch_->ElevatorCollResult() && !isOnSwitch_) {
-		for (auto lever : levers_) {
-			//レバーが持っている停止ポジションの取得
-			VECTOR stopPos = lever->GetElevatorStopPoint();
-
-			//現在のポジションから停止ポジションまでの距離を取得
-			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(pos_, stopPos);
-
-			//距離が一番遠いポジションを取得する
-			if (maxSize < distanceSize) {
-				maxSize = distanceSize;
-				targetPos_ = stopPos;
-				model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
-				elapsedTime_ = 0;
-				isDeparture_ = true;
-			}
-		}
+	if (switch_->ElevatorCollResult() && !isOnSwitch_)
+	{
 		isOnSwitch_ = true;
+		isDeparture_ = true;
 	}
 
 	//レバーが引かれたらアニメーションを変更して
 	//目的地まで移動する
 	if (levers_.front()->IsOn()) {
-		float size = MathUtil::GetSizeOfDistanceTwoPoints(targetPos_, levers_.front()->GetElevatorStopPoint());
-		if (size != 0.0f) {
-			targetPos_ = levers_.front()->GetElevatorStopPoint();
-		}
-		else {
-			targetPos_ = levers_.back()->GetElevatorStopPoint();
-		}
-		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
-		elapsedTime_ = 0;
 		isDeparture_ = true;
 	}
 
 	//レバーが引かれたらアニメーションを変更して
 	//目的地まで移動する
 	if (levers_.back()->IsOn()) {
-		float size = MathUtil::GetSizeOfDistanceTwoPoints(targetPos_, levers_.back()->GetElevatorStopPoint());
-		if (size != 0.0f) {
-			targetPos_ = levers_.back()->GetElevatorStopPoint();
-		}
-		else {
-			targetPos_ = levers_.front()->GetElevatorStopPoint();
-		}
-		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
-		elapsedTime_ = 0;
 		isDeparture_ = true;
 	}
 
-	if (isDeparture_) {
+	if (isDeparture_)
+	{
+		//サウンドを鳴らす
 		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
 		SoundManager::GetInstance().PlaySE("door");
+
+		//経過時間を0にする
+		elapsedTime_ = 0;
+
+		//アニメーションを変更
+		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::close), false, false, 10);
+	}
+
+	if (isDeparture_)
+	{
+		//elevatorの状態によって
+		//elevatorの停止ポジションを変更する
+		switch (state_)
+		{
+		case ElevatorState::upper:
+			targetPos_ = stopPos_[ElevatorState::lower];
+			state_ = ElevatorState::lower;
+			break;
+		case ElevatorState::lower:
+			targetPos_ = stopPos_[ElevatorState::upper];
+			state_ = ElevatorState::upper;
+			break;
+		}
 	}
 }
 

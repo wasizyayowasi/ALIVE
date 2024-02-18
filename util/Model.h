@@ -157,11 +157,12 @@ public:
 	/// <returns>タイプ</returns>
 	Material GetMaterialType() { return materialType_; }
 private:
+	//計　14byte
 	struct AnimData {
-		int animNo;
-		int attachNo;
-		float totalTime;
-		bool isLoop;
+		int animNo;			//4byte
+		int attachNo;		//4byte
+		float totalTime;	//4byte
+		bool isLoop;		//2byte
 	};
 private:
 	/// <summary>

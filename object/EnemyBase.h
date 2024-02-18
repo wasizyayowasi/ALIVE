@@ -66,13 +66,13 @@ public:
 	void ThrustAway(Player& player);
 
 	/// <summary>
-	/// 経路探索
+	/// ルート通りに移動する
 	/// </summary>
-	/// <param name="player">プレイヤーの参照</param>
-	void RoutingUpdate(Player& player);
+	/// <param name="playerPos">プレイヤーの座標</param>
+	void RoutingUpdate(VECTOR playerPos);
 
 	/// <summary>
-	/// 直線距離にオブジェクトがあるか
+	/// 敵からプレイヤーの直線距離にオブジェクトがあるか
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <returns>オブジェクトがあるか</returns>
@@ -111,6 +111,8 @@ protected:
 	VECTOR initFrontVec_ = {};						//初期正面ベクトル
 	VECTOR frontVec_ = {};							//敵の正面ベクトルを入れる
 	VECTOR pushVec_ = {};							//プレイヤーが敵にぶつかったときに押すベクトル
+
+	std::list<VECTOR> pointPos_ = {};
 
 	std::shared_ptr<Aster> Aster_;
 };

@@ -9,21 +9,11 @@
 
 #include "../object/Player.h"
 
-namespace {
-	constexpr float ascent_limit = 200.0f;
-}
-
 //コンストラクタ
 CrankScaffold::CrankScaffold(int handle, Material materialType, LoadObjectInfo objInfo) : GimmickBase(handle, materialType, objInfo)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
-
-	//初期ポジションの初期化
-	initPos_ = objInfo.pos;
-
-	//衝突判定用フレームの設定
-	model_->SetUseCollision(true, false);
 
 	//objInfoの名前から末尾の数値を取得する
 	int num = StrUtil::GetNumberFromString(objInfo.name, ".");
@@ -39,13 +29,19 @@ CrankScaffold::CrankScaffold(int handle, Material materialType, LoadObjectInfo o
 
 	//足場の上限のポジション
 	name = StrUtil::GetConcatenateNumAndStrings("CrankUpperLimit", ".", num);
-	upperLimitPos_ = file.GetSpecifiedGimmickInfo(initPos_, name.c_str()).pos;
+	VECTOR upperLimitPos = file.GetSpecifiedGimmickInfo(initPos_, name.c_str()).pos;
 
 	//足場の下限のポジション
 	name = StrUtil::GetConcatenateNumAndStrings("CrankLowerLimit", ".", num);
-	lowerLimitPos_ = file.GetSpecifiedGimmickInfo(initPos_, name.c_str()).pos;
+	VECTOR lowerLimitPos = file.GetSpecifiedGimmickInfo(initPos_, name.c_str()).pos;
 
-	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(upperLimitPos_, lowerLimitPos_);
+	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(upperLimitPos, lowerLimitPos);
+
+	//初期ポジションの初期化
+	initPos_ = objInfo.pos;
+
+	//衝突判定用フレームの設定
+	model_->SetUseCollision(true, false);
 
 	//上昇ベクトルの初期化
 	upVec_ = distanceSize / crank_->GetMaxRotZ();
@@ -97,10 +93,4 @@ void CrankScaffold::Draw()
 	model_->Draw();
 	//クランクの描画
 	crank_->Draw();
-}
-
-//衝突判定を行うモデルの追加
-std::shared_ptr<Model> CrankScaffold::AddCollModel()
-{
-	return nullptr;
 }

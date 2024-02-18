@@ -1,8 +1,9 @@
 #pragma once
 #include "GimmickBase.h"
-#include "DxLib.h"
 #include <memory>
 #include <vector>
+#include <DxLib.h>
+#include <unordered_map>
 
 class Switch;
 class Lever;
@@ -12,12 +13,19 @@ class Elevator final : public GimmickBase
 {
 private:
 	//エレベーターのアニメタイプ
-	enum class ElevatorAnimType {
+	enum class ElevatorAnimType
+	{
 		openIdle,
 		closeIdle,
 		open,
 		close,
 		max,
+	};
+
+	enum class ElevatorState
+	{
+		upper,
+		lower,
 	};
 
 public:
@@ -65,17 +73,21 @@ private:
 
 private:
 
-	float moveVecY_ = 0.0f;							//Y軸の移動ヴェクトル
+	float moveVecY_ = 0.0f;								//Y軸の移動ヴェクトル
 	float elapsedTime_ = 0.0f;
 
-	bool isDeparture_ = false;						//エレベーターが出発しているかどうか
-	bool isPlaySound_ = false;						//サウンドが再生中か
-	bool isOnSwitch_ = false;						//スイッチを押しているか
+	bool isDeparture_ = false;							//エレベーターが出発しているかどうか
+	bool isPlaySound_ = false;							//サウンドが再生中か
+	bool isOnSwitch_ = false;							//スイッチを押しているか
 
-	VECTOR targetPos_ = {};							//現在向かっているポジション
+	VECTOR targetPos_ = {};								//現在向かっているポジション
 
-	std::shared_ptr<Switch> switch_;				//スイッチクラスのスマートポインタ
+	ElevatorState state_ = {};							//エレベーターの状態
 
-	std::vector<std::shared_ptr<Lever>> levers_;	//レバークラスのスマートポインタのVector配列
+	std::unordered_map<ElevatorState, VECTOR> stopPos_;	//ストップポジション
+
+	std::shared_ptr<Switch> switch_;					//スイッチクラスのスマートポインタ
+
+	std::vector<std::shared_ptr<Lever>> levers_;		//レバークラスのスマートポインタのVector配列
 };
 

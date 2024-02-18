@@ -56,6 +56,8 @@ void ThrowEnemy::Update(Player& player)
 		isThrow_ = false;
 	}
 
+	//プレイヤーを検知したら
+	//プレイヤーの方向を見る
 	if (isDetection_)
 	{
 		//プレイヤーと敵の距離

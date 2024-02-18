@@ -30,8 +30,8 @@ enum class InputCategory {
 };
 
 struct InputInfo {
-	InputCategory cat;
-	int id;
+	InputCategory cat;		//メモリに保存されない(コンパイル時展開)
+	int id;					//4byte
 };
 
 class Tutorial;

@@ -22,6 +22,7 @@ CheckCollisionModel::~CheckCollisionModel()
 {
 }
 
+/// 自分から一定範囲のオブジェクトとの衝突判定を得る
 void CheckCollisionModel::CheckCollisionPersonalArea(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
 {
 	//短縮化
@@ -61,6 +62,7 @@ void CheckCollisionModel::CheckCollisionPersonalArea(std::shared_ptr<Player> pla
 	
 }
 
+/// 衝突した壁と床のポリゴン数を数える
 void CheckCollisionModel::CheckWallAndFloor()
 {
 	hitWallNum = 0;
@@ -95,6 +97,7 @@ void CheckCollisionModel::CheckWallAndFloor()
 	}
 }
 
+/// 衝突したモデルのポリゴンが壁かを判断し、移動ベクトルを補正する
 void CheckCollisionModel::CheckCollisionWall(std::shared_ptr<Player> player)
 {
 	//短縮化
@@ -179,6 +182,7 @@ void CheckCollisionModel::CheckCollisionWall(std::shared_ptr<Player> player)
 	}
 }
 
+// 衝突したモデルのポリゴンが床かを判断する
 void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 {
 	//短縮化
@@ -290,13 +294,15 @@ void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 
 }
 
+// checkCollisionPersonalArea、checkCollisionWall、checkCollisionFloorを呼び出す。
+// 最後、上記の関数で取得した値を消去する
 void CheckCollisionModel::CheckCollision(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
 {
 
 	//プレイヤーから一定範囲の衝突判定をとる
 	CheckCollisionPersonalArea(player, objManager);
 
-	CheckCollSpecificModel(player, objManager);
+	CheckCollCorpseModel(player, objManager);
 	//衝突したオブジェクトが乗り越えることが出来るオブジェクトか判断する
 	CheckStepDifference(player);
 	//取得した衝突結果から壁に当たった場合の処理
@@ -317,6 +323,7 @@ void CheckCollisionModel::CheckCollision(std::shared_ptr<Player> player, std::sh
 	hitDim_.clear();
 }
 
+// 衝突したオブジェクトが乗り越えられるか判断する
 void CheckCollisionModel::CheckStepDifference(std::shared_ptr<Player> player)
 {
 	//短縮化
@@ -363,6 +370,8 @@ void CheckCollisionModel::CheckStepDifference(std::shared_ptr<Player> player)
 	}
 }
 
+// プレイヤーの下に影もどきを描画したいために
+// プレイヤーの真下の一番近いポリゴンの高さを取得する
 void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
 {
 	std::unordered_map<Material, std::list<MV1_COLL_RESULT_POLY>> hitLine;
@@ -380,11 +389,6 @@ void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> p
 		//オブジェクトとプレイヤーの高さの差を取得する
 		float distance = nowPos.y - model->GetPos().y;
 		distance = (std::max)(distance, -distance);
-
-		//高さの差が1000以上あったらcontinue
-		//if (distance > 1000.0f) {
-		//	continue;
-		//}
 
 		//モデルと線の当たり判定を取る
 		MV1RefreshCollInfo(model->GetModelHandle(), model->GetColFrameIndex());
@@ -429,7 +433,8 @@ void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> p
 	hitLine.clear();
 }
 
-void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
+//死体との衝突判定
+void CheckCollisionModel::CheckCollCorpseModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
 {
 
 	//短縮化
@@ -441,7 +446,7 @@ void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player,
 	}
 
 	//持ち運ぶ死体を取得する
-	for (auto& obj : objManager->GetSpecificObject(ObjectType::DeadPerson)) {
+	for (auto& obj : objManager->GetSpecificObject(ObjectType::Corpse)) {
 		for (auto& hit : hitDim_)
 		{
 			//衝突結果が死体以外だったらcontinue
@@ -462,5 +467,4 @@ void CheckCollisionModel::CheckCollSpecificModel(std::shared_ptr<Player> player,
 
 		}
 	}
-
 }

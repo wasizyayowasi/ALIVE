@@ -118,11 +118,12 @@ public:
 	int CheckSoundFile(std::string name);
 
 private:
+	//åvÅ@12byte
 	struct SoundConfigInfo {
-		char signature[4];
-		float version;
-		unsigned short volumeSE;
-		unsigned short volumeBGM;
+		char signature[4];				//4byte
+		float version;					//4byte
+		unsigned short volumeSE;		//2byte
+		unsigned short volumeBGM;		//2byte
 	};
 
 	int volumeSE_ = 255;

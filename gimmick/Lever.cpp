@@ -1,24 +1,23 @@
 #include "Lever.h"
+
 #include "../util/Model.h"
 #include "../util/Util.h"
 #include "../util/ExternalFile.h"
 #include "../util/SoundManager.h"
-
-namespace {
-	const char* const filename = "data/model/other/mv1/Lever.mv1";
-}
+#include "../util/ModelManager.h"
 
 //コンストラクタ
-Lever::Lever(LoadObjectInfo info, VECTOR stopPos)
+Lever::Lever(LoadObjectInfo info)
 {
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+	auto& model = ModelManager::GetInstance();
+
 	//モデルクラスのインスタンス化
-	model_ = std::make_shared<Model>(filename,Material::Iron);
+	model_ = std::make_shared<Model>(model.GetModelHandle(ObjectType::Lever), Material::Iron);
 
 	//ポジションの初期化
 	pos_ = info.pos;
-
-	//エレベーターを停止させるポジション
-	elevatorStopPosition_ = stopPos;
 
 	//モデルの初期化
 	model_->SetPos(pos_);
@@ -34,7 +33,7 @@ Lever::Lever(LoadObjectInfo info, VECTOR stopPos)
 	standingName = StrUtil::GetConcatenateNumAndStrings(standingName, "-", num);
 
 	//立つ位置の初期化
-	standingPos_ = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(pos_, standingName.c_str()).pos;
+	standingPos_ = file.GetSpecifiedGimmickInfo(pos_, standingName.c_str()).pos;
 }
 
 //デストラクタ
