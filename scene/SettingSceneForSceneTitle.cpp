@@ -190,8 +190,8 @@ void SettingSceneForSceneTitle::NormalUpdate()
 	ChangeUpdateFunc();
 
 	//ƒV[ƒ“Ø‚è‘Ö‚¦
-	if (input.IsTriggered(InputType::Pause)) {
-		nextScene_ = std::make_shared<ScenePause>(manager_);
+	if (input.IsTriggered(InputType::Activate)) {
+		selectNum_ = 4;
 		updateFunc_ = &SettingSceneForSceneTitle::GaussFadeOutUpdate;
 	}
 }

@@ -60,16 +60,16 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	CameraSettingPos();
 
 	//UIを表示する座標を取得
-	menuDrawPos_["タイトル"] = file.GetUIPos("titleDrawPos");
-	menuDrawPos_["ニューゲーム"] = file.GetUIPos("startDrawPos");
-	menuDrawPos_["シーン選択"] = file.GetUIPos("continueDrawPos");
-	menuDrawPos_["設定"] = file.GetUIPos("settingDrawPos");
-	menuDrawPos_["終了"] = file.GetUIPos("endDrawPos");
-	menuDrawPos_["モード"] = file.GetUIPos("windowModeUIPos");
-	menuDrawPos_["BGM"] = file.GetUIPos("BGMUIPos");
-	menuDrawPos_["SE"] = file.GetUIPos("SEUIPos");
-	menuDrawPos_["操作設定"] = file.GetUIPos("advancedSettingUIPos");
-	menuDrawPos_["戻る"] = file.GetUIPos("backUIPos");
+	menuDrawPos_["SE"]				= file.GetUIPos("SEUIPos");
+	menuDrawPos_["BGM"]				= file.GetUIPos("BGMUIPos");
+	menuDrawPos_["終了"]			= file.GetUIPos("endDrawPos");
+	menuDrawPos_["設定"]			= file.GetUIPos("settingDrawPos");
+	menuDrawPos_["戻る"]			= file.GetUIPos("backUIPos");
+	menuDrawPos_["モード"]			= file.GetUIPos("windowModeUIPos");
+	menuDrawPos_["タイトル"]		= file.GetUIPos("titleDrawPos");
+	menuDrawPos_["操作設定"]		= file.GetUIPos("advancedSettingUIPos");
+	menuDrawPos_["シーン選択"]		= file.GetUIPos("continueDrawPos");
+	menuDrawPos_["ニューゲーム"]	= file.GetUIPos("startDrawPos");
 
 	//UI文字列の作成
 	menuName_.push_back("ニューゲーム");
@@ -91,6 +91,7 @@ SceneTitle::~SceneTitle()
 	for (auto& light : lightHandle_) {
 		DeleteLightHandle(light);
 	}
+	DeleteLightHandleAll();
 }
 
 void SceneTitle::Init()

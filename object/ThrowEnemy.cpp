@@ -58,7 +58,7 @@ void ThrowEnemy::Update(Player& player)
 
 	//プレイヤーを検知したら
 	//プレイヤーの方向を見る
-	if (isDetection_)
+	if (isDetection_ && !isThrow_)
 	{
 		//プレイヤーと敵の距離
 		VECTOR distance = VNorm(VSub(playerPos, pos_));
@@ -75,17 +75,6 @@ void ThrowEnemy::Update(Player& player)
 		//行列をモデルにセットする
 		MV1SetMatrix(model_->GetModelHandle(), mtx);
 	}
-//	else 
-//	{
-//		//回転行列と拡縮行列の合成
-//		MATRIX mtx = CombiningRotAndScallMat(initFrontVec_);
-//
-//		//回転行列と拡縮行列を掛けた行列に平行移動行列をかける
-//		mtx = MMult(mtx, MGetTranslate(pos_));
-//
-//		//行列をモデルにセットする
-//		MV1SetMatrix(model_->GetModelHandle(), mtx);
-//	}
 }
 
 void ThrowEnemy::Draw()
@@ -103,7 +92,10 @@ void ThrowEnemy::Shot(std::shared_ptr<ShotManager> shotManager, VECTOR playerPos
 	//検知していなかったらreturn
 	if (!isDetection_)
 	{
-		return;
+		if (model_->GetCurrentAnimNo() != static_cast<int>(PlayerAnimType::Throw))
+		{
+			return;
+		}
 	}
 
 	//アニメーションを投げるアニメーションに変更する
@@ -120,7 +112,7 @@ void ThrowEnemy::Shot(std::shared_ptr<ShotManager> shotManager, VECTOR playerPos
 	if (model_->GetSpecifiedAnimTime(throw_frame_time))
 	{
 		VECTOR framePos = model_->GetFrameLocalPosition(hand_framename);
-		//shotManager->Fire(framePos, playerPos, height);
+		shotManager->Fire(framePos, playerPos, height);
 		isThrow_ = true;
 	}
 }

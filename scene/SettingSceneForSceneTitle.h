@@ -99,7 +99,6 @@ private:
 	int fadeColor_ = 0x000000;
 
 	std::string windowModeText_ = "≪  ウィンドウモード  ≫";
-	std::shared_ptr<SceneBase> nextScene_;
 	std::shared_ptr<UIItemManager> UIManager_;
 	std::map<std::string, VECTOR> menuDrawPos_;	//メニューを描画する座標
 

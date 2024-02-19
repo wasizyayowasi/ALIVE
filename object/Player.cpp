@@ -708,12 +708,12 @@ void Player::CrankUpdate(std::shared_ptr<ObjectManager> objManager)
 	int analogY = 0;
 
 	//パッドのアナログ的なレバーの入力情報を得る
-	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
-
-	int size = std::sqrt(analogX * analogX + analogY + analogY);
-
-	float X = analogX / size;
-	float Y = analogY / size;
+//	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
+//
+//	int size = std::sqrt(analogX * analogX + analogY + analogY);
+//
+//	float X = analogX / size;
+//	float Y = analogY / size;
 
 	if (input.IsPressed(InputType::Down))
 	{
