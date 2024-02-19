@@ -13,7 +13,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	TransparentObject(int handle, Material materialType, LoadObjectInfo objInfo);
+	TransparentObject(const int handle, const Material materialType, const LoadObjectInfo objInfo);
 
 	/// <summary>
 	/// デストラクタ
@@ -35,13 +35,13 @@ public:
 	/// スイッチモデルと死体の衝突判定を行う
 	/// </summary>
 	/// <param name="deadPerson">死体のポインタ</param>
-	void UpdateForCorpse(std::shared_ptr<ObjectBase> deadPerson)override;
+	void UpdateForCorpse(std::shared_ptr<ObjectBase>& deadPerson)override;
 
 	/// <summary>
 	/// 衝突判定を行うモデルの追加
 	/// </summary>
 	/// <returns>モデルポインタ</returns>
-	virtual std::shared_ptr<Model> AddCollModel();
+	virtual std::shared_ptr<Model> AddCollModel() const;
 
 private:
 

@@ -10,7 +10,7 @@ namespace {
 }
 
 //コンストラクタ
-Switch::Switch(LoadObjectInfo objInfo)
+Switch::Switch(const LoadObjectInfo objInfo)
 {
 	//モデルクラスの初期化
 	model_ = std::make_shared<Model>(switch_filename,Material::Iron);
@@ -156,7 +156,7 @@ bool Switch::TransCollResult()
 }
 
 //衝突判定を行うモデルの追加
-std::shared_ptr<Model> Switch::GetModelPointer()
+std::shared_ptr<Model> Switch::GetModelPointer() const
 {
 	return model_;
 }

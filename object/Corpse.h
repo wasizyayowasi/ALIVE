@@ -13,7 +13,7 @@ public:
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
 	/// <param name="animNo">アニメーション番号</param>
-	Corpse(int handle, Material materialType, LoadObjectInfo objInfo, int animNo);
+	Corpse(const int handle, const Material materialType, const LoadObjectInfo objInfo,const int animNo);
 
 	/// <summary>
 	/// デストラクタ

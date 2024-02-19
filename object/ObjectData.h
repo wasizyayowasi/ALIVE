@@ -70,6 +70,7 @@ enum class ObjectType{
 	BoardEnemy,
 	Number,
 	Lever,
+	Stone,
 	Max,
 };
 

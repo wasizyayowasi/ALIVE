@@ -10,7 +10,7 @@ namespace {
 }
 
 //コンストラクタ
-Corpse::Corpse(int handle,Material materialType, LoadObjectInfo objInfo, int animNo) : CharacterBase(handle, materialType,objInfo)
+Corpse::Corpse(const int handle, const Material materialType, const LoadObjectInfo objInfo, const int animNo) : CharacterBase(handle, materialType,objInfo)
 {
 	//衝突判定を行う
 	isCollCheck_ = true;

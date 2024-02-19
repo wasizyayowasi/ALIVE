@@ -41,6 +41,8 @@ public:
 	/// </summary>
 	void Draw();
 
+	void ChangeDifColor();
+
 	/// <summary>
 	/// ƒ‚ƒfƒ‹‚ðŽæ“¾‚·‚é
 	/// </summary>

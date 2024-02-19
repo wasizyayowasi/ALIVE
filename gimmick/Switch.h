@@ -15,7 +15,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="objInfo">配置データ</param>
-	Switch( LoadObjectInfo objInfo);
+	Switch(const LoadObjectInfo objInfo);
 	
 	/// <summary>
 	/// デストラクタ
@@ -55,7 +55,7 @@ public:
 	/// 衝突判定を行うモデルを追加する
 	/// </summary>
 	/// <returns>衝突判定を行うモデルのポインタ</returns>
-	std::shared_ptr<Model> GetModelPointer();
+	std::shared_ptr<Model> GetModelPointer() const;
 
 	/// <summary>
 	/// 衝突結果の削除
@@ -72,7 +72,7 @@ public:
 	/// 起動中か
 	/// </summary>
 	/// <returns>true : 起動中 false : 起動していない</returns>
-	bool IsDuringStartup() { return isDuringStartup_; }
+	bool IsDuringStartup()  const { return isDuringStartup_; }
 private:
 	/// <summary>
 	/// スイッチモデルとプレイヤーの衝突判定を行う

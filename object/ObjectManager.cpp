@@ -284,7 +284,7 @@ void ObjectManager::EndStageObjectGenerator()
 	}
 }
 
-void ObjectManager::CorpseGenerator(int handle, LoadObjectInfo objInfo, int animNo)
+void ObjectManager::CorpseGenerator(const int handle, const  LoadObjectInfo objInfo, const  int animNo)
 {
 	//éÄëÃÇàÍÇ¬ê∂ê¨Ç∑ÇÈ
 	objects_[ObjectType::Corpse].push_back(std::make_shared<Corpse>(handle, Material::Other, objInfo, animNo));
@@ -294,7 +294,6 @@ void ObjectManager::CorpseGenerator(int handle, LoadObjectInfo objInfo, int anim
 
 	//éÄëÃÇÃÉäÉXÉgÇÃàÍî‘êÊì™(å√Ç¢)éÄëÃÇçÌèúÇ∑ÇÈ
 	objects_[ObjectType::Corpse].remove(objects_[ObjectType::Corpse].front());
-
 }
 
 //çXêV
@@ -359,7 +358,7 @@ void ObjectManager::Update(Player& player, std::shared_ptr<ShotManager> shotMana
 }
 
 //ï`âÊ
-void ObjectManager::Draw(VECTOR PlayerPos)
+void ObjectManager::Draw(const VECTOR PlayerPos)
 {
 	float distance = 0.0f;
 
@@ -391,7 +390,7 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
 	return checkCollList_;
 }
 
-void ObjectManager::SortingObject(ObjectBaseType baseType, ObjectType objType, Material materialType, LoadObjectInfo objInfo)
+void ObjectManager::SortingObject(const ObjectBaseType baseType, const ObjectType objType, const Material materialType, const LoadObjectInfo objInfo)
 {
 	//objectBaseTypeÇå≥Ç…ÉCÉìÉXÉ^ÉìÉXâªÇ∑ÇÈÉNÉâÉXÇåàÇﬂÇÈ
 	switch (baseType) {
@@ -406,7 +405,7 @@ void ObjectManager::SortingObject(ObjectBaseType baseType, ObjectType objType, M
 	}
 }
 
-std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(ObjectType type)
+std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(const ObjectType type)
 {
 
 	std::list<std::shared_ptr<Model>> specificList;
@@ -430,7 +429,7 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(ObjectType typ
 	return specificList;
 }
 
-std::list<std::shared_ptr<ObjectBase>> ObjectManager::GetSpecificObject(ObjectType type)
+std::list<std::shared_ptr<ObjectBase>> ObjectManager::GetSpecificObject(const ObjectType type)
 {
 
 	std::list<std::shared_ptr<ObjectBase>> obj = {};
@@ -456,7 +455,7 @@ void ObjectManager::AddCheckCollModel()
 	}
 }
 
-void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, VECTOR loadObjPos)
+void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, const VECTOR loadObjPos)
 {
 
 	float distance = 500.0f;
@@ -472,7 +471,7 @@ void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, VECTOR loadObj
 
 }
 
-void ObjectManager::CircumferencePosition(float angle, VECTOR& infoPos, VECTOR playerPos)
+void ObjectManager::CircumferencePosition(const float angle, VECTOR& infoPos, const VECTOR playerPos)
 {
 	VECTOR pos = {};
 	float radian = MathUtil::DegreeToRadian(angle);
@@ -492,7 +491,7 @@ void ObjectManager::CircumferencePosition(float angle, VECTOR& infoPos, VECTOR p
 	infoPos = pos;
 }
 
-void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
+void ObjectManager::EnemyGenerator(const int deathCount, const  LoadObjectInfo info)
 {
 	//íZèkâª
 	auto& model = ModelManager::GetInstance();
@@ -524,7 +523,7 @@ void ObjectManager::EnemyGenerator(int deathCount, LoadObjectInfo info)
 	
 }
 
-void ObjectManager::EndEnemyGenerator(int deathCount, LoadObjectInfo info)
+void ObjectManager::EndEnemyGenerator(const int deathCount, LoadObjectInfo info)
 {
 	//íZèkâª
 	auto& model = ModelManager::GetInstance();
@@ -541,7 +540,7 @@ void ObjectManager::EndEnemyGenerator(int deathCount, LoadObjectInfo info)
 	}
 }
 
-void ObjectManager::GeneratedForTheNumberOfTimesYouDie(int deathCount, LoadObjectInfo info)
+void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount, LoadObjectInfo info)
 {
 	//íZèkâª
 	auto& model = ModelManager::GetInstance();
@@ -562,7 +561,7 @@ void ObjectManager::GeneratedForTheNumberOfTimesYouDie(int deathCount, LoadObjec
 	}
 }
 
-void ObjectManager::GeneratePredeterminedNumberOfTimes(int deathCount, std::string str, LoadObjectInfo info)
+void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, const  std::string str, const  LoadObjectInfo info)
 {
 	//íZèkâª
 	auto& model = ModelManager::GetInstance();
@@ -578,7 +577,7 @@ void ObjectManager::GeneratePredeterminedNumberOfTimes(int deathCount, std::stri
 	}
 }
 
-void ObjectManager::GenerateCorpseMountain(int deathCount, LoadObjectInfo info)
+void ObjectManager::GenerateCorpseMountain(const int deathCount, const  LoadObjectInfo info)
 {
 	//íZèkâª
 	auto& model = ModelManager::GetInstance();
@@ -598,7 +597,7 @@ void ObjectManager::GenerateCorpseMountain(int deathCount, LoadObjectInfo info)
 }
 
 //íuï®ê∂ê¨ã@
-void ObjectManager::OrnamentGenerator(ObjectType objType,Material materialType, LoadObjectInfo objInfo)
+void ObjectManager::OrnamentGenerator(const ObjectType objType, const Material materialType, const  LoadObjectInfo objInfo)
 {
 	//íZèkâª
 	auto& model = ModelManager::GetInstance();
@@ -606,7 +605,7 @@ void ObjectManager::OrnamentGenerator(ObjectType objType,Material materialType, 
 	objects_[objType].push_front(std::make_shared<OrnamentBase>(model.GetModelHandle(objType), materialType, objInfo));
 }
 
-void ObjectManager::GimmickObjectGenerator(ObjectType objType, Material materialType, LoadObjectInfo objInfo)
+void ObjectManager::GimmickObjectGenerator(const ObjectType objType, const  Material materialType, const  LoadObjectInfo objInfo)
 {
 	//íZèkâª
 	auto& model = ModelManager::GetInstance();

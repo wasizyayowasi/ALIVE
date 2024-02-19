@@ -15,7 +15,7 @@ namespace {
 	constexpr float gravity = -1.0f;
 }
 
-Shot::Shot(int handle,VECTOR initPos, VECTOR moveVec)
+Shot::Shot(const int handle, const  VECTOR initPos, const  VECTOR moveVec)
 {
 	//モデルのインスタンス化
 	model_ = std::make_shared<Model>(handle,Material::Stone);

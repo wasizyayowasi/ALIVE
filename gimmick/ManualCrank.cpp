@@ -17,7 +17,7 @@ namespace {
 }
 
 //コンストラクタ
-ManualCrank::ManualCrank(LoadObjectInfo objInfo)
+ManualCrank::ManualCrank(const LoadObjectInfo objInfo)
 {
 	//モデルクラスの初期化
 	model_ = std::make_shared<Model>(crank_filename,Material::Iron);
@@ -51,7 +51,7 @@ void ManualCrank::Draw()
 }
 
 //プレイヤーとの衝突判定
-bool ManualCrank::HitCollPlayer(Player& player)
+bool ManualCrank::HitCollPlayer(Player& player) const
 {
 	
 	MV1_COLL_RESULT_POLY_DIM result;
@@ -72,7 +72,7 @@ bool ManualCrank::HitCollPlayer(Player& player)
 }
 
 //Z軸の最大回転率を取得する
-float ManualCrank::GetMaxRotZ()
+float ManualCrank::GetMaxRotZ() const
 {
 	return max_rot_Z;
 }

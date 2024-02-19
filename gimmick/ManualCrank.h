@@ -10,31 +10,58 @@ class Player;
 class ManualCrank
 {
 public:
-	//コンストラクタ
-	ManualCrank(LoadObjectInfo objInfo);
-	//デストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="info">配置データ</param>
+	ManualCrank(const LoadObjectInfo objInfo);
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~ManualCrank();
 
-	//描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
-	//プレイヤーとモデルの当たり判定を行う
-	bool HitCollPlayer(Player& player);
+	/// <summary>
+	/// プレイヤーとモデルの当たり判定を行う
+	/// </summary>
+	/// <param name="player">プレイヤーの参照</param>
+	/// <returns>プレイヤーと衝突したか</returns>
+	bool HitCollPlayer(Player& player) const;
 
-	//モデルポインタを取得
-	std::shared_ptr<Model>GetModelPointer() { return model_; }
+	/// <summary>
+	/// モデルポインタを取得
+	/// </summary>
+	/// <returns>モデルのポインタ</returns>
+	std::shared_ptr<Model>GetModelPointer() const { return model_; }
 
-	//現在のZ軸の回転率を取得する
-	float GetRotZ() { return rotZ_; }
+	/// <summary>
+	/// 現在のZ軸の回転率を取得する
+	/// </summary>
+	/// <returns>Z軸の回転率</returns>
+	float GetRotZ() const { return rotZ_; }
 
-	//Z軸の最大回転率を取得する
-	float GetMaxRotZ();
+	/// <summary>
+	/// Z軸の最大回転率を取得する
+	/// </summary>
+	/// <returns>Z軸の最大回転率</returns>
+	float GetMaxRotZ() const;
 
-	//回転率を設定する
+	/// <summary>
+	/// 回転率を設定する
+	/// </summary>
+	/// <param name="rotZ">Z軸の回転率</param>
 	void SetRotZ(float rotZ) { rotZ_ = rotZ; }
 
-	//クランクを回す際の立ち位置の取得
-	VECTOR GetStandingPosition() { return standingPos_; }
+	/// <summary>
+	/// クランクを回す際の立ち位置の取得
+	/// </summary>
+	/// <returns>ポジション</returns>
+	VECTOR GetStandingPosition() const { return standingPos_; }
 
 private:
 

@@ -5,7 +5,7 @@
 #include "../util/Model.h"
 
 //コンストラクタ
-ObjectBase::ObjectBase(int handle, Material materialType, LoadObjectInfo objInfo)
+ObjectBase::ObjectBase(const int handle, const Material materialType, const LoadObjectInfo objInfo)
 {
 	//ポジション
 	pos_ = objInfo.pos;
@@ -43,18 +43,18 @@ void ObjectBase::Draw()
 	model_->Draw();
 }
 
-void ObjectBase::UpdateForCorpse(std::shared_ptr<ObjectBase> pointer)
+void ObjectBase::UpdateForCorpse(std::shared_ptr<ObjectBase>& pointer)
 {
 }
 
 //モデルのスマートポインタを取得する
-std::shared_ptr<Model> ObjectBase::GetModelPointer()
+std::shared_ptr<Model> ObjectBase::GetModelPointer()const
 {
 	return model_;
 }
 
 //衝突判定を行うモデルを追加する
-std::shared_ptr<Model> ObjectBase::AddCollModel()
+std::shared_ptr<Model> ObjectBase::AddCollModel() const
 {
 	return nullptr;
 }

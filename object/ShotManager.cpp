@@ -1,21 +1,20 @@
 #include "ShotManager.h"
+
 #include "../object/Shot.h"
 
-namespace {
-	const char* const shot_filename = "data/model/other/mv1/rock.mv1";
+#include "../util/ModelManager.h"
 
+namespace {
 	//投擲物の速度
 	constexpr float shot_speed = 20.0f;
 }
 
 ShotManager::ShotManager()
 {
-	shotHandle_ = MV1LoadModel(shot_filename);
 }
 
 ShotManager::~ShotManager()
 {
-	MV1DeleteModel(shotHandle_);
 }
 
 void ShotManager::Update()
@@ -48,11 +47,11 @@ void ShotManager::Hit(Player& player)
 	}
 }
 
-void ShotManager::Fire(VECTOR framePos, VECTOR playerPos,float height)
+void ShotManager::Fire(const VECTOR framePos, const  VECTOR playerPos, const float height)
 {
 	//プレイヤーめがけてショットを撃つ
 	VECTOR distance = VSub(VGet(playerPos.x, playerPos.y + height / 2, playerPos.z), framePos);
 	VECTOR moveVec = VScale(VNorm(distance), shot_speed);
 
-	shots_.push_back(std::make_shared<Shot>(shotHandle_, framePos, moveVec));
+	shots_.push_back(std::make_shared<Shot>(ModelManager::GetInstance().GetModelHandle(ObjectType::Stone), framePos, moveVec));
 }

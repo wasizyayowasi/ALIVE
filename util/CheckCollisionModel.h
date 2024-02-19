@@ -46,7 +46,7 @@ public:
 	/// <param name="player">プレイヤーを参照</param>
 	/// <param name="moveVec">プレイヤーの移動量</param>
 	/// <param name="models">プレイヤーと衝突判定を行うモデル</param>
-	void CheckCollisionPersonalArea(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
+	void CheckCollisionPersonalArea(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// 衝突した壁と床のポリゴン数を数える
@@ -74,7 +74,7 @@ public:
 	/// 最後、上記の関数で取得した値を消去する
 	/// </summary>
 	/// <param name="player">プレイヤーを参照する</param>
-	void CheckCollision(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
+	void CheckCollision(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// 衝突したオブジェクトが乗り越えられるか判断する
@@ -87,14 +87,14 @@ public:
 	/// </summary>
 	/// <param name="player">プレイヤーのポインタ</param>
 	/// <param name="objManager">オブジェクトマネージャーのポインタ</param>
-	void FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
+	void FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// 死体との衝突判定
 	/// </summary>
 	/// <param name="player">プレイヤーのポインタ</param>
 	/// <param name="objManager">オブジェクトマネージャーのポインタ</param>
-	void CheckCollCorpseModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager);
+	void CheckCollCorpseModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager>& objManager);
 
 private:
 

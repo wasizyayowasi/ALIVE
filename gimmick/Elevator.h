@@ -35,7 +35,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	Elevator(int handle, Material materialType, LoadObjectInfo objInfo);
+	Elevator(const int handle, const Material materialType, const LoadObjectInfo objInfo);
 	
 	/// <summary>
 	/// デストラクタ
@@ -57,7 +57,7 @@ public:
 	/// 衝突判定を行うモデルの追加
 	/// </summary>
 	/// <returns></returns>
-	virtual std::shared_ptr<Model> AddCollModel();
+	virtual std::shared_ptr<Model> AddCollModel()const;
 
 private:
 

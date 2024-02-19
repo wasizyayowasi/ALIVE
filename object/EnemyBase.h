@@ -29,7 +29,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	EnemyBase(int handle, Material materialType, LoadObjectInfo objInfo);
+	EnemyBase(const int handle, const Material materialType, const LoadObjectInfo objInfo);
 
 	/// <summary>
 	/// デストラクタ
@@ -51,13 +51,13 @@ public:
 	/// プレイヤーを追跡する
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの座標</param>
-	void TrackingUpdate(VECTOR playerPos);
+	void TrackingUpdate(const VECTOR playerPos);
 
 	/// <summary>
 	/// プレイヤーを索敵する
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの座標</param>
-	void SearchForPlayer(VECTOR playerPos);
+	void SearchForPlayer(const VECTOR playerPos);
 
 	/// <summary>
 	/// プレイヤーを突き飛ばす
@@ -69,14 +69,14 @@ public:
 	/// ルート通りに移動する
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの座標</param>
-	void RoutingUpdate(VECTOR playerPos);
+	void RoutingUpdate(const VECTOR playerPos);
 
 	/// <summary>
 	/// 敵からプレイヤーの直線距離にオブジェクトがあるか
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <returns>オブジェクトがあるか</returns>
-	bool IsThereAnObject(VECTOR playerPos);
+	bool IsThereAnObject(const VECTOR playerPos);
 
 	/// <summary>
 	/// 敵が弾を撃つ処理
@@ -84,20 +84,20 @@ public:
 	/// <param name="shotManager">弾を管理するクラスのポインタ</param>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <param name="height">プレイヤーの高さ</param>
-	void Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos, float height);
+	void Shot(const std::shared_ptr<ShotManager>shotManager, const VECTOR playerPos, const float height);
 
 	/// <summary>
 	/// 回転行列と拡縮行列を乗算した行列を取得する
 	/// </summary>
 	/// <returns>回転行列と拡縮行列を乗算した行列</returns>
-	MATRIX CombiningRotAndScallMat(VECTOR distance);
+	MATRIX CombiningRotAndScallMat(const VECTOR distance);
 
 	/// <summary>
 	/// 落ち影の頂点のポジションを取得する
 	/// </summary>
 	/// <param name="angle">角度</param>
 	/// <returns>ポジション</returns>
-	VECTOR VertexPosition(float angle);
+	VECTOR VertexPosition(const float angle);
 
 	/// <summary>
 	/// 落ち影もどきの描画

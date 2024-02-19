@@ -12,7 +12,7 @@ namespace {
 	constexpr float total_time = 180.0f;
 }
 
-HopStepJump::HopStepJump(int handle, Material materialType, LoadObjectInfo objInfo):GimmickBase(handle,materialType,objInfo)
+HopStepJump::HopStepJump(const int handle, const Material materialType, const LoadObjectInfo objInfo):GimmickBase(handle,materialType,objInfo)
 {
 	//ƒ}ƒeƒŠƒAƒ‹‚Ì”‚Ìæ“¾
 	materialNum_ = MV1GetMaterialNum(handle);

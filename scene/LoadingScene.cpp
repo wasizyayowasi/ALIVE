@@ -67,7 +67,7 @@ void LoadingScene::Update()
 	if (loadingFile_) {
 		if (aSyncLoadNum_ < 1) {
 			loadingFile_ = false;
-			
+
 			//データのロード
 			ExternalFile::GetInstance().LoadArrangementData();
 		}

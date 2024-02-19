@@ -7,7 +7,7 @@
 #include "../util/ModelManager.h"
 
 //コンストラクタ
-Lever::Lever(LoadObjectInfo info)
+Lever::Lever(const LoadObjectInfo info)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
@@ -61,7 +61,7 @@ void Lever::Draw()
 }
 
 //衝突判定
-bool Lever::CollCheck(VECTOR playerPos)
+bool Lever::CollCheck(const VECTOR playerPos) const
 {
 	//プレイヤーとレバーモデルの衝突判定
 	auto result = MV1CollCheck_Sphere(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, 100.0f);

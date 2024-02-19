@@ -23,7 +23,6 @@ public:
 	/// </summary>
 	/// <returns>ƒ‚ƒfƒ‹ƒnƒ“ƒhƒ‹</returns>
 	int GetModelHandle(ObjectType type);
-
 private:
 
 	std::unordered_map<ObjectType, int> modelHandle_;

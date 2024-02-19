@@ -38,7 +38,7 @@ namespace {
 }
 
 //コンストラクタ
-EnemyBase::EnemyBase(int handle, Material materialType, LoadObjectInfo objInfo) : CharacterBase(handle, materialType, objInfo)
+EnemyBase::EnemyBase(const int handle, const Material materialType, const LoadObjectInfo objInfo) : CharacterBase(handle, materialType, objInfo)
 {
 	//インスタンス化（使っていない）
 	Aster_ = std::make_shared<Aster>();
@@ -151,7 +151,7 @@ void EnemyBase::Draw()
 }
 
 // プレイヤーを追跡する
-void EnemyBase::TrackingUpdate(VECTOR playerPos)
+void EnemyBase::TrackingUpdate(const VECTOR playerPos)
 {
 	//プレイヤーと自分の差を算出する
 	VECTOR distancePlayerAndEnemy = VSub(playerPos, pos_);
@@ -176,7 +176,7 @@ void EnemyBase::TrackingUpdate(VECTOR playerPos)
 }
 
 //プレイヤーを索敵する
-void EnemyBase::SearchForPlayer(VECTOR playerPos)
+void EnemyBase::SearchForPlayer(const VECTOR playerPos)
 {
 	//敵からプレイヤーの直線距離
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
@@ -218,7 +218,7 @@ void EnemyBase::ThrustAway(Player& player)
 }
 
 //ルート通りに移動する
-void EnemyBase::RoutingUpdate(VECTOR playerPos)
+void EnemyBase::RoutingUpdate(const VECTOR playerPos)
 {
 	//エネミーが次に目指す升の中心座標
 	VECTOR targetPos = Aster_->GetDestinationCoordinates(playerPos);
@@ -250,7 +250,7 @@ void EnemyBase::RoutingUpdate(VECTOR playerPos)
 }
 
 //敵からプレイヤーの直線距離にオブジェクトがあるか
-bool EnemyBase::IsThereAnObject(VECTOR playerPos)
+bool EnemyBase::IsThereAnObject(const VECTOR playerPos)
 {
 	//エネミーとプレイヤーの距離
 	VECTOR distance = VSub(playerPos, pos_);
@@ -295,7 +295,7 @@ bool EnemyBase::IsThereAnObject(VECTOR playerPos)
 }
 
 //弾を発射する
-void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos, float height)
+void EnemyBase::Shot(const std::shared_ptr<ShotManager>shotManager, const VECTOR playerPos, const  float height)
 {
 	//プレイヤーを検知しているかどうか
 	//検知していなかったらreturn
@@ -320,7 +320,7 @@ void EnemyBase::Shot(std::shared_ptr<ShotManager>shotManager, VECTOR playerPos, 
 }
 
 //回転行列と拡縮行列を乗算した行列を取得する
-MATRIX EnemyBase::CombiningRotAndScallMat(VECTOR distance)
+MATRIX EnemyBase::CombiningRotAndScallMat(const VECTOR distance)
 {
 	//回転行列の取得
 	MATRIX rotMtx = MGetRotVec2(model_front_vec, distance);
@@ -338,7 +338,7 @@ MATRIX EnemyBase::CombiningRotAndScallMat(VECTOR distance)
 }
 
 //プレイヤーの落ち影に使用する頂点を取得
-VECTOR EnemyBase::VertexPosition(float angle)
+VECTOR EnemyBase::VertexPosition(const float angle)
 {
 
 	VECTOR pos = {};

@@ -94,6 +94,11 @@ void Model::Draw()
 	MV1DrawModel(modelHandle_);
 }
 
+void Model::ChangeDifColor()
+{
+	MV1SetMaterialDifColor(modelHandle_, 2, GetColorF(0.0f, 0.0f, 0.0f, 0.0f));
+}
+
 //É|ÉWÉVÉáÉìê›íË
 void Model::SetPos(VECTOR pos)
 {

@@ -10,7 +10,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	OrnamentBase(int handle, Material materialType, LoadObjectInfo objInfo);
+	OrnamentBase(const int handle, const Material materialType, const LoadObjectInfo objInfo);
 
 	/// <summary>
 	/// デストラクタ

@@ -7,7 +7,7 @@ namespace {
 }
 
 //作成済みのモデルをコピーするコンストラクタ
-GimmickBase::GimmickBase(int handle,Material materialType, LoadObjectInfo objInfo): OrnamentBase(handle, materialType,objInfo)
+GimmickBase::GimmickBase(const int handle, const Material materialType, const LoadObjectInfo objInfo): OrnamentBase(handle, materialType,objInfo)
 {
 }
 

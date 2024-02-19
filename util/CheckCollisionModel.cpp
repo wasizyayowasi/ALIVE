@@ -23,7 +23,7 @@ CheckCollisionModel::~CheckCollisionModel()
 }
 
 /// 自分から一定範囲のオブジェクトとの衝突判定を得る
-void CheckCollisionModel::CheckCollisionPersonalArea(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
+void CheckCollisionModel::CheckCollisionPersonalArea(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager>& objManager)
 {
 	//短縮化
 	auto playerState = player->GetStatus();
@@ -296,7 +296,7 @@ void CheckCollisionModel::CheckCollisionFloor(std::shared_ptr<Player> player)
 
 // checkCollisionPersonalArea、checkCollisionWall、checkCollisionFloorを呼び出す。
 // 最後、上記の関数で取得した値を消去する
-void CheckCollisionModel::CheckCollision(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
+void CheckCollisionModel::CheckCollision(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager>& objManager)
 {
 
 	//プレイヤーから一定範囲の衝突判定をとる
@@ -372,7 +372,7 @@ void CheckCollisionModel::CheckStepDifference(std::shared_ptr<Player> player)
 
 // プレイヤーの下に影もどきを描画したいために
 // プレイヤーの真下の一番近いポリゴンの高さを取得する
-void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
+void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager>& objManager)
 {
 	std::unordered_map<Material, std::list<MV1_COLL_RESULT_POLY>> hitLine;
 
@@ -434,7 +434,7 @@ void CheckCollisionModel::FindThePolygonBelowThePlayer(std::shared_ptr<Player> p
 }
 
 //死体との衝突判定
-void CheckCollisionModel::CheckCollCorpseModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager> objManager)
+void CheckCollisionModel::CheckCollCorpseModel(std::shared_ptr<Player> player, std::shared_ptr<ObjectManager>& objManager)
 {
 
 	//短縮化

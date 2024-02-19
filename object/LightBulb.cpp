@@ -10,7 +10,7 @@ namespace {
 	constexpr float total_time = 360.0f;
 }
 
-LightBulb::LightBulb(int handle, LoadObjectInfo info)
+LightBulb::LightBulb(const int handle, const  LoadObjectInfo info)
 {
 	//ƒ‚ƒfƒ‹‚Ìİ’è
 	model_ = std::make_shared<Model>(handle,Material::Iron);
@@ -46,7 +46,7 @@ void LightBulb::Draw()
 	model_->Draw();
 }
 
-VECTOR LightBulb::GetFrontVec()
+VECTOR LightBulb::GetFrontVec() const
 {
 
 	MATRIX mtxRotZ = MGetRotZ(rot_.z);
@@ -56,7 +56,7 @@ VECTOR LightBulb::GetFrontVec()
 	return frontVec;
 }
 
-VECTOR LightBulb::GetFramePos()
+VECTOR LightBulb::GetFramePos() const
 {
 	VECTOR pos = model_->GetFrameLocalPosition("LightBulb");
 	return pos;

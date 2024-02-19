@@ -10,7 +10,7 @@
 #include "../object/Player.h"
 
 //コンストラクタ
-CrankScaffold::CrankScaffold(int handle, Material materialType, LoadObjectInfo objInfo) : GimmickBase(handle, materialType, objInfo)
+CrankScaffold::CrankScaffold(const int handle, const Material materialType, const LoadObjectInfo objInfo) : GimmickBase(handle, materialType, objInfo)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();

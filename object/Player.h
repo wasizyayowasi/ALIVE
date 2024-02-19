@@ -46,7 +46,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="info">配置データ</param>
-	Player(LoadObjectInfo info);
+	Player(const LoadObjectInfo info);
 
 	/// <summary>
 	/// デストラクタ
@@ -58,7 +58,7 @@ public:
 	/// </summary>
 	/// <param name="input">外部装置の入力情報を参照する</param>
 	/// <param name="models">衝突判定を行うモデルのvector型の配列</param>
-	void Update(std::shared_ptr<ObjectManager> objManager);
+	void Update(std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// プレイヤー関連の描画
@@ -68,7 +68,7 @@ public:
 	/// <summary>
 	/// 弾に当たったらノックバックを追加する
 	/// </summary>
-	void BulletHitMe(VECTOR moveVec);
+	void BulletHitMe(const VECTOR moveVec);
 
 
 	///////Getter///////
@@ -76,30 +76,30 @@ public:
 	/// <summary>
 	/// 死んだ回数を取得する
 	/// </summary>
-	int GetDeathCount() { return deathCount_; }
+	int GetDeathCount()const { return deathCount_; }
 
 	/// <summary>
 	/// プレイヤーのステータスを取得する
 	/// </summary>
-	PlayerStatus GetStatus() { return status_; }
+	PlayerStatus GetStatus() const { return status_; }
 
 	/// <summary>
 	/// 持ち運ぶ死体のポインターを取得する
 	/// </summary>
-	std::shared_ptr<ObjectBase> GetDeadPersonModelPointer() { return corpseModelPointer_; }
+	std::shared_ptr<ObjectBase> GetDeadPersonModelPointer() const { return corpseModelPointer_; }
 
 	/// <summary>
 	/// モデルポインターを取得する
 	/// </summary>
 	/// <param name="height"></param>
 	/// <param name="materialType"></param>
-	std::shared_ptr<Model> GetModelPointer() { return model_; }
+	std::shared_ptr<Model> GetModelPointer() const { return model_; }
 
 	/// <summary>
 	/// 影を描画する高さを取得する
 	/// </summary>
 	/// <returns>影を描画する高さ</returns>
-	float GetRoundShadowHeight() { return roundShadowHeight_; }
+	float GetRoundShadowHeight() const { return roundShadowHeight_; }
 
 
 	///////Setter///////
@@ -108,43 +108,43 @@ public:
 	/// 外部からのポジションを受け取る
 	/// </summary>
 	/// <param name="pos">ポジション情報</param>
-	void SetPos(VECTOR pos);
+	void SetPos(const VECTOR pos);
 
 	/// <summary>
 	/// 外部からのジャンプ情報を受け取る
 	/// </summary>
 	/// <param name="isJump">ジャンプフラグ</param>
 	/// <param name="jumpVec">ジャンプベクトル</param>
-	void SetJumpInfo(bool isJump, float jumpVec);
+	void SetJumpInfo(const bool isJump, const  float jumpVec);
 
 	/// <summary>
 	/// ベクトルを設定する
 	/// </summary>
 	/// <param name="vector">ベクトル</param>
-	void SetMoveVec(VECTOR vector) { status_.moveVec = vector; }
+	void SetMoveVec(const VECTOR vector) { status_.moveVec = vector; }
 
 	/// <summary>
 	/// 持ち運ぶ事が出来るフラグと持ち運ぶモデルのポインタを受け取る
 	/// </summary>
-	void SetCarryInfo(bool isCarry, std::shared_ptr<ObjectBase> model);
+	void SetCarryInfo(const bool isCarry, std::shared_ptr<ObjectBase>& model);
 
 	/// <summary>
 	/// ManualCrankのポインタを設定する
 	/// </summary>
 	/// <param name="crank"></param>
-	void SetCrankPointer(std::shared_ptr<ManualCrank> crank);
+	void SetCrankPointer(std::shared_ptr<ManualCrank>& crank);
 
 	/// <summary>
 	/// レバーのポインタを設定する
 	/// </summary>
-	void SetLeverPointer(std::shared_ptr<Lever> lever);
+	void SetLeverPointer(std::shared_ptr<Lever>& lever);
 
 	/// <summary>
 	/// 地面に描画する影の高さと踏んでいるオブジェクトの素材を設定する
 	/// </summary>
 	/// <param name="height">高さ</param>
 	/// <param name="materialType">今踏んでいるオブジェクトが何出てきているか</param>
-	void SetRoundShadowHeightAndMaterial(float height, Material materialType);
+	void SetRoundShadowHeightAndMaterial(const float height, const  Material materialType);
 
 private:
 
@@ -154,7 +154,7 @@ private:
 	/// 更新
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void NormalUpdate(std::shared_ptr<ObjectManager> objManager);
+	void NormalUpdate(std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// 移動の更新
@@ -177,25 +177,25 @@ private:
 	/// 走りジャンプではないときのジャンプ
 	/// </summary>
 	/// <param name="input">外部装置の入力情報を参照する</param>
-	void JumpUpdate(std::shared_ptr<ObjectManager> objManager);
+	void JumpUpdate(std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// プレイヤーの死体に与える情報を作る関数
 	/// </summary>
 	/// <param name="input">外部装置の入力情報を参照する</param>
-	void DeathUpdate(std::shared_ptr<ObjectManager> objManager);
+	void DeathUpdate(std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// 死体の後処理
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void CorpsePostProsessing(std::shared_ptr<ObjectManager> objManager);
+	void CorpsePostProsessing(std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// プレイヤーの死体をvector配列で管理する関数
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void CorpseGenerater(std::shared_ptr<ObjectManager> objManager);
+	void CorpseGenerater(std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// 荷物を運ぶ
@@ -211,7 +211,7 @@ private:
 	/// クランクを回すポジションまで行く
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void GoCrankRotationPosition(std::shared_ptr<ObjectManager> objManager);
+	void GoCrankRotationPosition(std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// クランクを回転させるアップデート
@@ -223,25 +223,25 @@ private:
 	/// クランクの更新
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void CrankUpdate(std::shared_ptr<ObjectManager> objManager);
+	void CrankUpdate(std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// レバーを倒すポジションへ行く
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void GoLeverPullPosition(std::shared_ptr<ObjectManager> objManager);
+	void GoLeverPullPosition(std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// レバーの更新
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void LeverUpdate(std::shared_ptr<ObjectManager> objManager);
+	void LeverUpdate(std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// 投擲物との衝突アップデート
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param> 
-	void BulletHitMeUpdate(std::shared_ptr<ObjectManager> objManager);
+	void BulletHitMeUpdate(std::shared_ptr<ObjectManager>& objManager);
 
 private:
 
@@ -256,13 +256,13 @@ private:
 	/// アニメーションの変更を行う
 	/// </summary>
 	/// <param name="type">アニメーションのタイプ</param>
-	void ChangeAnimNo(PlayerAnimType type, bool isAnimLoop, int changeTime);
+	void ChangeAnimNo(const PlayerAnimType type, const  bool isAnimLoop, const  int changeTime);
 
 	/// <summary>
 	/// プレイヤーの移動速度を設定する
 	/// </summary>
 	/// <returns>float型の移動速度</returns>
-	float PlayerSpeed(bool pressedShift);
+	float PlayerSpeed(const bool pressedShift);
 
 	/// <summary>
 	/// 足ふみの音
@@ -279,7 +279,7 @@ private:
 	/// </summary>
 	/// <param name="angle">角度</param>
 	/// <returns>ポジション</returns>
-	VECTOR VertexPosition(float angle);
+	VECTOR VertexPosition(const float angle);
 
 private:
 
@@ -307,7 +307,7 @@ private:
 	std::shared_ptr<Lever> lever_;								//クランククラスのポインタ
 	std::shared_ptr<ObjectBase> corpseModelPointer_;			//持ち運ぶ死体のモデルポインタ
 
-	void(Player::* updateFunc_)(std::shared_ptr<ObjectManager> objManager);		//メンバ関数ポインタ
+	void(Player::* updateFunc_)(std::shared_ptr<ObjectManager>& objManager);		//メンバ関数ポインタ
 	void(Player::* carryUpdateFunc_)();		//メンバ関数ポインタ
 };
 

@@ -20,7 +20,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="info">配置データ</param>
-	Lever(LoadObjectInfo info);
+	Lever(const LoadObjectInfo info);
 
 	/// <summary>
 	/// デストラクタ
@@ -42,19 +42,19 @@ public:
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <returns>true : 当たっている  false : 当たっていない</returns>
-	bool CollCheck(VECTOR playerPos);
+	bool CollCheck(const VECTOR playerPos) const;
 
 	/// <summary>
 	/// モデルポインタの取得
 	/// </summary>
 	/// <returns>モデルのポインタ</returns>
-	std::shared_ptr<Model> GetModelPointer() { return model_; }
+	std::shared_ptr<Model> GetModelPointer() const { return model_; }
 	
 	/// <summary>
 	/// レバーを引くポジションの取得
 	/// </summary>
 	/// <returns>レバーを引くポジション</returns>
-	VECTOR GetStandingPosition() { return standingPos_; }
+	VECTOR GetStandingPosition() const { return standingPos_; }
 
 	/// <summary>
 	/// レバーの起動
@@ -70,7 +70,7 @@ public:
 	/// レバーが起動しているかどうか取得
 	/// </summary>
 	/// <returns>レバーが起動しているか</returns>
-	bool IsOn() { return isOn_; }
+	bool IsOn() const { return isOn_; }
 private:
 
 	bool isOn_ = false;							//レバーが起動しているかどうか

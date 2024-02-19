@@ -12,7 +12,7 @@ public:
 	/// </summary>
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="info">配置データ</param>
-	LightBulb(int handle,LoadObjectInfo info);
+	LightBulb(const int handle, const LoadObjectInfo info);
 
 	/// <summary>
 	/// デストラクタ
@@ -33,13 +33,13 @@ public:
 	/// 回転ベクトルを取得する
 	/// </summary>
 	/// <returns>回転ベクトル</returns>
-	VECTOR GetFrontVec();
+	VECTOR GetFrontVec() const;
 
 	/// <summary>
 	/// 特定のフレームの座標を取得する
 	/// </summary>
 	/// <returns></returns>
-	VECTOR GetFramePos();
+	VECTOR GetFramePos() const;
 private:
 
 	float elapsedTime_ = 0.0f;			//経過時間

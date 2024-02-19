@@ -14,7 +14,7 @@ namespace {
 	constexpr int throw_frame_time = 73;
 }
 
- ThrowEnemy::ThrowEnemy(int handle, Material materialType, LoadObjectInfo objInfo):EnemyBase(handle, materialType, objInfo)
+ ThrowEnemy::ThrowEnemy(const int handle, const Material materialType, const LoadObjectInfo objInfo):EnemyBase(handle, materialType, objInfo)
 {
 	 //è’ìÀîªíËÇÃê›íË
 	 isCollCheck_ = true;

@@ -23,7 +23,7 @@ namespace {
 }
 
 //コンストラクタ
-Elevator::Elevator(int handle,Material materialType, LoadObjectInfo objInfo):GimmickBase(handle, materialType, objInfo)
+Elevator::Elevator(const int handle, const Material materialType, const LoadObjectInfo objInfo):GimmickBase(handle, materialType, objInfo)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
@@ -231,7 +231,7 @@ void Elevator::TargetPosition()
 }
 
 //衝突判定を行うモデルの追加
-std::shared_ptr<Model> Elevator::AddCollModel()
+std::shared_ptr<Model> Elevator::AddCollModel()const
 {
 	return switch_->GetModelPointer();
 }

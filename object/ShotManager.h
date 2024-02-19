@@ -10,24 +10,41 @@ class Player;
 class ShotManager
 {
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	ShotManager();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~ShotManager();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// プレイヤーと衝突したかチェックする
+	/// </summary>
+	/// <param name="player"></param>
 	void Hit(Player& player);
 
-	//ショットを放つ
-	void Fire(VECTOR framePos,VECTOR playerPos, float height);
+	/// <summary>
+	/// 弾を打つ
+	/// </summary>
+	/// <param name="framePos">初期ポジション</param>
+	/// <param name="playerPos">プレイヤーのポジション</param>
+	/// <param name="height">プレイヤーの高さ</param>
+	void Fire(const VECTOR framePos, const VECTOR playerPos, const  float height);
 
 private:
-
-	int shotHandle_ = 0;
-
 	std::list<std::shared_ptr<Shot>> shots_;		//モデルポインタのリスト
-
 };
 
