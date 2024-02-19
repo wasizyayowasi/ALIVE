@@ -3,8 +3,8 @@
 #include "../object/Corpse.h"
 #include "../object/ObjectManager.h"
 
-#include "../gimmick/ManualCrank.h"
 #include "../gimmick/Lever.h"
+#include "../gimmick/ManualCrank.h"
 
 #include "../util/Util.h"
 #include "../util/Model.h"
@@ -14,8 +14,9 @@
 #include "../util/ModelManager.h"
 #include "../util/EffectManager.h"
 
-#include<algorithm>
-#include<string>
+#include <cmath>
+#include <string>
+#include <algorithm>
 
 namespace {
 	//重力
@@ -27,10 +28,14 @@ namespace {
 	//プレイヤーの高さ
 	constexpr float player_hegiht = 130.0f;
 
+	//死体の数をカウントする最大数
+	constexpr int max_death_count = 99;
+
 	//初期正面ベクトル
 	constexpr VECTOR front_vec = { 0,0,-1 };
 }
 
+//コンストラクタ
 Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObject)
 {
 	//短縮化
@@ -46,23 +51,25 @@ Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpda
 	//アニメーションの設定
 	model_->SetAnimation(static_cast<int>(PlayerAnimType::Idle), true, false);
 
-	//プレイヤーの大きさの調整
-	model_->SetScale(info.scale);
-
-
+	//初期ポジションの取得
 	VECTOR startPos = file.GetStartPos(file.GetStartName());
-	//startPos = { 14643,778,239 };
 
 	//ポジションの設定
 	model_->SetPos(startPos);
-	status_.pos = startPos;
 
 	//回転率の設定
 	model_->SetRot(info.rot);
 
+	//プレイヤーの大きさの調整
+	model_->SetScale(info.scale);
+
 	//コリジョンフレームの設定
 	model_->SetUseCollision(true, true, "Character");
 
+	//ポジションの初期化
+	status_.pos = startPos;
+
+	//拡縮率の初期化
 	scale_ = info.scale;
 
 	//ジャンプ情報の初期
@@ -74,14 +81,13 @@ Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpda
 	tentativeRot_ = front_vec;
 }
 
-/// <summary>
-/// デストラクタ
-/// </summary>
+// デストラクタ
 Player::~Player()
 {
 	ExternalFile::GetInstance().SetStartName("");
 }
 
+//更新
 void Player::Update(std::shared_ptr<ObjectManager> objManager)
 {
 	//プレイヤーのアニメーション更新
@@ -90,7 +96,7 @@ void Player::Update(std::shared_ptr<ObjectManager> objManager)
 	(this->*updateFunc_)(objManager);
 }
 
-
+//描画
 void Player::Draw()
 {
 	//モデルの描画
@@ -100,19 +106,87 @@ void Player::Draw()
 	DrawPolygon3D();
 }
 
+//弾に当たったらノックバックを追加する
+void Player::BulletHitMe(VECTOR moveVec)
+{
+	//プレイヤーが死亡中だったらたまによるノックバックを無効にする
+	if (updateFunc_ == &Player::DeathUpdate) 
+	{
+		return;
+	}
+
+	//ノックバックを追加する
+	status_.moveVec = moveVec;
+
+	//メンバ関数を変更する
+	updateFunc_ = &Player::BulletHitMeUpdate;
+}
+
+//ポジションの設定
 void Player::SetPos(VECTOR pos)
 {
+	//ステータスにポジションを代入する
 	status_.pos = pos;
+
+	//モデルにポジションを設定する
 	model_->SetPos(status_.pos);
 }
 
+//ジャンプの設定
 void Player::SetJumpInfo(bool isJump, float jumpVec)
 {
+	//ジャンプしているかのフラグを代入する
 	status_.jump.isJump = isJump;
+
+	//ジャンプベクトルを設定する
 	status_.jump.jumpVec = jumpVec;
+
+	//ポジションにジャンプベクトルを足す
+	status_.pos.y += status_.jump.jumpVec;
+}
+
+//持ち運ぶ事が出来るフラグと持ち運ぶモデルのポインタを受け取る
+void Player::SetCarryInfo(bool isCarry, std::shared_ptr<ObjectBase>model)
+{
+	//持ち運び中フラグを設定する
+	status_.situation.isCanBeCarried = isCarry;
+
+	//死体のモデルポインタを取得
+	corpseModelPointer_ = model;
+}
+
+//ManualCrankのポインタを設定する
+void Player::SetCrankPointer(std::shared_ptr<ManualCrank> crank)
+{
+	//操作中フラグをtrueに設定する
+	status_.situation.isGimmickCanBeOperated = true;
+
+	//クランクのポインタを設定する
+	crank_ = crank;
+}
+
+//レバーのポインタを設定する
+void Player::SetLeverPointer(std::shared_ptr<Lever> lever)
+{
+	//操作中フラグをtrueに設定する
+	status_.situation.isGimmickCanBeOperated = true;
+
+	//レバーのポインタを設定する
+	lever_ = lever;
+}
+
+//地面に描画する影の高さと踏んでいるオブジェクトの素材を設定する
+void Player::SetRoundShadowHeightAndMaterial(float height, Material materialType)
+{
+	//影の高さを設定する
+	roundShadowHeight_ = height;
+
+	//足元のオブジェクトの素材を設定する
+	materialSteppedOn_ = materialType;
 }
 
 //HACK:↓汚い、気に食わない
+//通常時の更新
 void Player::NormalUpdate(std::shared_ptr<ObjectManager> objManager)
 {
 	//短縮化
@@ -120,59 +194,92 @@ void Player::NormalUpdate(std::shared_ptr<ObjectManager> objManager)
 
 #ifdef _DEBUG
 	//削除予定
-	if (input.IsTriggered(InputType::Creative)) {
+	if (input.IsTriggered(InputType::Creative))
+	{
 		debugCreativeMode = !debugCreativeMode;
 	}
 #endif
 	
-	//オブジェクトに対してアクションを起こす
-	if (input.IsTriggered(InputType::Activate)) {
-		status_.moveVec = VGet(0, 0, 0);
-		if (status_.situation.isCanBeCarried) {
+	//持ち運び可能なオブジェクトに対してアクションを起こす
+	if (input.IsTriggered(InputType::Activate))
+	{
+		if (status_.situation.isCanBeCarried) 
+		{
 			(this->*carryUpdateFunc_)();
 		}
-		else if (status_.situation.isGimmickCanBeOperated) {
-			if (crank_ != nullptr) {
+	}
+
+	//操作を必要とするギミックに対してアクションを起こす
+	if (input.IsTriggered(InputType::Activate))
+	{
+		//ベクトルを0にする
+		status_.moveVec = VGet(0, 0, 0);
+
+		//ギミックを操作出来るフラグがtrueならば
+		//メンバ関数を変更する
+		if (status_.situation.isGimmickCanBeOperated)
+		{
+			if (crank_ != nullptr)
+			{
 				//クランクを動かす準備をする
 				updateFunc_ = &Player::GoCrankRotationPosition;
 			}
-			else if (lever_ != nullptr) {
+			else if (lever_ != nullptr)
+			{
 				//レバーを動かす準備をする
 				updateFunc_ = &Player::GoLeverPullPosition;
 			}
+
 			return;
 		}
 	}
 	else {
+		//クランクを操作しない場合ポインターをリセットする
 		crank_.reset();
+
+		//レバーを操作しない場合ポインターをリセットする
 		lever_.reset();
 	}
 
 	status_.situation.isGimmickCanBeOperated = false;
 
-	if (status_.situation.isInTransit) {
-		deadPersonModelPointer_->GetModelPointer()->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
+	//死体を持ち運び中か
+	if (status_.situation.isInTransit)
+	{
+		//プレイヤーの回転とともに死体のモデルも回転させる
+		corpseModelPointer_->GetModelPointer()->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
+
+		//死体のポジションを常にプレイヤーの手の座標にする
 		VECTOR framePos = model_->GetFrameLocalPosition(frame_name);
-		deadPersonModelPointer_->GetModelPointer()->SetPos(framePos);
+		corpseModelPointer_->GetModelPointer()->SetPos(framePos);
 	}
-	else {
+	else
+	{
 		status_.situation.isCanBeCarried = false;
 	}
 
+	//アニメーションを待機にする
 	ChangeAnimIdle();
+
+	//移動
 	MovingUpdate();
+
+	//足音を鳴らす
 	FootStepSound();
 
 #ifdef _DEBUG
 	//空中にいるとき
 	//重力をベクトルに足してポジションに足す
-	if (!debugCreativeMode) {
-		if (status_.jump.isJump) {
+	if (!debugCreativeMode)
+	{
+		if (status_.jump.isJump)
+		{
 			status_.jump.jumpVec += gravity;
 			status_.pos.y += status_.jump.jumpVec;
 			model_->SetPos(status_.pos);
 		}
-		else {
+		else 
+		{
 			status_.jump.jumpVec = 0.0f;
 		}
 	}
@@ -189,65 +296,70 @@ void Player::NormalUpdate(std::shared_ptr<ObjectManager> objManager)
 	}
 #endif // _DEBUG
 
-	
-	
-
 	//持ち運び中だったら
 	//以降の処理を行わない
-	if (status_.situation.isInTransit) {
+	if (status_.situation.isInTransit)
+	{
 		return;
 	}
 
 #ifdef _DEBUG
 	//メンバ関数ポインタをjumpUpdateに変更する
-	if (!debugCreativeMode) {
-		if (input.IsTriggered(InputType::Space)) {
-			if (!status_.jump.isJump) {
-				PlayerJump(playerInfo_.jumpPower);
+	if (!debugCreativeMode)
+	{
+		if (input.IsTriggered(InputType::Space))
+		{
+			if (!status_.jump.isJump)
+			{
+				SetJumpInfo(true,playerInfo_.jumpPower);
 			}
 			ChangeAnimNo(PlayerAnimType::Jump, false, 20);
 			updateFunc_ = &Player::JumpUpdate;
 			return;
-}
+		}
 	}
 	else {
-		if (input.IsPressed(InputType::Space)) {
+		if (input.IsPressed(InputType::Space))
+		{
 			status_.moveVec.y = 10.0;
 		}
 	}
 #else
 	//メンバ関数ポインタをjumpUpdateに変更する
-	if (input.IsTriggered(InputType::Space)) {
+	if (input.IsTriggered(InputType::Space))
+	{
+		//ジャンプしているフラグがfalseだったら
+		//ジャンプ処理を行う
 		if (!status_.jump.isJump) {
-			PlayerJump(playerInfo_.jumpPower);
+			SetJumpInfo(true, playerInfo_.jumpPower);
 		}
+
+		//アニメーションをジャンプに変更する
 		ChangeAnimNo(PlayerAnimType::Jump, false, 20);
+
+		//メンバ関数を変更する
 		updateFunc_ = &Player::JumpUpdate;
 		return;
 	}
 #endif // _DEBUG
 
 	//メンバ関数ポインタをDeathUpdateに変更する
-	if (input.IsTriggered(InputType::Death)) {
-		if(deathCount_ < 100){
-			deathCount_++;
-		}
-		updateFunc_ = &Player::DeathUpdate;
+	if (input.IsTriggered(InputType::Death))
+	{
+		//死体の数をカウントする
+		deathCount_ = (std::min)(deathCount_ + 1, max_death_count);
+
+		//移動ベクトルを0にする
 		status_.moveVec = VGet(0, 0, 0);
+
+		//メンバ関数を変更する
+		updateFunc_ = &Player::DeathUpdate;
 		return;
-	}
-
-}
-
-void Player::ChangeAnimIdle()
-{
-	//待機アニメーションに戻す
-	if (!status_.situation.isMoving) {
-		ChangeAnimNo(PlayerAnimType::Idle, true, 20);
 	}
 }
 
 //HACK:↓汚い、気に食わない
+//移動の更新
 void Player::MovingUpdate()
 {
 	//短縮化
@@ -265,8 +377,6 @@ void Player::MovingUpdate()
 		if (movingSpeed > playerInfo_.walkSpeed) {
 			//アニメーションの変更
 			ChangeAnimNo(PlayerAnimType::Run, true, 20);
-			//EffectManager::GetInstance().AddEffect("smoke", 100.0f, VGet(status_.pos.x, status_.pos.y + 50.0f, status_.pos.z));
-			//EffectManager::GetInstance().AddEffect("leaves", 100.0f, VGet(status_.pos.x, status_.pos.y + 50.0f, status_.pos.z));
 		}
 		else if (movingSpeed <= playerInfo_.walkSpeed) {
 			//アニメーションの変更
@@ -284,6 +394,7 @@ void Player::MovingUpdate()
 	status_.moveVec = VScale(VNorm(status_.moveVec), movingSpeed);
 }
 
+//移動処理
 float Player::Move()
 {
 	//短縮化
@@ -356,6 +467,7 @@ float Player::Move()
 
 }
 
+//回転の処理
 void Player::RotationUpdate()
 {
 	//一回転の角度
@@ -444,11 +556,8 @@ void Player::JumpUpdate(std::shared_ptr<ObjectManager> objManager)
 // プレイヤーの死体に与える情報を作る関数
 void Player::DeathUpdate(std::shared_ptr<ObjectManager> objManager)
 {
-	//座るアニメーション以外だったら死ぬアニメーションに変える
-	if (status_.animNo != static_cast<int>(PlayerAnimType::IdleToSitup)) {
-		//アニメーションの変更
-		ChangeAnimNo(PlayerAnimType::Death, false, 20);
-	}
+	//アニメーションの変更
+	ChangeAnimNo(PlayerAnimType::Death, false, 20);
 
 	if (model_->IsAnimEnd()) {
 		CorpsePostProsessing(objManager);
@@ -467,33 +576,29 @@ void Player::CorpsePostProsessing(std::shared_ptr<ObjectManager> objManager)
 // プレイヤーの死体をvector配列で管理する関数
 void Player::CorpseGenerater(std::shared_ptr<ObjectManager> objManager)
 {
-	LoadObjectInfo info;
-	info.rot = MathUtil::VECTORDegreeToRadian(status_.rot);
-	info.scale = scale_;
+	//配置データの作成
+	LoadObjectInfo info = {};
 
+	//モデルの中から指定のフレームの番号を取得する
 	int frameNo = MV1SearchFrame(model_->GetModelHandle(), "PlaceToPutTheCorpse");
+
+	//指定のフレームの座標を取得する
 	VECTOR putPos = MV1GetFramePosition(model_->GetModelHandle(), frameNo);
+
+	//取得した座標を死体のポジションとする
 	info.pos = putPos;
 
-	objManager->DeadPersonGenerator(model_->GetModelHandle(),info, status_.animNo);
+	//プレイヤーの回転値を死体の回転値とする
+	info.rot = MathUtil::VECTORDegreeToRadian(status_.rot);
+
+	//拡縮率を同じにする
+	info.scale = scale_;
+
+	//死体を生成する
+	objManager->CorpseGenerator(model_->GetModelHandle(),info, status_.animNo);
 }
 
-void Player::SetCarryInfo(bool isCarry, std::shared_ptr<ObjectBase>model) {
-	status_.situation.isCanBeCarried = isCarry;
-	deadPersonModelPointer_ = model;
-}
-
-void Player::SetCrankPointer(std::shared_ptr<ManualCrank> crank) {
-	crank_ = crank;
-	status_.situation.isGimmickCanBeOperated = true;
-}
-
-void Player::SetLeverPointer(std::shared_ptr<Lever> lever)
-{
-	lever_ = lever;
-	status_.situation.isGimmickCanBeOperated = true;
-}
-
+//荷物を運ぶ
 void Player::CarryObject()
 {
 	
@@ -501,21 +606,22 @@ void Player::CarryObject()
 
 	status_.situation.isInTransit = true;
 
-	deadPersonModelPointer_->SetIsTransit(true);
+	corpseModelPointer_->SetIsTransit(true);
 
 	carryUpdateFunc_ = &Player::DropOffObject;
 
 }
 
+//荷物をおろす
 void Player::DropOffObject()
 {
 	if (status_.situation.isCanBeCarried) {
 		status_.situation.isCanBeCarried = false;
-		deadPersonModelPointer_->SetIsTransit(false);
+		corpseModelPointer_->SetIsTransit(false);
 		int frameNo = MV1SearchFrame(model_->GetModelHandle(), "PlaceToPutTheCorpse");
 		VECTOR putPos = MV1GetFramePosition(model_->GetModelHandle(), frameNo);
-		deadPersonModelPointer_->GetModelPointer()->SetPos(putPos);
-		deadPersonModelPointer_.reset();
+		corpseModelPointer_->GetModelPointer()->SetPos(putPos);
+		corpseModelPointer_.reset();
 	}
 
 	status_.situation.isInTransit = false;
@@ -525,44 +631,35 @@ void Player::DropOffObject()
 
 }
 
-void Player::CrankUpdate(std::shared_ptr<ObjectManager> objManager) 
+//クランクを回すためにクランクを回すポジションへと移動する
+void Player::GoCrankRotationPosition(std::shared_ptr<ObjectManager> objManager)
 {
-	//短縮化
-	auto& input = InputState::GetInstance();
-	auto& sound = SoundManager::GetInstance();
+	//クランクの立ってほしいポジションを取得する
+	VECTOR standPos = crank_->GetStandingPosition();
 
-	status_.moveVec = VGet(0, 0, 0);
+	//立ってほしいポジションとプレイヤーの距離のサイズを取得する
+	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(status_.pos, standPos);
 
-	float oldRotZ = crank_->GetRotZ();
-	float rotZ = crank_->GetRotZ();
-
-	if (input.IsPressed(InputType::Down)) {
-		rotZ = (std::max)(rotZ - 3.0f, crank_->GetMaxRotZ());
-		CrankRotationUpdate(rotZ);
+	//distanceSizeが一定の範囲外だったら
+	//一定の速度で立ってほしいポジションに向かう
+	if (distanceSize > 30.0f) {
+		VECTOR distance = VNorm(VSub(standPos, status_.pos));
+		VECTOR moveVec = VScale(distance, playerInfo_.walkSpeed);
+		status_.pos = VAdd(status_.pos, moveVec);
+		model_->SetPos(status_.pos);
 	}
-	else if (input.IsPressed(InputType::Up)) {
-		rotZ = (std::min)(rotZ + 3.0f, 0.0f);
-		CrankRotationUpdate(rotZ);
+	//distanceSizeが一定の範囲内に入ったら
+	//立ってほしいポジションをプレイヤーのポジションとする
+	else {
+		model_->SetPos(standPos);
+		status_.rot.y = -90.0f;
+		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
+		ChangeAnimNo(PlayerAnimType::Crank, false, 20);
+		updateFunc_ = &Player::CrankUpdate;
 	}
-
-	if (oldRotZ != rotZ && !sound.CheckSoundFile("crank")) {
-		sound.Set3DSoundInfo(crank_->GetStandingPosition(), 1500.0f, "crank");
-		sound.PlaySE("crank");
-	}
-
-	int naturalNumber = static_cast<int>((std::max)(rotZ, -rotZ));
-	float animTime = static_cast<float>(naturalNumber % 360) / 3;
-
-	model_->SetAnimationFrame(animTime);
-
-	if (input.IsTriggered(InputType::Activate)) {
-		status_.situation.isGimmickCanBeOperated = false;
-		crank_.reset();
-		updateFunc_ = &Player::NormalUpdate;
-	}
-
 }
 
+//クランクを回転させるアップデート
 void Player::CrankRotationUpdate(float rotZ) {
 
 	float radian = MathUtil::DegreeToRadian(rotZ);
@@ -589,43 +686,68 @@ void Player::CrankRotationUpdate(float rotZ) {
 	MV1SetFrameUserLocalMatrix(crank_->GetModelPointer()->GetModelHandle(), frameNo, mat);
 
 	crank_->SetRotZ(rotZ);
-
 }
 
-void Player::BulletHitMeUpdate(std::shared_ptr<ObjectManager> objManager)
+//クランクの更新
+void Player::CrankUpdate(std::shared_ptr<ObjectManager> objManager)
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
+	auto& sound = SoundManager::GetInstance();
 
-	//重力
-	status_.jump.jumpVec += gravity;
-	status_.moveVec.y = status_.jump.jumpVec;
+	//移動ベクトルを0にする
+	status_.moveVec = VGet(0, 0, 0);
 
-	//ノックバック
-	status_.moveVec = VScale(status_.moveVec, 0.96f);
+	//クランクの回転を取得する(変化しているか確認用)
+	float oldRotZ = crank_->GetRotZ();
 
-	VECTOR destination = VAdd(status_.pos, status_.moveVec);
-	if (destination.z < -250.0f) {
-		status_.moveVec.z = 0.0f;
+	//クランクの回転を取得する(実際に値を変えるよう)
+	float rotZ = crank_->GetRotZ();
+
+	int analogX = 0;
+	int analogY = 0;
+
+	//パッドのアナログ的なレバーの入力情報を得る
+	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
+
+	int size = std::sqrt(analogX * analogX + analogY + analogY);
+
+	float X = analogX / size;
+	float Y = analogY / size;
+
+	if (input.IsPressed(InputType::Down))
+	{
+		rotZ = (std::max)(rotZ - 3.0f, crank_->GetMaxRotZ());
+		CrankRotationUpdate(rotZ);
+	}
+	else if (input.IsPressed(InputType::Up))
+	{
+		rotZ = (std::min)(rotZ + 3.0f, 0.0f);
+		CrankRotationUpdate(rotZ);
 	}
 
-	status_.pos = VAdd(status_.pos, status_.moveVec);
+	if (oldRotZ != rotZ && !sound.CheckSoundFile("crank"))
+	{
+		sound.Set3DSoundInfo(crank_->GetStandingPosition(), 1500.0f, "crank");
+		sound.PlaySE("crank");
+	}
 
-	model_->SetPos(status_.pos);
+	int naturalNumber = static_cast<int>((std::max)(rotZ, -rotZ));
+	float animTime = static_cast<float>(naturalNumber % 360) / 3;
 
-	float moveVecSize = VSize(status_.moveVec);
+	model_->SetAnimationFrame(animTime);
 
-	if (moveVecSize < 2.0f) {
+	if (input.IsTriggered(InputType::Activate))
+	{
+		status_.situation.isGimmickCanBeOperated = false;
+		crank_.reset();
 		updateFunc_ = &Player::NormalUpdate;
 	}
-
 }
 
+//レバーを倒すポジションへ行く
 void Player::GoLeverPullPosition(std::shared_ptr<ObjectManager> objManager)
 {
-	//短縮化
-	auto& input = InputState::GetInstance();
-
 	//クランクの立ってほしいポジションを取得する
 	VECTOR standPos = lever_->GetStandingPosition();
 	//立ってほしいポジションとプレイヤーの距離のサイズを取得する
@@ -633,7 +755,8 @@ void Player::GoLeverPullPosition(std::shared_ptr<ObjectManager> objManager)
 
 	//distanceSizeが一定の範囲外だったら
 	//一定の速度で立ってほしいポジションに向かう
-	if (distanceSize > 30.0f) {
+	if (distanceSize > 30.0f)
+	{
 		VECTOR distance = VNorm(VSub(standPos, status_.pos));
 		VECTOR moveVec = VScale(distance, playerInfo_.walkSpeed);
 		status_.pos = VAdd(status_.pos, moveVec);
@@ -641,7 +764,8 @@ void Player::GoLeverPullPosition(std::shared_ptr<ObjectManager> objManager)
 	}
 	//distanceSizeが一定の範囲内に入ったら
 	//立ってほしいポジションをプレイヤーのポジションとする
-	else {
+	else
+	{
 		model_->SetPos(standPos);
 		angle_ = 0.0f;
 		lever_->OnAnimation();
@@ -652,60 +776,62 @@ void Player::GoLeverPullPosition(std::shared_ptr<ObjectManager> objManager)
 	}
 }
 
+//レバーの更新
 void Player::LeverUpdate(std::shared_ptr<ObjectManager> objManager)
 {
-	if (!lever_->IsOn()) {
+	if (!lever_->IsOn())
+	{
 		updateFunc_ = &Player::NormalUpdate;
 	}
 }
 
-//クランクを回すためにクランクを回すポジションへと移動する
-void Player::GoCrankRotationPosition(std::shared_ptr<ObjectManager> objManager)
+//投擲物との衝突アップデート
+void Player::BulletHitMeUpdate(std::shared_ptr<ObjectManager> objManager)
 {
-	//クランクの立ってほしいポジションを取得する
-	VECTOR standPos = crank_->GetStandingPosition();
-	//立ってほしいポジションとプレイヤーの距離のサイズを取得する
-	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(status_.pos, standPos);
+	//重力
+	status_.jump.jumpVec += gravity;
+	status_.moveVec.y = status_.jump.jumpVec;
 
-	//distanceSizeが一定の範囲外だったら
-	//一定の速度で立ってほしいポジションに向かう
-	if (distanceSize > 3.0f) {
-		VECTOR distance = VNorm(VSub(standPos, status_.pos));
-		VECTOR moveVec = VScale(distance, playerInfo_.walkSpeed);
-		status_.pos = VAdd(status_.pos, moveVec);
-		model_->SetPos(status_.pos);
-	}
-	//distanceSizeが一定の範囲内に入ったら
-	//立ってほしいポジションをプレイヤーのポジションとする
-	else {
-		model_->SetPos(standPos);
-		angle_ = -90.0f;
-		status_.rot = VGet(0, angle_, 0);
-		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
-		ChangeAnimNo(PlayerAnimType::Crank, false, 20);
-		updateFunc_ = &Player::CrankUpdate;
+	//ノックバック
+	status_.moveVec = VScale(status_.moveVec, 0.96f);
+
+	//移動ベクトルを足した行き先を取得する
+	VECTOR destinationPos = VAdd(status_.pos, status_.moveVec);
+
+	//移動ベクトルを足した行き先が-250以下だったら
+	//移動ベクトルのZ値を0にする
+	if (destinationPos.z < -250.0f)
+	{
+		status_.moveVec.z = 0.0f;
 	}
 
-}
+	//プレイヤーのポジションに移動ベクトルを足す
+	status_.pos = VAdd(status_.pos, status_.moveVec);
 
-void Player::BulletHitMe(VECTOR moveVec)
-{
-	if (updateFunc_ == &Player::DeathUpdate) {
-		return;
+	//モデルにポジションを設定する
+	model_->SetPos(status_.pos);
+
+
+	//以下、不安要素
+	float moveVecSize = VSize(status_.moveVec);
+
+	if (moveVecSize < 2.0f)
+	{
+		updateFunc_ = &Player::NormalUpdate;
 	}
-
-	status_.moveVec = moveVec;
-
-	updateFunc_ = &Player::BulletHitMeUpdate;
 }
 
-void Player::SetRoundShadowHeightAndMaterial(float height,Material materialType)
+//アニメーションを待機に変更する
+void Player::ChangeAnimIdle()
 {
-	roundShadowHeight_ = height; 
-
-	materialSteppedOn_ = materialType;
+	//待機アニメーションに戻す
+	if (!status_.situation.isMoving)
+	{
+		ChangeAnimNo(PlayerAnimType::Idle, true, 20);
+	}
 }
 
+//アニメーションの変更を行う
 void Player::ChangeAnimNo(PlayerAnimType type, bool isAnimLoop, int changeTime)
 {
 	status_.animNo = static_cast<int>(type);
@@ -717,7 +843,8 @@ void Player::ChangeAnimNo(PlayerAnimType type, bool isAnimLoop, int changeTime)
 float Player::PlayerSpeed(bool pressedShift)
 {
 	//シフトが押されているかどうか
-	if (pressedShift) {
+	if (pressedShift)
+	{
 #ifdef _DEBUG
 		if (debugCreativeMode) {
 			return playerInfo_.runningSpeed * 3;
@@ -731,17 +858,15 @@ float Player::PlayerSpeed(bool pressedShift)
 	return playerInfo_.walkSpeed;
 }
 
-//ジャンプの設定
-void Player::PlayerJump(float jumpPower) {
-	status_.jump.jumpVec = jumpPower;
-	status_.pos.y += status_.jump.jumpVec;
-	status_.jump.isJump = true;
-}
-
+//足音の再生
 void Player::FootStepSound()
 {
+	//音が鳴っているか
 	bool playSound = false;
 
+	//プレイヤーのアニメーションによって
+	//アニメーションフレームの特定フレームで
+	//音が鳴っているかのフラグをtrueにする
 	switch (static_cast<PlayerAnimType>(status_.animNo))
 	{
 	case PlayerAnimType::Walk:
@@ -760,10 +885,14 @@ void Player::FootStepSound()
 		break;
 	}
 
-	if (!playSound) {
+	//音が鳴っていない場合リターン
+	if (!playSound)
+	{
 		return;
 	}
 
+	//プレイヤーの足元のオブジェクトの素材によって
+	//鳴らす音を変える
 	switch (materialSteppedOn_)
 	{
 	case Material::Iron:
@@ -806,7 +935,8 @@ void Player::DrawPolygon3D()
 	vertex[0].sv = 0.0f;
 
 	//角度ごとの頂点を取得
-	for (int i = 1; i < 7; i++) {
+	for (int i = 1; i < 7; i++)
+	{
 		vertex[i].pos = VertexPosition(angle);
 		vertex[i].norm = norm;
 		vertex[i].dif = difColor;

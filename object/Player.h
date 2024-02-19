@@ -66,9 +66,43 @@ public:
 	void Draw();
 
 	/// <summary>
+	/// 弾に当たったらノックバックを追加する
+	/// </summary>
+	void BulletHitMe(VECTOR moveVec);
+
+
+	///////Getter///////
+
+	/// <summary>
 	/// 死んだ回数を取得する
 	/// </summary>
 	int GetDeathCount() { return deathCount_; }
+
+	/// <summary>
+	/// プレイヤーのステータスを取得する
+	/// </summary>
+	PlayerStatus GetStatus() { return status_; }
+
+	/// <summary>
+	/// 持ち運ぶ死体のポインターを取得する
+	/// </summary>
+	std::shared_ptr<ObjectBase> GetDeadPersonModelPointer() { return corpseModelPointer_; }
+
+	/// <summary>
+	/// モデルポインターを取得する
+	/// </summary>
+	/// <param name="height"></param>
+	/// <param name="materialType"></param>
+	std::shared_ptr<Model> GetModelPointer() { return model_; }
+
+	/// <summary>
+	/// 影を描画する高さを取得する
+	/// </summary>
+	/// <returns>影を描画する高さ</returns>
+	float GetRoundShadowHeight() { return roundShadowHeight_; }
+
+
+	///////Setter///////
 
 	/// <summary>
 	/// 外部からのポジションを受け取る
@@ -95,17 +129,7 @@ public:
 	void SetCarryInfo(bool isCarry, std::shared_ptr<ObjectBase> model);
 
 	/// <summary>
-	/// プレイヤーのステータスを取得する
-	/// </summary>
-	PlayerStatus GetStatus() { return status_; }
-
-	/// <summary>
-	/// 持ち運ぶ死体のポインターを取得する
-	/// </summary>
-	std::shared_ptr<ObjectBase> GetDeadPersonModelPointer() {return deadPersonModelPointer_;}
-	
-	/// <summary>
-	/// ManualCrankのポインタを取得する
+	/// ManualCrankのポインタを設定する
 	/// </summary>
 	/// <param name="crank"></param>
 	void SetCrankPointer(std::shared_ptr<ManualCrank> crank);
@@ -116,41 +140,21 @@ public:
 	void SetLeverPointer(std::shared_ptr<Lever> lever);
 
 	/// <summary>
-	/// モデルポインターを取得する
-	/// </summary>
-	/// <param name="height"></param>
-	/// <param name="materialType"></param>
-	std::shared_ptr<Model> GetModelPointer() { return model_; }
-
-	/// <summary>
-	/// 弾に当たったらノックバックを追加する
-	/// </summary>
-	void BulletHitMe(VECTOR moveVec);
-
-	/// <summary>
-	/// 地面に描画する影の高さを設定する
+	/// 地面に描画する影の高さと踏んでいるオブジェクトの素材を設定する
 	/// </summary>
 	/// <param name="height">高さ</param>
 	/// <param name="materialType">今踏んでいるオブジェクトが何出てきているか</param>
 	void SetRoundShadowHeightAndMaterial(float height, Material materialType);
 
-	/// <summary>
-	/// 影を描画する高さを取得する
-	/// </summary>
-	/// <returns>影を描画する高さ</returns>
-	float GetRoundShadowHeight() { return roundShadowHeight_; }
-
 private:
+
+	/////////////プレイヤーの挙動に関係する更新/////////////
+
 	/// <summary>
 	/// 更新
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
 	void NormalUpdate(std::shared_ptr<ObjectManager> objManager);
-
-	/// <summary>
-	/// アニメーションをidleに変更する
-	/// </summary>
-	void ChangeAnimIdle();
 
 	/// <summary>
 	/// 移動の更新
@@ -210,22 +214,16 @@ private:
 	void GoCrankRotationPosition(std::shared_ptr<ObjectManager> objManager);
 
 	/// <summary>
-	/// クランクの更新
-	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param>
-	void CrankUpdate(std::shared_ptr<ObjectManager> objManager);
-
-	/// <summary>
 	/// クランクを回転させるアップデート
 	/// </summary>
 	/// <param name="rotZ">Zの回転率</param>
 	void CrankRotationUpdate(float rotZ);
 
 	/// <summary>
-	/// 投擲物との衝突アップデート
+	/// クランクの更新
 	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param> 
-	void BulletHitMeUpdate(std::shared_ptr<ObjectManager> objManager);
+	/// <param name="objManager">objManagerのポインタ</param>
+	void CrankUpdate(std::shared_ptr<ObjectManager> objManager);
 
 	/// <summary>
 	/// レバーを倒すポジションへ行く
@@ -239,7 +237,27 @@ private:
 	/// <param name="objManager">objManagerのポインタ</param>
 	void LeverUpdate(std::shared_ptr<ObjectManager> objManager);
 
+	/// <summary>
+	/// 投擲物との衝突アップデート
+	/// </summary>
+	/// <param name="objManager">objManagerのポインタ</param> 
+	void BulletHitMeUpdate(std::shared_ptr<ObjectManager> objManager);
+
 private:
+
+	/////////////プレイヤーのステータス等に関係する更新/////////////
+
+	/// <summary>
+	/// アニメーションをidleに変更する
+	/// </summary>
+	void ChangeAnimIdle();
+
+	/// <summary>
+	/// アニメーションの変更を行う
+	/// </summary>
+	/// <param name="type">アニメーションのタイプ</param>
+	void ChangeAnimNo(PlayerAnimType type, bool isAnimLoop, int changeTime);
+
 	/// <summary>
 	/// プレイヤーの移動速度を設定する
 	/// </summary>
@@ -247,21 +265,9 @@ private:
 	float PlayerSpeed(bool pressedShift);
 
 	/// <summary>
-	/// ジャンプの設定を行う
-	/// </summary>
-	/// <param name="jumpPower">ジャンプ力</param>
-	void PlayerJump(float jumpPower);
-
-	/// <summary>
 	/// 足ふみの音
 	/// </summary>
 	void FootStepSound();
-
-	/// <summary>
-	/// アニメーションの変更を行う
-	/// </summary>
-	/// <param name="type">アニメーションのタイプ</param>
-	void ChangeAnimNo(PlayerAnimType type,bool isAnimLoop,int changeTime);
 
 	/// <summary>
 	/// 落ち影の描画
@@ -299,7 +305,7 @@ private:
 	std::shared_ptr<Model> model_;								//モデルクラスのポインタ
 	std::shared_ptr<ManualCrank> crank_;						//クランククラスのポインタ
 	std::shared_ptr<Lever> lever_;								//クランククラスのポインタ
-	std::shared_ptr<ObjectBase> deadPersonModelPointer_;		//持ち運ぶ死体のモデルポインタ
+	std::shared_ptr<ObjectBase> corpseModelPointer_;			//持ち運ぶ死体のモデルポインタ
 
 	void(Player::* updateFunc_)(std::shared_ptr<ObjectManager> objManager);		//メンバ関数ポインタ
 	void(Player::* carryUpdateFunc_)();		//メンバ関数ポインタ

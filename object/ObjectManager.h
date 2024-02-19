@@ -45,7 +45,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="objInfo">オブジェクトの配置データ等</param>
 	/// <param name="animNo">初期化時に使用するアニメーション番号</param>
-	void DeadPersonGenerator(int handle, LoadObjectInfo objInfo,int animNo);
+	void CorpseGenerator(int handle, LoadObjectInfo objInfo,int animNo);
 
 	/// <summary>
 	/// 更新

@@ -284,7 +284,7 @@ void ObjectManager::EndStageObjectGenerator()
 	}
 }
 
-void ObjectManager::DeadPersonGenerator(int handle, LoadObjectInfo objInfo, int animNo)
+void ObjectManager::CorpseGenerator(int handle, LoadObjectInfo objInfo, int animNo)
 {
 	//€‘Ì‚ğˆê‚Â¶¬‚·‚é
 	objects_[ObjectType::Corpse].push_back(std::make_shared<Corpse>(handle, Material::Other, objInfo, animNo));
