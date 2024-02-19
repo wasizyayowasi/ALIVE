@@ -114,6 +114,32 @@ void GameMain::Draw()
 #ifdef _DEBUG
 	VECTOR pos = player_->GetStatus().pos;
 	DrawFormatString(0, 48, 0xffffff, "%.2f,%.2f,%.2f", pos.x, pos.y, pos.z);
+
+	int analogX = 0;
+	int analogY = 0;
+
+	//パッドのアナログ的なレバーの入力情報を得る
+	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_KEY_PAD1);
+
+	float size = 0;
+	size = std::sqrt(analogX * analogX + analogY * analogY);
+
+	float X = 0.0f;
+	float Y = 0.0f;
+
+	if (size != 0)
+	{
+		X = analogX / size;
+		Y = analogY / size;
+	}
+
+	float result = std::atan2(Y, X);
+
+	result = result / DX_PI_F * 180.0f;
+
+	//DrawFormatString(0, 64, 0xffffff, "X:%d,Y%d", analogX, analogY);
+	DrawFormatString(0, 64, 0xffffff, "%.2f", result);
+
 #endif // _DEBUG
 
 	SetDrawScreen(DX_SCREEN_BACK);

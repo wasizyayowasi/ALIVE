@@ -80,6 +80,11 @@ public:
 	/// <param name="upVec">カメラの上方向ベクトル</param>
 	void SetCameraTargetPosAndView(VECTOR targetPos, VECTOR targetViewPos, VECTOR upVec);
 
+	/// <summary>
+	/// 経過時間を0に戻す
+	/// </summary>
+	void LesetElapsedTime() { elapsedTime_ = 0.0f; }
+
 	void DebugDraw();
 
 private:

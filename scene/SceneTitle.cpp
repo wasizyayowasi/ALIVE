@@ -268,28 +268,40 @@ void SceneTitle::SelectNumUpdate()
 	switch (selectNum_)
 	{
 	case 0:
-		if (isTriggerRight || isTriggerDown) {
+		if (isTriggerRight || isTriggerDown)
+		{
+			oldSelectNum_ = selectNum_;
 			selectNum_ = 1;
 		}
 		break;
 	case 1:
-		if (isTriggerUp) {
+		if (isTriggerUp)
+		{
+			oldSelectNum_ = selectNum_;
 			selectNum_ = 2;
 		}
-		else if (isTriggerLeft) {
+		else if (isTriggerLeft)
+		{
+			oldSelectNum_ = selectNum_;
 			selectNum_ = 0;
 		}
-		else if (isTriggerRight) {
+		else if (isTriggerRight)
+		{
+			oldSelectNum_ = selectNum_;
 			selectNum_ = 3;
 		}
 		break;
 	case 2:
-		if (isTriggerLeft || isTriggerDown) {
+		if (isTriggerLeft || isTriggerDown) 
+		{
+			oldSelectNum_ = selectNum_;
 			selectNum_ = 1;
 		}
 		break;
 	case 3:
-		if (isTriggerLeft || isTriggerDown) {
+		if (isTriggerLeft || isTriggerDown) 
+		{
+			oldSelectNum_ = selectNum_;
 			selectNum_ = 1;
 		}
 		break;
@@ -314,9 +326,6 @@ void SceneTitle::UIUpdate()
 	auto& file = ExternalFile::GetInstance();
 	auto& input = InputState::GetInstance();
 
-	//1フレーム前の選択番号を記録する
-	int oldSelectNum = selectNum_;
-
 	if (camera_->GetMoving()) {
 		return;
 	}
@@ -326,8 +335,9 @@ void SceneTitle::UIUpdate()
 
 	//現在のフレームと前のフレームで番号が違ったら
 	//カメラの設定を行う
-	if (selectNum_ != oldSelectNum) {
+	if (selectNum_ != oldSelectNum_) {
 		camera_->SetCameraTargetPosAndView(cameraInfo_[selectNum_].targetPos, cameraInfo_[selectNum_].targetView, cameraInfo_[selectNum_].upVec);
+		camera_->LesetElapsedTime();
 	}
 
 	//決定

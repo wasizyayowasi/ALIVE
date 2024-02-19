@@ -39,6 +39,8 @@ Camera::Camera(VECTOR pos, VECTOR viewPos):updateFunc_(&Camera::TrackingCameraUp
 	pos_ = pos;
 
 	cameraViewingPos_ = viewPos;
+
+	elapsedTime_ = total_time;
 }
 
 Camera::~Camera()
@@ -205,9 +207,6 @@ void Camera::SetCameraTargetPosAndView(VECTOR targetPos, VECTOR targetViewPos, V
 
 	//カメラの上方向
 	targetUpVec_ = upVec;
-
-	//経過時間をリセットする
-	elapsedTime_ = 0.0f;
 }
 
 void Camera::DebugDraw()

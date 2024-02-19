@@ -651,7 +651,8 @@ void Player::GoCrankRotationPosition(std::shared_ptr<ObjectManager> objManager)
 	//distanceSizeが一定の範囲内に入ったら
 	//立ってほしいポジションをプレイヤーのポジションとする
 	else {
-		model_->SetPos(standPos);
+		status_.pos = standPos;
+		model_->SetPos(status_.pos);
 		status_.rot.y = -90.0f;
 		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 		ChangeAnimNo(PlayerAnimType::Crank, false, 20);
@@ -704,17 +705,6 @@ void Player::CrankUpdate(std::shared_ptr<ObjectManager> objManager)
 	//クランクの回転を取得する(実際に値を変えるよう)
 	float rotZ = crank_->GetRotZ();
 
-	int analogX = 0;
-	int analogY = 0;
-
-	//パッドのアナログ的なレバーの入力情報を得る
-//	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_PAD1);
-//
-//	int size = std::sqrt(analogX * analogX + analogY + analogY);
-//
-//	float X = analogX / size;
-//	float Y = analogY / size;
-
 	if (input.IsPressed(InputType::Down))
 	{
 		rotZ = (std::max)(rotZ - 3.0f, crank_->GetMaxRotZ());
@@ -766,7 +756,8 @@ void Player::GoLeverPullPosition(std::shared_ptr<ObjectManager> objManager)
 	//立ってほしいポジションをプレイヤーのポジションとする
 	else
 	{
-		model_->SetPos(standPos);
+		status_.pos = standPos;
+		model_->SetPos(status_.pos);
 		angle_ = 0.0f;
 		lever_->OnAnimation();
 		status_.rot = VGet(0, angle_, 0);
