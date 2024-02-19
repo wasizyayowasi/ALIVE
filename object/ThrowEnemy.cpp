@@ -120,7 +120,7 @@ void ThrowEnemy::Shot(std::shared_ptr<ShotManager> shotManager, VECTOR playerPos
 	if (model_->GetSpecifiedAnimTime(throw_frame_time))
 	{
 		VECTOR framePos = model_->GetFrameLocalPosition(hand_framename);
-		//shotManager->Fire(framePos, playerPos, height);
+		shotManager->Fire(framePos, playerPos, height);
 		isThrow_ = true;
 	}
 }
