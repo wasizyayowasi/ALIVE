@@ -15,25 +15,41 @@ class Tutorial;
 class GameMain : public SceneBase
 {
 public:
-	///コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="manager">シーンマネージャーの参照</param>
 	GameMain(SceneManager& manager);
-	//デストラクタ
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~GameMain();
 
-	//初期化用関数
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
-	//削除用関数
+
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void End();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 private:
 
-	int skyHandle_ = -1;
+	int skyHandle_ = -1;					//スカイドームのハンドル
 
-	int makeScreenHandle_ = -1;
+	int makeScreenHandle_ = -1;				//作成したスクリーン画像
 	int totalDeathNum_ = 0;					//ゲーム開始からの総死亡数
 
 	bool isFilterOn_ = false;				//フィルターを使用するか
@@ -49,17 +65,15 @@ private:
 	int fadeValue_ = 255;
 	int fadeColor_ = 0x000000;
 
-	VECTOR checkPoint_ = { 0.0f,0.0f, 0.0f };
-
-	std::shared_ptr<Camera> camera_;			//カメラのシェアードポインタ
-	std::shared_ptr<Player> player_;			//プレイヤーのシェアードポインタ
-	std::shared_ptr<ObjectManager> objManager_;
-	std::shared_ptr<ShotManager> shotManager_;
-	std::shared_ptr<Tutorial> tutorial_;
+	std::shared_ptr<Camera> camera_;							//カメラのシェアードポインタ
+	std::shared_ptr<Player> player_;							//プレイヤーのシェアードポインタ
+	std::shared_ptr<ObjectManager> objManager_;					//objectManagerのシェアードポインタ
+	std::shared_ptr<ShotManager> shotManager_;					//shotManagerのシェアードポインタ
+	std::shared_ptr<Tutorial> tutorial_;						//チュートリアルのシェアードポインタ
 	
 	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
 
-	void (GameMain::* updateFunc_)();		//メンバ関数ポインタ
+	void (GameMain::* updateFunc_)();							//メンバ関数ポインタ
 
 };
 

@@ -48,12 +48,12 @@ void ObjectManager::MainStageObjectGenerator()
 		}
 		else if (objInfo.first == "BuildingC") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingCType1, Material::Iron, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingC, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "Building2A") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingAType2, Material::Iron, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Building2A, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "StoreC") {
@@ -198,11 +198,6 @@ void ObjectManager::OpeningStageObjectGenerator()
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Clock, Material::Iron, objSecond);
 			}
 		}
-		else if (objInfo.first == "Chair") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Chair, Material::Wood, objSecond);
-			}
-		}
 		else if (objInfo.first == "Desk") {
 			for (auto& objSecond : objInfo.second) {
 				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Desk, Material::Wood, objSecond);
@@ -263,12 +258,12 @@ void ObjectManager::EndStageObjectGenerator()
 		}
 		else if (objInfo.first == "BuildingC") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingCType1, Material::Iron, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingC, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "Building2A") {
 			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingAType2, Material::Iron, objSecond);
+				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Building2A, Material::Iron, objSecond);
 			}
 		}
 		else if (objInfo.first == "street") {
@@ -457,7 +452,6 @@ void ObjectManager::AddCheckCollModel()
 
 void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, const VECTOR loadObjPos)
 {
-
 	float distance = 500.0f;
 
 	std::random_device random;
@@ -468,7 +462,6 @@ void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, const VECTOR l
 
 	info.pos.x = static_cast<float>(randomPosX(value));
 	info.pos.z = static_cast<float>(randomPosZ(value));
-
 }
 
 void ObjectManager::CircumferencePosition(const float angle, VECTOR& infoPos, const VECTOR playerPos)
@@ -512,7 +505,7 @@ void ObjectManager::EnemyGenerator(const int deathCount, const  LoadObjectInfo i
 			GeneratedForTheNumberOfTimesYouDie(deathCount, info);
 		}
 		else if (str == "SignBoardEnemy") {
-			objects_[ObjectType::Enemy].push_back(std::make_shared<SignBoardEnemy>(model.GetModelHandle(ObjectType::BoardEnemy), Material::Other, info));
+			objects_[ObjectType::Enemy].push_back(std::make_shared<SignBoardEnemy>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::SignBoardEnemy)]), Material::Other, info));
 			usedEnemyList_[info.name] = true;
 		}
 		else {
@@ -533,7 +526,7 @@ void ObjectManager::EndEnemyGenerator(const int deathCount, LoadObjectInfo info)
 		info.pos.x += angle;
 
 		//インスタンス化
-		objects_[ObjectType::Enemy].push_back(std::make_shared<EnemyBase>(model.GetModelHandle(ObjectType::Player), Material::Other, info));
+		objects_[ObjectType::Enemy].push_back(std::make_shared<EnemyBase>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Player)]), Material::Other, info));
 		angle -= 15.0f;
 
 		usedEnemyList_[info.name] = true;
@@ -554,7 +547,7 @@ void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount, Loa
 		//CircumferencePosition(angle, info.pos, info.pos);
 
 		//インスタンス化
-		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Player), Material::Other, info));
+		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Player)]), Material::Other, info));
 		angle -= 15.0f;
 
 		usedEnemyList_[info.name] = true;
@@ -572,7 +565,7 @@ void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, con
 	//文字列の最後の数よりもdeathCountが多ければ
 	//エネミーを召喚する
 	if (num <= deathCount) {
-		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectType::Player), Material::Other, info));
+		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Player)]), Material::Other, info));
 		usedEnemyList_[info.name] = true;
 	}
 }
@@ -591,7 +584,7 @@ void ObjectManager::GenerateCorpseMountain(const int deathCount, const  LoadObje
 	//文字列の最後の数よりもdeathCountが多ければ
 	//エネミーを召喚する
 	if (num <= deathCount) {
-		objects_[ObjectType::CorpseMountain].push_back(std::make_shared<OrnamentBase>(model.GetModelHandle(ObjectType::CorpseMountain), Material::Other, info));
+		objects_[ObjectType::CorpseMountain].push_back(std::make_shared<OrnamentBase>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::CorpseMountain)]), Material::Other, info));
 		usedCorpseMtList_[info.name] = true;
 	}
 }
@@ -602,7 +595,7 @@ void ObjectManager::OrnamentGenerator(const ObjectType objType, const Material m
 	//短縮化
 	auto& model = ModelManager::GetInstance();
 
-	objects_[objType].push_front(std::make_shared<OrnamentBase>(model.GetModelHandle(objType), materialType, objInfo));
+	objects_[objType].push_front(std::make_shared<OrnamentBase>(model.GetModelHandle(ObjectName[static_cast<int>(objType)]), materialType, objInfo));
 }
 
 void ObjectManager::GimmickObjectGenerator(const ObjectType objType, const  Material materialType, const  LoadObjectInfo objInfo)
@@ -612,19 +605,19 @@ void ObjectManager::GimmickObjectGenerator(const ObjectType objType, const  Mate
 
 	switch (objType) {
 	case ObjectType::Trans:
-		objects_[objType].push_front(std::make_shared<TransparentObject>(model.GetModelHandle(objType),materialType, objInfo));
+		objects_[objType].push_front(std::make_shared<TransparentObject>(model.GetModelHandle(ObjectName[static_cast<int>(objType)]),materialType, objInfo));
 		break;
 	case ObjectType::Elevator:
-		objects_[objType].push_front(std::make_shared<Elevator>(model.GetModelHandle(objType),materialType, objInfo));
+		objects_[objType].push_front(std::make_shared<Elevator>(model.GetModelHandle(ObjectName[static_cast<int>(objType)]),materialType, objInfo));
 		break;
 	case ObjectType::CrankScaffold:
-		objects_[objType].push_front(std::make_shared<CrankScaffold>(model.GetModelHandle(objType),materialType, objInfo));
+		objects_[objType].push_front(std::make_shared<CrankScaffold>(model.GetModelHandle(ObjectName[static_cast<int>(objType)]),materialType, objInfo));
 		break;
 	case ObjectType::PenetrationScaffld:
-		objects_[objType].push_front(std::make_shared<PenetrationScaffld>(model.GetModelHandle(ObjectType::Train), materialType, objInfo));
+		objects_[objType].push_front(std::make_shared<PenetrationScaffld>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Train)]), materialType, objInfo));
 		break;
 	case ObjectType::HopStepJump:
-		objects_[objType].push_front(std::make_shared<HopStepJump>(model.GetModelHandle(ObjectType::HopStepJump), materialType, objInfo));
+		objects_[objType].push_front(std::make_shared<HopStepJump>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::HopStepJump)]), materialType, objInfo));
 		break;
 	}
 }

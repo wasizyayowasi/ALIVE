@@ -159,6 +159,7 @@ KeyConfigSceneForSceneTitle::~KeyConfigSceneForSceneTitle()
 {
 }
 
+//初期化
 void KeyConfigSceneForSceneTitle::Init()
 {
 	//キーグラフを分割して読み込む
@@ -220,6 +221,7 @@ void KeyConfigSceneForSceneTitle::Init()
 	PadUI_->AddMenu(static_cast<float>(Game::screen_width / 2), static_cast<float>(Game::screen_height / 5 * 4)+ 32.0f, 320, 100, "戻る", fontHandleSize21_);
 }
 
+//終了
 void KeyConfigSceneForSceneTitle::End()
 {
 	//短縮化
@@ -245,6 +247,7 @@ void KeyConfigSceneForSceneTitle::Draw()
 	(this->*drawFunc_)();
 }
 
+//キーの役割りの描画
 void KeyConfigSceneForSceneTitle::KeyStateDraw()
 {
 	KeyUI_->AlphaChangeDrawBillBoard(keyDrawPos_, selectNum_, fadeValue_,50.0f);
@@ -253,6 +256,7 @@ void KeyConfigSceneForSceneTitle::KeyStateDraw()
 	KeyGraphDraw();
 }
 
+//keyの画像を描画
 void KeyConfigSceneForSceneTitle::KeyGraphDraw()
 {
 	//短縮化
@@ -305,6 +309,7 @@ void KeyConfigSceneForSceneTitle::KeyGraphDraw()
 	}
 }
 
+//コントローラーが使用されている場合の描画
 void KeyConfigSceneForSceneTitle::ControllerDraw()
 {
 	//UI配置ポジション
@@ -319,6 +324,7 @@ void KeyConfigSceneForSceneTitle::ControllerDraw()
 	PadUI_->AlphaChangeDrawBillBoard(padDrawPos_, selectNum_, fadeValue_, 50.0f);
 }
 
+//変更したいkeyを入力させるためのポップアップ描画
 void KeyConfigSceneForSceneTitle::ChangeKeyPopUpText()
 {
 	//短縮化
@@ -490,6 +496,7 @@ void KeyConfigSceneForSceneTitle::ChangeKeyborardUpdate()
 
 }
 
+//コントローラーの場合の更新
 void KeyConfigSceneForSceneTitle::ControllerUpdate()
 {
 	//短縮化
@@ -522,6 +529,7 @@ void KeyConfigSceneForSceneTitle::ControllerUpdate()
 
 }
 
+//フェードインの更新
 void KeyConfigSceneForSceneTitle::FadeInUpdate()
 {
 	float timer = static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_);
@@ -532,11 +540,13 @@ void KeyConfigSceneForSceneTitle::FadeInUpdate()
 	}
 }
 
+//通常時の更新
 void KeyConfigSceneForSceneTitle::NormalUpdate()
 {
 	(this->*changeKeyUpdateFunc_)();
 }
 
+//フェードアウトの更新
 void KeyConfigSceneForSceneTitle::FadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));

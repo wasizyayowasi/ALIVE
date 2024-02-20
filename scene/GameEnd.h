@@ -32,7 +32,9 @@ public:
 	/// </summary>
 	void End();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
 	/// <summary>
@@ -46,7 +48,7 @@ private:
 	/// 死体の更新
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの座標</param>
-	void CorpseUpdate(VECTOR playerPos);
+	void CorpseUpdate(const VECTOR playerPos);
 
 	/// <summary>
 	/// ホワイトボードの更新

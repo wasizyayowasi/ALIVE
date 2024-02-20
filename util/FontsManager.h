@@ -5,9 +5,15 @@
 class FontsManager
 {
 public:
-
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~FontsManager();
 
+	/// <summary>
+	/// インスタンス作成
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static FontsManager& GetInstance() {
 		static FontsManager instance;
 		return instance;
@@ -44,7 +50,9 @@ public:
 	std::string GetFontName(int fontHandle);
 
 private:
-
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	FontsManager();
 
 	FontsManager(const FontsManager&) = delete;

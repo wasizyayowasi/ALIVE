@@ -5,7 +5,7 @@
 namespace MathUtil 
 {
 	//二点間の距離のサイズを取得する
-	float GetSizeOfDistanceTwoPoints(VECTOR pos, VECTOR targetPos)
+	float GetSizeOfDistanceTwoPoints(const VECTOR pos, const VECTOR targetPos)
 	{
 		VECTOR distance = {};
 		distance = VSub(pos, targetPos);
@@ -58,6 +58,7 @@ namespace StrUtil
 		return num;
 	}
 
+	//文字列と数値を結合した文字列を取得する
 	std::string GetConcatenateNumAndStrings(std::string name, std::string sign, int num)
 	{
 		//数値を文字列にする
@@ -68,6 +69,7 @@ namespace StrUtil
 		return name;
 	}
 
+	//文字列からsign以降の文字列を削除した文字列を取得する
 	std::string GetStringWithPartsAfterTheSymbolDeleted(std::string name, std::string sign)
 	{
 		//文字列を保管
@@ -80,6 +82,7 @@ namespace StrUtil
 		return str;
 	}
 
+	//文字列から記号以降の文字列を取得する
 	std::string GetStringAfterSign(std::string name, std::string sign)
 	{
 		//文字列のサイズを取得
@@ -94,6 +97,7 @@ namespace StrUtil
 		return str;
 	}
 
+	//文字列から記号以前の文字列を取得する
 	std::string GetStringBeforeSign(std::string name, std::string sign)
 	{
 		//「.」が文字列の何番目かを取得する
@@ -104,7 +108,4 @@ namespace StrUtil
 
 		return str;
 	}
-
 }
-
-

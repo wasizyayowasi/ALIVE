@@ -12,14 +12,17 @@
 #include "../util/EffectManager.h"
 #include "../util/UIItemManager.h"
 
+//コンストラクタ
 LoadingScene::LoadingScene(SceneManager& manager):SceneBase(manager)
 {
 }
 
+//デストラクタ
 LoadingScene::~LoadingScene()
 {
 }
 
+//初期化
 void LoadingScene::Init()
 {
 	//短縮化
@@ -55,10 +58,12 @@ void LoadingScene::Init()
 	loadingFile_ = true;
 }
 
+//終了
 void LoadingScene::End()
 {
 }
 
+//更新
 void LoadingScene::Update()
 {
 	//非同期読み込み中の数を取得
@@ -83,8 +88,8 @@ void LoadingScene::Update()
 	}
 }
 
+//描画
 void LoadingScene::Draw()
 {
 	UIManager_->ChangePosDraw(Game::screen_width - 230, Game::screen_height - 80);
-	//DrawFormatString(0, 0, 0xffffff, "%d", aSyncLoadNum_);
 }

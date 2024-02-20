@@ -3,17 +3,13 @@
 #include "../OBJECT/Player.h"
 #include "../util/SoundManager.h"
 #include "../object/ObjectBase.h"
-
-namespace {
-	//モデルのファイルパス
-	const char* const switch_filename = "data/model/other/mv1/switch.mv1";
-}
+#include "../util/ModelManager.h"
 
 //コンストラクタ
 Switch::Switch(const LoadObjectInfo objInfo)
 {
 	//モデルクラスの初期化
-	model_ = std::make_shared<Model>(switch_filename,Material::Iron);
+	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(ObjectName[static_cast<int>(ObjectType::Switch)]), Material::Iron);
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);

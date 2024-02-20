@@ -16,6 +16,7 @@ namespace {
 	constexpr int controller_graph_chip_size = 71;
 }
 
+//コンストラクタ
 Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)
 {
 	//短縮化
@@ -41,10 +42,12 @@ Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)
 	fontPigumo42_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
 }
 
+//デストラクタ
 Tutorial::~Tutorial()
 {
 }
 
+//更新
 void Tutorial::Update(VECTOR pos)
 {
 	float distanceSize = 0.0f;
@@ -76,13 +79,13 @@ void Tutorial::Update(VECTOR pos)
 		else if (tutorialInfo.name == "CorpseScaffoldTutorial") {
 			drawFunc_ = &Tutorial::CorpseScaffoldDraw;
 		}
-		tutorialDrawPos_ = tutorialInfo.pos;
 	}
 	else {
 		drawFunc_ = &Tutorial::NoneDraw;
 	}
 }
 
+//描画
 void Tutorial::Draw()
 {
 	auto& input = InputState::GetInstance();
@@ -90,6 +93,7 @@ void Tutorial::Draw()
 	(this->*drawFunc_)(input);
 }
 
+//何もない時の描画
 void Tutorial::NoneDraw(InputState& input)
 {
 	for (auto& bottan : pushBottan_) {
@@ -97,6 +101,7 @@ void Tutorial::NoneDraw(InputState& input)
 	}
 }
 
+//スイッチのチュートリアル
 void Tutorial::SwitchTutorialDraw(InputState& input)
 {
 
@@ -129,6 +134,7 @@ void Tutorial::SwitchTutorialDraw(InputState& input)
 	}
 }
 
+//クランクのチュートリアル
 void Tutorial::CranckTutorialDraw(InputState& input)
 {
 	if (input.IsTriggered(InputType::Activate)) {
@@ -176,6 +182,7 @@ void Tutorial::CranckTutorialDraw(InputState& input)
 	}
 }
 
+//走るチュートリアル
 void Tutorial::RunTutorialDraw(InputState& input)
 {
 	if (input.IsTriggered(InputType::Dush)) {
@@ -198,6 +205,7 @@ void Tutorial::RunTutorialDraw(InputState& input)
 	input.DrawName(static_cast<int>(InputType::Dush), static_cast<float>(Game::screen_width / 2), Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_,false,false);
 }
 
+//ジャンプのチュートリアル
 void Tutorial::JumpTutorialDraw(InputState& input)
 {
 
@@ -221,6 +229,7 @@ void Tutorial::JumpTutorialDraw(InputState& input)
 	input.DrawName(static_cast<int>(InputType::Space), static_cast<float>(Game::screen_width / 2), Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_,true,false,"/");
 }
 
+//エレベーターのチュートリアル
 void Tutorial::ElevatorTutorialDraw(InputState& input)
 {
 	if (input.IsTriggered(InputType::Activate)) {
@@ -243,6 +252,7 @@ void Tutorial::ElevatorTutorialDraw(InputState& input)
 	DrawStringToHandle(Game::screen_width / 2, static_cast<int>(Game::screen_height - keybord_graph_chip_size * 1.6f), "レバーを引く", 0xffffff, fontPigumo42_);
 }
 
+//死体のチュートリアル
 void Tutorial::CorpseScaffoldDraw(InputState& input)
 {
 	if (input.IsTriggered(InputType::Death)) {

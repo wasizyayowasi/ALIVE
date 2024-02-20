@@ -22,6 +22,7 @@
 
 #include <algorithm>
 
+//コンストラクタ
 SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 {
 	//短縮化
@@ -31,10 +32,10 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	//インスタンス化
 	UI_					= std::make_shared<UIItemManager>();
 	objManager_			= std::make_shared<ObjectManager>();
-	subPlayerModel_		= std::make_shared<Model>(model.GetModelHandle(ObjectType::Player),Material::Other);
-	mainPlayerModel_	= std::make_shared<Model>(model.GetModelHandle(ObjectType::Player),Material::Other);
+	subPlayerModel_		= std::make_shared<Model>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Player)]),Material::Other);
+	mainPlayerModel_	= std::make_shared<Model>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Player)]),Material::Other);
 	camera_				= std::make_shared<Camera>(file.GetCameraTargetPos("start"),file.GetCameraTargetPos("startTargetPos"));
-	lightBulb_			= std::make_shared<LightBulb>(model.GetModelHandle(ObjectType::LightBulb), file.GetSpecifiedInfo("title", "LightBulb"));
+	lightBulb_			= std::make_shared<LightBulb>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::LightBulb)]), file.GetSpecifiedInfo("title", "LightBulb"));
 
 	//メインプレイヤーモデルの配置データをセットする
 	auto mainPlayerInfo = file.GetSpecifiedInfo("title", "Player");
@@ -86,6 +87,7 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	}
 }
 
+//デストラクタ
 SceneTitle::~SceneTitle()
 {
 	for (auto& light : lightHandle_) {
@@ -94,6 +96,7 @@ SceneTitle::~SceneTitle()
 	DeleteLightHandleAll();
 }
 
+//初期化
 void SceneTitle::Init()
 {
 	updateFunc_ = &SceneTitle::FadeInUpdate;
@@ -102,10 +105,12 @@ void SceneTitle::Init()
 	fadeValue_ = 0;
 }
 
+//終了
 void SceneTitle::End()
 {
 }
 
+//更新
 void SceneTitle::Update()
 {
 	//カメラの更新
@@ -125,6 +130,7 @@ void SceneTitle::Update()
 	(this->*updateFunc_)();
 }
 
+//描画
 void SceneTitle::Draw()
 {
 	//短縮化
@@ -178,6 +184,7 @@ void SceneTitle::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
+//ライトの設定
 void SceneTitle::LightSetting()
 {
 	SetUseLighting(true);
@@ -212,6 +219,7 @@ void SceneTitle::LightSetting()
 	SetLightDifColorHandle(lightHandle_[1], GetColorF(0.41f, 0.41f, 0.41f, 1.0f));
 }
 
+//カメラの設定
 void SceneTitle::CameraSettingPos()
 {
 	//短縮化
@@ -255,6 +263,7 @@ void SceneTitle::CameraSettingPos()
 	cameraInfo_.push_back(info);
 }
 
+//選択番号の更新
 void SceneTitle::SelectNumUpdate()
 {
 	//短縮化
@@ -308,6 +317,7 @@ void SceneTitle::SelectNumUpdate()
 	}
 }
 
+//フェードインの更新
 void SceneTitle::FadeInUpdate()
 {
 	//フェードイン
@@ -320,6 +330,7 @@ void SceneTitle::FadeInUpdate()
 	}
 }
 
+//UIの更新
 void SceneTitle::UIUpdate()
 {
 	//短縮化
@@ -351,6 +362,7 @@ void SceneTitle::UIUpdate()
 	}
 }
 
+//オープニングの更新
 void SceneTitle::OpeningUpdate()
 {
 	//短縮化
@@ -382,6 +394,7 @@ void SceneTitle::OpeningUpdate()
 	}
 }
 
+//UIのフェードアウト
 void SceneTitle::UIFadeOutUpdate()
 {
 	//UIのフェードアウト
@@ -393,6 +406,7 @@ void SceneTitle::UIFadeOutUpdate()
 	}
 }
 
+//タイトルのフェードアウト
 void SceneTitle::SceneTitleFadeOutUpdate()
 {
 	//フェードアウト
@@ -403,6 +417,7 @@ void SceneTitle::SceneTitleFadeOutUpdate()
 	}
 }
 
+//シーンを切り替える
 void SceneTitle::SceneChange()
 {
 	switch (selectNum_) {

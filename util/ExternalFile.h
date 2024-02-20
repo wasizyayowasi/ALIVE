@@ -40,6 +40,19 @@ public:
 	void LoadFileHandle(std::string name);
 
 	/// <summary>
+	/// セーブデータの書き出し
+	/// </summary>
+	/// <param name="num">死亡回数</param>
+	void SaveDataRewriteInfo(int num);
+
+	/// <summary>
+	///	モデルファイルパスを読み込む
+	/// </summary>
+	void LoadModelFilePath();
+
+	////////////////Getter////////////////
+
+	/// <summary>
 	/// 特定のギミックの配置情報を取得する
 	/// </summary>
 	/// <param name="name">取得したいオブジェクトの名前</param>
@@ -51,14 +64,14 @@ public:
 	/// どこにあるかの配置データを取得する
 	/// </summary>
 	/// <returns></returns>
-	LoadObjectInfo GetCameraGimmickInfo(VECTOR playerPos,const char* const name);
+	LoadObjectInfo GetCameraGimmickInfo(VECTOR playerPos, const char* const name);
 
 	/// <summary>
 	/// 指定した名前のオブジェクト配置データを返す
 	/// </summary>
 	/// <param name="name">取得したいオブジェクトの名前</param>
 	/// <returns>オブジェクトのデータ</returns>
-	LoadObjectInfo GetSpecifiedInfo(const char* const stage,const char* const name);
+	LoadObjectInfo GetSpecifiedInfo(const char* const stage, const char* const name);
 
 	/// <summary>
 	/// エネミーの配置データを取得する
@@ -82,22 +95,24 @@ public:
 	LoadObjectInfo GetTutorialObjInfo(VECTOR pos);
 
 	/// <summary>
-	/// セーブデータの書き出し
+	/// カメラの座標データを取得する
 	/// </summary>
-	/// <param name="num">死亡回数</param>
-	void SaveDataRewriteInfo(int num);
+	/// <param name="name">名前</param>
+	/// <returns>座標データ</returns>
+	VECTOR GetCameraTargetPos(std::string name);
+
+	/// <summary>
+	/// 指定UIの配置座標を取得する
+	/// </summary>
+	/// <param name="name">取得したいUIの名前</param>
+	/// <returns>座標</returns>
+	VECTOR GetUIPos(std::string name);
 
 	/// <summary>
 	/// プレイヤーに関する情報を取得する
 	/// </summary>
 	/// <returns>playerData</returns>
 	PlayerInfo GetPlayerInfo() { return player_; }
-
-	/// <summary>
-	/// 開始場所の名前を設定する
-	/// </summary>
-	/// <param name="name">開始場所の名前</param>
-	void SetStartName(std::string name);
 
 	/// <summary>
 	/// 開始場所の名前を取得する
@@ -136,18 +151,18 @@ public:
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadEndingStageObjectInfo() { return loadEndStageObjInfo_; }
 
 	/// <summary>
-	/// カメラの座標データを取得する
+	/// ファイルパスを取得する
 	/// </summary>
-	/// <param name="name">名前</param>
-	/// <returns>座標データ</returns>
-	VECTOR GetCameraTargetPos(std::string name);
+	/// <returns>ファイルパスをまとめたテーブル</returns>
+	std::unordered_map<std::string, std::list<std::string>> GetFilePath()const { return filePathInfo_; }
+
+	////////////////Setter////////////////
 
 	/// <summary>
-	/// 指定UIの配置座標を取得する
+	/// 開始場所の名前を設定する
 	/// </summary>
-	/// <param name="name">取得したいUIの名前</param>
-	/// <returns>座標</returns>
-	VECTOR GetUIPos(std::string name);
+	/// <param name="name">開始場所の名前</param>
+	void SetStartName(std::string name);
 
 	/// <summary>
 	/// 死んだ回数をセットする
@@ -164,8 +179,7 @@ private:
 	/// <summary>
 	/// プレイヤーのステータスに関する情報を読み込む
 	/// </summary>
-	/// <param name="filename">ファイルの名前</param>
-	void LoadPlayerInfo(const char* const filename);
+	void LoadPlayerInfo();
 
 	/// <summary>
 	/// セーブデータを読み込む
@@ -186,9 +200,10 @@ private:
 	/// /// <param name="filename">ファイルの名前</param>
 	/// <param name="dataTable">データテーブル</param>
 	void LoadObjectData(std::string name, std::unordered_map<std::string, LoadObjectInfo>& dataTable);
-
 private:
-
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	ExternalFile();
 
 	ExternalFile(const ExternalFile&) = delete;
@@ -198,9 +213,10 @@ private:
 
 	std::string startPosName_ = {};	//開始位置の名前
 
-	std::deque<int> pastTotalDeathNum_ = {};
+	std::deque<int> pastTotalDeathNum_ = {};											//過去5回の死亡数
 
 	std::unordered_map<std::string, int> loadFile_;										//ロードしたファイル
+	std::unordered_map<std::string, std::list<std::string>> filePathInfo_;				//ファイルパスをまとめる
 
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadMainStageObjInfo_;	//メインステージオブジェクトの配置データ
 	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadOpeningStageObjInfo_;//オープニングステージオブジェクトの配置データ

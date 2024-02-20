@@ -94,66 +94,6 @@ void Model::Draw()
 	MV1DrawModel(modelHandle_);
 }
 
-void Model::ChangeDifColor()
-{
-	MV1SetMaterialDifColor(modelHandle_, 2, GetColorF(0.0f, 0.0f, 0.0f, 0.0f));
-}
-
-//ポジション設定
-void Model::SetPos(VECTOR pos)
-{
-	pos_ = pos;
-	MV1SetPosition(modelHandle_, pos);
-}
-
-//角度設定
-void Model::SetRot(VECTOR rot)
-{
-	rot_ = rot;
-	MV1SetRotationXYZ(modelHandle_, rot);
-}
-
-//拡縮率設定
-void Model::SetScale(VECTOR scale)
-{
-	MV1SetScale(modelHandle_,scale);
-}
-
-//collisionフレーム設定
-void Model::SetCollFrame(const char* collFrameName)
-{
-	colFrameIndex_ = MV1SearchFrame(modelHandle_, collFrameName);
-	if (colFrameIndex_ < 0) {
-		colFrameIndex_ = -1;
-	}
-	MV1SetupCollInfo(modelHandle_, colFrameIndex_, 8, 8, 8);
-}
-
-//アニメーション設定
-void Model::SetAnimation(int animNo, bool isLoop, bool IsForceChange)
-{
-	if (!IsForceChange) {
-		if (animNext_.animNo == animNo)return;
-	}
-
-	if (animPrev_.attachNo != -1) {
-		MV1DetachAnim(modelHandle_, animPrev_.attachNo);
-		ClearAnimData(animPrev_);
-	}
-	if (animNext_.attachNo != -1) {
-		MV1DetachAnim(modelHandle_, animNext_.attachNo);
-		ClearAnimData(animNext_);
-	}
-
-	animNext_.animNo = animNo;
-	animNext_.attachNo = MV1AttachAnim(modelHandle_, animNext_.animNo, -1, false);
-	animNext_.totalTime = MV1GetAttachAnimTotalTime(modelHandle_, animNext_.attachNo);
-	animNext_.isLoop = isLoop;
-
-	animChangeFrameTotal_ = 1;
-	animChangeFrame_ = 1;
-}
-
 //アニメーション変更
 void Model::ChangeAnimation(int animNo, bool isLoop, bool isForceChange, int changeFrame)
 {
@@ -191,15 +131,8 @@ bool Model::IsAnimEnd()
 	return false;
 }
 
-//アニメーションの終わりを設定
-void Model::SetAnimEndFrame(int animNo)
-{
-	SetAnimation(animNo, false, true);
-	MV1SetAttachAnimTime(modelHandle_, animNext_.attachNo, animNext_.totalTime);
-}
-
 //特定フレームの座標を取得
-VECTOR Model::GetFrameLocalPosition(const char* frameName)
+VECTOR Model::GetFrameLocalPosition(const char* frameName) const
 {
 	int frameNo = MV1SearchFrame(modelHandle_, frameName);
 	auto name = MV1GetFrameName(modelHandle_, frameNo);
@@ -208,12 +141,8 @@ VECTOR Model::GetFrameLocalPosition(const char* frameName)
 	return localPos;
 }
 
-void Model::SetAnimationFrame(float value)
-{
-	MV1SetAttachAnimTime(modelHandle_, animNext_.attachNo, value);
-}
-
-bool Model::GetSpecifiedAnimTime(int specifiedTime)
+//アニメーションの特定フレームと現在のアニメーションフレーム数が同じかを取得する
+bool Model::GetSpecifiedAnimTime(const int specifiedTime) const
 {
 
 	float currentAnimTime = MV1GetAttachAnimTime(modelHandle_, animNext_.attachNo);
@@ -223,6 +152,75 @@ bool Model::GetSpecifiedAnimTime(int specifiedTime)
 	}
 
 	return false;
+}
+
+
+//ポジション設定
+void Model::SetPos(const VECTOR pos)
+{
+	pos_ = pos;
+	MV1SetPosition(modelHandle_, pos);
+}
+
+//角度設定
+void Model::SetRot(const VECTOR rot)
+{
+	rot_ = rot;
+	MV1SetRotationXYZ(modelHandle_, rot);
+}
+
+//拡縮率設定
+void Model::SetScale(const VECTOR scale)
+{
+	MV1SetScale(modelHandle_,scale);
+}
+
+//collisionフレーム設定
+void Model::SetCollFrame(const char* collFrameName)
+{
+	colFrameIndex_ = MV1SearchFrame(modelHandle_, collFrameName);
+	if (colFrameIndex_ < 0) {
+		colFrameIndex_ = -1;
+	}
+	MV1SetupCollInfo(modelHandle_, colFrameIndex_, 8, 8, 8);
+}
+
+//アニメーション設定
+void Model::SetAnimation(const int animNo, const  bool isLoop, const  bool IsForceChange)
+{
+	if (!IsForceChange) {
+		if (animNext_.animNo == animNo)return;
+	}
+
+	if (animPrev_.attachNo != -1) {
+		MV1DetachAnim(modelHandle_, animPrev_.attachNo);
+		ClearAnimData(animPrev_);
+	}
+	if (animNext_.attachNo != -1) {
+		MV1DetachAnim(modelHandle_, animNext_.attachNo);
+		ClearAnimData(animNext_);
+	}
+
+	animNext_.animNo = animNo;
+	animNext_.attachNo = MV1AttachAnim(modelHandle_, animNext_.animNo, -1, false);
+	animNext_.totalTime = MV1GetAttachAnimTotalTime(modelHandle_, animNext_.attachNo);
+	animNext_.isLoop = isLoop;
+
+	animChangeFrameTotal_ = 1;
+	animChangeFrame_ = 1;
+}
+
+//アニメーションの終わりを設定
+void Model::SetAnimEndFrame(const int animNo)
+{
+	SetAnimation(animNo, false, true);
+	MV1SetAttachAnimTime(modelHandle_, animNext_.attachNo, animNext_.totalTime);
+}
+
+//アニメーションのフレームを設定する
+void Model::SetAnimationFrame(const float value)
+{
+	MV1SetAttachAnimTime(modelHandle_, animNext_.attachNo, value);
 }
 
 //アニメーション情報の初期化
@@ -235,7 +233,7 @@ void Model::ClearAnimData(AnimData& anim)
 }
 
 //アニメーションの更新
-void Model::UpdateAnim(AnimData anim, float dt)
+void Model::UpdateAnim(const AnimData anim, const  float dt)
 {
 	if (anim.attachNo == -1) return;
 

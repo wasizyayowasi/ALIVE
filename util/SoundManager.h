@@ -22,7 +22,7 @@ public:
 	/// <summary>
 	/// インスタンス作成
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>インスタンス</returns>
 	static SoundManager& GetInstance() {
 		static SoundManager instance;
 		return instance;
@@ -159,11 +159,17 @@ private:
 	/// <returns>ロードしたサウンド</returns>
 	int Load3DSoundBGMFile(std::string fileName);
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	SoundManager();
 
 	SoundManager(const SoundManager&) = delete;
 	void operator = (const SoundManager&) = delete;
 
+	/// <summary>
+	/// サウンド情報の読み込み
+	/// </summary>
 	void LoadSoundConfig();
 
 };

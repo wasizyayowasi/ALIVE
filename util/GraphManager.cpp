@@ -15,6 +15,7 @@ namespace {
 	const char* const chapter3_filepath			= "data/model/room/texture/Chapter3.png";
 }
 
+//デストラクタ
 GraphManager::~GraphManager()
 {
 	for (auto& graph : graphHandle_) {
@@ -22,6 +23,7 @@ GraphManager::~GraphManager()
 	}
 }
 
+//画像の読み込み
 void GraphManager::Load()
 {
 	//画像をロードする
@@ -34,6 +36,7 @@ void GraphManager::Load()
 	graphHandle_["controllerBotton"]	= Graph::LoadGraph(controllerBottan_filepath);
 }
 
+//画像の取得
 int GraphManager::GetGraph(std::string name)
 {
 	return graphHandle_[name];

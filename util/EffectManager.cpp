@@ -9,10 +9,12 @@ namespace {
 	const char* const leaves_effect_filepath = "data/effect/Leaves.png";
 }
 
+//コンストラクタ
 EffectManager::EffectManager()
 {
 }
 
+//デストラクタ
 EffectManager::~EffectManager()
 {
 	for (auto& graph : arrayHandle_) {
@@ -20,6 +22,7 @@ EffectManager::~EffectManager()
 	}
 }
 
+//画像の読み込み
 void EffectManager::Load()
 {
 	//画像の分割読み込み
@@ -59,6 +62,7 @@ void EffectManager::Load()
 	}
 }
 
+//更新
 void EffectManager::Update()
 {
 	effect2D_.remove_if([](std::shared_ptr<Effect2D> effectPoint) {return !effectPoint->IsEnable(); });
@@ -69,6 +73,7 @@ void EffectManager::Update()
 	}
 }
 
+//描画
 void EffectManager::Draw()
 {
 	//描画
@@ -77,6 +82,7 @@ void EffectManager::Draw()
 	}
 }
 
+//エフェクトの追加
 void EffectManager::AddEffect(std::string name,float size,VECTOR pos)
 {
 	effect2D_.push_back(std::make_shared<Effect2D>(handle_[name], size, pos));

@@ -9,19 +9,23 @@
 #include <cassert>
 
 using json = nlohmann::json;
-using namespace std;
 
+//コンストラクタ
 ExternalFile::ExternalFile()
 {
 }
 
+//デストラクタ
 ExternalFile::~ExternalFile()
 {
 	RewritePlayerInfo();
 }
 
+//ファイルをまとめて読み込む
 void ExternalFile::LoadFile()
 {
+	//モデルファイルパスの取得
+	LoadModelFilePath();
 	//ファイルのロード
 	LoadFileHandle("obj");
 	LoadFileHandle("end");
@@ -35,9 +39,10 @@ void ExternalFile::LoadFile()
 	LoadFileHandle("cameraPosition");
 }
 
+//配置データを読み込む
 void ExternalFile::LoadArrangementData()
 {
-	LoadPlayerInfo("player");
+	LoadPlayerInfo();
 	LoadSaveDataInfo("saveData");
 	//マップに格納する
 	LoadObjectData("UIpos", loadUIInfo_);
@@ -53,6 +58,7 @@ void ExternalFile::LoadArrangementData()
 	LoadObjectDataList("cameraGimmick", loadCameraGimmickInfo_);
 }
 
+//ファイルを読み込む
 void ExternalFile::LoadFileHandle(std::string name)
 {
 	//ファイルパスの生成
@@ -61,9 +67,57 @@ void ExternalFile::LoadFileHandle(std::string name)
 
 	//ファイルのロード
 	loadFile_[name] = FileRead_open(filepath.c_str());
-	bool temp = CheckHandleASyncLoad(loadFile_[name]);
 }
 
+//セーブデータの書き出し
+void ExternalFile::SaveDataRewriteInfo(int num)
+{
+	json saveData = {
+		{"name","saveData"},
+		{"pastTotalDeath",pastTotalDeathNum_},
+	};
+
+	std::string filename = saveData["name"];
+	std::string extension = ".json";
+	filename += extension;
+	filename = "data/jsonFile/" + filename;
+
+	std::ofstream writeing_file;
+	writeing_file.open(filename, std::ios::out);
+	writeing_file << saveData.dump() << std::endl;
+	writeing_file.close();
+}
+
+void ExternalFile::LoadModelFilePath()
+{
+	//読み込むファイルのパスを生成
+	std::string path = "data/jsonFile/modelPath.json";
+
+	//ファイルを開く
+	std::ifstream ifs(path.c_str());
+	assert(ifs);
+
+	//よくわかっていない
+	json json_;
+	ifs >> json_;
+
+	//ファイル名の取得
+	for (auto& scene : json_["scene"])
+	{
+		for (auto& name : scene["name"])
+		{
+			for (auto& path : name)
+			{
+				filePathInfo_[scene["type"]].push_back(path);
+			}
+		}
+	}
+	
+	//閉じる
+	ifs.close();
+}
+
+//特定のギミックの配置情報を取得する
 LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(VECTOR objPos, const char* const name)
 {
 
@@ -85,6 +139,8 @@ LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(VECTOR objPos, const char* 
 	return info;
 }
 
+//カメラが特殊な動きを行う印(オブジェクト)が
+// どこにあるかの配置データを取得する
 LoadObjectInfo ExternalFile::GetCameraGimmickInfo(VECTOR playerPos, const char* const name)
 {
 
@@ -101,6 +157,7 @@ LoadObjectInfo ExternalFile::GetCameraGimmickInfo(VECTOR playerPos, const char* 
 	return info;
 }
 
+//指定した名前のオブジェクト配置データを返す
 LoadObjectInfo ExternalFile::GetSpecifiedInfo(const char* const stage, const char* const name)
 {
 	LoadObjectInfo info = {};
@@ -130,6 +187,7 @@ LoadObjectInfo ExternalFile::GetSpecifiedInfo(const char* const stage, const cha
 	return info;
 }
 
+//エネミーの配置データを取得する
 std::list<LoadObjectInfo> ExternalFile::GetEnemyInfo(VECTOR playerPos)
 {
 	std::list<LoadObjectInfo> info = {};
@@ -149,6 +207,7 @@ std::list<LoadObjectInfo> ExternalFile::GetEnemyInfo(VECTOR playerPos)
 	return info;
 }
 
+//プレイヤーの開始位置のデータを取得する
 VECTOR ExternalFile::GetStartPos(std::string name)
 {
 	if (static_cast<int>(name.size()) == 0) {
@@ -158,6 +217,7 @@ VECTOR ExternalFile::GetStartPos(std::string name)
 	return loadStartPos_[name].pos;
 }
 
+//チュートリアルを表示するポイントの配置データを取得する
 LoadObjectInfo ExternalFile::GetTutorialObjInfo(VECTOR pos)
 {
 
@@ -177,31 +237,8 @@ LoadObjectInfo ExternalFile::GetTutorialObjInfo(VECTOR pos)
 	return info;
 }
 
-//セーブデータの書き出し
-void ExternalFile::SaveDataRewriteInfo(int num)
-{
-	json saveData = {
-		{"name","saveData"},
-		{"pastTotalDeath",pastTotalDeathNum_},
-	};
 
-	string filename = saveData["name"];
-	string extension = ".json";
-	filename += extension;
-	filename = "data/jsonFile/" + filename;
-
-	ofstream writeing_file;
-	writeing_file.open(filename, ios::out);
-	writeing_file << saveData.dump() << std::endl;
-	writeing_file.close();
-
-}
-
-void ExternalFile::SetStartName(std::string name)
-{
-	startPosName_ = name;
-}
-
+//カメラの座標データを取得する
 VECTOR ExternalFile::GetCameraTargetPos(std::string name)
 {
 	VECTOR pos = {};
@@ -216,6 +253,7 @@ VECTOR ExternalFile::GetCameraTargetPos(std::string name)
 	return pos;
 }
 
+//指定UIの配置座標を取得する
 VECTOR ExternalFile::GetUIPos(std::string name)
 {
 	VECTOR pos = {};
@@ -230,6 +268,13 @@ VECTOR ExternalFile::GetUIPos(std::string name)
 	return pos;
 }
 
+//開始場所の名前を設定する
+void ExternalFile::SetStartName(std::string name)
+{
+	startPosName_ = name;
+}
+
+//死んだ回数をセットする
 void ExternalFile::SetDeathCount(int num)
 {
 	pastTotalDeathNum_.pop_front();
@@ -250,63 +295,59 @@ void ExternalFile::RewritePlayerInfo()
 	};
 
 	//書き出す場所の指定
-	string filename = player["name"];
-	string extension = ".json";
+	std::string filename = player["name"];
+	std::string extension = ".json";
 	filename += extension;
 	filename = "data/jsonFile/" + filename;
 
 	//出力
-	ofstream writeing_file;
-	writeing_file.open(filename, ios::out);
+	std::ofstream writeing_file;
+	writeing_file.open(filename, std::ios::out);
 	writeing_file << player.dump() << std::endl;
 	writeing_file.close();
 }
 
 //プレイヤーのステータス情報を読み込む
-void ExternalFile::LoadPlayerInfo(const char* const filename)
+void ExternalFile::LoadPlayerInfo()
 {
-	string path = "data/jsonFile/";
-	path += filename;
-	path += ".json";
+	//ファイルパス
+	std::string path = "data/jsonFile/player.json";
 
-	ifstream ifs(path.c_str());
+	//ファイルを開く
+	std::ifstream ifs(path.c_str());
 	assert(ifs);
 
+	//よくわからない
 	json json_;
 	ifs >> json_;
 
-	player_.jumpPower = json_["jumpPower"];
-	player_.runningJumpPower = json_["runningJumpPower"];
-	player_.rotSpeed = json_["rotSpeed"];
-	player_.walkSpeed = json_["walkSpeed"];
-	player_.runningSpeed = json_["runningSpeed"];
+	//プレイヤーのステータスの取得
+	player_.jumpPower			= json_["jumpPower"];
+	player_.runningJumpPower	= json_["runningJumpPower"];
+	player_.rotSpeed			= json_["rotSpeed"];
+	player_.walkSpeed			= json_["walkSpeed"];
+	player_.runningSpeed		= json_["runningSpeed"];
 
+	//閉じる
 	ifs.close();
 }
 
 //セーブデータを読み込む
 void ExternalFile::LoadSaveDataInfo(const char* const filename)
 {
-	string path = "data/jsonFile/";
+	std::string path = "data/jsonFile/";
 	path += filename;
 	path += ".json";
 
-	ifstream ifs(path.c_str());
+	std::ifstream ifs(path.c_str());
 	assert(ifs);
 
 	json json;
 	ifs >> json;
 
-	//pastTotalDeathNum1_.push_back(11);
-	//pastTotalDeathNum1_.push_back(2);
-	//pastTotalDeathNum1_.push_back(8);
-	//pastTotalDeathNum1_.push_back(26);
-	//pastTotalDeathNum1_.push_back(5);
-
 	for (int i = 0; i < 5; i++) {
 		pastTotalDeathNum_.push_back(json["pastTotalDeath"][i]);
 	}
-	//totalDeathNum_ = json["totalDeath"];
 
 	ifs.close();
 }
@@ -365,7 +406,7 @@ void ExternalFile::LoadObjectDataList(std::string name, std::unordered_map<std::
 	}
 }
 
-
+//オブジェクトの配置情報を読み込む
 void ExternalFile::LoadObjectData(std::string name, std::unordered_map<std::string, LoadObjectInfo>& dataTable)
 {
 	//読み込んだデータのハンドルを取得

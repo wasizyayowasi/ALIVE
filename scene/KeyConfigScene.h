@@ -43,7 +43,7 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// 現在のkey入力情報を描画
+	/// キーの役割りの描画
 	/// </summary>
 	void KeyStateDraw();
 	
@@ -103,7 +103,7 @@ private:
 	std::shared_ptr<UIItemManager> KeyUI_;				//UIマネージャーのスマートポインタ
 	std::shared_ptr<UIItemManager> PadUI_;				//UIマネージャーのスマートポインタ
 
-	std::map<int, Key> keyNum_;
+	std::map<int, Key> keyNum_;							//DXライブラリの入力番号と作成した画像の番号を合わせるためのテーブル
 
 	void (KeyConfigScene::* updateFunc_)();
 	void (KeyConfigScene::* changeKeyUpdateFunc_)();	//メンバ関数ポインタ

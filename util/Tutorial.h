@@ -94,8 +94,6 @@ private:
 
 	std::map<UIGraph, std::pair<float, float>> UIPos_;	//UIの画面ポジション pairの中身｜first：X｜second：Y
 
-	VECTOR tutorialDrawPos_ = {};
-
 	void(Tutorial::* drawFunc_)(InputState& input);
 
 };

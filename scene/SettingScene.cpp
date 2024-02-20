@@ -22,14 +22,17 @@ namespace {
 	constexpr float circle_radius = 14.5f;
 }
 
+//コンストラクタ
 SettingScene::SettingScene(SceneManager& manager):SceneBase(manager),updateFunc_(&SettingScene::GaussFadeInUpdate)
 {
 }
 
+//デストラクタ
 SettingScene::~SettingScene()
 {
 }
 
+//初期化
 void SettingScene::Init()
 {
 	//短縮化
@@ -69,16 +72,19 @@ void SettingScene::Init()
 
 }
 
+//終了
 void SettingScene::End()
 {
 	DeleteGraph(makeScreenHandle_);
 }
 
+//更新
 void SettingScene::Update()
 {
 	(this->*updateFunc_)();
 }
 
+//描画
 void SettingScene::Draw()
 {
 	//少し透過した黒の背景を描画
@@ -171,6 +177,7 @@ void SettingScene::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
+//通常時の更新
 void SettingScene::NormalUpdate()
 {
 	//短縮化
@@ -192,6 +199,7 @@ void SettingScene::NormalUpdate()
 	}
 }
 
+//ガウス処理を施したフェードイン
 void SettingScene::GaussFadeInUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
@@ -201,6 +209,7 @@ void SettingScene::GaussFadeInUpdate()
 	}
 }
 
+//ガウス処理を施したフェードアウト
 void SettingScene::GaussFadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
@@ -211,6 +220,7 @@ void SettingScene::GaussFadeOutUpdate()
 	}
 }
 
+//BGMの音量を変更する
 void SettingScene::BGMUpdate()
 {
 	//短縮化
@@ -231,6 +241,7 @@ void SettingScene::BGMUpdate()
 	SoundManager::GetInstance().SetBGMVolume(volumeBGM_ * 25);
 }
 
+//SEの音量を変更する
 void SettingScene::SEUpdate()
 {
 	//短縮化
@@ -251,6 +262,7 @@ void SettingScene::SEUpdate()
 	SoundManager::GetInstance().SetSEVolume(volumeSE_ * 25);
 }
 
+//ウィンドウモードを変更する
 void SettingScene::ChangeWindowUpdate()
 {
 	//短縮化
@@ -266,6 +278,7 @@ void SettingScene::ChangeWindowUpdate()
 	}
 }
 
+//updateFuncの中身を変更する
 void SettingScene::ChangeUpdateFunc()
 {
 	//短縮化

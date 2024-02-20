@@ -156,10 +156,12 @@ updateFunc_(&KeyConfigScene::FadeInUpdate)
 	}
 }
 
+//デストラクタ
 KeyConfigScene::~KeyConfigScene()
 {
 }
 
+//初期化
 void KeyConfigScene::Init()
 {
 	//短縮化
@@ -203,6 +205,7 @@ void KeyConfigScene::Init()
 	PadUI_->AddMenu(static_cast<float>(Game::screen_width / 2), static_cast<float>(Game::screen_height / 5 * 4 + 32), 320, 100, "キャンセル", fontHandleSize42_);
 }
 
+//終了
 void KeyConfigScene::End()
 {
 	//短縮化
@@ -213,11 +216,13 @@ void KeyConfigScene::End()
 	DeleteGraph(makeScreenHandle_);
 }
 
+//更新
 void KeyConfigScene::Update()
 {
 	(this->*updateFunc_)();
 }
 
+//描画
 void KeyConfigScene::Draw()
 {
 	//背景に黒の透過
@@ -235,6 +240,7 @@ void KeyConfigScene::Draw()
 	(this->*drawFunc_)();
 }
 
+//キーの役割りの描画
 void KeyConfigScene::KeyStateDraw()
 {
 	//書き込みスクリーンの変更
@@ -253,6 +259,7 @@ void KeyConfigScene::KeyStateDraw()
 	SetDrawScreen(DX_SCREEN_BACK);
 }
 
+//キーの画像を描画する
 void KeyConfigScene::KeyGraphDraw()
 {
 	//短縮化
@@ -307,6 +314,7 @@ void KeyConfigScene::KeyGraphDraw()
 	}
 }
 
+//コントローラー画像の描画
 void KeyConfigScene::ControllerDraw()
 {
 	//書き込みスクリーンの変更
@@ -325,6 +333,7 @@ void KeyConfigScene::ControllerDraw()
 	SetDrawScreen(DX_SCREEN_BACK);
 }
 
+//変更したいkeyを入力させるためのポップアップ描画
 void KeyConfigScene::ChangeKeyPopUpText()
 {
 	//短縮化
@@ -368,7 +377,7 @@ void KeyConfigScene::ChangeKeyPopUpText()
 
 }
 
-//変更したいキーを選択する
+//どの入力装置のキーを変更するかを選択する
 void KeyConfigScene::SelectChangeKeyUpdate()
 {
 	//短縮化
@@ -447,7 +456,7 @@ void KeyConfigScene::SelectChangeKeyUpdate()
 
 }
 
-//変更したいキーをどのキーに変更するのか
+//変更するキーをどのキーに変更するのかを決定する
 void KeyConfigScene::ChangeKeyborardUpdate()
 {
 	//短縮化
@@ -495,6 +504,7 @@ void KeyConfigScene::ChangeKeyborardUpdate()
 	}
 }
 
+//コントローラーの場合の更新
 void KeyConfigScene::ControllerUpdate()
 {
 	//短縮化
@@ -525,6 +535,7 @@ void KeyConfigScene::ControllerUpdate()
 
 }
 
+//フェードインの更新
 void KeyConfigScene::FadeInUpdate()
 {
 	float timer = static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_);
@@ -535,11 +546,13 @@ void KeyConfigScene::FadeInUpdate()
 	}
 }
 
+//通常時の更新
 void KeyConfigScene::NormalUpdate()
 {
 	(this->*changeKeyUpdateFunc_)();
 }
 
+//フェードアウトの更新
 void KeyConfigScene::FadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));

@@ -23,6 +23,7 @@
 #include "../object/ObjectManager.h"
 #include "../object/ObjectData.h"
 
+//コンストラクタ
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::FadeInUpdate)
 {
 	//短縮化
@@ -42,6 +43,7 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	objManager_->MainStageObjectGenerator();
 }
 
+//デストラクタ
 GameMain::~GameMain()
 {
 	//ゲームメインが終わるときにプレイ中に死んだ回数と
@@ -49,6 +51,7 @@ GameMain::~GameMain()
 	ExternalFile::GetInstance().SaveDataRewriteInfo(totalDeathNum_);
 }
 
+//初期化
 void GameMain::Init()
 {
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
@@ -65,6 +68,7 @@ void GameMain::Init()
 	MV1SetPosition(skyHandle_, VGet(0, 200, 0));
 }
 
+//終了
 void GameMain::End()
 {
 	DeleteGraph(makeScreenHandle_);

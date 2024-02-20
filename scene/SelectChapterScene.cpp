@@ -20,18 +20,21 @@ namespace {
 	constexpr float total_time = 60.0f;
 }
 
+//コンストラクタ
 SelectChapterScene::SelectChapterScene(SceneManager& manager) : SceneBase(manager),updateFunc_(&SelectChapterScene::SlideInBook)
 {
 }
 
+//デストラクタ
 SelectChapterScene::~SelectChapterScene()
 {
 }
 
+//初期化
 void SelectChapterScene::Init()
 {
 	//インスタンス化
-	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(ObjectType::Book),Material::Other);
+	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(ObjectName[static_cast<int>(ObjectType::Book)]),Material::Other);
 
 	//オブジェクト配置データ
 	auto& file = ExternalFile::GetInstance();
@@ -50,15 +53,18 @@ void SelectChapterScene::Init()
 	model_->SetAnimation(static_cast<int>(BookAnim::normal), false, false);
 }
 
+//終了
 void SelectChapterScene::End()
 {
 }
 
+//更新
 void SelectChapterScene::Update()
 {
 	(this->*updateFunc_)();
 }
 
+//描画
 void SelectChapterScene::Draw()
 {
 	//モデルの描画
@@ -70,6 +76,7 @@ void SelectChapterScene::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
+//チャプターを変更する
 void SelectChapterScene::ChangeChapter()
 {
 	//短縮化
@@ -82,6 +89,7 @@ void SelectChapterScene::ChangeChapter()
 	file.SetStartName(str);
 }
 
+//本がスライドインしてくる
 void SelectChapterScene::SlideInBook()
 {
 	//短縮化
@@ -106,6 +114,7 @@ void SelectChapterScene::SlideInBook()
 	}
 }
 
+//通常の更新
 void SelectChapterScene::NormalUpdate()
 {
 	//短縮化
@@ -152,6 +161,7 @@ void SelectChapterScene::NormalUpdate()
 	}
 }
 
+//本がスライドアウトしていく
 void SelectChapterScene::SlideOutBook()
 {
 	//短縮化
@@ -174,6 +184,7 @@ void SelectChapterScene::SlideOutBook()
 	}
 }
 
+//フェードアウト
 void SelectChapterScene::FadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));

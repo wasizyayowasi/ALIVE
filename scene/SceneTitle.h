@@ -60,7 +60,7 @@ private:
 	void LightSetting();
 
 	/// <summary>
-	/// カメラの配置等の設定
+	/// カメラの設定
 	/// </summary>
 	void CameraSettingPos();
 
@@ -70,12 +70,12 @@ private:
 	void SelectNumUpdate();
 
 	/// <summary>
-	/// フェードイン
+	/// フェードインの更新
 	/// </summary>
 	void FadeInUpdate();
 
 	/// <summary>
-	/// 通常時の更新
+	/// UIの更新
 	/// </summary>
 	void UIUpdate();
 
@@ -90,7 +90,7 @@ private:
 	void UIFadeOutUpdate();
 
 	/// <summary>
-	/// オープニングのフェードアウト
+	/// タイトルのフェードアウト
 	/// </summary>
 	void SceneTitleFadeOutUpdate();
 
@@ -129,6 +129,6 @@ private:
 
 	std::map<std::string, VECTOR> menuDrawPos_;	//メニューを描画する座標
 
-	void (SceneTitle::* updateFunc_)();
+	void (SceneTitle::* updateFunc_)();			//メンバ関数ポインタ
 };
 

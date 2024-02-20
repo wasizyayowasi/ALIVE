@@ -19,13 +19,13 @@ class CheckCollisionModel
 private:
 
 	struct CollModelState {
-		MV1_COLL_RESULT_POLY_DIM hitDim;		//108byte
-		std::shared_ptr<Model> model;			//‚í‚©‚ç‚ñ
+		MV1_COLL_RESULT_POLY_DIM hitDim = {};		//108byte
+		std::shared_ptr<Model> model = {};			//‚í‚©‚ç‚ñ
 	};
 
 	struct CollResultPoly {
-		MV1_COLL_RESULT_POLY* hitDim;			//104byte
-		std::shared_ptr<Model> model;			//‚í‚©‚ç‚ñ
+		MV1_COLL_RESULT_POLY* hitDim = {};			//104byte
+		std::shared_ptr<Model> model = {};			//‚í‚©‚ç‚ñ
 	};
 
 public:

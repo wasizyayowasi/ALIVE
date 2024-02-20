@@ -8,40 +8,72 @@ class InputState;
 class SceneManager
 {
 public:
-	//シーン遷移
+	/// <summary>
+	/// シーン遷移
+	/// </summary>
+	/// <param name="scene">シーンのポインタ</param>
 	void ChangeScene(std::shared_ptr<SceneBase> scene);
-	//メインのシーンを保ったまま別のシーンを前画面に表示する
+
+	/// <summary>
+	/// メインのシーンを保ったまま別のシーンを前画面に表示する
+	/// </summary>
+	/// <param name="scene">シーンのポインタ</param>
 	void PushFrontScene(std::shared_ptr<SceneBase> scene);
-	//メインのシーンを保ったまま別のシーンを後画面に表示する
-	void PushBackScene(std::shared_ptr<SceneBase> scene);
-	//シーンをすり替える
-	void SwapScene(std::shared_ptr<SceneBase> scene);				
-	//ひとつ前のシーンに戻る
-	void PopFrontScene();											
-	//シーンの更新
-//	void Update(const InputState& input);							
-	void Update();							
-	//シーンの描画
-	void Draw();													
-	//メインwhile文を終了させるため
-	bool End() { return isEnd_; };		
-	//endフラグを変更する
+
+	/// <summary>
+	/// シーンをすり替える
+	/// </summary>
+	/// <param name="scene">シーンのポインタ</param>
+	void SwapScene(std::shared_ptr<SceneBase> scene);
+
+	/// <summary>
+	/// ひとつ前のシーンに戻る
+	/// </summary>
+	void PopFrontScene();	
+
+	/// <summary>
+	/// シーンの更新
+	/// </summary>
+	void Update();	
+
+	/// <summary>
+	/// シーンの描画
+	/// </summary>
+	void Draw();	
+
+	/// <summary>
+	/// メインwhile文を終了させるため
+	/// </summary>
+	/// <returns>ゲームを終了させるか true:終了 false:終了しない</returns>
+	bool End() const { return isEnd_; };		
+
+	/// <summary>
+	/// 終了フラグを変更する
+	/// </summary>
+	/// <param name="flag">終了するか</param>
 	void SetEndFlag(bool flag) { isEnd_ = flag; }
-	//ウィンドウモードを変更する
+
+	/// <summary>
+	/// ウィンドウモードを変更する
+	/// </summary>
+	/// <param name="windowMode">true：windowMode　false：フルスクリーン</param>
 	void ChangeWindowMode(bool windowMode);
-	//ウィンドウモードの取得
-	bool GetWindowMode() { return windowMode_; }
+
+	/// <summary>
+	/// ウィンドウモードの取得
+	/// </summary>
+	/// <returns></returns>
+	bool GetWindowMode() const { return windowMode_; }
 
 private:
 
-	std::deque<std::shared_ptr<SceneBase>> scenes_;					//シーン本体
+	std::deque<std::shared_ptr<SceneBase>> scenes_;		//シーン本体
 
-	bool isEnd_ = false;
+	bool isEnd_ = false;								//終了フラグ
 
-	int debugDrawTime_ = 0;
-	int debugUpdateTime_ = 0;
+	int debugDrawTime_ = 0;								//描画にかかる時間(1フレーム当たり)
+	int debugUpdateTime_ = 0;							//更新にかかる時間(1フレーム当たり)
 
-	bool windowMode_ = true;
-
+	bool windowMode_ = true;							//windowMode　true：windowMode　false：フルスクリーン
 };
 

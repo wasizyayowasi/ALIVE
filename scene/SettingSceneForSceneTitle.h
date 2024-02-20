@@ -83,12 +83,10 @@ public:
 	void SceneChange();
 private:
 
-	int makeScreenHandle_ = -1;
-
-	int volumeBGM_ = 0;
-	int volumeSE_ = 0;
-
-	int selectNum_ = 0;
+	int makeScreenHandle_ = -1;					//作成したスクリーン画像
+	int volumeBGM_ = 0;							//BGMのボリューム
+	int volumeSE_ = 0;							//SEのボリューム
+	int selectNum_ = 0;							//選択番号
 
 	bool windowMode_ = true;					//ウィンドウモード
 
@@ -98,10 +96,10 @@ private:
 	int fadeValue_ = 0;
 	int fadeColor_ = 0x000000;
 
-	std::string windowModeText_ = "≪  ウィンドウモード  ≫";
-	std::shared_ptr<UIItemManager> UIManager_;
-	std::map<std::string, VECTOR> menuDrawPos_;	//メニューを描画する座標
+	std::string windowModeText_ = "≪  ウィンドウモード  ≫";	//ウィンドウモードの表示テキスト
+	std::shared_ptr<UIItemManager> UIManager_;					//UIマネージャーのポインタ
+	std::map<std::string, VECTOR> menuDrawPos_;					//メニューを描画する座標
 
-	void(SettingSceneForSceneTitle::* updateFunc_)();
+	void(SettingSceneForSceneTitle::* updateFunc_)();			//メンバ関数ポインタ
 };
 

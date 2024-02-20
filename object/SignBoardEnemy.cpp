@@ -12,8 +12,8 @@ SignBoardEnemy::SignBoardEnemy(const int handle, const Material materialType, co
 
 	//マテリアルの色を変える
 	MV1SetMaterialDifColor(model_->GetModelHandle(), 8, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
-	numModel_[0] = MV1DuplicateModel(model.GetModelHandle(ObjectType::Number));
-	numModel_[1] = MV1DuplicateModel(model.GetModelHandle(ObjectType::Number));
+	numModel_[0] = MV1DuplicateModel(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Number)]));
+	numModel_[1] = MV1DuplicateModel(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Number)]));
 }
 
 SignBoardEnemy::~SignBoardEnemy()

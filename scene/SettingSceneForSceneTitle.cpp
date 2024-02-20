@@ -23,14 +23,17 @@ namespace {
 	constexpr float circle_radius = 14.5f;
 }
 
+//コンストラクタ
 SettingSceneForSceneTitle::SettingSceneForSceneTitle(SceneManager& manager) :SceneBase(manager), updateFunc_(&SettingSceneForSceneTitle::GaussFadeInUpdate)
 {
 }
 
+//デストラクタ
 SettingSceneForSceneTitle::~SettingSceneForSceneTitle()
 {
 }
 
+//初期化
 void SettingSceneForSceneTitle::Init()
 {
 	//短縮化
@@ -78,16 +81,19 @@ void SettingSceneForSceneTitle::Init()
 
 }
 
+//終了
 void SettingSceneForSceneTitle::End()
 {
 	DeleteGraph(makeScreenHandle_);
 }
 
+//更新
 void SettingSceneForSceneTitle::Update()
 {
 	(this->*updateFunc_)();
 }
 
+//描画
 void SettingSceneForSceneTitle::Draw()
 {
 	//UI文字列の描画
@@ -175,6 +181,7 @@ void SettingSceneForSceneTitle::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
+//通常時の更新
 void SettingSceneForSceneTitle::NormalUpdate()
 {
 	//短縮化
@@ -196,6 +203,7 @@ void SettingSceneForSceneTitle::NormalUpdate()
 	}
 }
 
+//ガウス処理を施したフェードイン
 void SettingSceneForSceneTitle::GaussFadeInUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
@@ -205,6 +213,7 @@ void SettingSceneForSceneTitle::GaussFadeInUpdate()
 	}
 }
 
+//ガウス処理を施したフェードアウト
 void SettingSceneForSceneTitle::GaussFadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
@@ -215,6 +224,7 @@ void SettingSceneForSceneTitle::GaussFadeOutUpdate()
 	}
 }
 
+//BGMの音量を変更する
 void SettingSceneForSceneTitle::BGMUpdate()
 {
 	//短縮化
@@ -232,6 +242,7 @@ void SettingSceneForSceneTitle::BGMUpdate()
 	SoundManager::GetInstance().SetBGMVolume(volumeBGM_ * 25);
 }
 
+//SEの音量を変更する
 void SettingSceneForSceneTitle::SEUpdate()
 {
 	//短縮化
@@ -249,6 +260,7 @@ void SettingSceneForSceneTitle::SEUpdate()
 	SoundManager::GetInstance().SetSEVolume(volumeSE_ * 25);
 }
 
+//ウィンドウモードを変更する
 void SettingSceneForSceneTitle::ChangeWindowUpdate()
 {
 	//短縮化
@@ -264,6 +276,7 @@ void SettingSceneForSceneTitle::ChangeWindowUpdate()
 	}
 }
 
+//updateFuncの中身を変更する
 void SettingSceneForSceneTitle::ChangeUpdateFunc()
 {
 	//短縮化
@@ -292,6 +305,7 @@ void SettingSceneForSceneTitle::ChangeUpdateFunc()
 	}
 }
 
+//シーンを切り替える
 void SettingSceneForSceneTitle::SceneChange()
 {
 	switch (selectNum_) {

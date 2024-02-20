@@ -44,7 +44,7 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// Œ»İ‚Ìkey“ü—Íî•ñ‚ğ•`‰æ
+	/// ƒL[‚Ì–ğŠ„‚è‚Ì•`‰æ
 	/// </summary>
 	void KeyStateDraw();
 

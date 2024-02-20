@@ -14,7 +14,7 @@ Lever::Lever(const LoadObjectInfo info)
 	auto& model = ModelManager::GetInstance();
 
 	//モデルクラスのインスタンス化
-	model_ = std::make_shared<Model>(model.GetModelHandle(ObjectType::Lever), Material::Iron);
+	model_ = std::make_shared<Model>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Lever)]), Material::Iron);
 
 	//ポジションの初期化
 	pos_ = info.pos;

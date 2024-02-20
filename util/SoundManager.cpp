@@ -7,8 +7,7 @@ namespace {
     constexpr float sound_config_version = 1.0f;
 }
 
-using namespace std;
-
+//コンストラクタ
 SoundManager::SoundManager() 
 {
     //3DサウンドにXAudioを使用するか
@@ -18,6 +17,7 @@ SoundManager::SoundManager()
     Set3DSoundOneMetre(1.0f);
 }
 
+//デストラクタ
 SoundManager::~SoundManager()
 {
     for (auto& sound : nameAndHandleTable_) {
@@ -25,6 +25,7 @@ SoundManager::~SoundManager()
     }
 }
 
+//音声ファイルをロードする
 void SoundManager::LoadSound()
 {
     LoadSoundConfig();
@@ -45,97 +46,14 @@ void SoundManager::LoadSound()
     Load3DSoundSEFile("stopCrank");
 }
 
+//サウンドボリュームを変更する
 void SoundManager::ChangeVolumeMem()
 {
     SetSEVolume(volumeSE_);
     SetBGMVolume(volumeBGM_);
 }
 
-int SoundManager::Load2DSoundSEFile(std::string fileName)
-{
-    //ファイルパスの生成
-    string path = "data/sound/SE/";
-    path += fileName;
-    path += ".mp3";
-
-    //メモリに2Dサウンドをロードする
-    int handle = LoadSoundMem(path.c_str());
-    assert(handle >= 0);
-
-    //配列にロードしたものを加える
-    nameAndHandleTable_[fileName] = handle;
-
-    return handle;
-}
-
-int SoundManager::Load2DSoundBGMFile(std::string fileName)
-{
-    //ファイルパスの生成
-    string path = "data/sound/BGM/";
-    path += fileName;
-    path += ".mp3";
-
-    //メモリに2Dサウンドをロードする
-    int handle = LoadSoundMem(path.c_str());
-    assert(handle >= 0);
-
-    //配列にロードしたものを加える
-    nameAndHandleTable_[fileName] = handle;
-
-    return handle;
-}
-
-int SoundManager::Load3DSoundSEFile(std::string fileName)
-{
-    //ファイルパスの生成
-    string path = "data/sound/SE/";
-    path += fileName;
-    path += ".mp3";
-
-    //メモリに3Dサウンドをロードする
-    SetCreate3DSoundFlag(true);
-    int handle = LoadSoundMem(path.c_str());
-    SetCreate3DSoundFlag(false);
-    assert(handle >= 0);
-
-    //配列にロードしたものを加える
-    nameAndHandleTable_[fileName] = handle;
-
-    return handle;
-}
-
-int SoundManager::Load3DSoundBGMFile(std::string fileName)
-{
-    //ファイルパスの生成
-    string path = "data/sound/BGM/";
-    path += fileName;
-    path += ".mp3";
-
-    //メモリに3Dサウンドをロードする
-    SetCreate3DSoundFlag(true);
-    int handle = LoadSoundMem(path.c_str());
-    SetCreate3DSoundFlag(false);
-    assert(handle >= 0);
-
-    //配列にロードしたものを加える
-    nameAndHandleTable_[fileName] = handle;
-
-    return handle;
-}
-
-void SoundManager::LoadSoundConfig()
-{
-    SoundConfigInfo conf = {};
-    FILE* fp = nullptr;
-    fopen_s(&fp, sound_config_file_path, "rb");
-    if (fp) {
-        fread(&conf, sizeof(conf), 1, fp);
-        fclose(fp);
-        volumeBGM_ = conf.volumeBGM;
-        volumeSE_ = conf.volumeSE;
-    }
-}
-
+//読み込んだサウンドを流す
 void SoundManager::PlaySE(std::string name)
 {
     assert(nameAndHandleTable_[name] != -1);
@@ -144,6 +62,7 @@ void SoundManager::PlaySE(std::string name)
     PlaySoundMem(nameAndHandleTable_[name], DX_PLAYTYPE_BACK);
 }
 
+//読み込んだBGMを流す
 void SoundManager::PlayBGM(std::string name)
 {
     //ファイルパスの生成
@@ -154,6 +73,7 @@ void SoundManager::PlayBGM(std::string name)
     PlayMusic(path.c_str(), DX_PLAYTYPE_BACK);
 }
 
+//BGMの音量を調整する
 void SoundManager::SetSEVolume(unsigned int volume)
 {
     for (auto& record : nameAndHandleTable_) {
@@ -162,6 +82,7 @@ void SoundManager::SetSEVolume(unsigned int volume)
     volumeSE_ = volume;
 }
 
+//BGMの音量を取得する
 void SoundManager::SetBGMVolume(unsigned int volume)
 {
     SetVolumeMusic(volume);
@@ -174,6 +95,7 @@ void SoundManager::SetBGMRate(float rate)
     SetVolumeMusic(static_cast<int>(static_cast<float>(volumeBGM_ * rate)));
 }
 
+//SEを止める
 void SoundManager::StopSE(std::string name)
 {
     assert(static_cast<int>(name.size()) > 0);
@@ -182,11 +104,13 @@ void SoundManager::StopSE(std::string name)
     StopSoundMem(nameAndHandleTable_[name]);
 }
 
+//BGMを止める
 void SoundManager::StopBGM()
 {
     StopMusic();
 }
 
+//BGM、SEの音量を外部出力する
 void SoundManager::SaveSoundConfig()
 {
     SoundConfigInfo conf = {};
@@ -203,6 +127,7 @@ void SoundManager::SaveSoundConfig()
     }
 }
 
+//サウンドのポジション、聞こえる範囲を設定する
 void SoundManager::Set3DSoundInfo(VECTOR pos, float audioRange, std::string name)
 {
     assert(nameAndHandleTable_[name] != -1);
@@ -214,15 +139,107 @@ void SoundManager::Set3DSoundInfo(VECTOR pos, float audioRange, std::string name
     Set3DRadiusSoundMem(audioRange, nameAndHandleTable_[name]);
 }
 
+//3Dサウンドを再生する際のリスナーの位置を決める
 void SoundManager::Set3DSoundListenerInfo(VECTOR pos, VECTOR rot)
 {
     //リスナーの位置と向きを設定
     Set3DSoundListenerPosAndFrontPos_UpVecY(pos, rot);
 }
 
+//サウンドが再生中か調べる
 int SoundManager::CheckSoundFile(std::string name)
 {
     int check = DxLib::CheckSoundMem(nameAndHandleTable_[name]);
 
     return check;
+}
+
+//2DSEをロードする
+int SoundManager::Load2DSoundSEFile(std::string fileName)
+{
+    //ファイルパスの生成
+    std::string path = "data/sound/SE/";
+    path += fileName;
+    path += ".mp3";
+
+    //メモリに2Dサウンドをロードする
+    int handle = LoadSoundMem(path.c_str());
+    assert(handle >= 0);
+
+    //配列にロードしたものを加える
+    nameAndHandleTable_[fileName] = handle;
+
+    return handle;
+}
+
+//2DBGMをロードする
+int SoundManager::Load2DSoundBGMFile(std::string fileName)
+{
+    //ファイルパスの生成
+    std::string path = "data/sound/BGM/";
+    path += fileName;
+    path += ".mp3";
+
+    //メモリに2Dサウンドをロードする
+    int handle = LoadSoundMem(path.c_str());
+    assert(handle >= 0);
+
+    //配列にロードしたものを加える
+    nameAndHandleTable_[fileName] = handle;
+
+    return handle;
+}
+
+//3DSEをロードする
+int SoundManager::Load3DSoundSEFile(std::string fileName)
+{
+    //ファイルパスの生成
+    std::string path = "data/sound/SE/";
+    path += fileName;
+    path += ".mp3";
+
+    //メモリに3Dサウンドをロードする
+    SetCreate3DSoundFlag(true);
+    int handle = LoadSoundMem(path.c_str());
+    SetCreate3DSoundFlag(false);
+    assert(handle >= 0);
+
+    //配列にロードしたものを加える
+    nameAndHandleTable_[fileName] = handle;
+
+    return handle;
+}
+
+//3DBGMをロードする
+int SoundManager::Load3DSoundBGMFile(std::string fileName)
+{
+    //ファイルパスの生成
+    std::string path = "data/sound/BGM/";
+    path += fileName;
+    path += ".mp3";
+
+    //メモリに3Dサウンドをロードする
+    SetCreate3DSoundFlag(true);
+    int handle = LoadSoundMem(path.c_str());
+    SetCreate3DSoundFlag(false);
+    assert(handle >= 0);
+
+    //配列にロードしたものを加える
+    nameAndHandleTable_[fileName] = handle;
+
+    return handle;
+}
+
+//サウンド情報の読み込み
+void SoundManager::LoadSoundConfig()
+{
+    SoundConfigInfo conf = {};
+    FILE* fp = nullptr;
+    fopen_s(&fp, sound_config_file_path, "rb");
+    if (fp) {
+        fread(&conf, sizeof(conf), 1, fp);
+        fclose(fp);
+        volumeBGM_ = conf.volumeBGM;
+        volumeSE_ = conf.volumeSE;
+    }
 }

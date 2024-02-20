@@ -4,15 +4,19 @@
 #include "FontsManager.h"
 #include "game.h"
 
+//コンストラクタ
 UIItemManager::UIItemManager()
 {
 }
 
+//デストラクタ
 UIItemManager::~UIItemManager()
 {
 }
 
-void UIItemManager::AlphaChangeDraw(int selectNum, int fadeAlphaValue)
+//引数で送られてきた番号だけ
+//拡縮率を変更するときの描画
+void UIItemManager::AlphaChangeDraw(const int selectNum, const int fadeAlphaValue)
 {
 	float scale = 1.0f;
 	float alpha = 150;
@@ -33,7 +37,8 @@ void UIItemManager::AlphaChangeDraw(int selectNum, int fadeAlphaValue)
 	}
 }
 
-void UIItemManager::ChangePosDraw(float centerPosX, float centerPosY)
+//ポジションがを変更するUIの描画
+void UIItemManager::ChangePosDraw(const float centerPosX, const float centerPosY)
 {
 	static int time = 0;
 	float radian = 0.0f;
@@ -51,7 +56,8 @@ void UIItemManager::ChangePosDraw(float centerPosX, float centerPosY)
 
 }
 
-void UIItemManager::DrawBillBoard(std::map<std::string, VECTOR> drawPos,int alpha, float size)
+//画像を3D空間に描画する
+void UIItemManager::DrawBillBoard(std::map<std::string, VECTOR> drawPos, const int alpha, const float size)
 {
 	for (int i = 0; i < UIMenu_.size(); i++) {
 		//画像に書かれた文字を取得
@@ -62,7 +68,8 @@ void UIItemManager::DrawBillBoard(std::map<std::string, VECTOR> drawPos,int alph
 	}
 }
 
-void UIItemManager::AlphaChangeDrawBillBoard(std::map<std::string, VECTOR> drawPos, int selectNum,int fadeValue, float size)
+//アルファ値を変更した画像を3D空間に描画する
+void UIItemManager::AlphaChangeDrawBillBoard(std::map<std::string, VECTOR> drawPos, const int selectNum, const int fadeValue, const float size)
 {
 	float alpha = 100;
 
@@ -86,7 +93,8 @@ void UIItemManager::AlphaChangeDrawBillBoard(std::map<std::string, VECTOR> drawP
 	}
 }
 
-void UIItemManager::AddMenu(float centerPosX, float centerPosY, int width, int height, std::string str, int fontHandle)
+//UIメニューの追加
+void UIItemManager::AddMenu(const float centerPosX, const float centerPosY, const int width, const int height, std::string str, const int fontHandle)
 {
 	//インスタンス化
 	UIMenu_.push_back(std::make_shared<UIItem>());
@@ -95,7 +103,8 @@ void UIItemManager::AddMenu(float centerPosX, float centerPosY, int width, int h
 	UIMenu_.back()->CreateUIGraphSetUp(centerPosX,centerPosY, width, height, str, fontHandle);
 }
 
-void UIItemManager::AddingMenuWithSplitStr(float centerPosX, float centerPosY, int width, int height, std::string str, int fontHandle)
+//文字列を分割したメニューの追加
+void UIItemManager::AddingMenuWithSplitStr(const float centerPosX, const float centerPosY, const int width, const int height, std::string str, const int fontHandle)
 {
 	//短縮化
 	auto& font = FontsManager::GetInstance();

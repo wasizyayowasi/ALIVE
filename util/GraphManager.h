@@ -10,6 +10,10 @@ public:
 	/// </summary>
 	virtual ~GraphManager();
 
+	/// <summary>
+	/// インスタンス作成
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static GraphManager& GetInstance() {
 		static GraphManager instance;
 		return instance;

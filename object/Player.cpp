@@ -46,7 +46,7 @@ Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpda
 	playerInfo_ = ExternalFile::GetInstance().GetPlayerInfo();
 
 	//プレイヤーモデルの生成
-	model_ = std::make_shared<Model>(model.GetModelHandle(ObjectType::Player), Material::Other);
+	model_ = std::make_shared<Model>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Player)]), Material::Other);
 
 	//アニメーションの設定
 	model_->SetAnimation(static_cast<int>(PlayerAnimType::Idle), true, false);

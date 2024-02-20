@@ -29,6 +29,7 @@ namespace {
 	constexpr int division_height = 15;
 }
 
+//コンストラクタ
 GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEnd::FadeInUpdate)
 {
 	//短縮化
@@ -40,8 +41,8 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 	//インスタンス化
 	objManager_ = std::make_shared<ObjectManager>();
 	camera_ = std::make_shared<Camera>(VGet(265, 314, -803), VGet(265, 314, 1777));
-	playerModel_ = std::make_shared<Model>(model.GetModelHandle(ObjectType::Player), Material::Other);
-	boardModel_ = std::make_shared<Model>(model.GetModelHandle(ObjectType::WhiteBoard), Material::Iron);
+	playerModel_ = std::make_shared<Model>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Player)]), Material::Other);
+	boardModel_  = std::make_shared<Model>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::WhiteBoard)]), Material::Iron);
 
 	//モデルの設定
 	auto info = file.GetSpecifiedInfo("end", "player");
@@ -68,7 +69,7 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 
 	//死体モデルの生成
 	for (int i = 0; i < file.GetTotalDeathNum().back(); i++) {
-		corpseModel_.push_back(std::make_pair(false, std::make_shared<Model>(model.GetModelHandle(ObjectType::Player), Material::Other)));
+		corpseModel_.push_back(std::make_pair(false, std::make_shared<Model>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Player)]), Material::Other)));
 		corpseModel_[i].second->SetPos({ pos.x,pos.y + height,pos.z });
 		corpseModel_[i].second->SetRot(info.rot);
 		corpseModel_[i].second->SetScale(info.scale);
@@ -100,23 +101,28 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 	sound.Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
 }
 
+//デストラクタ
 GameEnd::~GameEnd()
 {
 }
 
+//初期化
 void GameEnd::Init()
 {
 }
 
+//終了
 void GameEnd::End()
 {
 }
 
+//更新
 void GameEnd::Update()
 {
 	(this->*updateFunc_)();
 }
 
+//描画
 void GameEnd::Draw()
 {
 	//短縮化
@@ -190,7 +196,8 @@ void GameEnd::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void GameEnd::CorpseUpdate(VECTOR playerPos)
+//死体の更新
+void GameEnd::CorpseUpdate(const VECTOR playerPos)
 {
 	//死体の高さの補正
 	float height = 0.0f;
@@ -261,6 +268,7 @@ void GameEnd::CorpseUpdate(VECTOR playerPos)
 	}
 }
 
+//ホワイトボードの更新
 void GameEnd::WhiteBoardUpdate()
 {
 	//短縮化
@@ -299,6 +307,7 @@ void GameEnd::WhiteBoardUpdate()
 	}
 }
 
+//フェードインの更新
 void GameEnd::FadeInUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
@@ -308,6 +317,7 @@ void GameEnd::FadeInUpdate()
 	}
 }
 
+//通常時の更新
 void GameEnd::NormalUpdate()
 {
 	//短縮化
@@ -392,6 +402,7 @@ void GameEnd::NormalUpdate()
 	}
 }
 
+//フェードアウトの更新
 void GameEnd::FadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));

@@ -1,7 +1,8 @@
 #include "Effect2D.h"
 #include <algorithm>
 
-Effect2D::Effect2D(std::vector<int> handle,float size, VECTOR pos)
+//コンストラクタ
+Effect2D::Effect2D(std::vector<int> handle,const float size,const VECTOR pos)
 {
 	//ハンドルの取得
 	handle_ = handle;
@@ -16,10 +17,12 @@ Effect2D::Effect2D(std::vector<int> handle,float size, VECTOR pos)
 	drawPos_ = pos;
 }
 
+//デストラクタ
 Effect2D::~Effect2D()
 {
 }
 
+//更新
 void Effect2D::Update()
 {
 	//画像の更新
@@ -31,6 +34,7 @@ void Effect2D::Update()
 	}
 }
 
+//画像を3D空間に描画する
 void Effect2D::DrawBillboard()
 {
 	DrawBillboard3D(drawPos_, 0.5f, 0.5f, drawSize_, 0.0f, handle_[currentNum_], true);

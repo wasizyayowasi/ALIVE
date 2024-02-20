@@ -1,31 +1,48 @@
 #pragma once
 #include "SceneBase.h"
+#include <list>
 #include <memory>
 #include <vector>
-#include <list>
 #include <string>
 
 class DebugScene : public SceneBase
 {
 public:
-
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="manager">シーンマネージャーの参照</param>
 	DebugScene(SceneManager& manager);
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~DebugScene();
 
-	//初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
-	//削除
+
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void End();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 private:
 
-	int selectNum_ = 0;
+	int selectNum_ = 0;					//選択番号
 
-	std::list<std::string> sceneName_;
+	std::list<std::string> sceneName_;	//シーンの名前
 };
 

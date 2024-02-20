@@ -2,34 +2,40 @@
 #include "FontsManager.h"
 #include <cassert>
 
+//コンストラクタ
 UIItem::UIItem()
 {
 }
 
+//デストラクタ
 UIItem::~UIItem()
 {
 }
 
-void UIItem::AlphaChangeDraw(float scale,int alpha)
+//サイズ調整、アルファ値の変更があるのUI描画
+void UIItem::AlphaChangeDraw(const float scale, const int alpha)
 {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 	DrawRotaGraphF(centerPosX_, centerPosY_, scale, 0.0f, makeScreenHandle_, true, false);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void UIItem::ChangePosDraw(float centerPosX, float centerPosY)
+//ポジションが変わるUIの描画
+void UIItem::ChangePosDraw(const float centerPosX, const  float centerPosY)
 {
 	DrawRotaGraphF(centerPosX, centerPosY, 1.0f, 0.0f, makeScreenHandle_, true);
 }
 
-void UIItem::DrawBillboard(VECTOR drawPos,int alpha, float size)
+//画像を3D空間に描画する
+void UIItem::DrawBillboard(const VECTOR drawPos, const int alpha, const  float size)
 {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 	DrawBillboard3D(drawPos, 0.5f, 0.5f, size, 0.0f, makeScreenHandle_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void UIItem::CreateUIGraphSetUp(float centerPosX, float centerPosY, int width, int height, std::string str, int fontHandle)
+//UI画像を作成するための位置情報等を設定する
+void UIItem::CreateUIGraphSetUp(const float centerPosX, const  float centerPosY, const  int width, const  int height, const  std::string str, const  int fontHandle)
 {
 	makeScreenWidth_ = width;
 	makeScreenHeight_ = height;
@@ -43,7 +49,8 @@ void UIItem::CreateUIGraphSetUp(float centerPosX, float centerPosY, int width, i
 
 }
 
-void UIItem::CreateUIGraph(int fontHandle)
+//UI画像の作成
+void UIItem::CreateUIGraph(const int fontHandle)
 {
 	assert(fontHandle != -1);
 

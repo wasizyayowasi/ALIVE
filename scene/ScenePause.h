@@ -1,33 +1,49 @@
 #pragma once
 #include "SceneBase.h"
-#include <DxLib.h>
 #include <memory>
 #include <vector>
 #include <string>
+#include <DxLib.h>
 
 class UIItemManager;
 
 class ScenePause : public SceneBase
 {
 public:
-	//コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="manager">シーンマネージャーの参照</param>
 	ScenePause(SceneManager& manager);
-	//デストラクタ
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~ScenePause();
 
-	//初期化用
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Init();
-	//削除用
+
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void End();
 
-	//更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
-	//描画
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 private:
 
-	int selectNum_ = 0;		//選択番号
+	int selectNum_ = 0;						//選択番号
 
 	std::shared_ptr<UIItemManager> UI_;		//UIマネージャのスマートポインタ
 	std::vector<std::string> menuName_;		//ポーズメニューの名前用

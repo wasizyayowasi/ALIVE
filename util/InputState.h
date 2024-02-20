@@ -44,8 +44,15 @@ class InputState
 	friend KeyConfigScene;
 	friend KeyConfigSceneForSceneTitle;
 public:
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~InputState();
 
+	/// <summary>
+	/// インスタンス作成
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static InputState& GetInstance() {
 		static InputState instance;
 		return instance;
@@ -146,15 +153,6 @@ public:
 	/// <summary>
 	/// 名前の描画
 	/// </summary>
-	/// <param name="type">描画したいkey</param>
-	/// <param name="posX">描画座標X</param>
-	/// <param name="posY">描画座標Y</param>
-	/// <param name="color">色</param>
-	/// <param name="fontHandle">フォント</param>
-	
-	/// <summary>
-	/// 名前の描画
-	/// </summary>
 	/// <param name="type">描画したいkey　castでint型にした値</param>
 	/// <param name="posX">描画座標X</param>
 	/// <param name="posY">描画座標Y</param>
@@ -165,7 +163,9 @@ public:
 	/// <param name="sign">記号</param>
 	void DrawName(int type, float posX, float posY, int color, int fontHandle,bool editName,bool before,std::string sign = "");
 private:
-
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	InputState();
 
 	InputState(const InputState&) = delete;
@@ -175,17 +175,15 @@ private:
 	bool currentInputDevice_ = false;			//true:キーボード　false:パッド
 
 	using InputMap_t = std::map<InputType, std::vector<InputInfo>>;
-	InputMap_t inputMapTable_;
+	InputMap_t inputMapTable_;							//ゲームプレイ中に実際に使われるinputテーブル
 
-	InputMap_t tempMapTable_;
+	InputMap_t tempMapTable_;							//入力割り当てを変更するときにinputMapTableを直接変更しないためにこの変数を変更する
 
-	InputMap_t defaultMapTable_;
+	InputMap_t defaultMapTable_;						//初期の入力割り当て
 
 	std::map<int, Key> keyNum_;							//キー番号
-	std::map<InputType, std::string> inputNameTable_;
+	std::map<InputType, std::string> inputNameTable_;	//キーに名前を付けるよう
 
-	std::vector<bool> currentInput_;
-	std::vector<bool> lastInput_;
-
-	std::unordered_map<int, int> rewriteKeyInfo_;
+	std::vector<bool> currentInput_;					//現在の入力
+	std::vector<bool> lastInput_;						//最後の入力
 };

@@ -25,14 +25,14 @@ public:
 	/// 拡縮率を変更するときの描画
 	/// </summary>
 	/// <param name="selectNum">番号</param>
-	void AlphaChangeDraw(int selectNum,int fadeAlphaValue);
+	void AlphaChangeDraw(const int selectNum, const int fadeAlphaValue);
 
 	/// <summary>
 	/// ポジションがを変更するUIの描画
 	/// </summary>
 	/// <param name="centerPosX">ポジションX</param>
 	/// <param name="centerPosY">ポジションY</param>
-	void ChangePosDraw(float centerPosX, float centerPosY);
+	void ChangePosDraw(const float centerPosX, const float centerPosY);
 
 	/// <summary>
 	/// 画像を3D空間に描画する
@@ -40,16 +40,16 @@ public:
 	/// <param name="drawPos">描画座標</param>
 	/// <param name="alpha">アルファ値</param>
 	/// /// <param name="size">サイズ</param>
-	void DrawBillBoard(std::map<std::string,VECTOR> drawPos, int alpha,float size);
+	void DrawBillBoard(std::map<std::string,VECTOR> drawPos, const int alpha,const float size);
 
 	/// <summary>
-	/// 画像を3D空間に描画する
+	/// アルファ値を変更した画像を3D空間に描画する
 	/// </summary>
 	/// <param name="drawPos">描画座標</param>
 	/// <param name="selectNum">選択番号</param>
 	/// <param name="fadeValue">アルファ値</param>
 	/// /// <param name="size">サイズ</param>
-	void AlphaChangeDrawBillBoard(std::map<std::string, VECTOR> drawPos, int selectNum, int fadeValue, float size);
+	void AlphaChangeDrawBillBoard(std::map<std::string, VECTOR> drawPos, const int selectNum, const int fadeValue, const float size);
 
 	/// <summary>
 	/// UIメニューの追加
@@ -60,7 +60,7 @@ public:
 	/// <param name="height">スクリーンの縦のサイズ</param>
 	/// <param name="str">文字列</param>
 	/// <param name="fontHandle">フォントハンドル</param>
-	void AddMenu(float centerPosX, float centerPosY, int width, int height, std::string str, int fontHandle);
+	void AddMenu(const float centerPosX, const float centerPosY, const int width, const int height, std::string str, const int fontHandle);
 
 	/// <summary>
 	/// 文字列を分割したメニューの追加
@@ -71,7 +71,7 @@ public:
 	/// <param name="height">スクリーンの縦のサイズ</param>
 	/// <param name="str">文字列</param>
 	/// <param name="fontHandle">フォントハンドル</param>
-	void AddingMenuWithSplitStr(float centerPosX, float centerPosY, int width, int height, std::string str, int fontHandle);
+	void AddingMenuWithSplitStr(const float centerPosX, const float centerPosY, const int width, const int height, std::string str, const int fontHandle);
 
 private:
 

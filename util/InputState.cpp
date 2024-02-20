@@ -19,6 +19,7 @@ namespace {
 
 using json = nlohmann::json;
 
+//コンストラクタ
 InputState::InputState()
 {
 	//ポーズ
@@ -67,7 +68,7 @@ InputState::InputState()
 	inputMapTable_ = defaultMapTable_;
 
 	//loadKeyInfo();
-	//LoadKeyInfo("keyInfo");
+	LoadKeyInfo("keyInfo");
 
 	//一時マップテーブルにコピー
 	tempMapTable_ = inputMapTable_;
@@ -207,21 +208,24 @@ InputState::InputState()
 
 }
 
+//デストラクタ
 InputState::~InputState()
 {
 }
 
+//長押し不可能入力関数
 bool InputState::IsTriggered(InputType type) const
 {
 	return IsPressed(type) && !lastInput_[static_cast<int>(type)];
 }
 
+//長押し可能入力関数
 bool InputState::IsPressed(InputType type) const
 {
-	
 	return currentInput_[static_cast<int>(type)];
 }
 
+//更新
 void InputState::Update()
 {
 
@@ -259,6 +263,7 @@ void InputState::Update()
 	}
 }
 
+//変更中のキーコンフィグをtempMapTableに書き込む
 void InputState::RewriteInputInfo(InputType type, InputCategory cat, int id)
 {
 	//入力種別(割り当て先)がなければ、無効なので無視します。
@@ -281,25 +286,26 @@ void InputState::RewriteInputInfo(InputType type, InputCategory cat, int id)
 	}
 }
 
-//変更を許諾する
+//キーの変更を実行する
 void InputState::CommitChangedInputInfo()
 {
 	inputMapTable_ = tempMapTable_;
 }
 
-//前の状態に戻す
+//変更前のキーコンフィグに戻す
 void InputState::RollbackChangedInputInfo()
 {
 	tempMapTable_ = inputMapTable_;
 }
 
-//リセット
+//キーコンフィグを初期化する
 void InputState::ResetInputInfo()
 {
 	inputMapTable_ = defaultMapTable_;
 	tempMapTable_ = defaultMapTable_;
 }
 
+//変更したキーを戻す
 void InputState::UndoSelectKey(InputType type, InputCategory cat)
 {
 	for (auto& info : tempMapTable_[type]) {
@@ -310,6 +316,7 @@ void InputState::UndoSelectKey(InputType type, InputCategory cat)
 	}
 }
 
+//キーコンフィグを外部ファイルとして保存する
 void InputState::SavekeyInfo() const
 {
 	//決め打ちしか出来ないのがネック
@@ -345,7 +352,7 @@ void InputState::SavekeyInfo() const
 	json keySize = {
 		{"name","keyInfo"},
 		{"keyTypeNum",inputMapTable_.size()},
-		{"temp",keyInfo_}
+		{"keyInfo",keyInfo_}
 	};
 
 	//書き出すファイル名を"name"にする(別に無くてもいい)
@@ -364,6 +371,7 @@ void InputState::SavekeyInfo() const
 	writeingFile.close();
 }
 
+//キーコンフィグを読み込む
 void InputState::LoadKeyInfo(const char* filename)
 {
 
@@ -396,8 +404,8 @@ void InputState::LoadKeyInfo(const char* filename)
 	int i = 0;
 
 	//各入力装置、idを取得
-	for (auto& aiu : json_["temp"]) {
-		inputInfo[i] = aiu;
+	for (auto& keyInfo : json_["keyInfo"]) {
+		inputInfo[i] = keyInfo;
 		i++;
 	}
 
@@ -435,11 +443,13 @@ void InputState::LoadKeyInfo(const char* filename)
 	ifs.close();
 }
 
+//最後に入力された入力装置を判別する
 bool InputState::LastInputDevice() const
 {
 	return currentInputDevice_;
 }
 
+//入力装置の番号を取得する
 int InputState::GetInputNum(int num, InputCategory cat)
 {
 	int keyNum = 0;
@@ -456,6 +466,7 @@ int InputState::GetInputNum(int num, InputCategory cat)
 	return keyNum;
 }
 
+//key画像の描画
 void InputState::DrawKeyGraph(int type, float posX, float posY,float size)
 {
 	//入力装置の番号を取得する
@@ -479,6 +490,7 @@ void InputState::DrawKeyGraph(int type, float posX, float posY,float size)
 							true, false);
 }
 
+//padのボタンの描画
 void InputState::DrawPadGraph(int type, float posX, float posY, float scale)
 {
 	//画像の描画
@@ -490,6 +502,7 @@ void InputState::DrawPadGraph(int type, float posX, float posY, float scale)
 							true, false);
 }
 
+//名前の描画
 void InputState::DrawName(int type, float posX, float posY, int color, int fontHandle, bool editName, bool before, std::string sign)
 {
 	//名前

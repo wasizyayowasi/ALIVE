@@ -1,9 +1,9 @@
 #include "ScenePause.h"
-#include "SceneManager.h"
 #include "SceneTitle.h"
-#include "KeyConfigScene.h"
-#include "SettingScene.h"
 #include "DebugScene.h"
+#include "SceneManager.h"
+#include "SettingScene.h"
+#include "KeyConfigScene.h"
 
 #include "../util/Util.h"
 #include "../util/game.h"
@@ -15,14 +15,17 @@
 
 #include <algorithm>
 
+//コンストラクタ
 ScenePause::ScenePause(SceneManager& manager):SceneBase(manager)
 {
 }
 
+//デストラクタ
 ScenePause::~ScenePause()
 {
 }
 
+//初期化
 void ScenePause::Init()
 {
 	//インスタンス化
@@ -50,10 +53,12 @@ void ScenePause::Init()
 	}
 }
 
+//終了
 void ScenePause::End()
 {
 }
 
+//更新
 void ScenePause::Update()
 {
 	//短縮化
@@ -97,6 +102,7 @@ void ScenePause::Update()
 	}
 }
 
+//描画
 void ScenePause::Draw()
 {
 	//背景黒の描画
@@ -109,5 +115,4 @@ void ScenePause::Draw()
 
 	//UIの描画
 	UI_->AlphaChangeDraw(selectNum_,255);
-
 }

@@ -3,6 +3,7 @@
 #include "DxLib.h"
 #include "util/game.h"
 
+//シーン遷移
 void SceneManager::ChangeScene(std::shared_ptr<SceneBase> scene)
 {
 	//今あるシーンをすべて削除する
@@ -17,6 +18,7 @@ void SceneManager::ChangeScene(std::shared_ptr<SceneBase> scene)
 	scenes_.front()->Init();
 }
 
+//メインのシーンを保ったまま別のシーンを前画面に表示する
 void SceneManager::PushFrontScene(std::shared_ptr<SceneBase> scene)
 {
 	//先頭に引数で得たシーンを追加する
@@ -24,13 +26,7 @@ void SceneManager::PushFrontScene(std::shared_ptr<SceneBase> scene)
 	scenes_.front()->Init();
 }
 
-void SceneManager::PushBackScene(std::shared_ptr<SceneBase> scene)
-{
-	//後尾に引数で得たシーンを追加
-	scenes_.push_back(scene);
-	scenes_.back()->Init();
-}
-
+//シーンをすり替える
 void SceneManager::SwapScene(std::shared_ptr<SceneBase> scene)
 {
 	//先頭のシーンを削除する
@@ -43,6 +39,7 @@ void SceneManager::SwapScene(std::shared_ptr<SceneBase> scene)
 	scenes_.front()->Init();
 }
 
+//ひとつ前のシーンに戻る
 void SceneManager::PopFrontScene()
 {
 	//先頭のシーンを削除する
@@ -52,9 +49,9 @@ void SceneManager::PopFrontScene()
 	}
 }
 
+//更新
 void SceneManager::Update()
 {
-
 	LONGLONG start = GetNowHiPerformanceCount();
 	
 	//先頭にあるシーンの更新
@@ -63,6 +60,7 @@ void SceneManager::Update()
 	debugUpdateTime_ = static_cast<int>(GetNowHiPerformanceCount() - start);
 }
 
+//描画
 void SceneManager::Draw()
 {
 
@@ -92,6 +90,7 @@ void SceneManager::Draw()
 #endif
 }
 
+//ウィンドウモードを変更する
 void SceneManager::ChangeWindowMode(bool windowMode)
 {
 	windowMode_ = windowMode;

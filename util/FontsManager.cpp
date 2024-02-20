@@ -2,12 +2,14 @@
 #include <DxLib.h>
 #include <cassert>
 
+//コンストラクタ
 FontsManager::FontsManager()
 {
 	AddFonts("ピグモ 00",".otf", 42);
 	AddFonts("ピグモ 00",".otf", 21);
 }
 
+//デストラクタ
 FontsManager::~FontsManager()
 {
 	for (auto& font : fontHandle_) {
