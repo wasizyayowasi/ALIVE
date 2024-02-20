@@ -34,7 +34,7 @@ SelectChapterScene::~SelectChapterScene()
 void SelectChapterScene::Init()
 {
 	//インスタンス化
-	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(ObjectName[static_cast<int>(ObjectType::Book)]),Material::Other);
+	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(objData[static_cast<int>(ObjectType::Book)].name),Material::Other);
 
 	//オブジェクト配置データ
 	auto& file = ExternalFile::GetInstance();

@@ -14,6 +14,12 @@ namespace {
 
 	//最大回転値
 	constexpr float max_rot_Z = -630.0f;
+
+	//衝突判定用カプセルの半径
+	constexpr float radius_capsule = 80.0f;
+
+	//最小衝突数
+	constexpr int min_hit_num = 1;
 }
 
 //コンストラクタ
@@ -40,7 +46,6 @@ ManualCrank::ManualCrank(const LoadObjectInfo objInfo)
 //デストラクタ
 ManualCrank::~ManualCrank()
 {
-	
 }
 
 //描画
@@ -59,9 +64,9 @@ bool ManualCrank::HitCollPlayer(Player& player) const
 	VECTOR playerPos = player.GetStatus().pos;
 
 	MV1RefreshCollInfo(model_->GetModelHandle(), model_->GetColFrameIndex());
-	result = MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, VAdd(playerPos, VGet(0, player.GetStatus().height, 0)),80.0f);
+	result = MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, VAdd(playerPos, VGet(0, player.GetStatus().height, 0)), radius_capsule);
 
-	if (result.HitNum < 1) {
+	if (result.HitNum < min_hit_num) {
 		MV1CollResultPolyDimTerminate(result);
 		return false;
 	}

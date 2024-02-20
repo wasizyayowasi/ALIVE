@@ -11,15 +11,25 @@
 
 #include "../object/Player.h"
 
-namespace {
-	//エレベーターが移動する速度
-	constexpr float move_speed = 6.0f;
+namespace 
+{
+	//アニメーションが変わるフレーム数
+	constexpr int anim_cange_frame = 10;
 
-	//出発する時間
-	constexpr int max_departure_time = 60;
+	//レバーの生成数
+	constexpr int lever_generate_num = 2;
+
+	//停止ポジションの数
+	constexpr int stop_position_num = 2;
 
 	//到達時間
 	constexpr float total_time = 180.0f;
+
+	//サウンドが聞こえる範囲
+	constexpr float sound_range = 1500.0f;
+
+	//タイマーを進める時間
+	constexpr float add_time = 1.0f;
 }
 
 //コンストラクタ
@@ -53,14 +63,14 @@ Elevator::Elevator(const int handle, const Material materialType, const LoadObje
 	std::string leverName = StrUtil::GetConcatenateNumAndStrings("ElevatorLever", ".", elevatorNum);
 
 	//レバーのインスタンス化
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < lever_generate_num; i++)
 	{
 		std::string specificLeverName = StrUtil::GetConcatenateNumAndStrings(leverName, "-", i);
 		levers_.push_back(std::make_shared<Lever>(file.GetSpecifiedGimmickInfo(pos_, specificLeverName.c_str())));
 	}
 
 	//停止ポジションの取得
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < stop_position_num; i++)
 	{
 		std::string specificPointName = StrUtil::GetConcatenateNumAndStrings(pointName, "-", i);
 		stopPos_[static_cast<ElevatorState>(i)] = file.GetSpecifiedGimmickInfo(pos_, specificPointName.c_str()).pos;
@@ -74,7 +84,8 @@ Elevator::Elevator(const int handle, const Material materialType, const LoadObje
 	float lowerDistanceSize = MathUtil::GetSizeOfDistanceTwoPoints(pos_, stopPos_[ElevatorState::lower]);
 
 	//現在のポジションと停止ポジションとの距離が近い方の状態を保存する
-	if (upperDistanceSize > lowerDistanceSize) {
+	if (upperDistanceSize > lowerDistanceSize)
+	{
 		state_ = ElevatorState::lower;
 	}
 	else
@@ -105,23 +116,28 @@ void Elevator::Update(Player& player)
 	switch_->Update(player);
 
 	//レバーの更新
-	for (auto lever : levers_) {
+	for (auto lever : levers_)
+	{
 		lever->Update();
 	}
 
 	//レバーとプレイヤーの衝突判定を行い
 	//衝突していた場合プレイヤーにポインタを設定する
-	for (auto lever : levers_) {
-		if (lever->CollCheck(playerPos)) {
+	for (auto lever : levers_)
+	{
+		if (lever->CollCheck(playerPos)) 
+		{
 			player.SetLeverPointer(lever);
 		}
 	}
 
 	//ターゲットポジションの変更
-	if (targetPos_.y == pos_.y && !isDeparture_ && !isOnSwitch_) {
+	if (targetPos_.y == pos_.y && !isDeparture_ && !isOnSwitch_)
+	{
 		TargetPosition();
 	}
-	else {
+	else 
+	{
 		if (!switch_->ElevatorCollResult()) {
 			isOnSwitch_ = false;
 		}
@@ -129,7 +145,8 @@ void Elevator::Update(Player& player)
 	}
 
 	//アニメーションが終了次第、移動を開始する
-	if (model_->IsAnimEnd()) {
+	if (model_->IsAnimEnd()) 
+	{
 		Move();
 	}
 }
@@ -144,7 +161,8 @@ void Elevator::Draw()
 	switch_->Draw();
 
 	//レバーの描画
-	for (auto lever : levers_) {
+	for (auto lever : levers_) 
+	{
 		lever->Draw();
 	}
 }
@@ -153,21 +171,22 @@ void Elevator::Draw()
 void Elevator::Move()
 {
 	//時間の更新
-	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
+	elapsedTime_ = (std::min)(elapsedTime_ + add_time, total_time);
 
 	//座標の移動
 	pos_.y = Easing::InOutCubic(elapsedTime_, total_time, targetPos_.y, pos_.y);
 
 	//移動終了後アニメーションを変更する
-	if (elapsedTime_ == 180.0f && isDeparture_) {
-		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, 10);
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
+	if (elapsedTime_ == total_time && isDeparture_)
+	{
+		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::open), false, false, anim_cange_frame);
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, sound_range, "door");
 		SoundManager::GetInstance().PlaySE("door");
 		isDeparture_ = false;
 	}
 
 	if (model_->IsAnimEnd() && model_->GetCurrentAnimNo() == static_cast<int>(ElevatorAnimType::open)) {
-		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::openIdle), true, false, 10);
+		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::openIdle), true, false, anim_cange_frame);
 	}
 
 	//ポジションの設定
@@ -189,20 +208,22 @@ void Elevator::TargetPosition()
 
 	//レバーが引かれたらアニメーションを変更して
 	//目的地まで移動する
-	if (levers_.front()->IsOn()) {
+	if (levers_.front()->IsOn()) 
+	{
 		isDeparture_ = true;
 	}
 
 	//レバーが引かれたらアニメーションを変更して
 	//目的地まで移動する
-	if (levers_.back()->IsOn()) {
+	if (levers_.back()->IsOn()) 
+	{
 		isDeparture_ = true;
 	}
 
 	if (isDeparture_)
 	{
 		//サウンドを鳴らす
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "door");
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, sound_range, "door");
 		SoundManager::GetInstance().PlaySE("door");
 
 		//経過時間を0にする
@@ -216,16 +237,15 @@ void Elevator::TargetPosition()
 	{
 		//elevatorの状態によって
 		//elevatorの停止ポジションを変更する
-		switch (state_)
+		if (state_ == ElevatorState::upper)
 		{
-		case ElevatorState::upper:
 			targetPos_ = stopPos_[ElevatorState::lower];
 			state_ = ElevatorState::lower;
-			break;
-		case ElevatorState::lower:
+		}
+		else
+		{
 			targetPos_ = stopPos_[ElevatorState::upper];
 			state_ = ElevatorState::upper;
-			break;
 		}
 	}
 }

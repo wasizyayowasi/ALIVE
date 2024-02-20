@@ -9,6 +9,15 @@
 
 #include "../object/Player.h"
 
+namespace
+{
+	//Z軸の回転の最低値
+	constexpr int min_rot_Z = 0;
+
+	//サウンドが聞こえる範囲
+	constexpr float sound_range = 1500.0f;
+}
+
 //コンストラクタ
 CrankScaffold::CrankScaffold(const int handle, const Material materialType, const LoadObjectInfo objInfo) : GimmickBase(handle, materialType, objInfo)
 {
@@ -61,16 +70,21 @@ void CrankScaffold::Update(Player& player)
 	//クランクとプレイヤーの衝突判定を行い
 	//当たっていた場合プレイヤーに当たっていたクラスのポインターを
 	//セットする
-	if (crank_->HitCollPlayer(player)) {
+	if (crank_->HitCollPlayer(player))
+	{
 		player.SetCrankPointer(crank_);
 	}
 
 	float nowRotZ = crank_->GetRotZ();
 
-	if (oldRotZ_ != nowRotZ) {
-		if (crank_->GetMaxRotZ() == crank_->GetRotZ() || crank_->GetRotZ() == 0) {
-			if (!sound.CheckSoundFile("stopCrank")) {
-				sound.Set3DSoundInfo(pos_, 1500.0f, "stopCrank");
+	//1フレーム前と角度が違っていたらサウンドを鳴らす
+	if (oldRotZ_ != nowRotZ)
+	{
+		if (crank_->GetMaxRotZ() == crank_->GetRotZ() || crank_->GetRotZ() == min_rot_Z) 
+		{
+			if (!sound.CheckSoundFile("stopCrank"))
+			{
+				sound.Set3DSoundInfo(pos_, sound_range, "stopCrank");
 				sound.PlaySE("stopCrank");
 			}
 		}

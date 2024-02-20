@@ -69,11 +69,12 @@ public:
 	/// <summary>
 	/// baseType別にオブジェクトの生成を振り分ける
 	/// </summary>
+	/// <param name="name">オブジェクトの名前</param>
 	/// <param name="baseType">オブジェクトのベースタイプ</param>
 	/// <param name="objType">オブジェクトのタイプ</param>
 	/// <param name="materialType">オブジェクトのマテリアルタイプ</param>
 	/// <param name="objInfo">オブジェクトの配置データ</param>
-	void SortingObject(const ObjectBaseType baseType, const ObjectType objType, const Material materialType, const LoadObjectInfo objInfo);
+	//void SortingObject(const ObjectBaseType baseType, const std::string name, const ObjectType objType, const Material materialType, const LoadObjectInfo objInfo);
 
 	/// <summary>
 	/// 特定のモデルポインタを取得する
@@ -146,18 +147,20 @@ private:
 	/// <summary>
 	/// 置物生成機
 	/// </summary>
+	/// <param name="name">オブジェクトの名前</param>
 	/// <param name="objType">オブジェクトのタイプ</param>
 	/// <param name="materialType">オブジェクトのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	void OrnamentGenerator(const ObjectType objType, const  Material materialType, const  LoadObjectInfo objInfo);
+	void OrnamentGenerator(const std::string name, const ObjectType objType, const  Material materialType, const  LoadObjectInfo objInfo);
 
 	/// <summary>
 	/// ギミック生成機
 	/// </summary>
+	/// <param name="name">オブジェクトの名前</param>
 	/// <param name="objType">オブジェクトのタイプ</param>
 	/// <param name="materialType">オブジェクトのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	void GimmickObjectGenerator(const ObjectType objType, const  Material materialType, const  LoadObjectInfo objInfo);
+	void GimmickObjectGenerator(const std::string name, const ObjectType objType, const  Material materialType, const  LoadObjectInfo objInfo);
 private:
 
 	std::list<std::shared_ptr<Model>> checkCollList_;											//衝突判定を行うモデルのリスト

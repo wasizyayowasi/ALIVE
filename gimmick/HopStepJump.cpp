@@ -8,8 +8,31 @@
 #include <stdio.h>
 #include <algorithm>
 
-namespace {
+namespace 
+{
+	//加える値
+	constexpr int add_select_num = 1;
+
+	//選択番号の最小値
+	constexpr int min_select_num = 0;
+
+	//加える時間
+	constexpr float add_time = 1.0f;
+
+	//総時間
 	constexpr float total_time = 180.0f;
+
+	//時間の最小値
+	constexpr float min_time = 0.0f;
+
+	//アルファ値を変更する時間
+	constexpr float alpha_change_time = 60.0f;
+
+	//アルファ値の最大値
+	constexpr float max_alpha_value = 1.0f;
+
+	//アルファ値の最小値
+	constexpr float min_alpha_value = 0.0f;
 }
 
 HopStepJump::HopStepJump(const int handle, const Material materialType, const LoadObjectInfo objInfo):GimmickBase(handle,materialType,objInfo)
@@ -36,38 +59,45 @@ HopStepJump::~HopStepJump()
 void HopStepJump::Update(Player& player)
 {
 	//タイマー
-	elapseddTime_ = (std::max)(elapseddTime_ - 1, 0.0f);
+	elapseddTime_ = (std::max)(elapseddTime_ - add_time, min_time);
 
 	//現在の番号を変更する
-	if (elapseddTime_ == 0.0f) {
-		currentNum_ = (std::min)(currentNum_ + 1, materialNum_);
+	if (elapseddTime_ == min_time)
+	{
+		currentNum_ = (std::min)(currentNum_ + add_select_num, materialNum_);
 		elapseddTime_ = total_time;
 	}
 
 	//マテリアルの数を超えたら0にする
-	if (currentNum_ == materialNum_) {
-		currentNum_ = 0;
+	if (currentNum_ == materialNum_)
+	{
+		currentNum_ = min_select_num;
 	}
 
 	//アルファ値を変更する
-	if (elapseddTime_ >= 120) {
-		alphaValue_ = (std::min)(alphaValue_ + (1.0f / 60.0f), 1.0f);
+	if (elapseddTime_ >= total_time - alpha_change_time)
+	{
+		alphaValue_ = (std::min)(alphaValue_ + (max_alpha_value / alpha_change_time), max_alpha_value);
 	}
-	else if(elapseddTime_ <= 60){
-		alphaValue_ = (std::max)(alphaValue_ - (1.0f / 60.0f), 0.0f);
+	else if(elapseddTime_ <= alpha_change_time)
+	{
+		alphaValue_ = (std::max)(alphaValue_ - (max_alpha_value / alpha_change_time), min_alpha_value);
 	}
 
 	COLOR_F color = {};
 
 	//現在の番号以外のマテリアルのカラーのアルファ値を0にする
-	for (int i = 0; i < materialNum_; i++) {
+	for (int i = 0; i < materialNum_; i++) 
+	{
 		color = MV1GetMaterialDifColor(model_->GetModelHandle(), i);
 
-		if (currentNum_ == i) {
+		if (currentNum_ == i)
+		{
 			color.a = alphaValue_;
 		}
-		else{
-			color.a = 0.0f;
+		else
+		{
+			color.a = min_alpha_value;
 		}
 		
 		MV1SetMaterialDifColor(model_->GetModelHandle(), i, color);
@@ -77,12 +107,9 @@ void HopStepJump::Update(Player& player)
 
 	//当たり判定用フレームの変更
 	model_->SetCollFrame(num.c_str());
-
 }
 
 void HopStepJump::Draw()
 {
-	//model_->Draw();
-
 	MV1DrawFrame(model_->GetModelHandle(), model_->GetColFrameIndex());
 }

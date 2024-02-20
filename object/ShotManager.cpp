@@ -53,5 +53,5 @@ void ShotManager::Fire(const VECTOR framePos, const  VECTOR playerPos, const flo
 	VECTOR distance = VSub(VGet(playerPos.x, playerPos.y + height / 2, playerPos.z), framePos);
 	VECTOR moveVec = VScale(VNorm(distance), shot_speed);
 
-	shots_.push_back(std::make_shared<Shot>(ModelManager::GetInstance().GetModelHandle(ObjectName[static_cast<int>(ObjectType::Stone)]), framePos, moveVec));
+	shots_.push_back(std::make_shared<Shot>(ModelManager::GetInstance().GetModelHandle(objData[static_cast<int>(ObjectType::Rock)].name), framePos, moveVec));
 }

@@ -32,10 +32,10 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	//インスタンス化
 	UI_					= std::make_shared<UIItemManager>();
 	objManager_			= std::make_shared<ObjectManager>();
-	subPlayerModel_		= std::make_shared<Model>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Player)]),Material::Other);
-	mainPlayerModel_	= std::make_shared<Model>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::Player)]),Material::Other);
+	subPlayerModel_		= std::make_shared<Model>(model.GetModelHandle(objData[static_cast<int>(ObjectType::Player)].name),Material::Other);
+	mainPlayerModel_	= std::make_shared<Model>(model.GetModelHandle(objData[static_cast<int>(ObjectType::Player)].name),Material::Other);
 	camera_				= std::make_shared<Camera>(file.GetCameraTargetPos("start"),file.GetCameraTargetPos("startTargetPos"));
-	lightBulb_			= std::make_shared<LightBulb>(model.GetModelHandle(ObjectName[static_cast<int>(ObjectType::LightBulb)]), file.GetSpecifiedInfo("title", "LightBulb"));
+	lightBulb_			= std::make_shared<LightBulb>(model.GetModelHandle(objData[static_cast<int>(ObjectType::LightBulb)].name), file.GetSpecifiedInfo("title", "LightBulb"));
 
 	//メインプレイヤーモデルの配置データをセットする
 	auto mainPlayerInfo = file.GetSpecifiedInfo("title", "Player");
