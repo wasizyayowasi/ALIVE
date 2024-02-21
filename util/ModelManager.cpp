@@ -17,7 +17,7 @@ void ModelManager::LoadModel()
 	auto& file = ExternalFile::GetInstance();
 
 	//ƒ‚ƒfƒ‹‚Ìƒ[ƒh
-	for (auto& type : file.GetFilePath())
+	for (auto& type : file.GetModelFilePath())
 	{
 		for (auto& name : type.second)
 		{

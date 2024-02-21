@@ -6,6 +6,7 @@
 FontsManager::FontsManager()
 {
 	AddFonts("ピグモ 00",".otf", 42);
+	AddFonts("ピグモ 00",".otf", 33);
 	AddFonts("ピグモ 00",".otf", 21);
 }
 

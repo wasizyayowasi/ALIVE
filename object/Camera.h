@@ -83,7 +83,7 @@ public:
 	/// <summary>
 	/// Œo‰ßŽžŠÔ‚ð0‚É–ß‚·
 	/// </summary>
-	void LesetElapsedTime() { elapsedTime_ = 0.0f; }
+	void ResetElapsedTime() { elapsedTime_ = 0.0f; }
 
 	void DebugDraw();
 

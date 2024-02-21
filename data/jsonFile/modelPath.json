@@ -3,5 +3,5 @@
            {"type":"room",          "name" :[{"path":"Bed"},{"path":"Clock"},{"path":"Desk"},{"path":"Window"},{"path":"RoomWall"},{"path":"WoodFloor"},{"path":"WoodenBox"},{"path":"TV"},{"path":"Book"},{"path":"LightBulb"},{"path":"Door"}]},
            {"type":"station",       "name" :[{"path":"Train"},{"path":"Station"}]},
            {"type":"tunnel",        "name" :[{"path":"TunnelWall"},{"path":"TunnelEntrance"}]},
-           {"type":"other",         "name" :[{"path":"Switch"},{"path":"Lever"},{"path":"TransScaffold"},{"path":"Elevator"},{"path":"CrankScaffold"},{"path":"SignBoardType1"},{"path":"SignBoardType2"},{"path":"HopStepJump"},{"path":"CorpseMountain"},{"path":"WhiteBoard"},{"path":"Number"},{"path":"Rock"}]}]
+           {"type":"other",         "name" :[{"path":"Crank"},{"path":"Switch"},{"path":"Lever"},{"path":"TransScaffold"},{"path":"Elevator"},{"path":"CrankScaffold"},{"path":"SignBoardType1"},{"path":"SignBoardType2"},{"path":"HopStepJump"},{"path":"CorpseMountain"},{"path":"WhiteBoard"},{"path":"Number"},{"path":"Rock"}]}]
  }

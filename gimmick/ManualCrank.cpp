@@ -1,22 +1,23 @@
 #include "ManualCrank.h"
+
+#include "../util/Util.h"
 #include "../util/Model.h"
+#include "../object/Player.h"
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
-#include "../util/Util.h"
-#include "../object/Player.h"
+#include "../util/ModelManager.h"
+
 #include <algorithm>
 #include <math.h>
 
 
-namespace {
-	//クランクモデルのファイルパス
-	const char* const crank_filename = "data/model/other/mv1/Crank.mv1";
-
+namespace
+{
 	//最大回転値
 	constexpr float max_rot_Z = -630.0f;
 
 	//衝突判定用カプセルの半径
-	constexpr float radius_capsule = 80.0f;
+	constexpr float radius_capsule = 60.0f;
 
 	//最小衝突数
 	constexpr int min_hit_num = 1;
@@ -26,7 +27,7 @@ namespace {
 ManualCrank::ManualCrank(const LoadObjectInfo objInfo)
 {
 	//モデルクラスの初期化
-	model_ = std::make_shared<Model>(crank_filename,Material::Iron);
+	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(objData_[static_cast<int>(ObjectType::Crank)].name), Material::Iron);
 	model_->SetUseCollision(true,false);
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
@@ -64,9 +65,10 @@ bool ManualCrank::HitCollPlayer(Player& player) const
 	VECTOR playerPos = player.GetStatus().pos;
 
 	MV1RefreshCollInfo(model_->GetModelHandle(), model_->GetColFrameIndex());
-	result = MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, VAdd(playerPos, VGet(0, player.GetStatus().height, 0)), radius_capsule);
+	result = MV1CollCheck_Sphere(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, radius_capsule);
 
-	if (result.HitNum < min_hit_num) {
+	if (result.HitNum < min_hit_num)
+	{
 		MV1CollResultPolyDimTerminate(result);
 		return false;
 	}

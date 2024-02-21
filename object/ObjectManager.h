@@ -67,16 +67,6 @@ public:
 	std::list<std::shared_ptr<Model>> GetAllCheckCollModel();
 
 	/// <summary>
-	/// baseType別にオブジェクトの生成を振り分ける
-	/// </summary>
-	/// <param name="name">オブジェクトの名前</param>
-	/// <param name="baseType">オブジェクトのベースタイプ</param>
-	/// <param name="objType">オブジェクトのタイプ</param>
-	/// <param name="materialType">オブジェクトのマテリアルタイプ</param>
-	/// <param name="objInfo">オブジェクトの配置データ</param>
-	//void SortingObject(const ObjectBaseType baseType, const std::string name, const ObjectType objType, const Material materialType, const LoadObjectInfo objInfo);
-
-	/// <summary>
 	/// 特定のモデルポインタを取得する
 	/// </summary>
 	/// <param name="type">取得したいオブジェクトタイプ</param>

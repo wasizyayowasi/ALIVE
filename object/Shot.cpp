@@ -90,7 +90,7 @@ void Shot::HitCheck(Player& player)
 		SoundManager::GetInstance().PlaySE("hit");
 
 		//エフェクトを出す
-		EffectManager::GetInstance().AddEffect("hit",100.0f, pos_);
+		EffectManager::GetInstance().AddEffect("BigHit",100.0f, pos_);
 
 		isEnable_ = false;
 	}

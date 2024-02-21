@@ -41,8 +41,8 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 	//インスタンス化
 	objManager_ = std::make_shared<ObjectManager>();
 	camera_ = std::make_shared<Camera>(VGet(265, 314, -803), VGet(265, 314, 1777));
-	playerModel_ = std::make_shared<Model>(model.GetModelHandle(objData[static_cast<int>(ObjectType::Player)].name), Material::Other);
-	boardModel_  = std::make_shared<Model>(model.GetModelHandle(objData[static_cast<int>(ObjectType::WhiteBoard)].name), Material::Iron);
+	playerModel_ = std::make_shared<Model>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name), Material::Other);
+	boardModel_  = std::make_shared<Model>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::WhiteBoard)].name), Material::Iron);
 
 	//モデルの設定
 	auto info = file.GetSpecifiedInfo("end", "player");
@@ -69,7 +69,7 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 
 	//死体モデルの生成
 	for (int i = 0; i < file.GetTotalDeathNum().back(); i++) {
-		corpseModel_.push_back(std::make_pair(false, std::make_shared<Model>(model.GetModelHandle(objData[static_cast<int>(ObjectType::Player)].name), Material::Other)));
+		corpseModel_.push_back(std::make_pair(false, std::make_shared<Model>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name), Material::Other)));
 		corpseModel_[i].second->SetPos({ pos.x,pos.y + height,pos.z });
 		corpseModel_[i].second->SetRot(info.rot);
 		corpseModel_[i].second->SetScale(info.scale);

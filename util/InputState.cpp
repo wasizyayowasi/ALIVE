@@ -11,10 +11,8 @@
 #include <nlohmann/json.hpp>
 
 namespace {
-	//キーボード画像のチップサイズ
-	constexpr int keybord_graph_chip_size = 59;
-	//パッド画像のチップサイズ
-	constexpr int controller_graph_chip_size = 71;
+	//入力装置のボタン画像のチップサイズ
+	constexpr int input_graph_chip_size = 59;
 }
 
 using json = nlohmann::json;
@@ -481,10 +479,10 @@ void InputState::DrawKeyGraph(int type, float posX, float posY,float size)
 
 	//画像の描画
 	Graph::DrawRectRotaGraph(posX, posY,
-							graphX * keybord_graph_chip_size,
-							graphY * keybord_graph_chip_size, 
-							keybord_graph_chip_size,
-							keybord_graph_chip_size,
+							graphX * input_graph_chip_size,
+							graphY * input_graph_chip_size, 
+							input_graph_chip_size,
+							input_graph_chip_size,
 							size, 0.0f,
 							GraphManager::GetInstance().GetGraph("key"),
 							true, false);
@@ -495,8 +493,8 @@ void InputState::DrawPadGraph(int type, float posX, float posY, float scale)
 {
 	//画像の描画
 	Graph::DrawRectRotaGraph(posX, posY,
-							static_cast<int>(type) * controller_graph_chip_size, 0,
-							controller_graph_chip_size, controller_graph_chip_size,
+							static_cast<int>(type) * input_graph_chip_size, 0,
+							input_graph_chip_size, input_graph_chip_size,
 							scale, 0.0f, 
 							GraphManager::GetInstance().GetGraph("controllerBotton"),
 							true, false);

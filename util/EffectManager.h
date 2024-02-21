@@ -1,10 +1,10 @@
 #pragma once
-#include <DxLib.h>
 #include <map>
 #include <list>
 #include <vector>
 #include <string>
 #include <memory>
+#include <DxLib.h>
 
 class Effect2D;
 

@@ -32,20 +32,20 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	//インスタンス化
 	UI_					= std::make_shared<UIItemManager>();
 	objManager_			= std::make_shared<ObjectManager>();
-	subPlayerModel_		= std::make_shared<Model>(model.GetModelHandle(objData[static_cast<int>(ObjectType::Player)].name),Material::Other);
-	mainPlayerModel_	= std::make_shared<Model>(model.GetModelHandle(objData[static_cast<int>(ObjectType::Player)].name),Material::Other);
+	subPlayerModel_		= std::make_shared<Model>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name),Material::Other);
+	mainPlayerModel_	= std::make_shared<Model>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name),Material::Other);
 	camera_				= std::make_shared<Camera>(file.GetCameraTargetPos("start"),file.GetCameraTargetPos("startTargetPos"));
-	lightBulb_			= std::make_shared<LightBulb>(model.GetModelHandle(objData[static_cast<int>(ObjectType::LightBulb)].name), file.GetSpecifiedInfo("title", "LightBulb"));
+	lightBulb_			= std::make_shared<LightBulb>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::LightBulb)].name), file.GetMainSpecialObjectInfo("LightBulb"));
 
 	//メインプレイヤーモデルの配置データをセットする
-	auto mainPlayerInfo = file.GetSpecifiedInfo("title", "Player");
+	auto mainPlayerInfo = file.GetMainSpecialObjectInfo("MainPlayer");
 	mainPlayerModel_->SetScale(mainPlayerInfo.scale);
 	mainPlayerModel_->SetPos(mainPlayerInfo.pos);
 	mainPlayerModel_->SetRot(mainPlayerInfo.rot);
 	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::StopTimer), false, true);
 
 	//サブプレイヤーモデルの配置データをセットする
-	auto subPlayerInfo = file.GetSpecifiedInfo("title", "SubPlayer");
+	auto subPlayerInfo = file.GetMainSpecialObjectInfo("SubPlayer");
 	subPlayerModel_->SetScale(subPlayerInfo.scale);
 	subPlayerModel_->SetPos(subPlayerInfo.pos);
 	subPlayerModel_->SetRot(subPlayerInfo.rot);
@@ -58,7 +58,7 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	LightSetting();
 
 	//カメラの配置等の設定
-	CameraSettingPos();
+	CameraPositionDataSetting();
 
 	//UIを表示する座標を取得
 	menuDrawPos_["SE"]				= file.GetUIPos("SEUIPos");
@@ -79,7 +79,7 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	menuName_.push_back("終了");
 
 	//UI画像の作成
-	fontHandle_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
+	fontHandle_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0033");
 	float y = 120.0f;
 	for (auto& menu : menuName_) {
 		UI_->AddMenu(static_cast<float>(Game::screen_width / 2), static_cast<float>(Game::screen_height / 2) + y, 320, 100, menu.c_str(), fontHandle_);
@@ -144,7 +144,9 @@ void SceneTitle::Draw()
 	objManager_->Draw({ 0,0,0 });
 
 	//電球の描画
+	SetUseLighting(false);
 	lightBulb_->Draw();
+	SetUseLighting(true);
 
 	//モデルの描画
 	mainPlayerModel_->Draw();
@@ -162,11 +164,11 @@ void SceneTitle::Draw()
 		input.DrawKeyGraph(static_cast<int>(InputType::Space), Game::screen_width / 128 * 112, Game::screen_height - 40, 0.8f);
 	}
 	else {
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Up)     , Game::screen_width / 128 * 92 , Game::screen_height - 90, 0.66f);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Left)	, Game::screen_width / 128 * 87 , Game::screen_height - 40, 0.66f);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Down)   , Game::screen_width / 128 * 92 , Game::screen_height - 40, 0.66f);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Right)  , Game::screen_width / 128 * 97 , Game::screen_height - 40, 0.66f);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::A)      , Game::screen_width / 128 * 112, Game::screen_height - 40, 0.66f);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Up)     , Game::screen_width / 128 * 92 , Game::screen_height - 90, 0.8f);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Left)	, Game::screen_width / 128 * 87 , Game::screen_height - 40, 0.8f);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Down)   , Game::screen_width / 128 * 92 , Game::screen_height - 40, 0.8f);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Right)  , Game::screen_width / 128 * 97 , Game::screen_height - 40, 0.8f);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::A)      , Game::screen_width / 128 * 112, Game::screen_height - 40, 0.8f);
 	}
 	
 	//文字列の描画
@@ -220,7 +222,7 @@ void SceneTitle::LightSetting()
 }
 
 //カメラの設定
-void SceneTitle::CameraSettingPos()
+void SceneTitle::CameraPositionDataSetting()
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
@@ -263,57 +265,62 @@ void SceneTitle::CameraSettingPos()
 	cameraInfo_.push_back(info);
 }
 
+//カメラの目標座標の更新
+void SceneTitle::CameraTargetUpdate()
+{
+	//カメラの目標座標の更新
+	camera_->SetCameraTargetPosAndView(	cameraInfo_[static_cast<int>(currentSelectScene_)].targetPos,
+										cameraInfo_[static_cast<int>(currentSelectScene_)].targetView,
+										cameraInfo_[static_cast<int>(currentSelectScene_)].upVec);
+	//経過時間のリセット
+	camera_->ResetElapsedTime();
+}
+
 //選択番号の更新
-void SceneTitle::SelectNumUpdate()
+void SceneTitle::SelectSceneUpdate()
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	bool isTriggerLeft = input.IsTriggered(InputType::Left);
+	//キーが押されたか
+	bool isTriggerUp	= input.IsTriggered(InputType::Up);
+	bool isTriggerDown	= input.IsTriggered(InputType::Down);
+	bool isTriggerLeft	= input.IsTriggered(InputType::Left);
 	bool isTriggerRight = input.IsTriggered(InputType::Right);
-	bool isTriggerUp = input.IsTriggered(InputType::Up);
-	bool isTriggerDown = input.IsTriggered(InputType::Down);
 
-	switch (selectNum_)
+	//指定の方向に移動可能か
+	bool canMoveUp		= selectData_[static_cast<int>(currentSelectScene_)].up;
+	bool canMoveDown	= selectData_[static_cast<int>(currentSelectScene_)].down;
+	bool canMoveLeft	= selectData_[static_cast<int>(currentSelectScene_)].left;
+	bool canMoveRight	= selectData_[static_cast<int>(currentSelectScene_)].rignt;
+
+	//上
+	if (isTriggerUp && canMoveUp)
 	{
-	case 0:
-		if (isTriggerRight || isTriggerDown)
-		{
-			oldSelectNum_ = selectNum_;
-			selectNum_ = 1;
-		}
-		break;
-	case 1:
-		if (isTriggerUp)
-		{
-			oldSelectNum_ = selectNum_;
-			selectNum_ = 2;
-		}
-		else if (isTriggerLeft)
-		{
-			oldSelectNum_ = selectNum_;
-			selectNum_ = 0;
-		}
-		else if (isTriggerRight)
-		{
-			oldSelectNum_ = selectNum_;
-			selectNum_ = 3;
-		}
-		break;
-	case 2:
-		if (isTriggerLeft || isTriggerDown) 
-		{
-			oldSelectNum_ = selectNum_;
-			selectNum_ = 1;
-		}
-		break;
-	case 3:
-		if (isTriggerLeft || isTriggerDown) 
-		{
-			oldSelectNum_ = selectNum_;
-			selectNum_ = 1;
-		}
-		break;
+		oldSelectScene_ = currentSelectScene_;
+		currentSelectScene_ = selectData_[static_cast<int>(currentSelectScene_)].upScene;
+		CameraTargetUpdate();
+	}
+	//下
+	else if (isTriggerDown && canMoveDown)
+	{
+		oldSelectScene_ = currentSelectScene_;
+		currentSelectScene_ = selectData_[static_cast<int>(currentSelectScene_)].downScene;
+		CameraTargetUpdate();
+	}
+	//左
+	else if (isTriggerLeft && canMoveLeft)
+	{
+		oldSelectScene_ = currentSelectScene_;
+		currentSelectScene_ = selectData_[static_cast<int>(currentSelectScene_)].leftScene;
+		CameraTargetUpdate();
+	}
+	//右
+	else if (isTriggerRight && canMoveRight)
+	{
+		oldSelectScene_ = currentSelectScene_;
+		currentSelectScene_ = selectData_[static_cast<int>(currentSelectScene_)].rigntScene;
+		CameraTargetUpdate();
 	}
 }
 
@@ -337,27 +344,28 @@ void SceneTitle::UIUpdate()
 	auto& file = ExternalFile::GetInstance();
 	auto& input = InputState::GetInstance();
 
-	if (camera_->GetMoving()) {
+	if (camera_->GetMoving()) 
+	{
 		return;
 	}
 
-	//選択
-	SelectNumUpdate();
-
-	//現在のフレームと前のフレームで番号が違ったら
-	//カメラの設定を行う
-	if (selectNum_ != oldSelectNum_) {
-		camera_->SetCameraTargetPosAndView(cameraInfo_[selectNum_].targetPos, cameraInfo_[selectNum_].targetView, cameraInfo_[selectNum_].upVec);
-		camera_->LesetElapsedTime();
+	if (oldSelectScene_ != currentSelectScene_)
+	{
+		SceneChange();
+		oldSelectScene_ = currentSelectScene_;
 	}
 
-	//決定
-	if (input.IsTriggered(InputType::Space)) {
-		updateFunc_ = &SceneTitle::UIFadeOutUpdate;
+	//選択
+	SelectSceneUpdate();
+
+	if (input.IsTriggered(InputType::Space))
+	{
+		NewGameOrGameEndChange();
 	}
 
 	//動画を再生する
-	if (input.IsTriggered(InputType::Pause)) {
+	if (input.IsTriggered(InputType::Pause))
+	{
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneMovie>(manager_)));
 	}
 }
@@ -377,19 +385,22 @@ void SceneTitle::OpeningUpdate()
 	mainPlayerModel_->Update();
 
 	//時計をとめるアニメーションの後仰向けに戻る
-	if (mainPlayerModel_->IsAnimEnd() && checkStopTimerAnim) {
+	if (mainPlayerModel_->IsAnimEnd() && checkStopTimerAnim)
+	{
 		sound.StopSE("alarm");
 		sound.PlaySE("stopAlarm");
 		mainPlayerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::StopTimerCancel), false, false, 10);
 	}
 
 	//仰向けになるアニメーションが終わった後
-	if (mainPlayerModel_->IsAnimEnd() && checkStopTimerCancelAnim) {
+	if (mainPlayerModel_->IsAnimEnd() && checkStopTimerCancelAnim)
+	{
 		mainPlayerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::WakeUp), false, false, 10);
 	}
 
 	//起き上がるアニメーションが終わったら
-	if (mainPlayerModel_->IsAnimEnd() && checkWakeUpAnim) {
+	if (mainPlayerModel_->IsAnimEnd() && checkWakeUpAnim)
+	{
 		updateFunc_ = &SceneTitle::SceneTitleFadeOutUpdate;
 	}
 }
@@ -399,9 +410,11 @@ void SceneTitle::UIFadeOutUpdate()
 {
 	//UIのフェードアウト
 	UIfadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
-	if (--fadeTimer_ == 0) {
+	if (--fadeTimer_ == 0)
+	{
 		UIfadeValue_ = 0;
-		SceneChange();
+		updateFunc_ = &SceneTitle::OpeningUpdate;
+		SoundManager::GetInstance().PlaySE("alarm");
 		return;
 	}
 }
@@ -411,7 +424,8 @@ void SceneTitle::SceneTitleFadeOutUpdate()
 {
 	//フェードアウト
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
-	if (++fadeTimer_ == fadeInterval_) {
+	if (++fadeTimer_ == fadeInterval_)
+	{
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 		return;
 	}
@@ -420,21 +434,33 @@ void SceneTitle::SceneTitleFadeOutUpdate()
 //シーンを切り替える
 void SceneTitle::SceneChange()
 {
-	switch (selectNum_) {
-	case 0:
+	if (currentSelectScene_ == SelectScene::Setting)
+	{
 		Init();
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<SettingSceneForSceneTitle>(manager_)));
-		break;
-	case 1:
-		updateFunc_ = &SceneTitle::OpeningUpdate;
-		SoundManager::GetInstance().PlaySE("alarm");
-		break;
-	case 2:
+		return;
+	}
+
+	if (currentSelectScene_ == SelectScene::SelectChapter)
+	{
 		Init();
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<SelectChapterScene>(manager_)));
-		break;
-	case 3:
+		return;
+	}
+}
+
+//ニューゲーム又はゲームオーバーが選択された時の変更
+void SceneTitle::NewGameOrGameEndChange()
+{
+
+	if (currentSelectScene_ == SelectScene::NewGame)
+	{
+		updateFunc_ = &SceneTitle::UIFadeOutUpdate;
+	}
+
+	if (currentSelectScene_ == SelectScene::End)
+	{
 		manager_.SetEndFlag(true);
-		break;
+		return;
 	}
 }

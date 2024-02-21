@@ -46,7 +46,7 @@ Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpda
 	playerInfo_ = ExternalFile::GetInstance().GetPlayerInfo();
 
 	//プレイヤーモデルの生成
-	model_ = std::make_shared<Model>(model.GetModelHandle(objData[static_cast<int>(ObjectType::Player)].name), Material::Other);
+	model_ = std::make_shared<Model>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name), Material::Other);
 
 	//アニメーションの設定
 	model_->SetAnimation(static_cast<int>(PlayerAnimType::Idle), true, false);
@@ -653,7 +653,8 @@ void Player::GoCrankRotationPosition(std::shared_ptr<ObjectManager>& objManager)
 	else {
 		status_.pos = standPos;
 		model_->SetPos(status_.pos);
-		status_.rot.y = -90.0f;
+		angle_ = -90.0f;
+		status_.rot = VGet(0, angle_, 0);
 		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 		ChangeAnimNo(PlayerAnimType::Crank, false, 20);
 		updateFunc_ = &Player::CrankUpdate;

@@ -9,7 +9,7 @@
 Switch::Switch(const LoadObjectInfo objInfo)
 {
 	//ƒ‚ƒfƒ‹ƒNƒ‰ƒX‚Ì‰Šú‰»
-	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(objData[static_cast<int>(ObjectType::Switch)].name), Material::Iron);
+	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(objData_[static_cast<int>(ObjectType::Switch)].name), Material::Iron);
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);

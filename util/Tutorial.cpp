@@ -11,7 +11,7 @@
 
 namespace {
 	//キーボード画像のチップサイズ
-	constexpr int keybord_graph_chip_size = 59;
+	constexpr int input_graph_chip_size = 59;
 	//パッド画像のチップサイズ
 	constexpr int controller_graph_chip_size = 71;
 }
@@ -23,8 +23,8 @@ Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)
 	auto& input = InputState::GetInstance();
 
 	//キーボードの画像を描画する位置
-	UIPos_[UIGraph::KeyBord].first = Game::screen_width / 2 - keybord_graph_chip_size;
-	UIPos_[UIGraph::KeyBord].second = Game::screen_height - keybord_graph_chip_size * 1.3f;
+	UIPos_[UIGraph::KeyBord].first = Game::screen_width / 2 - input_graph_chip_size;
+	UIPos_[UIGraph::KeyBord].second = Game::screen_height - input_graph_chip_size * 1.3f;
 
 	//padのボタンを描画する位置
 	UIPos_[UIGraph::XboxBotton].first = Game::screen_width / 2 - controller_graph_chip_size;
@@ -127,10 +127,10 @@ void Tutorial::SwitchTutorialDraw(InputState& input)
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
 	if (nextDisplayKeyType_ == static_cast<int>(InputType::Death) || nextDisplayBottanType_ == static_cast<int>(XboxBotton::Y)) {
-		input.DrawName(nextDisplayKeyType_, static_cast<float>(Game::screen_width / 2), Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_, false, false);
+		input.DrawName(nextDisplayKeyType_, static_cast<float>(Game::screen_width / 2), Game::screen_height - input_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_, false, false);
 	}
 	else {
-		DrawStringToHandle(Game::screen_width / 2, static_cast<int>(Game::screen_height - keybord_graph_chip_size * 1.6f), str.c_str(), 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2, static_cast<int>(Game::screen_height - input_graph_chip_size * 1.6f), str.c_str(), 0xffffff, fontPigumo42_);
 	}
 }
 
@@ -143,8 +143,8 @@ void Tutorial::CranckTutorialDraw(InputState& input)
 
 	if (pushBottan_[static_cast<int>(InputType::Death)]) {
 		//文字列の描画
-		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f) - 80, "左回転", 0xffffff, fontPigumo42_);
-		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f), "右回転", 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f) - 80, "左回転", 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f), "右回転", 0xffffff, fontPigumo42_);
 
 		if (input.currentInputDevice_) {
 			//キー画像の描画
@@ -174,11 +174,11 @@ void Tutorial::CranckTutorialDraw(InputState& input)
 
 	if (pushBottan_[static_cast<int>(InputType::Activate)]) {
 		//キーに対応した文字列の描画(アクションキーの文字列)
-		DrawStringToHandle(Game::screen_width / 2, Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f), "手を放す", 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2, Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f), "手を放す", 0xffffff, fontPigumo42_);
 	}
 	else {
 		//キーに対応した文字列の描画(アクションキーの文字列)
-		DrawStringToHandle(Game::screen_width / 2, Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f), "クランクを回す", 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2, Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f), "クランクを回す", 0xffffff, fontPigumo42_);
 	}
 }
 
@@ -202,7 +202,7 @@ void Tutorial::RunTutorialDraw(InputState& input)
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(static_cast<int>(InputType::Dush), static_cast<float>(Game::screen_width / 2), Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_,false,false);
+	input.DrawName(static_cast<int>(InputType::Dush), static_cast<float>(Game::screen_width / 2), Game::screen_height - input_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_,false,false);
 }
 
 //ジャンプのチュートリアル
@@ -226,7 +226,7 @@ void Tutorial::JumpTutorialDraw(InputState& input)
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(static_cast<int>(InputType::Space), static_cast<float>(Game::screen_width / 2), Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_,true,false,"/");
+	input.DrawName(static_cast<int>(InputType::Space), static_cast<float>(Game::screen_width / 2), Game::screen_height - input_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_,true,false,"/");
 }
 
 //エレベーターのチュートリアル
@@ -249,7 +249,7 @@ void Tutorial::ElevatorTutorialDraw(InputState& input)
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	DrawStringToHandle(Game::screen_width / 2, static_cast<int>(Game::screen_height - keybord_graph_chip_size * 1.6f), "レバーを引く", 0xffffff, fontPigumo42_);
+	DrawStringToHandle(Game::screen_width / 2, static_cast<int>(Game::screen_height - input_graph_chip_size * 1.6f), "レバーを引く", 0xffffff, fontPigumo42_);
 }
 
 //死体のチュートリアル
@@ -262,7 +262,7 @@ void Tutorial::CorpseScaffoldDraw(InputState& input)
 	if (pushBottan_[static_cast<int>(InputType::Death)]) {
 		std::string str = "死体は足場として使える";
 		int width = GetDrawStringWidthToHandle(str.c_str(), static_cast<int>(str.size()), fontPigumo42_);
-		DrawStringToHandle(Game::screen_width / 2 - width / 2, Game::screen_height - static_cast<int>(keybord_graph_chip_size * 1.6f), str.c_str(), 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / 2 - width / 2, Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f), str.c_str(), 0xffffff, fontPigumo42_);
 		return;
 	}
 
@@ -275,5 +275,5 @@ void Tutorial::CorpseScaffoldDraw(InputState& input)
 	}
 
 	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(static_cast<int>(InputType::Death), static_cast<float>(Game::screen_width / 2), Game::screen_height - keybord_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_, false, false);
+	input.DrawName(static_cast<int>(InputType::Death), static_cast<float>(Game::screen_width / 2), Game::screen_height - input_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_, false, false);
 }

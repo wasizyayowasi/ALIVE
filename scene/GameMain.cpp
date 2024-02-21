@@ -8,8 +8,10 @@
 
 #include "../object/Player.h"
 #include "../object/Camera.h"
+#include "../object/ObjectData.h"
 #include "../object/ShotManager.h"
 #include "../object/CharacterBase.h"
+#include "../object/ObjectManager.h"
 
 #include "../util/game.h"
 #include "../util/model.h"
@@ -20,9 +22,6 @@
 #include "../util/EffectManager.h"
 #include "../util/CheckCollisionModel.h"
 
-#include "../object/ObjectManager.h"
-#include "../object/ObjectData.h"
-
 //コンストラクタ
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::FadeInUpdate)
 {
@@ -30,7 +29,7 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	auto& file = ExternalFile::GetInstance();
 
 	//インスタンス化
-	player_ = std::make_shared<Player>(file.GetSpecifiedInfo("main", "Player"));
+	player_ = std::make_shared<Player>(file.GetMainSpecialObjectInfo("Player"));
 	tutorial_ = std::make_shared<Tutorial>();
 	shotManager_ = std::make_shared<ShotManager>();
 	objManager_ = std::make_shared<ObjectManager>();
@@ -148,6 +147,8 @@ void GameMain::Draw()
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
+	//DrawFormatString(0, 80, 0xffffff, "%d", sizeof(std::string));
+
 	//フィルター処理を行うか
 	if (isFilterOn_) {
 		GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 32, 800);
@@ -176,6 +177,7 @@ void GameMain::NormalUpdate()
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
+	auto& file = ExternalFile::GetInstance();
 
 	//フィルター処理を行わない用にする
 	isFilterOn_ = false;
@@ -211,7 +213,7 @@ void GameMain::NormalUpdate()
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
 
-	auto info = ExternalFile::GetInstance().GetSpecifiedInfo("main","GOAL");
+	auto info = file.GetSpecifiedInfo("main","GOAL");
 
 	auto result = MV1CollCheck_Capsule(	player_->GetModelPointer()->GetModelHandle(),
 										player_->GetModelPointer()->GetColFrameIndex(),
@@ -220,7 +222,7 @@ void GameMain::NormalUpdate()
 
 	if (result.HitNum > 0) {
 		totalDeathNum_ += player_->GetDeathCount();
-		ExternalFile::GetInstance().SetDeathCount(totalDeathNum_);
+		file.SetDeathCount(totalDeathNum_);
 		updateFunc_ = &GameMain::FadeOutUpdate;
 	}
 

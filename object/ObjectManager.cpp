@@ -1,12 +1,12 @@
 #include "ObjectManager.h"
 
-#include "../object/Player.h"
-#include "../object/EnemyBase.h"
-#include "../object/ThrowEnemy.h"
-#include "../object/ObjectBase.h"
-#include "../object/Corpse.h"
-#include "../object/OrnamentBase.h"
-#include "../object/SignBoardEnemy.h"
+#include "Player.h"
+#include "EnemyBase.h"
+#include "ThrowEnemy.h"
+#include "ObjectBase.h"
+#include "Corpse.h"
+#include "OrnamentBase.h"
+#include "SignBoardEnemy.h"
 
 #include "../gimmick/Elevator.h"
 #include "../gimmick/HopStepJump.h"
@@ -40,7 +40,7 @@ void ObjectManager::MainStageObjectGenerator()
 	{
 		for (auto& objInfo : objTable.second)
 		{
-			for (auto& data : objData)
+			for (auto& data : objData_)
 			{
 				if (objInfo.name == data.name)
 				{
@@ -55,7 +55,7 @@ void ObjectManager::MainStageObjectGenerator()
 	{
 		for (auto& objInfo : objTable.second)
 		{
-			for (auto& data : objData)
+			for (auto& data : objData_)
 			{
 				if (objTable.first == data.name)
 				{
@@ -64,139 +64,6 @@ void ObjectManager::MainStageObjectGenerator()
 			}
 		}
 	}
-
-#if false
-	for (auto& objInfo : file.GetLoadMainStageObjectInfo()) {
-		if (objInfo.first == "BigBuildingA") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingA,Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "SignBoard") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoardType1, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "BuildingC") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingC, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "Building2A") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Building2A, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "StoreC") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::StoreC, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "Train") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Train, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "Station") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Station, Material::Stone, objSecond);
-			}
-		}
-		else if (objInfo.first == "FenceType1") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Fence, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "WallBack") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WallBack, Material::Stone, objSecond);
-			}
-		}
-		else if (objInfo.first == "WallSide") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WallSide, Material::Stone, objSecond);
-			}
-		}
-		else if (objInfo.first == "Street") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Street, Material::Stone, objSecond);
-			}
-		}
-		else if (objInfo.first == "TStreet") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TStreet, Material::Stone, objSecond);
-			}
-		}
-		else if (objInfo.first == "Tile") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Tile, Material::Stone, objSecond);
-			}
-		}
-		else if (objInfo.first == "TileType2") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TileType2, Material::Stone, objSecond);
-			}
-		}
-		else if (objInfo.first == "BlueContainer") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BlueContainer, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "RedContainer") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::RedContainer, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "YellowContainer") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::YellowContainer, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "OrangeContainer") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::OrangeContainer, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "TunnelWall") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TunnelWall, Material::Stone, objSecond);
-			}
-		}
-		else if (objInfo.first == "TunnelEntrance") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TunnelEntrance, Material::Stone, objSecond);
-			}
-		}
-	}
-
-	for (auto& gimmick : file.GetGimmickInfo()) {
-		if (gimmick.first == "Trans") {
-			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::GimmickBase, ObjectType::TransScaffold, Material::Iron, objSecond);
-			}
-		}
-		else if (gimmick.first == "CrankScaffold") {
-			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::GimmickBase, ObjectType::CrankScaffold, Material::Iron, objSecond);
-			}
-		}
-		else if (gimmick.first == "Elevator") {
-			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::GimmickBase, ObjectType::Elevator, Material::Iron, objSecond);
-			}
-		}
-		else if (gimmick.first == "PenetrationScaffld") {
-			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::GimmickBase, ObjectType::PenetrationScaffld, Material::Iron, objSecond);
-			}
-		}
-		else if (gimmick.first == "HopStepJump") {
-			for (auto& objSecond : gimmick.second) {
-				SortingObject(ObjectBaseType::GimmickBase, ObjectType::HopStepJump, Material::Stone, objSecond);
-			}
-		}
-	}
-#endif
 }
 
 void ObjectManager::OpeningStageObjectGenerator()
@@ -209,7 +76,7 @@ void ObjectManager::OpeningStageObjectGenerator()
 	{
 		for (auto& objInfo : objTable.second)
 		{
-			for (auto& data : objData)
+			for (auto& data : objData_)
 			{
 				if (objInfo.name == data.name)
 				{
@@ -218,92 +85,18 @@ void ObjectManager::OpeningStageObjectGenerator()
 			}
 		}
 	}
-#if false
-	for (auto& objTable : file.GetLoadOpeningStageObjectInfo())
-	{
-		if (objTable.first == objData[static_cast<int>(ObjectType::Bed)]) {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Bed, Material::Wood, objSecond);
-			}
-		}
-		else if (objTable.first == "RoomWall") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::RoomWall, Material::Stone, objSecond);
-			}
-		}
-		else if (objTable.first == "WoodFloor") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WoodFloor, Material::Wood, objSecond);
-			}
-		}
-		else if (objTable.first == "Window") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Window, Material::Iron, objSecond);
-			}
-		}
-		else if (objTable.first == "Clock") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Clock, Material::Iron, objSecond);
-			}
-		}
-		else if (objTable.first == "Desk") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Desk, Material::Wood, objSecond);
-			}
-		}
-		else if (objTable.first == "WoodenBox") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::WoodenBox, Material::Wood, objSecond);
-			}
-		}
-		else if (objTable.first == "SignBoardType2") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::SignBoardType2, Material::Iron, objSecond);
-			}
-		}
-		else if (objTable.first == "TV") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TV, Material::Iron, objSecond);
-			}
-		}
-		else if (objTable.first == "Book") {
-			for (auto& objSecond : objTable.second) {
-				//SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Book, Material::Other, objSecond);
-			}
-		}
-		else if (objTable.first == "BlueContainer") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BlueContainer, Material::Iron, objSecond);
-			}
-		}
-		else if (objTable.first == "HopStepJump") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::HopStepJump, Material::Stone, objSecond);
-			}
-		}
-		else if (objTable.first == "TransScaffold") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::TransScaffold, Material::Iron, objSecond);
-			}
-		}
-		else if (objTable.first == "Door") {
-			for (auto& objSecond : objTable.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Door, Material::Iron, objSecond);
-			}
-		}
-	}
-#endif
 }
 
 void ObjectManager::EndStageObjectGenerator()
 {
+	//短縮化
 	auto& file = ExternalFile::GetInstance();
 
 	//置物の生成
 	for (auto& objTable : file.GetLoadMainStageObjectInfo()) {
 		for (auto& objInfo : objTable.second)
 		{
-			for (auto& data : objData)
+			for (auto& data : objData_)
 			{
 				if (objInfo.name == data.name)
 				{
@@ -312,36 +105,6 @@ void ObjectManager::EndStageObjectGenerator()
 			}
 		}
 	}
-
-#if false
-	for (auto& objInfo : file.GetLoadEndingStageObjectInfo()) {
-		if (objInfo.first == "BigBuildingA") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BigBuildingA, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "BuildingC") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::BuildingC, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "Building2A") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Building2A, Material::Iron, objSecond);
-			}
-		}
-		else if (objInfo.first == "street") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Street, Material::Stone, objSecond);
-			}
-		}
-		else if (objInfo.first == "Tile") {
-			for (auto& objSecond : objInfo.second) {
-				SortingObject(ObjectBaseType::OrnamentBase, ObjectType::Tile, Material::Stone, objSecond);
-			}
-		}
-	}
-#endif
 }
 
 void ObjectManager::CorpseGenerator(const int handle, const  LoadObjectInfo objInfo, const  int animNo)
@@ -450,21 +213,6 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
 	return checkCollList_;
 }
 
-//void ObjectManager::SortingObject(const ObjectBaseType baseType, const std::string name, const ObjectType objType, const Material materialType, const LoadObjectInfo objInfo)
-//{
-//	//objectBaseTypeを元にインスタンス化するクラスを決める
-//	switch (baseType) {
-//		//置物を生成
-//	case ObjectBaseType::OrnamentBase:
-//		OrnamentGenerator(name, objType, materialType, objInfo);
-//		break;
-//		//ギミックを生成
-//	case ObjectBaseType::GimmickBase:
-//		GimmickObjectGenerator(name, objType, materialType, objInfo);
-//		break;
-//	}
-//}
-
 std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(const ObjectType type)
 {
 
@@ -570,7 +318,7 @@ void ObjectManager::EnemyGenerator(const int deathCount, const  LoadObjectInfo i
 			GeneratedForTheNumberOfTimesYouDie(deathCount, info);
 		}
 		else if (str == "SignBoardEnemy") {
-			objects_[ObjectType::Enemy].push_back(std::make_shared<SignBoardEnemy>(model.GetModelHandle(objData[static_cast<int>(ObjectType::SignBoardPlayer)].name), Material::Other, info));
+			objects_[ObjectType::Enemy].push_back(std::make_shared<SignBoardEnemy>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::SignBoardPlayer)].name), Material::Other, info));
 			usedEnemyList_[info.name] = true;
 		}
 		else {
@@ -591,7 +339,7 @@ void ObjectManager::EndEnemyGenerator(const int deathCount, LoadObjectInfo info)
 		info.pos.x += angle;
 
 		//インスタンス化
-		objects_[ObjectType::Enemy].push_back(std::make_shared<EnemyBase>(model.GetModelHandle(objData[static_cast<int>(ObjectType::Player)].name), Material::Other, info));
+		objects_[ObjectType::Enemy].push_back(std::make_shared<EnemyBase>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name), Material::Other, info));
 		angle -= 15.0f;
 
 		usedEnemyList_[info.name] = true;
@@ -612,7 +360,7 @@ void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount, Loa
 		//CircumferencePosition(angle, info.pos, info.pos);
 
 		//インスタンス化
-		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(objData[static_cast<int>(ObjectType::Player)].name), Material::Other, info));
+		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name), Material::Other, info));
 		angle -= 15.0f;
 
 		usedEnemyList_[info.name] = true;
@@ -630,7 +378,7 @@ void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, con
 	//文字列の最後の数よりもdeathCountが多ければ
 	//エネミーを召喚する
 	if (num <= deathCount) {
-		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(objData[static_cast<int>(ObjectType::Player)].name), Material::Other, info));
+		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name), Material::Other, info));
 		usedEnemyList_[info.name] = true;
 	}
 }
@@ -649,7 +397,7 @@ void ObjectManager::GenerateCorpseMountain(const int deathCount, const  LoadObje
 	//文字列の最後の数よりもdeathCountが多ければ
 	//エネミーを召喚する
 	if (num <= deathCount) {
-		objects_[ObjectType::CorpseMountain].push_back(std::make_shared<OrnamentBase>(model.GetModelHandle(objData[static_cast<int>(ObjectType::CorpseMountain)].name), Material::Other, info));
+		objects_[ObjectType::CorpseMountain].push_back(std::make_shared<OrnamentBase>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::CorpseMountain)].name), Material::Other, info));
 		usedCorpseMtList_[info.name] = true;
 	}
 }

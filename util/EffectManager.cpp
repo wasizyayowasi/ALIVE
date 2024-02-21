@@ -1,5 +1,8 @@
 #include "EffectManager.h"
 #include "Effect2D.h"
+
+#include "../util/ExternalFile.h"
+
 #include <algorithm>
 
 namespace {
@@ -17,6 +20,14 @@ EffectManager::EffectManager()
 //デストラクタ
 EffectManager::~EffectManager()
 {
+	for (auto& table : handle_)
+	{
+		for (auto& graph : table.second)
+		{
+			DeleteGraph(graph);
+		}
+	}
+
 	for (auto& graph : arrayHandle_) {
 		DeleteGraph(graph);
 	}
@@ -25,40 +36,26 @@ EffectManager::~EffectManager()
 //画像の読み込み
 void EffectManager::Load()
 {
-	//画像の分割読み込み
-	LoadDivGraph(hit_effect_filepath, 27, 9, 3, 516, 528, arrayHandle_, true);
+	//分割画像の読み込み
+	for (auto& place : ExternalFile::GetInstance().GetDivGraphData())
+	{
+		for (auto& info : place.second)
+		{
+			//パスの作成
+			std::string path = "data/" + place.first + "/" + info.name + ".png";
 
-	//テーブルに移し替える
-	for (auto& graph : arrayHandle_) {
-		if (graph == 0) {
-			continue;
+			//総分割数の作成
+			int totalDivNum = info.divXNum * info.divYNum;
+
+			//画像の分割読み込み
+			LoadDivGraph(path.c_str(), totalDivNum, info.divXNum, info.divYNum, info.divXSize, info.divYSize, arrayHandle_);
+
+			for (int i = 0; i < totalDivNum; i++)
+			{
+				handle_[info.name].push_back(arrayHandle_[i]);
+				arrayHandle_[i] = 0;
+			}
 		}
-
-		handle_["hit"].push_back(graph);
-	}
-
-	//画像の分割読み込み
-	LoadDivGraph(smoke_effect_filepath, 20, 4, 5, 144, 144, arrayHandle_, true);
-
-	//テーブルに移し替える
-	for (auto& graph : arrayHandle_) {
-		if (graph == 0) {
-			continue;
-		}
-
-		handle_["smoke"].push_back(graph);
-	}
-
-	//画像の分割読み込み
-	LoadDivGraph(leaves_effect_filepath, 20, 4, 5, 150, 150, arrayHandle_, true);
-
-	//テーブルに移し替える
-	for (auto& graph : arrayHandle_) {
-		if (graph == 0) {
-			continue;
-		}
-
-		handle_["leaves"].push_back(graph);
 	}
 }
 
