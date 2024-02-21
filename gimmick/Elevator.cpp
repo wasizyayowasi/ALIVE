@@ -251,7 +251,7 @@ void Elevator::TargetPosition()
 }
 
 //Õ“Ë”»’è‚ğs‚¤ƒ‚ƒfƒ‹‚Ì’Ç‰Á
-std::shared_ptr<Model> Elevator::AddCollModel()const
+const std::shared_ptr<Model>& Elevator::AddCollModel()const
 {
 	return switch_->GetModelPointer();
 }

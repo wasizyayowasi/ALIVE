@@ -39,13 +39,13 @@ public:
 	/// 死体に対しての更新
 	/// </summary>
 	/// <param name="pointer">死体のポインタ</param>
-	virtual void UpdateForCorpse(std::shared_ptr<ObjectBase>& pointer);
+	virtual void UpdateForCorpse(const std::shared_ptr<ObjectBase>& pointer);
 
 	/// <summary>
 	/// 衝突判定を行うモデルを追加する
 	/// </summary>
 	/// <returns>モデルポインタ</returns>
-	virtual std::shared_ptr<Model> AddCollModel() const;
+	virtual const std::shared_ptr<Model>& AddCollModel() const;
 
 
 	//////////////GETTER//////////////
@@ -54,13 +54,13 @@ public:
 	/// モデルのスマートポインタを取得する
 	/// </summary>
 	/// <returns>モデルポインタ</returns>
-	std::shared_ptr<Model> GetModelPointer()const;
+	const std::shared_ptr<Model>& GetModelPointer()const;
 
 	/// <summary>
 	/// ポジションの取得
 	/// </summary>
 	/// <returns>ポジション</returns>
-	VECTOR GetPos() const { return pos_; }
+	const VECTOR& GetPos() const { return pos_; }
 
 	/// <summary>
 	/// 現在、このオブジェクトが有効か無効か
@@ -102,9 +102,9 @@ protected:
 	bool isCollCheck_ = false;					//衝突判定を行うか
 	bool isUpdateColl_ = false;					//衝突判定を行う際、衝突判定を行うモデルフレームの更新が必要か
 
-	VECTOR pos_ = { 0.0f,0.0f,0.0f };			//ポジション
-	VECTOR rot_ = { 0.0f,0.0f,0.0f };			//回転率
-	VECTOR scale_ = { 0.5f,0.5f,0.5f };			//拡縮率
+	VECTOR pos_ = {};							//ポジション
+	VECTOR rot_ = {};							//回転率
+	VECTOR scale_ = {};							//拡縮率
 
 	std::shared_ptr<Model> model_;				//モデルクラスのスマートポインタ
 };

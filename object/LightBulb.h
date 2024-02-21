@@ -29,17 +29,19 @@ public:
 	/// </summary>
 	void Draw();
 
+	////////////////Getter////////////////
+
 	/// <summary>
 	/// 回転ベクトルを取得する
 	/// </summary>
 	/// <returns>回転ベクトル</returns>
-	VECTOR GetFrontVec() const;
+	const VECTOR& GetFrontVec() const;
 
 	/// <summary>
 	/// 特定のフレームの座標を取得する
 	/// </summary>
 	/// <returns></returns>
-	VECTOR GetFramePos() const;
+	const VECTOR& GetFramePos() const;
 private:
 
 	float elapsedTime_ = 0.0f;			//経過時間

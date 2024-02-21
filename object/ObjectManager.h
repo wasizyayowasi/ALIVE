@@ -61,26 +61,6 @@ public:
 	void Draw(const VECTOR PlayerPos);
 
 	/// <summary>
-	/// 衝突判定に使用するモデルを取得する
-	/// </summary>
-	/// <returns>衝突判定を行うモデルスマートポインタのリスト</returns>
-	std::list<std::shared_ptr<Model>> GetAllCheckCollModel();
-
-	/// <summary>
-	/// 特定のモデルポインタを取得する
-	/// </summary>
-	/// <param name="type">取得したいオブジェクトタイプ</param>
-	/// <returns>特定のモデルポインタリスト</returns>
-	std::list<std::shared_ptr<Model>> GetSpecificModel(const ObjectType type);
-
-	/// <summary>
-	/// 特定のオブジェクトベースポインタを取得する
-	/// </summary>
-	/// <param name="type">取得したオブジェクトタイプ</param>
-	/// <returns>特定のオブジェクトベースポインタ</returns>
-	std::list<std::shared_ptr<ObjectBase>> GetSpecificObject(const ObjectType type);
-
-	/// <summary>
 	/// 衝突判定を行うモデルを追加する
 	/// </summary>
 	void AddCheckCollModel();
@@ -96,7 +76,7 @@ public:
 	/// </summary>
 	/// <param name="info"></param>
 	/// <param name="loadObjPos"></param>
-	void CircumferencePosition(const float angle,VECTOR& infoPos, const  VECTOR playerPos);
+	void CircumferencePosition(const float angle, VECTOR& infoPos, const  VECTOR playerPos);
 
 	/// <summary>
 	/// 敵生成
@@ -111,6 +91,29 @@ public:
 	/// <param name="deathCount">死んだ回数</param>
 	/// <param name="info">配置データ</param>
 	void EndEnemyGenerator(const int deathCount, LoadObjectInfo info);
+
+	////////////////Getter////////////////
+
+	/// <summary>
+	/// 衝突判定に使用するモデルを取得する
+	/// </summary>
+	/// <returns>衝突判定を行うモデルスマートポインタのリスト</returns>
+	const std::list<std::shared_ptr<Model>>& GetAllCheckCollModel();
+
+	/// <summary>
+	/// 特定のモデルポインタを取得する
+	/// </summary>
+	/// <param name="type">取得したいオブジェクトタイプ</param>
+	/// <returns>特定のモデルポインタリスト</returns>
+	const std::list<std::shared_ptr<Model>>& GetSpecificModel(const ObjectType type);
+
+	/// <summary>
+	/// 特定のオブジェクトベースポインタを取得する
+	/// </summary>
+	/// <param name="type">取得したオブジェクトタイプ</param>
+	/// <returns>特定のオブジェクトベースポインタ</returns>
+	const std::list<std::shared_ptr<ObjectBase>>& GetSpecificObject(const ObjectType type);
+
 private:
 	/// <summary>
 	/// 死んだ回数分生成する

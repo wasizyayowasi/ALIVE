@@ -46,7 +46,7 @@ void LightBulb::Draw()
 	model_->Draw();
 }
 
-VECTOR LightBulb::GetFrontVec() const
+const VECTOR& LightBulb::GetFrontVec() const
 {
 
 	MATRIX mtxRotZ = MGetRotZ(rot_.z);
@@ -56,7 +56,7 @@ VECTOR LightBulb::GetFrontVec() const
 	return frontVec;
 }
 
-VECTOR LightBulb::GetFramePos() const
+const VECTOR& LightBulb::GetFramePos() const
 {
 	VECTOR pos = model_->GetFrameLocalPosition("LightBulb");
 	return pos;

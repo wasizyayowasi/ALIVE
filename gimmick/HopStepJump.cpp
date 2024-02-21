@@ -35,6 +35,7 @@ namespace
 	constexpr float min_alpha_value = 0.0f;
 }
 
+//コンストラクタ
 HopStepJump::HopStepJump(const int handle, const Material materialType, const LoadObjectInfo objInfo):GimmickBase(handle,materialType,objInfo)
 {
 	//マテリアルの数の取得
@@ -49,13 +50,16 @@ HopStepJump::HopStepJump(const int handle, const Material materialType, const Lo
 	//時間の設定
 	elapseddTime_ = total_time;
 
+	//現在の番号
 	currentNum_ = StrUtil::GetNumberFromString(objInfo.name, ".");
 }
 
+//デストラクタ
 HopStepJump::~HopStepJump()
 {
 }
 
+//更新
 void HopStepJump::Update(Player& player)
 {
 	//タイマー
@@ -109,6 +113,7 @@ void HopStepJump::Update(Player& player)
 	model_->SetCollFrame(num.c_str());
 }
 
+//描画
 void HopStepJump::Draw()
 {
 	MV1DrawFrame(model_->GetModelHandle(), model_->GetColFrameIndex());

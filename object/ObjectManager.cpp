@@ -199,7 +199,7 @@ void ObjectManager::Draw(const VECTOR PlayerPos)
 	int size = static_cast<int>(objects_[ObjectType::Enemy].size());
 }
 
-std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
+const std::list<std::shared_ptr<Model>>& ObjectManager::GetAllCheckCollModel()
 {
 
 	for (auto& obj : objects_) {
@@ -213,7 +213,7 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetAllCheckCollModel()
 	return checkCollList_;
 }
 
-std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(const ObjectType type)
+const std::list<std::shared_ptr<Model>>& ObjectManager::GetSpecificModel(const ObjectType type)
 {
 
 	std::list<std::shared_ptr<Model>> specificList;
@@ -237,7 +237,7 @@ std::list<std::shared_ptr<Model>> ObjectManager::GetSpecificModel(const ObjectTy
 	return specificList;
 }
 
-std::list<std::shared_ptr<ObjectBase>> ObjectManager::GetSpecificObject(const ObjectType type)
+const std::list<std::shared_ptr<ObjectBase>>& ObjectManager::GetSpecificObject(const ObjectType type)
 {
 
 	std::list<std::shared_ptr<ObjectBase>> obj = {};

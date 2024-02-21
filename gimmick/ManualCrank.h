@@ -33,17 +33,7 @@ public:
 	/// <returns>プレイヤーと衝突したか</returns>
 	bool HitCollPlayer(Player& player) const;
 
-	/// <summary>
-	/// モデルポインタを取得
-	/// </summary>
-	/// <returns>モデルのポインタ</returns>
-	std::shared_ptr<Model>GetModelPointer() const { return model_; }
-
-	/// <summary>
-	/// 現在のZ軸の回転率を取得する
-	/// </summary>
-	/// <returns>Z軸の回転率</returns>
-	float GetRotZ() const { return rotZ_; }
+	////////////////Getter////////////////
 
 	/// <summary>
 	/// Z軸の最大回転率を取得する
@@ -52,16 +42,31 @@ public:
 	float GetMaxRotZ() const;
 
 	/// <summary>
-	/// 回転率を設定する
+	/// 現在のZ軸の回転率を取得する
 	/// </summary>
-	/// <param name="rotZ">Z軸の回転率</param>
-	void SetRotZ(float rotZ) { rotZ_ = rotZ; }
+	/// <returns>Z軸の回転率</returns>
+	float GetRotZ() const { return rotZ_; }
+
+	/// <summary>
+	/// モデルポインタを取得
+	/// </summary>
+	/// <returns>モデルのポインタ</returns>
+	const std::shared_ptr<Model>& GetModelPointer() const { return model_; }
 
 	/// <summary>
 	/// クランクを回す際の立ち位置の取得
 	/// </summary>
 	/// <returns>ポジション</returns>
-	VECTOR GetStandingPosition() const { return standingPos_; }
+	const VECTOR& GetStandingPosition() const { return standingPos_; }
+
+
+	////////////////Setter////////////////
+
+	/// <summary>
+	/// 回転率を設定する
+	/// </summary>
+	/// <param name="rotZ">Z軸の回転率</param>
+	void SetRotZ(float rotZ) { rotZ_ = rotZ; }
 
 private:
 

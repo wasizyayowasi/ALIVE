@@ -295,7 +295,7 @@ bool EnemyBase::IsThereAnObject(const VECTOR playerPos)
 }
 
 //弾を発射する
-void EnemyBase::Shot(const std::shared_ptr<ShotManager>shotManager, const VECTOR playerPos, const  float height)
+void EnemyBase::Shot(const std::shared_ptr<ShotManager>& shotManager, const VECTOR playerPos, const  float height)
 {
 	//プレイヤーを検知しているかどうか
 	//検知していなかったらreturn
@@ -320,7 +320,7 @@ void EnemyBase::Shot(const std::shared_ptr<ShotManager>shotManager, const VECTOR
 }
 
 //回転行列と拡縮行列を乗算した行列を取得する
-MATRIX EnemyBase::CombiningRotAndScallMat(const VECTOR distance)
+const MATRIX& EnemyBase::CombiningRotAndScallMat(const VECTOR distance)
 {
 	//回転行列の取得
 	MATRIX rotMtx = MGetRotVec2(model_front_vec, distance);
@@ -338,7 +338,7 @@ MATRIX EnemyBase::CombiningRotAndScallMat(const VECTOR distance)
 }
 
 //プレイヤーの落ち影に使用する頂点を取得
-VECTOR EnemyBase::VertexPosition(const float angle)
+const VECTOR& EnemyBase::VertexPosition(const float angle)
 {
 
 	VECTOR pos = {};

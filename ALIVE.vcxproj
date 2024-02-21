@@ -111,14 +111,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(dxlib);$(json);$(Dxlib);$(projectDir)プロジェクトに追加すべきファイル_VC用;$(projectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(projectDir)プロジェクトに追加すべきファイル_VC用;$(projectDir)</AdditionalIncludeDirectories>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(dxlib);$(json);$(Dxlib);$(projectDir)プロジェクトに追加すべきファイル_VC用;$(projectDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(projectDir)プロジェクトに追加すべきファイル_VC用;$(projectDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

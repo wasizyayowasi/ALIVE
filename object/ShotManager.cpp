@@ -20,19 +20,19 @@ ShotManager::~ShotManager()
 void ShotManager::Update()
 {
 	for (auto& shot : shots_) {
-		if (shot->IsEnabled()) {
+		if (shot->GetIsEnabled()) {
 			shot->Update();
 		}
 	}
 
-	shots_.remove_if([](std::shared_ptr<Shot> shot) {return !shot->IsEnabled(); });
+	shots_.remove_if([](std::shared_ptr<Shot> shot) {return !shot->GetIsEnabled(); });
 
 }
 
 void ShotManager::Draw()
 {
 	for (auto& shot : shots_) {
-		if (shot->IsEnabled()) {
+		if (shot->GetIsEnabled()) {
 			shot->Draw();
 		}
 	}
@@ -41,7 +41,7 @@ void ShotManager::Draw()
 void ShotManager::Hit(Player& player)
 {
 	for (auto shot : shots_) {
-		if (shot->IsEnabled()) {
+		if (shot->GetIsEnabled()) {
 			shot->HitCheck(player);
 		}
 	}

@@ -58,7 +58,7 @@ public:
 	/// </summary>
 	/// <param name="input">外部装置の入力情報を参照する</param>
 	/// <param name="models">衝突判定を行うモデルのvector型の配列</param>
-	void Update(std::shared_ptr<ObjectManager>& objManager);
+	void Update(const std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// プレイヤー関連の描画
@@ -81,19 +81,19 @@ public:
 	/// <summary>
 	/// プレイヤーのステータスを取得する
 	/// </summary>
-	PlayerStatus GetStatus() const { return status_; }
+	const PlayerStatus& GetStatus() const { return status_; }
 
 	/// <summary>
 	/// 持ち運ぶ死体のポインターを取得する
 	/// </summary>
-	std::shared_ptr<ObjectBase> GetDeadPersonModelPointer() const { return corpseModelPointer_; }
+	const std::shared_ptr<ObjectBase>& GetDeadPersonModelPointer() const { return corpseModelPointer_; }
 
 	/// <summary>
 	/// モデルポインターを取得する
 	/// </summary>
 	/// <param name="height"></param>
 	/// <param name="materialType"></param>
-	std::shared_ptr<Model> GetModelPointer() const { return model_; }
+	const std::shared_ptr<Model>& GetModelPointer() const { return model_; }
 
 	/// <summary>
 	/// 影を描画する高さを取得する
@@ -126,18 +126,18 @@ public:
 	/// <summary>
 	/// 持ち運ぶ事が出来るフラグと持ち運ぶモデルのポインタを受け取る
 	/// </summary>
-	void SetCarryInfo(const bool isCarry, std::shared_ptr<ObjectBase>& model);
+	void SetCarryInfo(const bool isCarry,const std::shared_ptr<ObjectBase>& model);
 
 	/// <summary>
 	/// ManualCrankのポインタを設定する
 	/// </summary>
 	/// <param name="crank"></param>
-	void SetCrankPointer(std::shared_ptr<ManualCrank>& crank);
+	void SetCrankPointer(const std::shared_ptr<ManualCrank>& crank);
 
 	/// <summary>
 	/// レバーのポインタを設定する
 	/// </summary>
-	void SetLeverPointer(std::shared_ptr<Lever>& lever);
+	void SetLeverPointer(const std::shared_ptr<Lever>& lever);
 
 	/// <summary>
 	/// 地面に描画する影の高さと踏んでいるオブジェクトの素材を設定する
@@ -154,7 +154,7 @@ private:
 	/// 更新
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void NormalUpdate(std::shared_ptr<ObjectManager>& objManager);
+	void NormalUpdate(const std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// 移動の更新
@@ -177,25 +177,25 @@ private:
 	/// 走りジャンプではないときのジャンプ
 	/// </summary>
 	/// <param name="input">外部装置の入力情報を参照する</param>
-	void JumpUpdate(std::shared_ptr<ObjectManager>& objManager);
+	void JumpUpdate(const std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// プレイヤーの死体に与える情報を作る関数
 	/// </summary>
 	/// <param name="input">外部装置の入力情報を参照する</param>
-	void DeathUpdate(std::shared_ptr<ObjectManager>& objManager);
+	void DeathUpdate(const std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// 死体の後処理
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void CorpsePostProsessing(std::shared_ptr<ObjectManager>& objManager);
+	void CorpsePostProsessing(const std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// プレイヤーの死体をvector配列で管理する関数
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void CorpseGenerater(std::shared_ptr<ObjectManager>& objManager);
+	void CorpseGenerater(const std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// 荷物を運ぶ
@@ -211,7 +211,7 @@ private:
 	/// クランクを回すポジションまで行く
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void GoCrankRotationPosition(std::shared_ptr<ObjectManager>& objManager);
+	void GoCrankRotationPosition(const std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// クランクを回転させるアップデート
@@ -223,25 +223,25 @@ private:
 	/// クランクの更新
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void CrankUpdate(std::shared_ptr<ObjectManager>& objManager);
+	void CrankUpdate(const std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// レバーを倒すポジションへ行く
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void GoLeverPullPosition(std::shared_ptr<ObjectManager>& objManager);
+	void GoLeverPullPosition(const std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// レバーの更新
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param>
-	void LeverUpdate(std::shared_ptr<ObjectManager>& objManager);
+	void LeverUpdate(const std::shared_ptr<ObjectManager>& objManager);
 
 	/// <summary>
 	/// 投擲物との衝突アップデート
 	/// </summary>
 	/// <param name="objManager">objManagerのポインタ</param> 
-	void BulletHitMeUpdate(std::shared_ptr<ObjectManager>& objManager);
+	void BulletHitMeUpdate(const std::shared_ptr<ObjectManager>& objManager);
 
 private:
 
@@ -307,7 +307,7 @@ private:
 	std::shared_ptr<Lever> lever_;								//クランククラスのポインタ
 	std::shared_ptr<ObjectBase> corpseModelPointer_;			//持ち運ぶ死体のモデルポインタ
 
-	void(Player::* updateFunc_)(std::shared_ptr<ObjectManager>& objManager);		//メンバ関数ポインタ
+	void(Player::* updateFunc_)(const std::shared_ptr<ObjectManager>& objManager);		//メンバ関数ポインタ
 	void(Player::* carryUpdateFunc_)();		//メンバ関数ポインタ
 };
 

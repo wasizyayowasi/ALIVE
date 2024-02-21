@@ -88,7 +88,7 @@ Player::~Player()
 }
 
 //更新
-void Player::Update(std::shared_ptr<ObjectManager>& objManager)
+void Player::Update(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//プレイヤーのアニメーション更新
 	model_->Update();
@@ -146,7 +146,7 @@ void Player::SetJumpInfo(bool isJump, float jumpVec)
 }
 
 //持ち運ぶ事が出来るフラグと持ち運ぶモデルのポインタを受け取る
-void Player::SetCarryInfo(const bool isCarry, std::shared_ptr<ObjectBase>& model)
+void Player::SetCarryInfo(const bool isCarry, const std::shared_ptr<ObjectBase>& model)
 {
 	//持ち運び中フラグを設定する
 	status_.situation.isCanBeCarried = isCarry;
@@ -156,7 +156,7 @@ void Player::SetCarryInfo(const bool isCarry, std::shared_ptr<ObjectBase>& model
 }
 
 //ManualCrankのポインタを設定する
-void Player::SetCrankPointer(std::shared_ptr<ManualCrank>& crank)
+void Player::SetCrankPointer(const std::shared_ptr<ManualCrank>& crank)
 {
 	//操作中フラグをtrueに設定する
 	status_.situation.isGimmickCanBeOperated = true;
@@ -166,7 +166,7 @@ void Player::SetCrankPointer(std::shared_ptr<ManualCrank>& crank)
 }
 
 //レバーのポインタを設定する
-void Player::SetLeverPointer(std::shared_ptr<Lever>& lever)
+void Player::SetLeverPointer(const std::shared_ptr<Lever>& lever)
 {
 	//操作中フラグをtrueに設定する
 	status_.situation.isGimmickCanBeOperated = true;
@@ -187,7 +187,7 @@ void Player::SetRoundShadowHeightAndMaterial(const float height, const  Material
 
 //HACK:↓汚い、気に食わない
 //通常時の更新
-void Player::NormalUpdate(std::shared_ptr<ObjectManager>& objManager)
+void Player::NormalUpdate(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
@@ -532,7 +532,7 @@ void Player::tempRotationUpdate()
 }
 
 //HACK:↓汚い、気に食わない
-void Player::JumpUpdate(std::shared_ptr<ObjectManager>& objManager)
+void Player::JumpUpdate(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//プレイヤー移動関数
 	Move();
@@ -554,7 +554,7 @@ void Player::JumpUpdate(std::shared_ptr<ObjectManager>& objManager)
 }
 
 // プレイヤーの死体に与える情報を作る関数
-void Player::DeathUpdate(std::shared_ptr<ObjectManager>& objManager)
+void Player::DeathUpdate(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//アニメーションの変更
 	ChangeAnimNo(PlayerAnimType::Death, false, 20);
@@ -565,7 +565,7 @@ void Player::DeathUpdate(std::shared_ptr<ObjectManager>& objManager)
 }
 
 //死体の後処理
-void Player::CorpsePostProsessing(std::shared_ptr<ObjectManager>& objManager)
+void Player::CorpsePostProsessing(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//死体を生成する関数
 	CorpseGenerater(objManager);			
@@ -574,7 +574,7 @@ void Player::CorpsePostProsessing(std::shared_ptr<ObjectManager>& objManager)
 }
 
 // プレイヤーの死体をvector配列で管理する関数
-void Player::CorpseGenerater(std::shared_ptr<ObjectManager>& objManager)
+void Player::CorpseGenerater(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//配置データの作成
 	LoadObjectInfo info = {};
@@ -632,7 +632,7 @@ void Player::DropOffObject()
 }
 
 //クランクを回すためにクランクを回すポジションへと移動する
-void Player::GoCrankRotationPosition(std::shared_ptr<ObjectManager>& objManager)
+void Player::GoCrankRotationPosition(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//クランクの立ってほしいポジションを取得する
 	VECTOR standPos = crank_->GetStandingPosition();
@@ -691,7 +691,7 @@ void Player::CrankRotationUpdate(float rotZ) {
 }
 
 //クランクの更新
-void Player::CrankUpdate(std::shared_ptr<ObjectManager>& objManager)
+void Player::CrankUpdate(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
@@ -737,7 +737,7 @@ void Player::CrankUpdate(std::shared_ptr<ObjectManager>& objManager)
 }
 
 //レバーを倒すポジションへ行く
-void Player::GoLeverPullPosition(std::shared_ptr<ObjectManager>& objManager)
+void Player::GoLeverPullPosition(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//クランクの立ってほしいポジションを取得する
 	VECTOR standPos = lever_->GetStandingPosition();
@@ -769,7 +769,7 @@ void Player::GoLeverPullPosition(std::shared_ptr<ObjectManager>& objManager)
 }
 
 //レバーの更新
-void Player::LeverUpdate(std::shared_ptr<ObjectManager>& objManager)
+void Player::LeverUpdate(const std::shared_ptr<ObjectManager>& objManager)
 {
 	if (!lever_->IsOn())
 	{
@@ -778,7 +778,7 @@ void Player::LeverUpdate(std::shared_ptr<ObjectManager>& objManager)
 }
 
 //投擲物との衝突アップデート
-void Player::BulletHitMeUpdate(std::shared_ptr<ObjectManager>& objManager)
+void Player::BulletHitMeUpdate(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//重力
 	status_.jump.jumpVec += gravity;

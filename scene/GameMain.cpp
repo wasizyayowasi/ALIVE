@@ -104,10 +104,6 @@ void GameMain::Draw()
 	MV1SetPosition(skyHandle_, player_->GetStatus().pos);
 	MV1DrawModel(skyHandle_);
 
-#ifdef _DEBUG
-	camera_->DebugDraw();
-#endif // _DEBUG
-
 	//’e‚Ì•`‰æ
 	shotManager_->Draw();
 

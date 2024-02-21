@@ -37,7 +37,7 @@ public:
 	/// スイッチモデルと死体の衝突判定を行う
 	/// </summary>
 	/// <param name="deadPerson">死体のポインタ</param>
-	void HitColl(std::shared_ptr<ObjectBase> deadPerson);
+	void HitColl(const std::shared_ptr<ObjectBase> deadPerson);
 
 	/// <summary>
 	/// エレベーターの衝突判定の結果
@@ -52,12 +52,6 @@ public:
 	bool TransCollResult();
 
 	/// <summary>
-	/// 衝突判定を行うモデルを追加する
-	/// </summary>
-	/// <returns>衝突判定を行うモデルのポインタ</returns>
-	std::shared_ptr<Model> GetModelPointer() const;
-
-	/// <summary>
 	/// 衝突結果の削除
 	/// </summary>
 	void DeleteHitResult();
@@ -66,13 +60,23 @@ public:
 	/// 起動中かを変更する
 	/// </summary>
 	/// <param name="time">時間</param>
-	void ChangeDuringStartup(float time);
+	void ChangeDuringStartup(const float time);
+
+
+	////////////////Getter////////////////
 
 	/// <summary>
 	/// 起動中か
 	/// </summary>
 	/// <returns>true : 起動中 false : 起動していない</returns>
-	bool IsDuringStartup()  const { return isDuringStartup_; }
+	bool GetIsDuringStartup()  const { return isDuringStartup_; }
+
+	/// <summary>
+	/// 衝突判定を行うモデルを追加する
+	/// </summary>
+	/// <returns>衝突判定を行うモデルのポインタ</returns>
+	const std::shared_ptr<Model>& GetModelPointer() const;
+
 private:
 	/// <summary>
 	/// スイッチモデルとプレイヤーの衝突判定を行う

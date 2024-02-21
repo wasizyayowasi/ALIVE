@@ -43,18 +43,18 @@ void ObjectBase::Draw()
 	model_->Draw();
 }
 
-void ObjectBase::UpdateForCorpse(std::shared_ptr<ObjectBase>& pointer)
+void ObjectBase::UpdateForCorpse(const std::shared_ptr<ObjectBase>& pointer)
 {
 }
 
 //モデルのスマートポインタを取得する
-std::shared_ptr<Model> ObjectBase::GetModelPointer()const
+const std::shared_ptr<Model>& ObjectBase::GetModelPointer()const
 {
 	return model_;
 }
 
 //衝突判定を行うモデルを追加する
-std::shared_ptr<Model> ObjectBase::AddCollModel() const
+const std::shared_ptr<Model>& ObjectBase::AddCollModel() const
 {
 	return nullptr;
 }

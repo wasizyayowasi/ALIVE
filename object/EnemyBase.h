@@ -10,16 +10,6 @@
 class Aster;
 class ShotManager;
 
-////エネミーのアニメーションタイプ
-//enum class EnemyAnimType {
-//	Idle,
-//	Walk,
-//	Run,
-//	Death,
-//	Throw,
-//	max,
-//};
-
 class EnemyBase : public CharacterBase
 {
 public:
@@ -84,20 +74,20 @@ public:
 	/// <param name="shotManager">弾を管理するクラスのポインタ</param>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <param name="height">プレイヤーの高さ</param>
-	void Shot(const std::shared_ptr<ShotManager>shotManager, const VECTOR playerPos, const float height);
+	void Shot(const std::shared_ptr<ShotManager>& shotManager, const VECTOR playerPos, const float height);
 
 	/// <summary>
 	/// 回転行列と拡縮行列を乗算した行列を取得する
 	/// </summary>
 	/// <returns>回転行列と拡縮行列を乗算した行列</returns>
-	MATRIX CombiningRotAndScallMat(const VECTOR distance);
+	const MATRIX& CombiningRotAndScallMat(const VECTOR distance);
 
 	/// <summary>
 	/// 落ち影の頂点のポジションを取得する
 	/// </summary>
 	/// <param name="angle">角度</param>
 	/// <returns>ポジション</returns>
-	VECTOR VertexPosition(const float angle);
+	const VECTOR& VertexPosition(const float angle);
 
 	/// <summary>
 	/// 落ち影もどきの描画

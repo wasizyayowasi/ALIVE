@@ -31,11 +31,9 @@ public:
 private:
 
 	int currentNum_ = 0;			//現在の番号
-
 	int materialNum_ = 0;			//マテリアルの数
 
 	float elapseddTime_ = 0.0f;		//経過時間
-
 	float alphaValue_ = 0.0f;		//透過値
 
 };

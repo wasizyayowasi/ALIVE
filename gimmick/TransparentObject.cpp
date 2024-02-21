@@ -77,12 +77,12 @@ void TransparentObject::Draw()
 	switch_->Draw();
 }
 
-void TransparentObject::UpdateForCorpse(std::shared_ptr<ObjectBase>& deadPerson)
+void TransparentObject::UpdateForCorpse(const std::shared_ptr<ObjectBase>& deadPerson)
 {
 	switch_->HitColl(deadPerson);
 }
 
-std::shared_ptr<Model> TransparentObject::AddCollModel() const
+const std::shared_ptr<Model>& TransparentObject::AddCollModel() const
 {
 	return switch_->GetModelPointer();
 }

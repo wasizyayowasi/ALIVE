@@ -86,7 +86,7 @@ void ThrowEnemy::Draw()
 	DrawPolygon3D();
 }
 
-void ThrowEnemy::Shot(std::shared_ptr<ShotManager>& shotManager, const  VECTOR playerPos, const  float height)
+void ThrowEnemy::Shot(const std::shared_ptr<ShotManager>& shotManager, const  VECTOR playerPos, const  float height)
 {
 	//プレイヤーを検知しているかどうか
 	//検知していなかったらreturn

@@ -5,6 +5,21 @@
 #include "../object/ObjectBase.h"
 #include "../util/ModelManager.h"
 
+namespace
+{
+	//アニメーションが変わる時間
+	constexpr int anim_change_time = 10;
+
+	//総時間
+	constexpr float total_time = 180.0f;
+
+	//サウンドが聞こえる範囲
+	constexpr float sound_range = 1500.0f;
+
+	//カプセルの半径
+	constexpr float capsel_radius = 20.0f;
+}
+
 //コンストラクタ
 Switch::Switch(const LoadObjectInfo objInfo)
 {
@@ -56,12 +71,12 @@ void Switch::DeleteHitResult()
 	hitDim_.clear();
 }
 
-void Switch::ChangeDuringStartup(float time)
+void Switch::ChangeDuringStartup(const float time)
 {
 	//短縮化
 	auto& sound = SoundManager::GetInstance();
 
-	if (time == 180.0f) {
+	if (time == total_time) {
 		if (!isDuringStartup_) {
 			stateFunc_ = &Switch::OffAnim;
 		}
@@ -77,10 +92,10 @@ void Switch::HitCollPlayer(Player& player)
 	VECTOR playerPos = player.GetStatus().pos;
 
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
-	hitDim_.push_back(MV1CollCheck_Capsule(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, VAdd(playerPos, VGet(0.0f, player.GetStatus().height, 0.0f)), 20.0f));
+	hitDim_.push_back(MV1CollCheck_Sphere(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, capsel_radius));
 }
 
-void Switch::HitColl(std::shared_ptr<ObjectBase> deadPerson)
+void Switch::HitColl(const std::shared_ptr<ObjectBase> deadPerson)
 {
 	MV1RefreshCollInfo(deadPerson->GetModelPointer()->GetModelHandle(), deadPerson->GetModelPointer()->GetColFrameIndex());
 
@@ -90,7 +105,7 @@ void Switch::HitColl(std::shared_ptr<ObjectBase> deadPerson)
 	}
 
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
-	hitDim_.push_back(MV1CollCheck_Capsule(deadPerson->GetModelPointer()->GetModelHandle(), deadPerson->GetModelPointer()->GetColFrameIndex(), pos_, VAdd(pos_, VGet(0.0f, 50.0f, 0.0f)), 50.0f));
+	hitDim_.push_back(MV1CollCheck_Sphere(deadPerson->GetModelPointer()->GetModelHandle(), deadPerson->GetModelPointer()->GetColFrameIndex(), pos_, capsel_radius));
 }
 
 //衝突判定結果の初期化
@@ -112,7 +127,7 @@ bool Switch::ElevatorCollResult()
 	}
 
 	if (stateFunc_ == &Switch::OffAnim) {
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "switchOn");
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, sound_range, "switchOn");
 		SoundManager::GetInstance().PlaySE("switchOn");
 	}
 
@@ -142,7 +157,7 @@ bool Switch::TransCollResult()
 	}
 
 	if (stateFunc_ == &Switch::OffAnim) {
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, 1500.0f, "switchOn");
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, sound_range, "switchOn");
 		SoundManager::GetInstance().PlaySE("switchOn");
 	}
 
@@ -152,7 +167,7 @@ bool Switch::TransCollResult()
 }
 
 //衝突判定を行うモデルの追加
-std::shared_ptr<Model> Switch::GetModelPointer() const
+const std::shared_ptr<Model>& Switch::GetModelPointer() const
 {
 	return model_;
 }
@@ -160,13 +175,13 @@ std::shared_ptr<Model> Switch::GetModelPointer() const
 //スイッチオンアニメーション
 void Switch::OnAnim()
 {
-	model_->ChangeAnimation(0, false, false, 10);
+	model_->ChangeAnimation(0, false, false, anim_change_time);
 	MV1SetMaterialDifColor(model_->GetModelHandle(), 1, GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
 }
 
 //スイッチオフアニメーション
 void Switch::OffAnim()
 {
-	model_->ChangeAnimation(1, false, false, 10);
+	model_->ChangeAnimation(1, false, false, anim_change_time);
 	MV1SetMaterialDifColor(model_->GetModelHandle(), 1, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 }

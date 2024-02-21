@@ -54,23 +54,28 @@ public:
 	/// </summary>
 	void EasingMoveCamera();
 
+	////////////////Getter////////////////
+
 	/// <summary>
 	/// カメラのポジションを取得する
 	/// </summary>
 	/// <returns>カメラの座標</returns>
-	VECTOR GetPos() const { return pos_; }
+	const VECTOR& GetPos() const { return pos_; }
 
 	/// <summary>
 	/// カメラが見る位置を取得する
 	/// </summary>
 	/// <returns>カメラが見る位置</returns>
-	VECTOR GetTarget() const { return cameraViewingPos_; }
+	const VECTOR& GetTarget() const { return cameraViewingPos_; }
 
 	/// <summary>
 	/// カメラが移動中か取得する
 	/// </summary>
 	/// <returns>true : 移動中　 false : 移動してない</returns>
 	bool GetMoving() const { return isMoving_; }
+
+
+	////////////////Setter////////////////
 
 	/// <summary>
 	/// カメラが目標とする座標と見る位置を設定する
@@ -84,9 +89,6 @@ public:
 	/// 経過時間を0に戻す
 	/// </summary>
 	void ResetElapsedTime() { elapsedTime_ = 0.0f; }
-
-	void DebugDraw();
-
 private:
 
 	/// <summary>
@@ -103,15 +105,14 @@ private:
 
 private:
 
-	float moveVecZ = 0.0f;
-	float moveVecY = 0.0f;
-	float moveVecX = 0.0f;
+	float moveVecX_ = 0.0f;						//移動ベクトルのX
+	float moveVecY_ = 0.0f;						//移動ベクトルのY
 
-	float elapsedTime_ = 0.0f;
+	float elapsedTime_ = 0.0f;					//経過時間
 
-	bool isMoving_ = false;
+	bool isMoving_ = false;						//移動中か
 
-	DINPUT_JOYSTATE input_ = {};
+	DINPUT_JOYSTATE input_ = {};				//右スティックの結果を居れる
 
 	VECTOR pos_ = {};							//カメラのポジション
 	VECTOR upVec_ = {0,1,0};					//カメラの見る目標位置

@@ -22,6 +22,7 @@ private:
 		max,
 	};
 
+	//エレベーターの状態
 	enum class ElevatorState
 	{
 		upper,
@@ -57,7 +58,7 @@ public:
 	/// 衝突判定を行うモデルの追加
 	/// </summary>
 	/// <returns></returns>
-	virtual std::shared_ptr<Model> AddCollModel()const;
+	virtual const std::shared_ptr<Model>& AddCollModel()const override;
 
 private:
 
@@ -74,7 +75,7 @@ private:
 private:
 
 	float moveVecY_ = 0.0f;								//Y軸の移動ヴェクトル
-	float elapsedTime_ = 0.0f;
+	float elapsedTime_ = 0.0f;							//経過時間
 
 	bool isDeparture_ = false;							//エレベーターが出発しているかどうか
 	bool isPlaySound_ = false;							//サウンドが再生中か

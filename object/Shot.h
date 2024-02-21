@@ -38,13 +38,11 @@ public:
 	/// <param name="player">プレイヤーの参照</param>
 	void HitCheck(Player& player);
 
-	//存在しているかどうか取得する
-
 	/// <summary>
 	/// 存在しているかどうか取得する
 	/// </summary>
 	/// <returns>true：存在している　false：していない</returns>
-	bool IsEnabled() const { return isEnable_; }
+	bool GetIsEnabled() const { return isEnable_; }
 
 private:
 

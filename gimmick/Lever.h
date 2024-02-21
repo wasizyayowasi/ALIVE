@@ -8,7 +8,7 @@ class Model;
 class Lever
 {
 private:
-
+	//アニメーションタイプ
 	enum class AnimType {
 		on,
 		off,
@@ -45,18 +45,6 @@ public:
 	bool CollCheck(const VECTOR playerPos) const;
 
 	/// <summary>
-	/// モデルポインタの取得
-	/// </summary>
-	/// <returns>モデルのポインタ</returns>
-	std::shared_ptr<Model> GetModelPointer() const { return model_; }
-	
-	/// <summary>
-	/// レバーを引くポジションの取得
-	/// </summary>
-	/// <returns>レバーを引くポジション</returns>
-	VECTOR GetStandingPosition() const { return standingPos_; }
-
-	/// <summary>
 	/// レバーの起動
 	/// </summary>
 	void OnAnimation();
@@ -71,6 +59,22 @@ public:
 	/// </summary>
 	/// <returns>レバーが起動しているか</returns>
 	bool IsOn() const { return isOn_; }
+
+
+	////////////////Getter////////////////
+
+	/// <summary>
+	/// モデルポインタの取得
+	/// </summary>
+	/// <returns>モデルのポインタ</returns>
+	const std::shared_ptr<Model>& GetModelPointer() const { return model_; }
+
+	/// <summary>
+	/// レバーを引くポジションの取得
+	/// </summary>
+	/// <returns>レバーを引くポジション</returns>
+	const VECTOR& GetStandingPosition() const { return standingPos_; }
+
 private:
 
 	bool isOn_ = false;							//レバーが起動しているかどうか

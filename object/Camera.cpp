@@ -103,9 +103,6 @@ void Camera::TrackingCameraUpdate(const VECTOR playerPos, const float playerHeig
 	cameraViewingPos_.x = (cameraViewingPos_.x * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
 	cameraViewingPos_.y = (cameraViewingPos_.y * traking_rate_y) + ((playerPos.y + playerHeight / 2) * (1 - traking_rate_y));
 	cameraViewingPos_.z = (cameraViewingPos_.z * traking_rate_z) + (playerPos.z * (1 - traking_rate_z));
-	//cameraViewingPos_.x = cameraViewingPos_.x;
-	//cameraViewingPos_.y = cameraViewingPos_.y;
-	//cameraViewingPos_.z = cameraViewingPos_.z;
 
 	//カメラの注視点を変更する
 	ChangeOfFocus(playerPos, playerHeight);
@@ -209,12 +206,6 @@ void Camera::SetCameraTargetPosAndView(const VECTOR targetPos, const VECTOR targ
 	targetUpVec_ = upVec;
 }
 
-void Camera::DebugDraw()
-{
-	DrawFormatString(0, 16, 0xffffff, "ポジション　　%f:%f:%f", pos_.x, pos_.y, pos_.z);
-	DrawFormatString(0, 32, 0xffffff, "見ている場所　%f:%f:%f", cameraViewingPos_.x, cameraViewingPos_.y, cameraViewingPos_.z);
-}
-
 //プレイヤーを追跡
 float Camera::TrackingPosX(const VECTOR playerPos)
 {
@@ -225,10 +216,10 @@ float Camera::TrackingPosX(const VECTOR playerPos)
 
 	if (playerPos.x < gimmickPosX && playerPos.x > boderlinePosX - border_range) {
 		distance = gimmickPosX - pos_.x;
-		moveVecX = distance / camera_moveY_speed;
-		moveVecX = moveVecX * 0.96f;
+		moveVecX_ = distance / camera_moveY_speed;
+		moveVecX_ = moveVecX_ * 0.96f;
 
-		return pos_.x + moveVecX;
+		return pos_.x + moveVecX_;
 	}
 
 	return (pos_.x * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
@@ -249,10 +240,10 @@ float Camera::TrackingPosY(const VECTOR playerPos, const  float playerHeight)
 	if (distance < 1000.0f) {
 		if (playerHeadPosY < boderlinePos.y + border_range && playerHeadPosY > boderlinePos.y - border_range) {
 			distance = gimmickPosY - pos_.y;
-			moveVecY = distance / camera_moveY_speed;
-			moveVecY = moveVecY * 0.96f;
+			moveVecY_ = distance / camera_moveY_speed;
+			moveVecY_ = moveVecY_ * 0.96f;
 
-			return pos_.y + moveVecY;
+			return pos_.y + moveVecY_;
 		}
 	}
 	
