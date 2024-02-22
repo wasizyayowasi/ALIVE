@@ -3,7 +3,8 @@
 #include <DxLib.h>
 
 //オブジェクトの材料(見た目)
-enum class Material {
+enum class Material
+{
 	Stone,					//石
 	Iron,					//鉄
 	Wood,					//木
@@ -12,7 +13,8 @@ enum class Material {
 };
 
 //オブジェクトのタイプ
-enum class ObjectType{
+enum class ObjectType
+{
 	//生物類
 	Enemy,
 	Player,
@@ -326,7 +328,8 @@ static ObjectData objData_[static_cast<int>(ObjectType::Max)]
 };
 
 //計　76byte
-struct LoadObjectInfo {
+struct LoadObjectInfo
+{
 	std::string name;	//オブジェクトの名前	//40byte
 	VECTOR pos = {};	//ポジション			//12byte
 	VECTOR rot = {};	//回転率				//12byte

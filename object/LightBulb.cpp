@@ -10,7 +10,7 @@ namespace {
 	constexpr float total_time = 360.0f;
 }
 
-LightBulb::LightBulb(const int handle, const  LoadObjectInfo info)
+LightBulb::LightBulb(const int handle, const  LoadObjectInfo& info)
 {
 	//ƒ‚ƒfƒ‹‚Ìİ’è
 	model_ = std::make_shared<Model>(handle,Material::Iron);

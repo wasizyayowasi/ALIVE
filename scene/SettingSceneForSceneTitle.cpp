@@ -268,11 +268,11 @@ void SettingSceneForSceneTitle::ChangeWindowUpdate()
 
 	if (input.IsTriggered(InputType::Left)) {
 		windowModeText_ = "≪  ウィンドウモード  ≫";
-		manager_.ChangeWindowMode(true);
+		manager_.SetChangeWindowMode(true);
 	}
 	if (input.IsTriggered(InputType::Right)) {
 		windowModeText_ = "≪  フルスクリーン  ≫";
-		manager_.ChangeWindowMode(false);
+		manager_.SetChangeWindowMode(false);
 	}
 }
 

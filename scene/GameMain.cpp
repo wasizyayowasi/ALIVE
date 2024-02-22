@@ -22,6 +22,8 @@
 #include "../util/EffectManager.h"
 #include "../util/CheckCollisionModel.h"
 
+#include <algorithm>
+
 //コンストラクタ
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::FadeInUpdate)
 {
@@ -121,7 +123,7 @@ void GameMain::Draw()
 	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_KEY_PAD1);
 
 	float size = 0;
-	size = std::sqrt(analogX * analogX + analogY * analogY);
+	size = static_cast<float>(std::sqrt(analogX * analogX + analogY * analogY));
 
 	float X = 0.0f;
 	float Y = 0.0f;
@@ -132,12 +134,32 @@ void GameMain::Draw()
 		Y = analogY / size;
 	}
 
+	int initX = 0;
+	int initY = -1;
+
+	double vecASize = std::sqrt(initX * initX + initY * initY);
+	double vecBSize = std::sqrt(X * X + Y * Y);
+
+	float innerProduct = static_cast<float>(initX * X + initY * Y);
+
+	float norm = static_cast<float>(vecASize * vecBSize);
+
+	float angle = innerProduct / norm;
+
+	angle = std::acos(angle);
+
+	angle = angle / DX_PI_F * 180.0f;
+
+
+
+
 	float result = std::atan2(Y, X);
 
 	result = result / DX_PI_F * 180.0f;
 
 	//DrawFormatString(0, 64, 0xffffff, "X:%d,Y%d", analogX, analogY);
 	DrawFormatString(0, 64, 0xffffff, "%.2f", result);
+	DrawFormatString(0, 80, 0xffffff, "%.2f", angle);
 
 #endif // _DEBUG
 

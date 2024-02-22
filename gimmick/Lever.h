@@ -20,7 +20,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="info">配置データ</param>
-	Lever(const LoadObjectInfo info);
+	Lever(const LoadObjectInfo& info);
 
 	/// <summary>
 	/// デストラクタ

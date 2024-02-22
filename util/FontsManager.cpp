@@ -19,7 +19,7 @@ FontsManager::~FontsManager()
 }
 
 // フォントを加える
-void FontsManager::AddFonts(const char* const filename, const char* const extension, int fontSize)
+void FontsManager::AddFonts(const std::string& filename, const std::string& extension, const int fontSize)
 {
 	//フォントパス
 	std::string path = "data/fonts/";
@@ -34,26 +34,26 @@ void FontsManager::AddFonts(const char* const filename, const char* const extens
 	std::string name = filename + std::to_string(fontSize);
 
 	//作成した名前をキーにハンドルを配列に加える
-	fontHandle_[name] = CreateFontToHandle(filename, fontSize,-1,-1);
+	fontHandle_[name] = CreateFontToHandle(filename.c_str(), fontSize, -1, -1);
 	assert(fontHandle_[filename] != -1);
 
 }
 
 // フォントを適用したテキストの横幅を取得する
-int FontsManager::GetStringSize(const char* const string, const char* const filename)
+int FontsManager::GetStringSize(const std::string& string, const std::string& filename)
 {
-	int strWidth = GetDrawStringWidthToHandle(string, static_cast<int>(strlen(string)), fontHandle_[filename]);
+	int strWidth = GetDrawStringWidthToHandle(string.c_str(), static_cast<int>(strlen(string.c_str())), fontHandle_[filename]);
 	return strWidth;
 }
 
 // フォントを取得する
-int FontsManager::GetFontHandle(const char* const filename)
+int FontsManager::GetFontHandle(const std::string& filename)
 {
 	return fontHandle_[filename];
 }
 
 // 引数の値を元にフォントの名前を返す
-std::string FontsManager::GetFontName(int fontHandle)
+std::string FontsManager::GetFontName(const int fontHandle)
 {
 	std::string fontname;
 

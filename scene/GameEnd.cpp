@@ -197,7 +197,7 @@ void GameEnd::Draw()
 }
 
 //€‘Ì‚ÌXV
-void GameEnd::CorpseUpdate(const VECTOR playerPos)
+void GameEnd::CorpseUpdate(const VECTOR& playerPos)
 {
 	//€‘Ì‚Ì‚‚³‚Ì•â³
 	float height = 0.0f;

@@ -54,7 +54,7 @@ void SoundManager::ChangeVolumeMem()
 }
 
 //読み込んだサウンドを流す
-void SoundManager::PlaySE(std::string name)
+void SoundManager::PlaySE(const std::string& name)
 {
     assert(nameAndHandleTable_[name] != -1);
 
@@ -63,7 +63,7 @@ void SoundManager::PlaySE(std::string name)
 }
 
 //読み込んだBGMを流す
-void SoundManager::PlayBGM(std::string name)
+void SoundManager::PlayBGM(const std::string& name)
 {
     //ファイルパスの生成
     std::string path = "data/sound/BGM/";
@@ -89,14 +89,14 @@ void SoundManager::SetBGMVolume(unsigned int volume)
     volumeBGM_ = volume;
 }
 
-void SoundManager::SetBGMRate(float rate)
+void SoundManager::SetBGMRate(const float rate)
 {
     assert(0.0f <= rate && rate <= 1.0f);
     SetVolumeMusic(static_cast<int>(static_cast<float>(volumeBGM_ * rate)));
 }
 
 //SEを止める
-void SoundManager::StopSE(std::string name)
+void SoundManager::StopSE(const std::string& name)
 {
     assert(static_cast<int>(name.size()) > 0);
 
@@ -128,7 +128,7 @@ void SoundManager::SaveSoundConfig()
 }
 
 //サウンドのポジション、聞こえる範囲を設定する
-void SoundManager::Set3DSoundInfo(VECTOR pos, float audioRange, std::string name)
+void SoundManager::Set3DSoundInfo(const VECTOR& pos,const float audioRange, const std::string& name)
 {
     assert(nameAndHandleTable_[name] != -1);
 
@@ -140,14 +140,14 @@ void SoundManager::Set3DSoundInfo(VECTOR pos, float audioRange, std::string name
 }
 
 //3Dサウンドを再生する際のリスナーの位置を決める
-void SoundManager::Set3DSoundListenerInfo(VECTOR pos, VECTOR rot)
+void SoundManager::Set3DSoundListenerInfo(const VECTOR& pos,const VECTOR& rot)
 {
     //リスナーの位置と向きを設定
     Set3DSoundListenerPosAndFrontPos_UpVecY(pos, rot);
 }
 
 //サウンドが再生中か調べる
-int SoundManager::CheckSoundFile(std::string name)
+int SoundManager::CheckSoundFile(const std::string& name)
 {
     int check = DxLib::CheckSoundMem(nameAndHandleTable_[name]);
 
@@ -155,7 +155,7 @@ int SoundManager::CheckSoundFile(std::string name)
 }
 
 //2DSEをロードする
-int SoundManager::Load2DSoundSEFile(std::string fileName)
+int SoundManager::Load2DSoundSEFile(const std::string& fileName)
 {
     //ファイルパスの生成
     std::string path = "data/sound/SE/";
@@ -173,7 +173,7 @@ int SoundManager::Load2DSoundSEFile(std::string fileName)
 }
 
 //2DBGMをロードする
-int SoundManager::Load2DSoundBGMFile(std::string fileName)
+int SoundManager::Load2DSoundBGMFile(const std::string& fileName)
 {
     //ファイルパスの生成
     std::string path = "data/sound/BGM/";
@@ -191,7 +191,7 @@ int SoundManager::Load2DSoundBGMFile(std::string fileName)
 }
 
 //3DSEをロードする
-int SoundManager::Load3DSoundSEFile(std::string fileName)
+int SoundManager::Load3DSoundSEFile(const std::string& fileName)
 {
     //ファイルパスの生成
     std::string path = "data/sound/SE/";
@@ -211,7 +211,7 @@ int SoundManager::Load3DSoundSEFile(std::string fileName)
 }
 
 //3DBGMをロードする
-int SoundManager::Load3DSoundBGMFile(std::string fileName)
+int SoundManager::Load3DSoundBGMFile(const std::string& fileName)
 {
     //ファイルパスの生成
     std::string path = "data/sound/BGM/";

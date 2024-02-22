@@ -6,7 +6,14 @@
 #include <algorithm>
 
 namespace {
-	constexpr float horizonta_size_of_one_room = 1000.0f;
+	//カメラのどの位置から見えるようにするか
+	constexpr float camera_near = 5.0f;
+
+	//カメラからどこまで離れたところを描画するか
+	constexpr float camera_far = 5000.0f;
+
+	//視野角
+	constexpr float viewing_angle = 60.0f;
 
 	//カメラが境界線に到達したときスライド移動するスピード
 	constexpr float camera_moveX_speed = 10.0f;
@@ -25,6 +32,9 @@ namespace {
 	//カメラのY座標が移動する際、ボーダーラインが有効な範囲
 	constexpr float border_range = 100.0f;
 
+	//時間を増加させる
+	constexpr float add_time = 1.0f;
+
 	//カメラの移動にかかる合計時間
 	constexpr float total_time = 90.0f;
 
@@ -34,12 +44,15 @@ namespace {
 	constexpr float traking_rate_z = 0.98f;
 }
 
-Camera::Camera(const VECTOR pos, const VECTOR viewPos):updateFunc_(&Camera::TrackingCameraUpdate)
+Camera::Camera(const VECTOR& pos, const VECTOR& viewPos)
 {
+	//ポジションの設定
 	pos_ = pos;
 
+	//見る位置の設定
 	cameraViewingPos_ = viewPos;
 
+	//経過時間を最大にする
 	elapsedTime_ = total_time;
 }
 
@@ -47,52 +60,37 @@ Camera::~Camera()
 {
 }
 
-void Camera::Init(const VECTOR targetPos)
+void Camera::Init(const VECTOR& targetPos)
 {
 	/////////////// 3D関連の設定 /////////////
 	// Zバッファを使用する
 	SetUseZBuffer3D(true);
+
 	// Zバッファへの書き込みを行う
 	SetWriteZBuffer3D(true);
+
 	// ポリゴンの裏面を描画しない
 	SetUseBackCulling(true);
 
 	//////////////// カメラの設定 //////////////////
 	// カメラからどれだけ離れたところ( Near )から、 どこまで( Far )のものを描画するかを設定
-	SetCameraNearFar(5.0f, 5000.0f);
+	SetCameraNearFar(camera_near, camera_far);
+
 	//カメラのポジション、見る場所、上の方向を設定
 	SetCameraPositionAndTargetAndUpVec(pos_, cameraViewingPos_, upVec_);
+
 	// カメラの視野角を設定(ラジアン)
-	SetupCamera_Perspective(60.0f * DX_PI_F / 180.0f);
+	SetupCamera_Perspective(viewing_angle * DX_PI_F / 180.0f);
 }
 
-void Camera::Update(const VECTOR playerPos, const float playerHeight)
+void Camera::Update(const VECTOR& playerPos, const float playerHeight)
 {
-	float distanceSize = 2000.0f;
-
-	VECTOR fixedRangePos = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "FixedCamera").pos;
-
-	float fixedRangeSize = VSize(fixedRangePos);
-
-	if (fixedRangeSize > 0.0f) {
-		
-		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(fixedRangePos,playerPos);
-
-		distanceSize = (std::max)(distanceSize, -distanceSize);
-	}
-
-	if (distanceSize < 1500.0f) {
-		updateFunc_ = &Camera::FixedPointCamera;
-	}
-	else {
-		updateFunc_ = &Camera::TrackingCameraUpdate;
-	}
-
-	(this->*updateFunc_)(playerPos, playerHeight);
+	//プレイヤーを追跡するカメラの更新
+	TrackingCameraUpdate(playerPos, playerHeight);
 }
 
 //プレイヤーを追跡するカメラの更新
-void Camera::TrackingCameraUpdate(const VECTOR playerPos, const float playerHeight)
+void Camera::TrackingCameraUpdate(const VECTOR& playerPos, const float playerHeight)
 {
 	//カメラがプレイヤーを追いかける用にする
 	pos_.x = TrackingPosX(playerPos);
@@ -110,37 +108,8 @@ void Camera::TrackingCameraUpdate(const VECTOR playerPos, const float playerHeig
 	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
 }
 
-//定点カメラの更新
-void Camera::FixedPointCamera(const VECTOR playerPos, const float playerHeight)
-{
-	VECTOR fixedRangePos = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "FixedCameraRange").pos;
-	VECTOR fixedPos = ExternalFile::GetInstance().GetCameraGimmickInfo(fixedRangePos, "FixedCamera").pos;
-
-	VECTOR distance = VSub(fixedPos, pos_);
-
-	VECTOR normalise = VNorm(distance);
-
-	VECTOR moveVec = VScale(VScale(normalise, 10.0f), 0.96f);
-
-	float distanceSize = VSize(distance);
-
-	if (distanceSize > 5.0f) {
-		pos_ = VAdd(pos_, moveVec);
-	}
-
-	//カメラが見る位置をプレイヤーから少しずらす
-	cameraViewingPos_.x = (cameraViewingPos_.x * 0.9f) + (playerPos.x * 0.1f);
-	cameraViewingPos_.y = (cameraViewingPos_.y * 0.9f);
-	cameraViewingPos_.z = (cameraViewingPos_.z * 0.95f) + (playerPos.z * 0.05f);
-
-	//カメラの注視点を変更する
-	ChangeOfFocus(playerPos, playerHeight);
-
-	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
-}
-
 //カメラの注視点を逸らす
-void Camera::ChangeOfFocus(const VECTOR playerPos, const float playerHeight)
+void Camera::ChangeOfFocus(const VECTOR& playerPos, const float playerHeight)
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
@@ -166,7 +135,7 @@ void Camera::ChangeOfFocus(const VECTOR playerPos, const float playerHeight)
 void Camera::EasingMoveCamera()
 {
 	//時間の更新
-	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
+	elapsedTime_ = (std::min)(elapsedTime_ + add_time, total_time);
 
 	//カメラの座標移動
 	pos_.x = Easing::InOutCubic(elapsedTime_, total_time, cameraTargetPos_.x, pos_.x);
@@ -194,7 +163,7 @@ void Camera::EasingMoveCamera()
 	}
 }
 
-void Camera::SetCameraTargetPosAndView(const VECTOR targetPos, const VECTOR targetViewPos, const VECTOR upVec)
+void Camera::SetCameraTargetPosAndView(const VECTOR& targetPos, const VECTOR& targetViewPos, const VECTOR& upVec)
 {
 	//目標位置の設定
 	cameraTargetPos_ = targetPos;
@@ -207,7 +176,7 @@ void Camera::SetCameraTargetPosAndView(const VECTOR targetPos, const VECTOR targ
 }
 
 //プレイヤーを追跡
-float Camera::TrackingPosX(const VECTOR playerPos)
+float Camera::TrackingPosX(const VECTOR& playerPos)
 {
 
 	float boderlinePosX = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "TrackingBorderlineX").pos.x;
@@ -225,7 +194,7 @@ float Camera::TrackingPosX(const VECTOR playerPos)
 	return (pos_.x * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
 }
 
-float Camera::TrackingPosY(const VECTOR playerPos, const  float playerHeight)
+float Camera::TrackingPosY(const VECTOR& playerPos, const  float playerHeight)
 {
 
 	VECTOR boderlinePos = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "TrackingBorderlineY").pos;

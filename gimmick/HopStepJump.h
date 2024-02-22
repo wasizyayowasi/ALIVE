@@ -10,7 +10,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	HopStepJump(const int handle, const Material materialType, const LoadObjectInfo objInfo);
+	HopStepJump(const int handle, const Material materialType, const LoadObjectInfo& objInfo);
 
 	/// <summary>
 	/// デストラクタ

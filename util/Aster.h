@@ -57,7 +57,7 @@ public:
 	/// 経路探索を行う配列の初期化
 	/// </summary>
 	/// <param name="pos">ポジション</param>
-	void ArrayInit(VECTOR pos);
+	void ArrayInit(const VECTOR& pos);
 
 	/// <summary>
 	/// 初期化
@@ -79,7 +79,7 @@ public:
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <param name="enemyPos">敵のポジション</param>
-	void CurrentIndexUpdate(VECTOR playerPos, VECTOR enemyPos);
+	void CurrentIndexUpdate(const VECTOR& playerPos, const VECTOR& enemyPos);
 
 	/// <summary>
 	/// ポジション情報を元に配列の何番目に存在するか取得する
@@ -87,14 +87,14 @@ public:
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <param name="enemyPos">敵のポジション</param>
 	/// <returns>プレイヤーは移動したか true:した　false：していない</returns>
-	bool LocationInformation(VECTOR playerPos,VECTOR enemyPos);
+	bool LocationInformation(const VECTOR& playerPos, const VECTOR& enemyPos);
 
 	/// <summary>
 	/// 目的地の座標を取得する
 	/// </summary>
 	/// /// <param name="playerPos">プレイヤーのポジション</param>
 	/// <returns>目的地のポジション</returns>
-	VECTOR GetDestinationCoordinates(VECTOR playerPos);
+	const VECTOR& GetDestinationCoordinates(const VECTOR& playerPos);
 
 	/// <summary>
 	/// 経路探索
@@ -109,21 +109,21 @@ public:
 	/// <summary>
 	/// 周囲の升を検索する
 	/// </summary>
-	void SearchSurroundingSquares(bool skipCheckLeft, bool skipCheckRight, bool skipCheckTop, bool skipCheckBottom);
+	void SearchSurroundingSquares(const bool skipCheckLeft, const bool skipCheckRight, const  bool skipCheckTop, const  bool skipCheckBottom);
 
 	/// <summary>
 	/// 升のスコアを取得する
 	/// </summary>
 	/// <param name="direction">方向</param>
 	/// <param name="index">升の番号</param>
-	void ScoreCaluculation(Direction direction,int index);
+	void ScoreCaluculation(const Direction direction, const int index);
 
 	/// <summary>
 	/// 座標から升のインデックスを取得する
 	/// </summary>
 	/// <param name="pos"></param>
 	/// <returns></returns>
-	int SearchCurrentIndex(VECTOR pos);
+	int SearchCurrentIndex(const VECTOR& pos);
 
 	/// <summary>
 	/// 敵からプレイヤーに向かうルートがないか取得する
@@ -136,25 +136,19 @@ public:
 	/// </summary>
 	/// <param name="pos">ポジション</param>
 	/// <returns>true：blockmode　false：blockmodeではない</returns>
-	bool SearchBlockadeMode(VECTOR pos);
+	bool SearchBlockadeMode(const VECTOR& pos);
 private:
 
-	int routeSearchEnemyIndex_ = 0;
-	int currentEnemyIndex_ = 0;
-	int currentPlayerIndex_ = 0;
-	int moveCount_ = 0;
+	int routeSearchEnemyIndex_ = 0;										//最短距離を調べるために敵のインデックスを更新する
+	int currentEnemyIndex_ = 0;											//現在の敵のインデックス
+	int currentPlayerIndex_ = 0;										//プレイヤーのインデックス
+	int moveCount_ = 0;													//移動数
 
-	int tempIndex_ = 0;
+	std::list<int> route_;												//最短ルートを保存する
 
-	int count_ = 0;
-
-	std::unordered_map<int, MasuState> masu_;					//移動範囲
-	std::unordered_map<int, Score> scoreTable_;					//移動範囲の升にスコアをつける
-	std::unordered_map<int, Score> debugScoreTable;				//デバッグ用のスコアテーブル(削除してよい)
-
-	std::unordered_map<int, std::list<int>> preteriteIndex_;
-
-	std::list<int> route_;
-
+	std::unordered_map<int, MasuState> masu_;							//移動範囲
+	std::unordered_map<int, Score> scoreTable_;							//移動範囲の升にスコアをつける
+	std::unordered_map<int, Score> debugScoreTable;						//デバッグ用のスコアテーブル(削除してよい)
+	std::unordered_map<int, std::list<int>> ShortestCandidateIndex_;	//最短ルートの候補としてでたインデックスと何回目に最短候補として出されたか保存する
 };
 

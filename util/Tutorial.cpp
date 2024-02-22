@@ -48,13 +48,13 @@ Tutorial::~Tutorial()
 }
 
 //çXêV
-void Tutorial::Update(VECTOR pos)
+void Tutorial::Update(const VECTOR& playerPos)
 {
 	float distanceSize = 0.0f;
 
-	auto tutorialInfo = ExternalFile::GetInstance().GetTutorialObjInfo(pos);
+	auto tutorialInfo = ExternalFile::GetInstance().GetTutorialObjInfo(playerPos);
 
-	distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorialInfo.pos, pos);
+	distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorialInfo.pos, playerPos);
 
 	float range = VSize(tutorialInfo.scale) / 2;
 

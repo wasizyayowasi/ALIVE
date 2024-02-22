@@ -2,7 +2,7 @@
 #include <algorithm>
 
 //コンストラクタ
-Effect2D::Effect2D(std::vector<int> handle,const float size,const VECTOR pos)
+Effect2D::Effect2D(const std::vector<int>& handle,const float size,const VECTOR& pos)
 {
 	//ハンドルの取得
 	handle_ = handle;

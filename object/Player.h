@@ -46,7 +46,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="info">配置データ</param>
-	Player(const LoadObjectInfo info);
+	Player(const LoadObjectInfo& info);
 
 	/// <summary>
 	/// デストラクタ
@@ -68,7 +68,7 @@ public:
 	/// <summary>
 	/// 弾に当たったらノックバックを追加する
 	/// </summary>
-	void BulletHitMe(const VECTOR moveVec);
+	void BulletHitMe(const VECTOR& moveVec);
 
 
 	///////Getter///////
@@ -108,7 +108,7 @@ public:
 	/// 外部からのポジションを受け取る
 	/// </summary>
 	/// <param name="pos">ポジション情報</param>
-	void SetPos(const VECTOR pos);
+	void SetPos(const VECTOR& pos);
 
 	/// <summary>
 	/// 外部からのジャンプ情報を受け取る
@@ -121,7 +121,7 @@ public:
 	/// ベクトルを設定する
 	/// </summary>
 	/// <param name="vector">ベクトル</param>
-	void SetMoveVec(const VECTOR vector) { status_.moveVec = vector; }
+	void SetMoveVec(const VECTOR& vector) { status_.moveVec = vector; }
 
 	/// <summary>
 	/// 持ち運ぶ事が出来るフラグと持ち運ぶモデルのポインタを受け取る

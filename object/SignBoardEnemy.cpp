@@ -6,7 +6,7 @@
 #include "../util/FontsManager.h"
 #include "../util/ModelManager.h"
 
-SignBoardEnemy::SignBoardEnemy(const int handle, const Material materialType, const LoadObjectInfo objInfo):EnemyBase(handle,materialType,objInfo)
+SignBoardEnemy::SignBoardEnemy(const int handle, const Material materialType, const LoadObjectInfo& objInfo):EnemyBase(handle,materialType,objInfo)
 {
 	auto& model = ModelManager::GetInstance();
 

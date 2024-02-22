@@ -4,7 +4,7 @@
 
 #include "../object/Player.h"
 
-PenetrationScaffld::PenetrationScaffld(int handle, Material materialType, LoadObjectInfo objInfo):GimmickBase(handle, materialType, objInfo)
+PenetrationScaffld::PenetrationScaffld(const int handle,const Material materialType,const LoadObjectInfo& objInfo):GimmickBase(handle, materialType, objInfo)
 {
 	//モデルのマテリアルのアルファ値を0にして透過させる
 	materialNum_ = MV1GetMaterialNum(model_->GetModelHandle());
@@ -16,7 +16,8 @@ PenetrationScaffld::PenetrationScaffld(int handle, Material materialType, LoadOb
 	COLOR_F color = {};
 
 	//マテリアルのアルファ値を変更する
-	for (int i = 0; i < materialNum_; i++) {
+	for (int i = 0; i < materialNum_; i++)
+	{
 		color = MV1GetMaterialDifColor(model_->GetModelHandle(), i);
 		color.a = alphaValue_;
 		MV1SetMaterialDifColor(model_->GetModelHandle(), i, color);

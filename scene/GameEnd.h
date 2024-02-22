@@ -48,7 +48,7 @@ private:
 	/// 死体の更新
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの座標</param>
-	void CorpseUpdate(const VECTOR playerPos);
+	void CorpseUpdate(const VECTOR& playerPos);
 
 	/// <summary>
 	/// ホワイトボードの更新
@@ -66,10 +66,10 @@ private:
 	int corpseNum_ = 0;													//操作する死体の番号
 	int currentDivisionNum_ = 1;										//現在の分割数
 
-	static constexpr int fadeInterval_ = 60;
-	int fadeTimer_ = fadeInterval_;
-	int fadeValue_ = 255;
-	int fadeColor_ = 0x000000;
+	static constexpr int fadeInterval_ = 60;							//フェードする間隔
+	int fadeTimer_ = fadeInterval_;										//タイマー
+	int fadeValue_ = 255;												//フェードの値
+	int fadeColor_ = 0x000000;											//背景の色
 
 	
 	bool isPutting_ = false;											//置いている

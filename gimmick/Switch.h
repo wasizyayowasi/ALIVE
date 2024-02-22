@@ -15,7 +15,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="objInfo">配置データ</param>
-	Switch(const LoadObjectInfo objInfo);
+	Switch(const LoadObjectInfo& objInfo);
 	
 	/// <summary>
 	/// デストラクタ
@@ -37,7 +37,7 @@ public:
 	/// スイッチモデルと死体の衝突判定を行う
 	/// </summary>
 	/// <param name="deadPerson">死体のポインタ</param>
-	void HitColl(const std::shared_ptr<ObjectBase> deadPerson);
+	void HitColl(const std::shared_ptr<ObjectBase>& corpse);
 
 	/// <summary>
 	/// エレベーターの衝突判定の結果

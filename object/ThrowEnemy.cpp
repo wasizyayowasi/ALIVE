@@ -14,7 +14,7 @@ namespace {
 	constexpr int throw_frame_time = 73;
 }
 
- ThrowEnemy::ThrowEnemy(const int handle, const Material materialType, const LoadObjectInfo objInfo):EnemyBase(handle, materialType, objInfo)
+ ThrowEnemy::ThrowEnemy(const int handle, const Material materialType, const LoadObjectInfo& objInfo):EnemyBase(handle, materialType, objInfo)
 {
 	 //衝突判定の設定
 	 isCollCheck_ = true;
@@ -86,7 +86,7 @@ void ThrowEnemy::Draw()
 	DrawPolygon3D();
 }
 
-void ThrowEnemy::Shot(const std::shared_ptr<ShotManager>& shotManager, const  VECTOR playerPos, const  float height)
+void ThrowEnemy::Shot(const std::shared_ptr<ShotManager>& shotManager, const VECTOR& playerPos, const float height)
 {
 	//プレイヤーを検知しているかどうか
 	//検知していなかったらreturn

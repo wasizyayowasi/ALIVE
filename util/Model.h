@@ -1,7 +1,7 @@
 #pragma once
 #include "../object/ObjectData.h"
-#include <DxLib.h>
 #include <string>
+#include <DxLib.h>
 
 class Model
 {
@@ -10,13 +10,13 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="fileName">モデルが入っているファイルパス</param>
-	Model(const char* fileName,Material materialType);
+	Model(const std::string& fileName,const Material materialType);
 
 	/// <summary>
 	/// duplicate用コンストラクタ
 	/// </summary>
 	/// <param name="orgModel"></param>
-	Model(int orgModel, Material materialType);
+	Model(const int orgModel,const Material materialType);
 
 	/// <summary>
 	/// デストラクタ
@@ -29,7 +29,7 @@ public:
 	/// <param name="isUse">使用するか</param>
 	/// <param name="isNeedUpdate">更新が必要か</param>
 	/// <param name="collFrameName">特定のフレームを衝突判定用フレームにする場合、フレーム名をいれる</param>
-	void SetUseCollision(bool isUse, bool isNeedUpdate,std::string collFrameName = "");
+	void SetUseCollision(const bool isUse, const  bool isNeedUpdate, const std::string& collFrameName = "");
 
 	/// <summary>
 	/// 更新
@@ -48,7 +48,7 @@ public:
 	/// <param name="isLoop">ループ再生するか</param>
 	/// <param name="isForceChange">強制的に変更するか</param>
 	/// <param name="changeFrame">アニメーションを変更する際に何秒かけて変化するのか</param>
-	void ChangeAnimation(const int animNo, const  bool isLoop, const  bool isForceChange, const  int changeFrame);
+	void ChangeAnimation(const int animNo, const  bool isLoop, const  bool isForceChange, const int changeFrame);
 
 	/// <summary>
 	/// アニメーションの終わりを取得する
@@ -64,7 +64,7 @@ public:
 	/// <param name="animNo">アニメーション番号</param>
 	/// <param name="frameName">取得したいアニメーション名</param>
 	/// <returns>座標</returns>
-	VECTOR GetFrameLocalPosition(const char* frameName)const;
+	VECTOR GetFrameLocalPosition(const std::string& frameName)const;
 
 	/// <summary>
 	/// アニメーションの特定フレームと現在のアニメーションフレーム数が同じかを取得する
@@ -121,25 +121,25 @@ public:
 	/// ポジションを設定する
 	/// </summary>
 	/// <param name="pos">ポジション</param>
-	void SetPos(const VECTOR pos);
+	void SetPos(const VECTOR& pos);
 
 	/// <summary>
 	/// 角度を設定する
 	/// </summary>
 	/// <param name="rot">角度</param>
-	void SetRot(const VECTOR rot);
+	void SetRot(const VECTOR& rot);
 
 	/// <summary>
 	/// サイズを設定する
 	/// </summary>
 	/// <param name="scale">拡縮率</param>
-	void SetScale(const VECTOR scale);
+	void SetScale(const VECTOR& scale);
 
 	/// <summary>
 	/// collisionとして使いたいフレームを指定する
 	/// </summary>
 	/// <param name="collFrameName">collisionとして使いたいフレーム名。なければ空</param>
-	void SetCollFrame(const char* collFrameName = "");
+	void SetCollFrame(const std::string& collFrameName = "");
 
 	/// <summary>
 	/// アニメーションを設定する
@@ -181,7 +181,7 @@ private:
 	/// </summary>
 	/// <param name="anim"></param>
 	/// <param name="dt"></param>
-	void UpdateAnim(const AnimData anim, const  float dt = 1.0f);
+	void UpdateAnim(const AnimData& anim, const  float dt = 1.0f);
 
 	/// <summary>
 	/// アニメーションのブレンド

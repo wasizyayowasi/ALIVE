@@ -27,7 +27,7 @@ void UIItem::ChangePosDraw(const float centerPosX, const  float centerPosY)
 }
 
 //‰æ‘œ‚ğ3D‹óŠÔ‚É•`‰æ‚·‚é
-void UIItem::DrawBillboard(const VECTOR drawPos, const int alpha, const  float size)
+void UIItem::DrawBillboard(const VECTOR& drawPos, const int alpha, const  float size)
 {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 	DrawBillboard3D(drawPos, 0.5f, 0.5f, size, 0.0f, makeScreenHandle_, true);
@@ -35,7 +35,7 @@ void UIItem::DrawBillboard(const VECTOR drawPos, const int alpha, const  float s
 }
 
 //UI‰æ‘œ‚ğì¬‚·‚é‚½‚ß‚ÌˆÊ’uî•ñ“™‚ğİ’è‚·‚é
-void UIItem::CreateUIGraphSetUp(const float centerPosX, const  float centerPosY, const  int width, const  int height, const  std::string str, const  int fontHandle)
+void UIItem::CreateUIGraphSetUp(const float centerPosX, const float centerPosY, const int width, const int height, const std::string& str, const int fontHandle)
 {
 	makeScreenWidth_ = width;
 	makeScreenHeight_ = height;

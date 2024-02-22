@@ -42,7 +42,7 @@ public:
 	/// <param name="framePos">初期ポジション</param>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <param name="height">プレイヤーの高さ</param>
-	void Fire(const VECTOR framePos, const VECTOR playerPos, const  float height);
+	void Fire(const VECTOR& framePos, const VECTOR& playerPos, const float height);
 
 private:
 	std::list<std::shared_ptr<Shot>> shots_;		//モデルポインタのリスト

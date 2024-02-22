@@ -19,7 +19,7 @@ namespace Graph {
 	/// <param name="handle">ì«Ç›çûÇÒÇæâÊëú</param>
 	/// <param name="transFlag">ìßâﬂÇ∑ÇÈÇ©</param>
 	/// <param name="tumFlag">îΩì]Ç≥ÇπÇÈÇ©</param>
-	int DrawRectRotaGraph(float x, float y, int left, int top, int width, int height, float scale, float angle, int handle, bool transFlag, bool tumFlag);
+	int DrawRectRotaGraph(const float x, const float y, const int left, const int top, const int width, const int height, const float scale, const float angle, const int handle, const  bool transFlag, const  bool tumFlag);
 
 }
 

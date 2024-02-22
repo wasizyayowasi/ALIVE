@@ -9,7 +9,7 @@ public:
 	/// </summary>
 	/// <param name="pos">初期座標</param>
 	/// <param name="viewPos">見る場所</param>
-	Camera(const VECTOR pos, const VECTOR viewPos);
+	Camera(const VECTOR& pos, const VECTOR& viewPos);
 
 	/// <summary>
 	/// デストラクタ
@@ -20,34 +20,28 @@ public:
 	/// カメラの初期化
 	/// </summary>
 	/// <param name="targetPos">カメラが見る位置</param>
-	void Init(const VECTOR targetPos);
+	void Init(const VECTOR& targetPos);
 
 	/// <summary>
 	/// カメラの更新
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <param name="playerHeight">プレイヤーの身長</param>
-	void Update(const VECTOR playerPos, const float playerHeight);
+	void Update(const VECTOR& playerPos, const float playerHeight);
 
 	/// <summary>
 	/// プレイヤーを追跡するカメラの更新
 	/// </summary>
 	/// <param name="input">入力情報</param>
 	/// <param name="playerPos">プレイヤーのポジション</param>
-	void TrackingCameraUpdate(const VECTOR playerPos, const float playerHeight);
-
-	/// <summary>
-	/// 定点カメラ
-	/// </summary>
-	/// <param name="playerPos">プレイヤーのポジション</param>
-	void FixedPointCamera(const VECTOR playerPos, const float playerHeight);
+	void TrackingCameraUpdate(const VECTOR& playerPos, const float playerHeight);
 
 	/// <summary>
 	/// カメラの注視点を逸らす
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <param name="playerHeight">プレイヤーの身長</param>
-	void ChangeOfFocus(const VECTOR playerPos, const float playerHeight);
+	void ChangeOfFocus(const VECTOR& playerPos, const float playerHeight);
 
 	/// <summary>
 	/// 目標のポジションまで移動する
@@ -83,7 +77,7 @@ public:
 	/// <param name="targetPos">目標位置</param>
 	/// <param name="targetViewPos">見る位置</param>
 	/// <param name="upVec">カメラの上方向ベクトル</param>
-	void SetCameraTargetPosAndView(const VECTOR targetPos, const VECTOR targetViewPos, const VECTOR upVec);
+	void SetCameraTargetPosAndView(const VECTOR& targetPos, const VECTOR& targetViewPos, const VECTOR& upVec);
 
 	/// <summary>
 	/// 経過時間を0に戻す
@@ -95,13 +89,13 @@ private:
 	/// プレイヤーのX座標を追跡
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
-	float TrackingPosX(const VECTOR playerPos);
+	float TrackingPosX(const VECTOR& playerPos);
 
 	/// <summary>
 	/// プレイヤーのY座標を追跡
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
-	float TrackingPosY(const VECTOR playerPos, const float playerHeight);
+	float TrackingPosY(const VECTOR& playerPos, const float playerHeight);
 
 private:
 
@@ -121,8 +115,5 @@ private:
 	VECTOR cameraTargetPos_ = {};				//カメラの目標位置
 	VECTOR targetUpVec_ = {};					//カメラの目標上方向
 	VECTOR cameraTargetViewPos_ = {};			//カメラの見る目標位置
-
-	void(Camera::* updateFunc_)(VECTOR pos, float height);
-
 };
 

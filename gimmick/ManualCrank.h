@@ -14,7 +14,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="info">配置データ</param>
-	ManualCrank(const LoadObjectInfo objInfo);
+	ManualCrank(const LoadObjectInfo& objInfo);
 
 	/// <summary>
 	/// デストラクタ

@@ -15,7 +15,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="initPos">初期ポジション</param>
 	/// <param name="moveVec">移動ベクトル</param>
-	Shot(const int handle, const  VECTOR initPos, const  VECTOR moveVec);
+	Shot(const int handle, const  VECTOR& initPos, const VECTOR& moveVec);
 
 	/// <summary>
 	/// デストラクタ

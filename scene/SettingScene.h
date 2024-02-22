@@ -77,28 +77,25 @@ public:
 
 private:
 
-	int makeScreenHandle_ = -1;
-
-	int volumeBGM_ = 0;
-	int volumeSE_ = 0;
-
-	int selectNum_ = 0;
-
-	bool windowMode_ = true;					//ウィンドウモード
-
 	//ここも消すかもしれない
-	static constexpr int fadeInterval_ = 30;
-	int fadeTimer_ = 0;
-	int fadeValue_ = 0;
-	int fadeColor_ = 0x000000;
+	static constexpr int fadeInterval_ = 30;					//インターバル
+	int fadeTimer_ = 0;											//フェードする時間
+	int fadeValue_ = 0;											//フェードの透過値
+	int fadeColor_ = 0x000000;									//背景
 
-	std::shared_ptr<SceneBase> nextScene_;
+	int makeScreenHandle_ = -1;									//スクリーンハンドル
+	int volumeBGM_ = 0;											//BGMの音量
+	int volumeSE_ = 0;											//SEの音量
+	int selectNum_ = 0;											//選択番号
 
-	std::string windowModeText_ = "≪  ウィンドウモード  ≫";
+	bool windowMode_ = true;									//ウィンドウモード
 
-	std::shared_ptr<UIItemManager> UIManager_;
+	std::string windowModeText_ = "≪  ウィンドウモード  ≫";	//表示するウィンドウモードのテキスト
 
-	void(SettingScene::* updateFunc_)();
+	std::shared_ptr<SceneBase> nextScene_;						//変更する次のシーン
+	std::shared_ptr<UIItemManager> UIManager_;					//UIマネージャー
+
+	void(SettingScene::* updateFunc_)();						//メンバ関数ポインタ
 
 };
 

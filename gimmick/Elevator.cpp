@@ -33,7 +33,7 @@ namespace
 }
 
 //コンストラクタ
-Elevator::Elevator(const int handle, const Material materialType, const LoadObjectInfo objInfo):GimmickBase(handle, materialType, objInfo)
+Elevator::Elevator(const int handle, const Material materialType, const LoadObjectInfo& objInfo):GimmickBase(handle, materialType, objInfo)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
@@ -185,7 +185,8 @@ void Elevator::Move()
 		isDeparture_ = false;
 	}
 
-	if (model_->IsAnimEnd() && model_->GetCurrentAnimNo() == static_cast<int>(ElevatorAnimType::open)) {
+	if (model_->IsAnimEnd() && model_->GetCurrentAnimNo() == static_cast<int>(ElevatorAnimType::open))
+	{
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::openIdle), true, false, anim_cange_frame);
 	}
 

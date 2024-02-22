@@ -49,13 +49,13 @@ public:
 	/// <summary>
 	/// ファイルを読み込む
 	/// </summary>
-	void LoadFileHandle(std::string name);
+	void LoadFileHandle(const std::string& name);
 
 	/// <summary>
 	/// セーブデータの書き出し
 	/// </summary>
 	/// <param name="num">死亡回数</param>
-	void SaveDataRewriteInfo(int num);
+	void SaveDataRewriteInfo(const int num);
 
 	/// <summary>
 	///	モデルファイルパスを読み込む
@@ -80,56 +80,56 @@ public:
 	/// </summary>
 	/// <param name="name">取得したいオブジェクトの名前</param>
 	/// <returns></returns>
-	LoadObjectInfo GetSpecifiedGimmickInfo(const VECTOR objPos, const char* const name);
+	LoadObjectInfo GetSpecifiedGimmickInfo(const VECTOR& objPos,const std::string& name);
 
 	/// <summary>
 	/// カメラが特殊な動きを行う印(オブジェクト)が
 	/// どこにあるかの配置データを取得する
 	/// </summary>
 	/// <returns></returns>
-	LoadObjectInfo GetCameraGimmickInfo(const VECTOR playerPos, const char* const name);
+	LoadObjectInfo GetCameraGimmickInfo(const VECTOR& playerPos, const std::string& name);
 
 	/// <summary>
 	/// 指定した名前のオブジェクト配置データを返す
 	/// </summary>
 	/// <param name="name">取得したいオブジェクトの名前</param>
 	/// <returns>オブジェクトのデータ</returns>
-	LoadObjectInfo GetSpecifiedInfo(const char* const stage, const char* const name);
+	LoadObjectInfo GetSpecifiedInfo(const std::string& stage, const std::string& name);
 
 	/// <summary>
 	/// エネミーの配置データを取得する
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <returns>配置データ</returns>
-	std::list<LoadObjectInfo> GetEnemyInfo(const VECTOR playerPos);
+	std::list<LoadObjectInfo> GetEnemyInfo(const VECTOR& playerPos);
 
 	/// <summary>
 	/// プレイヤーの開始位置のデータを取得する
 	/// </summary>
 	/// <param name="name">開始位置の名前</param>
 	/// <returns>配置データ</returns>
-	VECTOR GetStartPos(const std::string name);
+	VECTOR GetStartPos(const std::string& name);
 
 	/// <summary>
 	/// チュートリアルを表示するポイントの配置データを取得する
 	/// </summary>
 	/// <param name="pos">プレイヤーのポジション</param>
 	/// <returns>配置データ</returns>
-	LoadObjectInfo GetTutorialObjInfo(const VECTOR pos);
+	LoadObjectInfo GetTutorialObjInfo(const VECTOR& pos);
 
 	/// <summary>
 	/// カメラの座標データを取得する
 	/// </summary>
 	/// <param name="name">名前</param>
 	/// <returns>座標データ</returns>
-	VECTOR GetCameraTargetPos(const std::string name);
+	VECTOR GetCameraTargetPos(const std::string& name);
 
 	/// <summary>
 	/// 指定UIの配置座標を取得する
 	/// </summary>
 	/// <param name="name">取得したいUIの名前</param>
 	/// <returns>座標</returns>
-	VECTOR GetUIPos(const std::string name);
+	VECTOR GetUIPos(const std::string& name);
 
 	/// <summary>
 	/// プレイヤーに関する情報を取得する
@@ -142,7 +142,7 @@ public:
 	/// </summary>
 	/// <param name="name">名前</param>
 	/// <returns>配置データ</returns>
-	LoadObjectInfo GetMainSpecialObjectInfo(const std::string name) { return loadSpecialInfo_[name]; }
+	LoadObjectInfo GetMainSpecialObjectInfo(const std::string& name) { return loadSpecialInfo_[name]; }
 
 	/// <summary>
 	/// 開始場所の名前を取得する
@@ -154,49 +154,49 @@ public:
 	/// savedataを取得する
 	/// </summary>
 	/// <returns>過去の死亡回数</returns>
-	std::deque<int> GetTotalDeathNum() const { return pastTotalDeathNum_; }
+	const std::deque<int>& GetTotalDeathNum() const { return pastTotalDeathNum_; }
 
 	/// <summary>
 	/// オブジェクトの配置情報を取得
 	/// </summary>
 	/// <returns>配置データ</returns>
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetGimmickInfo() const { return loadGimmickInfo_; }
+	const std::unordered_map<std::string, std::list<LoadObjectInfo>>& GetGimmickInfo() const { return loadGimmickInfo_; }
 
 	/// <summary>
 	/// メインステージオブジェクトの配置、回転率、拡縮率を取得する
 	/// </summary>
 	/// <returns>オブジェクトの配置データなどをまとめた変数</returns>
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadMainStageObjectInfo()const { return loadMainStageObjInfo_; }
+	const std::unordered_map<std::string, std::list<LoadObjectInfo>>& GetLoadMainStageObjectInfo()const { return loadMainStageObjInfo_; }
 
 	/// <summary>
 	/// オープニングステージオブジェクトの配置、回転率、拡縮率を取得する
 	/// </summary>
 	/// <returns>オブジェクトの配置データなどをまとめた変数</returns>
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadOpeningStageObjectInfo() const { return loadOpeningStageObjInfo_; }
+	const std::unordered_map<std::string, std::list<LoadObjectInfo>>& GetLoadOpeningStageObjectInfo() const { return loadOpeningStageObjInfo_; }
 
 	/// <summary>
 	/// エンディングシーンオブジェクトの配置、回転率、拡縮率を取得する
 	/// </summary>
 	/// <returns>オブジェクトの配置データなどをまとめた変数</returns>
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> GetLoadEndingStageObjectInfo()const { return loadEndStageObjInfo_; }
+	const std::unordered_map<std::string, std::list<LoadObjectInfo>>& GetLoadEndingStageObjectInfo()const { return loadEndStageObjInfo_; }
 
 	/// <summary>
 	/// モデルファイルパスを取得する
 	/// </summary>
 	/// <returns>ファイルパスをまとめたテーブル</returns>
-	std::unordered_map<std::string, std::list<std::string>> GetModelFilePath()const { return modelFilePathInfo_; }
+	const std::unordered_map<std::string, std::list<std::string>>& GetModelFilePath()const { return modelFilePathInfo_; }
 
 	/// <summary>
 	/// 画像ファイルパスを取得する
 	/// </summary>
 	/// <returns>ファイルパスをまとめたテーブル</returns>
-	std::unordered_map<std::string, std::list<std::string>> GetGraphFilePath()const { return graphFilePathInfo_; }
+	const std::unordered_map<std::string, std::list<std::string>>& GetGraphFilePath()const { return graphFilePathInfo_; }
 
 	/// <summary>
 	/// 分割データを取得する
 	/// </summary>
 	/// <returns>分割データをまとめたテーブル</returns>
-	std::unordered_map<std::string, std::list<DivGraphData>> GetDivGraphData()const { return divGraphFilePathInfo_; }
+	const std::unordered_map<std::string, std::list<DivGraphData>>& GetDivGraphData()const { return divGraphFilePathInfo_; }
 
 
 	////////////////Setter////////////////
@@ -205,7 +205,7 @@ public:
 	/// 開始場所の名前を設定する
 	/// </summary>
 	/// <param name="name">開始場所の名前</param>
-	void SetStartName(const std::string name);
+	void SetStartName(const std::string& name);
 
 	/// <summary>
 	/// 死んだ回数をセットする
@@ -228,21 +228,21 @@ private:
 	/// セーブデータを読み込む
 	/// </summary>
 	/// <param name="filename">ファイルの名前</param>
-	void LoadSaveDataInfo(const char* const filename);
+	void LoadSaveDataInfo(const std::string& filename);
 
 	/// <summary>
 	/// オブジェクトの配置情報を読み込みlistに格納する
 	/// </summary>
 	/// <param name="filename">ファイルの名前</param>
 	/// <param name="dataTable">データテーブル</param>
-	void LoadObjectDataList(const std::string name, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable);
+	void LoadObjectDataList(const std::string& name,std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable);
 
 	/// <summary>
 	/// オブジェクトの配置情報を読み込む
 	/// </summary>
 	/// /// <param name="filename">ファイルの名前</param>
 	/// <param name="dataTable">データテーブル</param>
-	void LoadObjectData(const std::string name, std::unordered_map<std::string, LoadObjectInfo>& dataTable);
+	void LoadObjectData(const std::string& name,std::unordered_map<std::string, LoadObjectInfo>& dataTable);
 private:
 	/// <summary>
 	/// コンストラクタ
@@ -256,24 +256,24 @@ private:
 
 	std::string startPosName_ = {};	//開始位置の名前
 
-	std::deque<int> pastTotalDeathNum_ = {};											//過去5回の死亡数
+	std::deque<int> pastTotalDeathNum_ = {};												//過去5回の死亡数
 
-	std::unordered_map<std::string, int> loadFile_;										//ロードしたファイル
-	std::unordered_map<std::string, std::list<std::string>> modelFilePathInfo_;			//モデルファイルパスをまとめる
-	std::unordered_map<std::string, std::list<std::string>> graphFilePathInfo_;			//画像ファイルパスをまとめる
-	std::unordered_map<std::string, std::list<DivGraphData>>divGraphFilePathInfo_;		//分割画像ファイルパスをまとめる
+	std::unordered_map<std::string, int> loadFile_;											//ロードしたファイル
+	std::unordered_map<std::string, std::list<std::string>>		modelFilePathInfo_;			//モデルファイルパスをまとめる
+	std::unordered_map<std::string, std::list<std::string>>		graphFilePathInfo_;			//画像ファイルパスをまとめる
+	std::unordered_map<std::string, std::list<DivGraphData>>	divGraphFilePathInfo_;		//分割画像ファイルパスをまとめる
 
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadMainStageObjInfo_;	//メインステージオブジェクトの配置データ
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadOpeningStageObjInfo_;//オープニングステージオブジェクトの配置データ
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadEndStageObjInfo_;	//オープニングステージオブジェクトの配置データ
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadGimmickInfo_;		//ギミックの配置データ	
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadCameraGimmickInfo_;	//カメラギミックの配置データ		
-	std::unordered_map<std::string, std::list<LoadObjectInfo>> loadEnemyInfo_;			//敵の配置データ
-
-	std::unordered_map<std::string, LoadObjectInfo>			   loadUIInfo_;				//UIの配置データ	
-	std::unordered_map<std::string, LoadObjectInfo>			   loadStartPos_;			//開始位置のデータ	
-	std::unordered_map<std::string, LoadObjectInfo>			   loadSpecialInfo_;		//特殊なオブジェクトの配置データ	
-	std::unordered_map<std::string, LoadObjectInfo>			   loadTutorialInfo_;		//チュートリアルポイントの配置データ	
-	std::unordered_map<std::string, LoadObjectInfo>			   loadCameraPosInfo_;		//カメラの配置データ	
+	std::unordered_map<std::string, std::list<LoadObjectInfo>>	loadMainStageObjInfo_;		//メインステージオブジェクトの配置データ
+	std::unordered_map<std::string, std::list<LoadObjectInfo>>	loadOpeningStageObjInfo_;	//オープニングステージオブジェクトの配置データ
+	std::unordered_map<std::string, std::list<LoadObjectInfo>>	loadEndStageObjInfo_;		//オープニングステージオブジェクトの配置データ
+	std::unordered_map<std::string, std::list<LoadObjectInfo>>	loadGimmickInfo_;			//ギミックの配置データ	
+	std::unordered_map<std::string, std::list<LoadObjectInfo>>	loadCameraGimmickInfo_;		//カメラギミックの配置データ		
+	std::unordered_map<std::string, std::list<LoadObjectInfo>>	loadEnemyInfo_;				//敵の配置データ
+	
+	std::unordered_map<std::string, LoadObjectInfo>				loadUIInfo_;				//UIの配置データ	
+	std::unordered_map<std::string, LoadObjectInfo>				loadStartPos_;				//開始位置のデータ	
+	std::unordered_map<std::string, LoadObjectInfo>				loadSpecialInfo_;			//特殊なオブジェクトの配置データ	
+	std::unordered_map<std::string, LoadObjectInfo>				loadTutorialInfo_;			//チュートリアルポイントの配置データ	
+	std::unordered_map<std::string, LoadObjectInfo>				loadCameraPosInfo_;			//カメラの配置データ	
 };
 

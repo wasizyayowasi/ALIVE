@@ -30,7 +30,7 @@ public:
 	/// 3Dモデルハンドルを取得する
 	/// </summary>
 	/// <returns>モデルハンドル</returns>
-	int GetModelHandle(std::string name);
+	int GetModelHandle(const std::string& name);
 private:
 
 	std::unordered_map<std::string, int> modelHandle_;		//モデルハンドルテーブル

@@ -35,7 +35,7 @@ public:
 	/// 更新
 	/// </summary>
 	/// <param name="pos">プレイヤーのポジション</param>
-	void Update(VECTOR playerPos);
+	void Update(const VECTOR& playerPos);
 
 	/// <summary>
 	/// 描画

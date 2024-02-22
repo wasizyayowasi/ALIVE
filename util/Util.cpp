@@ -5,7 +5,7 @@
 namespace MathUtil 
 {
 	//二点間の距離のサイズを取得する
-	float GetSizeOfDistanceTwoPoints(const VECTOR pos, const VECTOR targetPos)
+	float GetSizeOfDistanceTwoPoints(const VECTOR& pos, const VECTOR& targetPos)
 	{
 		VECTOR distance = {};
 		distance = VSub(pos, targetPos);
@@ -36,7 +36,7 @@ namespace MathUtil
 namespace StrUtil
 {
 	//文字列から数値を取得する
-	int StrUtil::GetNumberFromString(std::string name, std::string sign)
+	int StrUtil::GetNumberFromString(const std::string& name, const std::string& sign)
 	{
 		//文字列の数を取得
 		int strSize = static_cast<int>(name.size());
@@ -59,18 +59,19 @@ namespace StrUtil
 	}
 
 	//文字列と数値を結合した文字列を取得する
-	std::string GetConcatenateNumAndStrings(std::string name, std::string sign, int num)
+	std::string GetConcatenateNumAndStrings(const std::string& name, const std::string& sign, int num)
 	{
 		//数値を文字列にする
 		std::string value = std::to_string(num);
-		//nameに記号(sign)と文字列に変換したvalue(num)を連結
-		name = name + sign + value;
 
-		return name;
+		//nameに記号(sign)と文字列に変換したvalue(num)を連結
+		std::string str = name + sign + value;
+
+		return str;
 	}
 
 	//文字列からsign以降の文字列を削除した文字列を取得する
-	std::string GetStringWithPartsAfterTheSymbolDeleted(std::string name, std::string sign)
+	std::string GetStringWithPartsAfterTheSymbolDeleted(const std::string& name,const std::string& sign)
 	{
 		//文字列を保管
 		std::string str = name;
@@ -83,7 +84,7 @@ namespace StrUtil
 	}
 
 	//文字列から記号以降の文字列を取得する
-	std::string GetStringAfterSign(std::string name, std::string sign)
+	std::string GetStringAfterSign(const std::string& name,const std::string& sign)
 	{
 		//文字列のサイズを取得
 		int size = static_cast<int>(name.size());
@@ -98,7 +99,7 @@ namespace StrUtil
 	}
 
 	//文字列から記号以前の文字列を取得する
-	std::string GetStringBeforeSign(std::string name, std::string sign)
+	std::string GetStringBeforeSign(const std::string& name,const std::string& sign)
 	{
 		//「.」が文字列の何番目かを取得する
 		int dotNum = static_cast<int>(name.find(sign));

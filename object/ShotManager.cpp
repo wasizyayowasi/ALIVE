@@ -26,7 +26,6 @@ void ShotManager::Update()
 	}
 
 	shots_.remove_if([](std::shared_ptr<Shot> shot) {return !shot->GetIsEnabled(); });
-
 }
 
 void ShotManager::Draw()
@@ -47,7 +46,7 @@ void ShotManager::Hit(Player& player)
 	}
 }
 
-void ShotManager::Fire(const VECTOR framePos, const  VECTOR playerPos, const float height)
+void ShotManager::Fire(const VECTOR& framePos, const  VECTOR& playerPos, const float height)
 {
 	//プレイヤーめがけてショットを撃つ
 	VECTOR distance = VSub(VGet(playerPos.x, playerPos.y + height / 2, playerPos.z), framePos);

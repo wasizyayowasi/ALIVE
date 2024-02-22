@@ -19,7 +19,7 @@ public:
 	/// <summary>
 	/// インスタンスの作成
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>インスタンス</returns>
 	static EffectManager& GetInstance() {
 		static EffectManager instance;
 		return instance;
@@ -46,7 +46,7 @@ public:
 	/// <param name="name">エフェクト名</param>
 	/// <param name="size">描画サイズ</param>
 	/// <param name="pos">座標</param>
-	void AddEffect(std::string name, float size, VECTOR pos);
+	void AddEffect(const std::string& name,const float size,const VECTOR& pos);
 
 private:
 	/// <summary>

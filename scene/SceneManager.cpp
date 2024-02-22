@@ -4,7 +4,7 @@
 #include "util/game.h"
 
 //シーン遷移
-void SceneManager::ChangeScene(std::shared_ptr<SceneBase> scene)
+void SceneManager::ChangeScene(const std::shared_ptr<SceneBase>& scene)
 {
 	//今あるシーンをすべて削除する
 	while (!scenes_.empty())
@@ -19,7 +19,7 @@ void SceneManager::ChangeScene(std::shared_ptr<SceneBase> scene)
 }
 
 //メインのシーンを保ったまま別のシーンを前画面に表示する
-void SceneManager::PushFrontScene(std::shared_ptr<SceneBase> scene)
+void SceneManager::PushFrontScene(const std::shared_ptr<SceneBase>& scene)
 {
 	//先頭に引数で得たシーンを追加する
 	scenes_.push_front(scene);
@@ -27,7 +27,7 @@ void SceneManager::PushFrontScene(std::shared_ptr<SceneBase> scene)
 }
 
 //シーンをすり替える
-void SceneManager::SwapScene(std::shared_ptr<SceneBase> scene)
+void SceneManager::SwapScene(const std::shared_ptr<SceneBase>& scene)
 {
 	//先頭のシーンを削除する
 	while(scenes_.size() > 1) {
@@ -91,7 +91,7 @@ void SceneManager::Draw()
 }
 
 //ウィンドウモードを変更する
-void SceneManager::ChangeWindowMode(bool windowMode)
+void SceneManager::SetChangeWindowMode(const bool windowMode)
 {
 	windowMode_ = windowMode;
 	DxLib::ChangeWindowMode(windowMode_);

@@ -13,7 +13,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	TransparentObject(const int handle, const Material materialType, const LoadObjectInfo objInfo);
+	TransparentObject(const int handle, const Material materialType, const LoadObjectInfo& objInfo);
 
 	/// <summary>
 	/// デストラクタ
@@ -35,7 +35,7 @@ public:
 	/// スイッチモデルと死体の衝突判定を行う
 	/// </summary>
 	/// <param name="deadPerson">死体のポインタ</param>
-	void UpdateForCorpse(const std::shared_ptr<ObjectBase>& deadPerson)override;
+	void UpdateForCorpse(const std::shared_ptr<ObjectBase>& corpse)override;
 
 	/// <summary>
 	/// 衝突判定を行うモデルの追加
@@ -49,7 +49,7 @@ private:
 
 	float alphaValue_ = 0.0f;							//透過値を保管する
 
-	std::shared_ptr<Switch> switch_;
+	std::shared_ptr<Switch> switch_;					//スイッチのポインタ
 
 };
 

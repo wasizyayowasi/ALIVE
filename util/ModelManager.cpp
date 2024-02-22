@@ -28,7 +28,7 @@ void ModelManager::LoadModel()
 }
 
 //3Dƒ‚ƒfƒ‹ƒnƒ“ƒhƒ‹‚ðŽæ“¾‚·‚é
-int ModelManager::GetModelHandle(std::string name)
+int ModelManager::GetModelHandle(const std::string& name)
 {
 	return modelHandle_[name];
 }

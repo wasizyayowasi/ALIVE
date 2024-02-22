@@ -87,27 +87,27 @@ private:
 
 private:
 
-	int keyTypeHandle_[117] = {};			//keyTypeを描画するためのグラフを受け取るためのhandle
-	int fontHandleSize21_ = -1;				//フォント16サイズを保管する変数
-	int fontHandleSize42_ = -1;				//フォント32サイズを保管する変数
-	int selectNum_ = 0;						//現在の選択番号
+	int keyTypeHandle_[117] = {};									//keyTypeを描画するためのグラフを受け取るためのhandle
+	int fontHandleSize21_ = -1;										//フォント16サイズを保管する変数
+	int fontHandleSize42_ = -1;										//フォント32サイズを保管する変数
+	int selectNum_ = 0;												//現在の選択番号
 
 	//ここも消すかもしれない
-	static constexpr int fadeInterval_ = 30;
-	int fadeTimer_ = 0;
-	int fadeValue_ = 0;
-	int fadeColor_ = 0x000000;
+	static constexpr int fadeInterval_ = 30;						//フェードする間隔
+	int fadeTimer_ = 0;												//タイマー
+	int fadeValue_ = 0;												//フェードの値
+	int fadeColor_ = 0x000000;										//背景の色
 
-	bool isEditing_ = false;							//編集中フラグ
+	bool isEditing_ = false;										//編集中フラグ
 
-	std::shared_ptr<UIItemManager> KeyUI_;				//UIマネージャーのスマートポインタ
-	std::shared_ptr<UIItemManager> PadUI_;				//UIマネージャーのスマートポインタ
+	std::shared_ptr<UIItemManager> KeyUI_;							//UIマネージャーのスマートポインタ
+	std::shared_ptr<UIItemManager> PadUI_;							//UIマネージャーのスマートポインタ
 
-	std::map<int, Key> keyNum_;
-	std::map<std::string, VECTOR> keyDrawPos_;
-	std::map<std::string, VECTOR> padDrawPos_;
+	std::map<int, Key> keyNum_;										//dxlibの入力番号と自分の画像の番号を合わせるため
+	std::map<std::string, VECTOR> keyDrawPos_;						//キーの画像を描画する場所を保存する
+	std::map<std::string, VECTOR> padDrawPos_;						//パッドの画像を描画する場所
 
-	void (KeyConfigSceneForSceneTitle::* updateFunc_)();
+	void (KeyConfigSceneForSceneTitle::* updateFunc_)();			//メンバ関数ポインタ
 	void (KeyConfigSceneForSceneTitle::* changeKeyUpdateFunc_)();	//メンバ関数ポインタ
 	void (KeyConfigSceneForSceneTitle::* drawFunc_)();				//メンバ関数ポインタ
 };

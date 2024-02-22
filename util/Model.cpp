@@ -6,9 +6,9 @@ namespace {
 }
 
 //ファイルパスのコンストラクタ
-Model::Model(const char* fileName, Material materialType)
+Model::Model(const std::string& fileName,const Material materialType)
 {
-	modelHandle_ = MV1LoadModel(fileName);
+	modelHandle_ = MV1LoadModel(fileName.c_str());
 	assert(modelHandle_ != -1);
 
 	ClearAnimData(animPrev_);
@@ -18,7 +18,7 @@ Model::Model(const char* fileName, Material materialType)
 }
 
 //duplicateモデルのコンストラクタ
-Model::Model(int orgModel, Material materialType)
+Model::Model(const int orgModel,const Material materialType)
 {
 	modelHandle_ = MV1DuplicateModel(orgModel);
 	assert(modelHandle_ != -1);
@@ -36,7 +36,7 @@ Model::~Model()
 }
 
 //collisionフレームをcollisionとして使う
-void Model::SetUseCollision(bool isUse, bool isNeedUpdate,std::string collFrameName)
+void Model::SetUseCollision(const bool isUse, const bool isNeedUpdate, const std::string& collFrameName)
 {
 	assert(isUse | !isNeedUpdate);
 
@@ -132,9 +132,9 @@ bool Model::IsAnimEnd()
 }
 
 //特定フレームの座標を取得
-VECTOR Model::GetFrameLocalPosition(const char* frameName) const
+VECTOR Model::GetFrameLocalPosition(const std::string& frameName) const
 {
-	int frameNo = MV1SearchFrame(modelHandle_, frameName);
+	int frameNo = MV1SearchFrame(modelHandle_, frameName.c_str());
 	auto name = MV1GetFrameName(modelHandle_, frameNo);
 	VECTOR localPos = MV1GetFramePosition(modelHandle_, frameNo);
 
@@ -156,29 +156,29 @@ bool Model::GetSpecifiedAnimTime(const int specifiedTime) const
 
 
 //ポジション設定
-void Model::SetPos(const VECTOR pos)
+void Model::SetPos(const VECTOR& pos)
 {
 	pos_ = pos;
 	MV1SetPosition(modelHandle_, pos);
 }
 
 //角度設定
-void Model::SetRot(const VECTOR rot)
+void Model::SetRot(const VECTOR& rot)
 {
 	rot_ = rot;
 	MV1SetRotationXYZ(modelHandle_, rot);
 }
 
 //拡縮率設定
-void Model::SetScale(const VECTOR scale)
+void Model::SetScale(const VECTOR& scale)
 {
 	MV1SetScale(modelHandle_,scale);
 }
 
 //collisionフレーム設定
-void Model::SetCollFrame(const char* collFrameName)
+void Model::SetCollFrame(const std::string& collFrameName)
 {
-	colFrameIndex_ = MV1SearchFrame(modelHandle_, collFrameName);
+	colFrameIndex_ = MV1SearchFrame(modelHandle_, collFrameName.c_str());
 	if (colFrameIndex_ < 0) {
 		colFrameIndex_ = -1;
 	}
@@ -233,7 +233,7 @@ void Model::ClearAnimData(AnimData& anim)
 }
 
 //アニメーションの更新
-void Model::UpdateAnim(const AnimData anim, const  float dt)
+void Model::UpdateAnim(const AnimData& anim, const  float dt)
 {
 	if (anim.attachNo == -1) return;
 

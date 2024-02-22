@@ -12,7 +12,7 @@ public:
 	/// </summary>
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="info">配置データ</param>
-	LightBulb(const int handle, const LoadObjectInfo info);
+	LightBulb(const int handle, const LoadObjectInfo& info);
 
 	/// <summary>
 	/// デストラクタ

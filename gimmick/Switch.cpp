@@ -16,12 +16,12 @@ namespace
 	//サウンドが聞こえる範囲
 	constexpr float sound_range = 1500.0f;
 
-	//カプセルの半径
-	constexpr float capsel_radius = 20.0f;
+	//球の半径
+	constexpr float sphere_radius = 30.0f;
 }
 
 //コンストラクタ
-Switch::Switch(const LoadObjectInfo objInfo)
+Switch::Switch(const LoadObjectInfo& objInfo)
 {
 	//モデルクラスの初期化
 	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(objData_[static_cast<int>(ObjectType::Switch)].name), Material::Iron);
@@ -63,7 +63,8 @@ void Switch::Draw()
 void Switch::DeleteHitResult()
 {
 	//衝突結果の削除
-	for (auto& result : hitDim_) {
+	for (auto& result : hitDim_) 
+	{
 		MV1CollResultPolyDimTerminate(result);
 	}
 
@@ -76,8 +77,10 @@ void Switch::ChangeDuringStartup(const float time)
 	//短縮化
 	auto& sound = SoundManager::GetInstance();
 
-	if (time == total_time) {
-		if (!isDuringStartup_) {
+	if (time == total_time)
+	{
+		if (!isDuringStartup_) 
+		{
 			stateFunc_ = &Switch::OffAnim;
 		}
 		isDuringStartup_ = false;
@@ -92,28 +95,31 @@ void Switch::HitCollPlayer(Player& player)
 	VECTOR playerPos = player.GetStatus().pos;
 
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
-	hitDim_.push_back(MV1CollCheck_Sphere(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, capsel_radius));
+	hitDim_.push_back(MV1CollCheck_Sphere(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, sphere_radius));
 }
 
-void Switch::HitColl(const std::shared_ptr<ObjectBase> deadPerson)
+void Switch::HitColl(const std::shared_ptr<ObjectBase>& corpse)
 {
-	MV1RefreshCollInfo(deadPerson->GetModelPointer()->GetModelHandle(), deadPerson->GetModelPointer()->GetColFrameIndex());
+	MV1RefreshCollInfo(corpse->GetModelPointer()->GetModelHandle(), corpse->GetModelPointer()->GetColFrameIndex());
 
 	//持ち運び中だったら以降の処理を行わない
-	if (deadPerson->GetIsTransit()) {
+	if (corpse->GetIsTransit()) 
+	{
 		return;
 	}
 
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
-	hitDim_.push_back(MV1CollCheck_Sphere(deadPerson->GetModelPointer()->GetModelHandle(), deadPerson->GetModelPointer()->GetColFrameIndex(), pos_, capsel_radius));
+	hitDim_.push_back(MV1CollCheck_Sphere(corpse->GetModelPointer()->GetModelHandle(), corpse->GetModelPointer()->GetColFrameIndex(), pos_, sphere_radius));
 }
 
 //衝突判定結果の初期化
 bool Switch::ElevatorCollResult()
 {
 	//当たっている数を数える
-	for (auto& result : hitDim_) {
-		if (result.HitNum > 0) {
+	for (auto& result : hitDim_)
+	{
+		if (result.HitNum > 0)
+		{
 			isDuringStartup_ = true;
 		}
 	}
@@ -122,11 +128,13 @@ bool Switch::ElevatorCollResult()
 
 	//当たっていなかったら
 	//アニメーションを変更し終了
-	if (!isDuringStartup_) {
+	if (!isDuringStartup_) 
+	{
 		return false;
 	}
 
-	if (stateFunc_ == &Switch::OffAnim) {
+	if (stateFunc_ == &Switch::OffAnim)
+	{
 		SoundManager::GetInstance().Set3DSoundInfo(pos_, sound_range, "switchOn");
 		SoundManager::GetInstance().PlaySE("switchOn");
 	}
@@ -141,8 +149,10 @@ bool Switch::TransCollResult()
 	int hitNum = 0;
 
 	//当たっている数を数える
-	for (auto& result : hitDim_) {
-		if (result.HitNum > 0) {
+	for (auto& result : hitDim_) 
+	{
+		if (result.HitNum > 0)
+		{
 			hitNum++;
 		}
 	}
@@ -151,12 +161,14 @@ bool Switch::TransCollResult()
 
 	//当たっていなかったら
 	//アニメーションを変更し終了
-	if (hitNum < 1) {
+	if (hitNum < 1)
+	{
 		stateFunc_ = &Switch::OffAnim;
 		return false;
 	}
 
-	if (stateFunc_ == &Switch::OffAnim) {
+	if (stateFunc_ == &Switch::OffAnim)
+	{
 		SoundManager::GetInstance().Set3DSoundInfo(pos_, sound_range, "switchOn");
 		SoundManager::GetInstance().PlaySE("switchOn");
 	}

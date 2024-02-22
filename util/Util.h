@@ -10,7 +10,7 @@ namespace MathUtil
 	/// <param name="pos">ポジション</param>
 	/// <param name="targetPos">目標のポジション</param>
 	/// <returns>二つのポジションの距離のサイズ</returns>
-	float GetSizeOfDistanceTwoPoints(const VECTOR pos, const VECTOR targetPos);
+	float GetSizeOfDistanceTwoPoints(const VECTOR& pos, const VECTOR& targetPos);
 
 	/// <summary>
 	/// VECTOR型、度数法を弧度法に変換する
@@ -35,7 +35,7 @@ namespace StrUtil
 	/// <param name="name">名前</param>
 	/// <param name="sign">記号</param>
 	/// <returns>数値</returns>
-	int GetNumberFromString(std::string name, std::string sign);
+	int GetNumberFromString(const std::string& name,const std::string& sign);
 
 	/// <summary>
 	/// 文字列と数値を結合した文字列を取得する
@@ -44,7 +44,7 @@ namespace StrUtil
 	/// <param name="sign">記号</param>
 	/// <param name="num">数値</param>
 	/// <returns>文字列</returns>
-	std::string GetConcatenateNumAndStrings(std::string name, std::string sign, int num);
+	std::string GetConcatenateNumAndStrings(const std::string& name,const std::string& sign,const int num);
 
 	/// <summary>
 	/// 文字列からsign以降の文字列を削除した文字列を取得する
@@ -52,7 +52,7 @@ namespace StrUtil
 	/// <param name="name">名前</param>
 	/// <param name="sign">記号</param>
 	/// <returns>文字列</returns>
-	std::string GetStringWithPartsAfterTheSymbolDeleted(std::string name, std::string sign);
+	std::string GetStringWithPartsAfterTheSymbolDeleted(const std::string& name, const std::string& sign);
 
 	/// <summary>
 	/// 文字列から記号以降の文字列を取得する
@@ -60,7 +60,7 @@ namespace StrUtil
 	/// <param name="name">名前</param>
 	/// <param name="sign">記号</param>
 	/// <returns>文字列</returns>
-	std::string GetStringAfterSign(std::string name, std::string sign);
+	std::string GetStringAfterSign(const std::string& name,const std::string& sign);
 
 	/// <summary>
 	/// 文字列から記号以前の文字列を取得する
@@ -68,5 +68,5 @@ namespace StrUtil
 	/// <param name="name">名前</param>
 	/// <param name="sign">記号</param>
 	/// <returns>文字列</returns>
-	std::string GetStringBeforeSign(std::string name, std::string sign);
+	std::string GetStringBeforeSign(const std::string& name,const std::string& sign);
 }

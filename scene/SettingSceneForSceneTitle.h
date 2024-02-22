@@ -83,18 +83,18 @@ public:
 	void SceneChange();
 private:
 
-	int makeScreenHandle_ = -1;					//作成したスクリーン画像
-	int volumeBGM_ = 0;							//BGMのボリューム
-	int volumeSE_ = 0;							//SEのボリューム
-	int selectNum_ = 0;							//選択番号
+	int makeScreenHandle_ = -1;									//作成したスクリーン画像
+	int volumeBGM_ = 0;											//BGMのボリューム
+	int volumeSE_ = 0;											//SEのボリューム
+	int selectNum_ = 0;											//選択番号
 
-	bool windowMode_ = true;					//ウィンドウモード
+	bool windowMode_ = true;									//ウィンドウモード
 
 	//ここも消すかもしれない
-	static constexpr int fadeInterval_ = 30;
-	int fadeTimer_ = 0;
-	int fadeValue_ = 0;
-	int fadeColor_ = 0x000000;
+	static constexpr int fadeInterval_ = 30;					//インターバル
+	int fadeTimer_ = 0;											//フェードする時間
+	int fadeValue_ = 0;											//フェードの透過値
+	int fadeColor_ = 0x000000;									//背景
 
 	std::string windowModeText_ = "≪  ウィンドウモード  ≫";	//ウィンドウモードの表示テキスト
 	std::shared_ptr<UIItemManager> UIManager_;					//UIマネージャーのポインタ

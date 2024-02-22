@@ -16,7 +16,7 @@ namespace
 }
 
 //コンストラクタ
-Lever::Lever(const LoadObjectInfo info)
+Lever::Lever(const LoadObjectInfo& info)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
@@ -57,7 +57,8 @@ void Lever::Update()
 	model_->Update();
 
 	//アニメーションを停止アニメーションにする
-	if (model_->IsAnimEnd()) {
+	if (model_->IsAnimEnd())
+	{
 		OffAnimation();
 	}
 }

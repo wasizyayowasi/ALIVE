@@ -107,7 +107,7 @@ void ObjectManager::EndStageObjectGenerator()
 	}
 }
 
-void ObjectManager::CorpseGenerator(const int handle, const  LoadObjectInfo objInfo, const  int animNo)
+void ObjectManager::CorpseGenerator(const int handle, const LoadObjectInfo& objInfo, const int animNo)
 {
 	//死体を一つ生成する
 	objects_[ObjectType::Corpse].push_back(std::make_shared<Corpse>(handle, Material::Other, objInfo, animNo));
@@ -120,7 +120,7 @@ void ObjectManager::CorpseGenerator(const int handle, const  LoadObjectInfo objI
 }
 
 //更新
-void ObjectManager::Update(Player& player, std::shared_ptr<ShotManager> shotManager)
+void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& shotManager)
 {
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
 	for (auto& list : objects_) {
@@ -181,7 +181,7 @@ void ObjectManager::Update(Player& player, std::shared_ptr<ShotManager> shotMana
 }
 
 //描画
-void ObjectManager::Draw(const VECTOR PlayerPos)
+void ObjectManager::Draw(const VECTOR& PlayerPos)
 {
 	float distance = 0.0f;
 
@@ -213,10 +213,10 @@ const std::list<std::shared_ptr<Model>>& ObjectManager::GetAllCheckCollModel()
 	return checkCollList_;
 }
 
-const std::list<std::shared_ptr<Model>>& ObjectManager::GetSpecificModel(const ObjectType type)
+const std::shared_ptr<Model>& ObjectManager::GetSpecificModel(const ObjectType type)
 {
 
-	std::list<std::shared_ptr<Model>> specificList;
+	std::shared_ptr<Model> specificPoint;
 
 	//引数で指定されたオブジェクトのモデルポインタを上記で宣言した
 	//配列に代入する
@@ -229,15 +229,15 @@ const std::list<std::shared_ptr<Model>>& ObjectManager::GetSpecificModel(const O
 		//そのオブジェクトのリストからモデルポインタを取得し
 		//specificListに代入する
 		for (auto& objSecond : obj.second) {
-			specificList.push_back(objSecond->GetModelPointer());
+			specificPoint = objSecond->GetModelPointer();
 		}
 	}
 
 	//リストを返す
-	return specificList;
+	return specificPoint;
 }
 
-const std::list<std::shared_ptr<ObjectBase>>& ObjectManager::GetSpecificObject(const ObjectType type)
+std::list<std::shared_ptr<ObjectBase>> ObjectManager::GetSpecificObject(const ObjectType type)
 {
 
 	std::list<std::shared_ptr<ObjectBase>> obj = {};
@@ -263,7 +263,7 @@ void ObjectManager::AddCheckCollModel()
 	}
 }
 
-void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, const VECTOR loadObjPos)
+void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, const VECTOR& loadObjPos)
 {
 	float distance = 500.0f;
 
@@ -277,7 +277,7 @@ void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, const VECTOR l
 	info.pos.z = static_cast<float>(randomPosZ(value));
 }
 
-void ObjectManager::CircumferencePosition(const float angle, VECTOR& infoPos, const VECTOR playerPos)
+void ObjectManager::CircumferencePosition(const float angle,VECTOR& infoPos, const VECTOR& playerPos)
 {
 	VECTOR pos = {};
 	float radian = MathUtil::DegreeToRadian(angle);
@@ -297,7 +297,7 @@ void ObjectManager::CircumferencePosition(const float angle, VECTOR& infoPos, co
 	infoPos = pos;
 }
 
-void ObjectManager::EnemyGenerator(const int deathCount, const  LoadObjectInfo info)
+void ObjectManager::EnemyGenerator(const int deathCount, const LoadObjectInfo& info)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -325,11 +325,9 @@ void ObjectManager::EnemyGenerator(const int deathCount, const  LoadObjectInfo i
 			GeneratePredeterminedNumberOfTimes(deathCount, numStr, info);
 		}
 	}
-
-	
 }
 
-void ObjectManager::EndEnemyGenerator(const int deathCount, LoadObjectInfo info)
+void ObjectManager::EndEnemyGenerator(const int deathCount,LoadObjectInfo& info)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -346,7 +344,7 @@ void ObjectManager::EndEnemyGenerator(const int deathCount, LoadObjectInfo info)
 	}
 }
 
-void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount, LoadObjectInfo info)
+void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount,LoadObjectInfo info)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -367,7 +365,7 @@ void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount, Loa
 	}
 }
 
-void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, const  std::string str, const  LoadObjectInfo info)
+void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, const std::string& str, const LoadObjectInfo& info)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -383,7 +381,7 @@ void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, con
 	}
 }
 
-void ObjectManager::GenerateCorpseMountain(const int deathCount, const  LoadObjectInfo info)
+void ObjectManager::GenerateCorpseMountain(const int deathCount, const LoadObjectInfo& info)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -403,7 +401,7 @@ void ObjectManager::GenerateCorpseMountain(const int deathCount, const  LoadObje
 }
 
 //置物生成機
-void ObjectManager::OrnamentGenerator(const std::string name, const ObjectType objType, const Material materialType, const  LoadObjectInfo objInfo)
+void ObjectManager::OrnamentGenerator(const std::string& name, const ObjectType objType, const Material materialType, const LoadObjectInfo& objInfo)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -411,7 +409,7 @@ void ObjectManager::OrnamentGenerator(const std::string name, const ObjectType o
 	objects_[objType].push_front(std::make_shared<OrnamentBase>(model.GetModelHandle(name), materialType, objInfo));
 }
 
-void ObjectManager::GimmickObjectGenerator(const std::string name, const ObjectType objType, const  Material materialType, const  LoadObjectInfo objInfo)
+void ObjectManager::GimmickObjectGenerator(const std::string& name, const ObjectType objType, const  Material materialType, const LoadObjectInfo& objInfo)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();

@@ -12,19 +12,19 @@ public:
 	/// シーン遷移
 	/// </summary>
 	/// <param name="scene">シーンのポインタ</param>
-	void ChangeScene(std::shared_ptr<SceneBase> scene);
+	void ChangeScene(const std::shared_ptr<SceneBase>& scene);
 
 	/// <summary>
 	/// メインのシーンを保ったまま別のシーンを前画面に表示する
 	/// </summary>
 	/// <param name="scene">シーンのポインタ</param>
-	void PushFrontScene(std::shared_ptr<SceneBase> scene);
+	void PushFrontScene(const std::shared_ptr<SceneBase>& scene);
 
 	/// <summary>
 	/// シーンをすり替える
 	/// </summary>
 	/// <param name="scene">シーンのポインタ</param>
-	void SwapScene(std::shared_ptr<SceneBase> scene);
+	void SwapScene(const std::shared_ptr<SceneBase>& scene);
 
 	/// <summary>
 	/// ひとつ前のシーンに戻る
@@ -47,17 +47,7 @@ public:
 	/// <returns>ゲームを終了させるか true:終了 false:終了しない</returns>
 	bool End() const { return isEnd_; };		
 
-	/// <summary>
-	/// 終了フラグを変更する
-	/// </summary>
-	/// <param name="flag">終了するか</param>
-	void SetEndFlag(bool flag) { isEnd_ = flag; }
-
-	/// <summary>
-	/// ウィンドウモードを変更する
-	/// </summary>
-	/// <param name="windowMode">true：windowMode　false：フルスクリーン</param>
-	void ChangeWindowMode(bool windowMode);
+	////////////////Getter////////////////
 
 	/// <summary>
 	/// ウィンドウモードの取得
@@ -65,15 +55,27 @@ public:
 	/// <returns></returns>
 	bool GetWindowMode() const { return windowMode_; }
 
+	////////////////Setter////////////////
+
+	/// <summary>
+	/// 終了フラグを変更する
+	/// </summary>
+	/// <param name="flag">終了するか</param>
+	void SetEndFlag(const bool flag) { isEnd_ = flag; }
+
+	/// <summary>
+	/// ウィンドウモードを変更する
+	/// </summary>
+	/// <param name="windowMode">true：windowMode　false：フルスクリーン</param>
+	void SetChangeWindowMode(const bool windowMode);
+
 private:
-
-	std::deque<std::shared_ptr<SceneBase>> scenes_;		//シーン本体
-
-	bool isEnd_ = false;								//終了フラグ
-
 	int debugDrawTime_ = 0;								//描画にかかる時間(1フレーム当たり)
 	int debugUpdateTime_ = 0;							//更新にかかる時間(1フレーム当たり)
 
+	bool isEnd_ = false;								//終了フラグ
 	bool windowMode_ = true;							//windowMode　true：windowMode　false：フルスクリーン
+
+	std::deque<std::shared_ptr<SceneBase>> scenes_;		//シーン本体
 };
 

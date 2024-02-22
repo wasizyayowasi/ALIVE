@@ -64,7 +64,7 @@ void UIItemManager::DrawBillBoard(std::map<std::string, VECTOR> drawPos, const i
 		std::string name = UIMenu_[i]->GetString();
 
 		//画像を3D空間に描画する
-		UIMenu_[i]->DrawBillboard(drawPos[name],alpha,size);
+		UIMenu_[i]->DrawBillboard(drawPos[name], alpha, size);
 	}
 }
 
@@ -94,7 +94,7 @@ void UIItemManager::AlphaChangeDrawBillBoard(std::map<std::string, VECTOR> drawP
 }
 
 //UIメニューの追加
-void UIItemManager::AddMenu(const float centerPosX, const float centerPosY, const int width, const int height, std::string str, const int fontHandle)
+void UIItemManager::AddMenu(const float centerPosX, const float centerPosY, const int width, const int height,const std::string& str, const int fontHandle)
 {
 	//インスタンス化
 	UIMenu_.push_back(std::make_shared<UIItem>());
@@ -104,7 +104,7 @@ void UIItemManager::AddMenu(const float centerPosX, const float centerPosY, cons
 }
 
 //文字列を分割したメニューの追加
-void UIItemManager::AddingMenuWithSplitStr(const float centerPosX, const float centerPosY, const int width, const int height, std::string str, const int fontHandle)
+void UIItemManager::AddingMenuWithSplitStr(const float centerPosX, const float centerPosY, const int width, const int height,const std::string& str, const int fontHandle)
 {
 	//短縮化
 	auto& font = FontsManager::GetInstance();

@@ -212,13 +212,13 @@ InputState::~InputState()
 }
 
 //長押し不可能入力関数
-bool InputState::IsTriggered(InputType type) const
+bool InputState::IsTriggered(const InputType type) const
 {
 	return IsPressed(type) && !lastInput_[static_cast<int>(type)];
 }
 
 //長押し可能入力関数
-bool InputState::IsPressed(InputType type) const
+bool InputState::IsPressed(const InputType type) const
 {
 	return currentInput_[static_cast<int>(type)];
 }
@@ -262,7 +262,7 @@ void InputState::Update()
 }
 
 //変更中のキーコンフィグをtempMapTableに書き込む
-void InputState::RewriteInputInfo(InputType type, InputCategory cat, int id)
+void InputState::RewriteInputInfo(InputType type, InputCategory cat, const int id)
 {
 	//入力種別(割り当て先)がなければ、無効なので無視します。
 	if (tempMapTable_.count(type) == 0) {
@@ -304,7 +304,7 @@ void InputState::ResetInputInfo()
 }
 
 //変更したキーを戻す
-void InputState::UndoSelectKey(InputType type, InputCategory cat)
+void InputState::UndoSelectKey(const InputType type, const InputCategory cat)
 {
 	for (auto& info : tempMapTable_[type]) {
 		if (info.cat == cat) {
@@ -315,7 +315,7 @@ void InputState::UndoSelectKey(InputType type, InputCategory cat)
 }
 
 //キーコンフィグを外部ファイルとして保存する
-void InputState::SavekeyInfo() const
+void InputState::SavekeyInfo()
 {
 	//決め打ちしか出来ないのがネック
 	json keyInfo_[static_cast<int>(InputType::max)];
@@ -370,7 +370,7 @@ void InputState::SavekeyInfo() const
 }
 
 //キーコンフィグを読み込む
-void InputState::LoadKeyInfo(const char* filename)
+void InputState::LoadKeyInfo(const std::string& filename)
 {
 
 	//初期化した中身を消す
@@ -408,7 +408,7 @@ void InputState::LoadKeyInfo(const char* filename)
 	}
 
 	//inputMapTable_に読み込んだデータを代入
-	for (auto& const info : inputInfo) {
+	for (auto& info : inputInfo) {
 		//入力装置番号とキーidをそれぞれ保持するためのやつ(ひとまとめにできるなら死体)
 		std::unordered_map<int, int> keybord;
 		std::unordered_map<int, int> pad;
@@ -448,7 +448,7 @@ bool InputState::LastInputDevice() const
 }
 
 //入力装置の番号を取得する
-int InputState::GetInputNum(int num, InputCategory cat)
+int InputState::GetInputNum(const int num, const InputCategory cat)
 {
 	int keyNum = 0;
 
@@ -465,7 +465,7 @@ int InputState::GetInputNum(int num, InputCategory cat)
 }
 
 //key画像の描画
-void InputState::DrawKeyGraph(int type, float posX, float posY,float size)
+void InputState::DrawKeyGraph(const int type, const float posX, const float posY, const float size)
 {
 	//入力装置の番号を取得する
 	int num = GetInputNum(type, InputCategory::keybd);
@@ -489,7 +489,7 @@ void InputState::DrawKeyGraph(int type, float posX, float posY,float size)
 }
 
 //padのボタンの描画
-void InputState::DrawPadGraph(int type, float posX, float posY, float scale)
+void InputState::DrawPadGraph(const int type, const  float posX, const  float posY, const float scale)
 {
 	//画像の描画
 	Graph::DrawRectRotaGraph(posX, posY,
@@ -501,7 +501,7 @@ void InputState::DrawPadGraph(int type, float posX, float posY, float scale)
 }
 
 //名前の描画
-void InputState::DrawName(int type, float posX, float posY, int color, int fontHandle, bool editName, bool before, std::string sign)
+void InputState::DrawName(const int type, const  float posX, const  float posY, const  int color, const  int fontHandle, const bool editName, const bool before,const std::string& sign)
 {
 	//名前
 	std::string name = inputNameTable_[static_cast<InputType>(type)].c_str();

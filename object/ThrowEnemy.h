@@ -10,7 +10,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	ThrowEnemy(const int handle, const Material materialType, const LoadObjectInfo objInfo);
+	ThrowEnemy(const int handle, const Material materialType, const LoadObjectInfo& objInfo);
 
 	/// <summary>
 	/// デストラクタ
@@ -34,7 +34,7 @@ public:
 	/// <param name="shotManager">弾を管理するクラスのポインタ</param>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <param name="height">プレイヤーの高さ</param>
-	void Shot(const std::shared_ptr<ShotManager>& shotManager,const VECTOR playerPos, const  float height);
+	void Shot(const std::shared_ptr<ShotManager>& shotManager,const VECTOR& playerPos, const float height);
 
 private:
 	bool isFakeThrow_ = false;						//投げるふりをするか

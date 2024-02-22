@@ -193,10 +193,8 @@ private:
 	int UIfadeValue_ = 0;									//UIのフェード透過値
 	int fadeColor_ = 0x000000;								//黒
 
-	int fontHandle_ = -1;
+	int fontHandle_ = -1;									//フォントハンドル
 	int titleHandle_ = -1;									//タイトル画像の保管変数
-	int selectNum_ = 1;										//選択
-	int oldSelectNum_ = 1;
 
 	float outAngle_ = 0.0f;									//スポットライトの外側の角度
 	float inAngle_ = 0.0f;									//スポットライトの内側の角度

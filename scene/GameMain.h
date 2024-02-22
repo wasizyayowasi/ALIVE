@@ -47,23 +47,23 @@ public:
 	void Draw();
 private:
 
-	int skyHandle_ = -1;					//スカイドームのハンドル
-
-	int makeScreenHandle_ = -1;				//作成したスクリーン画像
-	int totalDeathNum_ = 0;					//ゲーム開始からの総死亡数
-
-	bool isFilterOn_ = false;				//フィルターを使用するか
-
 	//消すかもしれない
 	void FadeInUpdate();
 	void NormalUpdate();
 	void FadeOutUpdate();
 
+private:
 	//ここも消すかもしれない
-	static constexpr int fadeInterval_ = 60;
-	int fadeTimer_ = fadeInterval_;
-	int fadeValue_ = 255;
-	int fadeColor_ = 0x000000;
+	static constexpr int fadeInterval_ = 60;					//フェードする間隔
+	int fadeTimer_ = fadeInterval_;								//タイマー
+	int fadeValue_ = 255;										//フェードの値
+	int fadeColor_ = 0x000000;									//背景の色
+
+	int skyHandle_ = -1;										//スカイドームのハンドル
+	int makeScreenHandle_ = -1;									//作成したスクリーン画像
+	int totalDeathNum_ = 0;										//ゲーム開始からの総死亡数
+
+	bool isFilterOn_ = false;									//フィルターを使用するか
 
 	std::shared_ptr<Camera> camera_;							//カメラのシェアードポインタ
 	std::shared_ptr<Player> player_;							//プレイヤーのシェアードポインタ
@@ -74,6 +74,5 @@ private:
 	std::shared_ptr<CheckCollisionModel> checkCollisionModel_;	//衝突判定を行うクラスのポインタ
 
 	void (GameMain::* updateFunc_)();							//メンバ関数ポインタ
-
 };
 

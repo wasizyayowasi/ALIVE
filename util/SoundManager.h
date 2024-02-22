@@ -42,13 +42,13 @@ public:
 	/// 読み込んだサウンドを流す
 	/// </summary>
 	/// <param name="name">ファイル名</param>
-	void PlaySE(std::string name);
+	void PlaySE(const std::string& name);
 
 	/// <summary>
 	/// 読み込んだBGMを流す
 	/// </summary>
 	/// <param name="name">ファイル名</param>
-	void PlayBGM(std::string name);
+	void PlayBGM(const std::string& name);
 
 	/// <summary>
 	/// SE音量を調整する
@@ -78,13 +78,13 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="rate"></param>
-	void SetBGMRate(float rate);
+	void SetBGMRate(const float rate);
 	
 	/// <summary>
 	/// SEを止める
 	/// </summary>
 	/// <param name="name">音のファイル名</param>
-	void StopSE(std::string name = "");
+	void StopSE(const std::string& name = "");
 
 	/// <summary>
 	/// BGMを止める
@@ -102,20 +102,20 @@ public:
 	/// <param name="pos">サウンドのポジション</param>
 	/// <param name="audioRange">聞こえる範囲</param>
 	/// <param name="name">サウンド名</param>
-	void Set3DSoundInfo(VECTOR pos,float audioRange,std::string name);
+	void Set3DSoundInfo(const VECTOR& pos, const float audioRange, const std::string& name);
 
 	/// <summary>
 	/// 3Dサウンドを再生する際のリスナーの位置を決める
 	/// </summary>
 	/// <param name="pos"></param>
 	/// <param name="rot"></param>
-	void Set3DSoundListenerInfo(VECTOR pos, VECTOR rot);
+	void Set3DSoundListenerInfo(const VECTOR& pos, const VECTOR& rot);
 
 	/// <summary>
 	/// サウンドが再生中か調べる
 	/// </summary>
 	/// <returns>1:再生中 1:終了</returns>
-	int CheckSoundFile(std::string name);
+	int CheckSoundFile(const std::string& name);
 
 private:
 	//計　12byte
@@ -136,28 +136,28 @@ private:
 	/// </summary>
 	/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
 	/// <returns>ロードしたサウンド</returns>
-	int Load2DSoundSEFile(std::string fileName);
+	int Load2DSoundSEFile(const std::string& fileName);
  
 	/// <summary>
 	/// 2DBGMをロードする
 	/// </summary>
 	/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
 	/// <returns>ロードしたサウンド</returns>
-	int Load2DSoundBGMFile(std::string fileName);
+	int Load2DSoundBGMFile(const std::string& fileName);
 
 	/// <summary>
 	/// 3DSEをロードする
 	/// </summary>
 	/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
 	/// <returns>ロードしたサウンド</returns>
-	int Load3DSoundSEFile(std::string fileName);
+	int Load3DSoundSEFile(const std::string& fileName);
 
 	/// <summary>
 	/// 3DBGMをロードする
 	/// </summary>
 	/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
 	/// <returns>ロードしたサウンド</returns>
-	int Load3DSoundBGMFile(std::string fileName);
+	int Load3DSoundBGMFile(const std::string& fileName);
 
 	/// <summary>
 	/// コンストラクタ

@@ -5,7 +5,19 @@
 #include "../util/Util.h"
 #include <algorithm>
 
-TransparentObject::TransparentObject(const int handle, const Material materialType, const LoadObjectInfo objInfo) : GimmickBase(handle, materialType, objInfo)
+namespace
+{
+	//アルファ値の増加
+	constexpr float add_alpha = 0.1f;
+
+	//アルファ値の最大値
+	constexpr float max_alpha_value = 1.0f;
+
+	//アルファ値の最小
+	constexpr float min_alpha_value = 0.1f;
+}
+
+TransparentObject::TransparentObject(const int handle, const Material materialType, const LoadObjectInfo& objInfo) : GimmickBase(handle, materialType, objInfo)
 {
 	//衝突判定用フレームの設定
 	model_->SetUseCollision(true, false);
@@ -28,12 +40,12 @@ TransparentObject::TransparentObject(const int handle, const Material materialTy
 
 	COLOR_F color = {};
 
-	for (int i = 0; i < materialNum_;i++) {
+	for (int i = 0; i < materialNum_;i++) 
+	{
 		color = MV1GetMaterialDifColor(model_->GetModelHandle(), i);
 		color.a = 0.0f;
 		MV1SetMaterialDifColor(model_->GetModelHandle(), i, color);
 	}
-
 }
 
 TransparentObject::~TransparentObject()
@@ -46,7 +58,8 @@ void TransparentObject::Update(Player& player)
 
 	//スイッチが起動していたら
 	//モデルとの衝突判定を行うようにする
-	if (switch_->TransCollResult()) {
+	if (switch_->TransCollResult())
+	{
 		isCollCheck_ = true;
 	}
 	else {
@@ -54,16 +67,19 @@ void TransparentObject::Update(Player& player)
 	}
 
 	//アルファ値を変更する
-	if (isCollCheck_) {
-		alphaValue_ = (std::min)(alphaValue_ + 0.1f, 1.0f);
+	if (isCollCheck_)
+	{
+		alphaValue_ = (std::min)(alphaValue_ + add_alpha, max_alpha_value);
 	}
-	else {
-		alphaValue_ = (std::max)(alphaValue_ - 0.1f, 0.1f);
+	else 
+	{
+		alphaValue_ = (std::max)(alphaValue_ - add_alpha, min_alpha_value);
 	}
 
 	COLOR_F color = {};
 
-	for (int i = 0; i < materialNum_; i++) {
+	for (int i = 0; i < materialNum_; i++)
+	{
 		color = MV1GetMaterialDifColor(model_->GetModelHandle(), i);
 		color.a = alphaValue_;
 		MV1SetMaterialDifColor(model_->GetModelHandle(), i, color);

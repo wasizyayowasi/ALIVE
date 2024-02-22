@@ -19,7 +19,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	EnemyBase(const int handle, const Material materialType, const LoadObjectInfo objInfo);
+	EnemyBase(const int handle, const Material materialType, const LoadObjectInfo& objInfo);
 
 	/// <summary>
 	/// デストラクタ
@@ -41,13 +41,13 @@ public:
 	/// プレイヤーを追跡する
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの座標</param>
-	void TrackingUpdate(const VECTOR playerPos);
+	void TrackingUpdate(const VECTOR& playerPos);
 
 	/// <summary>
 	/// プレイヤーを索敵する
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの座標</param>
-	void SearchForPlayer(const VECTOR playerPos);
+	void SearchForPlayer(const VECTOR& playerPos);
 
 	/// <summary>
 	/// プレイヤーを突き飛ばす
@@ -59,14 +59,14 @@ public:
 	/// ルート通りに移動する
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの座標</param>
-	void RoutingUpdate(const VECTOR playerPos);
+	void RoutingUpdate(const VECTOR& playerPos);
 
 	/// <summary>
 	/// 敵からプレイヤーの直線距離にオブジェクトがあるか
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <returns>オブジェクトがあるか</returns>
-	bool IsThereAnObject(const VECTOR playerPos);
+	bool IsThereAnObject(const VECTOR& playerPos);
 
 	/// <summary>
 	/// 敵が弾を撃つ処理
@@ -74,13 +74,13 @@ public:
 	/// <param name="shotManager">弾を管理するクラスのポインタ</param>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <param name="height">プレイヤーの高さ</param>
-	void Shot(const std::shared_ptr<ShotManager>& shotManager, const VECTOR playerPos, const float height);
+	void Shot(const std::shared_ptr<ShotManager>& shotManager, const VECTOR& playerPos, const float height);
 
 	/// <summary>
 	/// 回転行列と拡縮行列を乗算した行列を取得する
 	/// </summary>
 	/// <returns>回転行列と拡縮行列を乗算した行列</returns>
-	const MATRIX& CombiningRotAndScallMat(const VECTOR distance);
+	const MATRIX& CombiningRotAndScallMat(const VECTOR& distance);
 
 	/// <summary>
 	/// 落ち影の頂点のポジションを取得する
@@ -102,8 +102,6 @@ protected:
 	VECTOR frontVec_ = {};							//敵の正面ベクトルを入れる
 	VECTOR pushVec_ = {};							//プレイヤーが敵にぶつかったときに押すベクトル
 
-	std::list<VECTOR> pointPos_ = {};
-
-	std::shared_ptr<Aster> Aster_;
+	std::shared_ptr<Aster> Aster_;					//Asterのポインタ
 };
 

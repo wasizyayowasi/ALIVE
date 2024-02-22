@@ -29,7 +29,7 @@ void GraphManager::Load()
 }
 
 //‰æ‘œ‚ÌŽæ“¾
-int GraphManager::GetGraph(std::string name)
+int GraphManager::GetGraph(const std::string& name)
 {
 	return graphHandle_[name];
 }

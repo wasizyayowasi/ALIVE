@@ -36,7 +36,7 @@ namespace {
 }
 
 //コンストラクタ
-Player::Player(LoadObjectInfo info):updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObject)
+Player::Player(const LoadObjectInfo& info):updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObject)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -107,7 +107,7 @@ void Player::Draw()
 }
 
 //弾に当たったらノックバックを追加する
-void Player::BulletHitMe(VECTOR moveVec)
+void Player::BulletHitMe(const VECTOR& moveVec)
 {
 	//プレイヤーが死亡中だったらたまによるノックバックを無効にする
 	if (updateFunc_ == &Player::DeathUpdate) 
@@ -123,7 +123,7 @@ void Player::BulletHitMe(VECTOR moveVec)
 }
 
 //ポジションの設定
-void Player::SetPos(VECTOR pos)
+void Player::SetPos(const VECTOR& pos)
 {
 	//ステータスにポジションを代入する
 	status_.pos = pos;

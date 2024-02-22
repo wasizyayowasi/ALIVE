@@ -65,7 +65,7 @@ void ExternalFile::LoadArrangementData()
 }
 
 //ファイルを読み込む
-void ExternalFile::LoadFileHandle(const std::string name)
+void ExternalFile::LoadFileHandle(const std::string& name)
 {
 	//ファイルパスの生成
 	std::string filepath = "data/objData/";
@@ -191,7 +191,7 @@ void ExternalFile::LoadDivGraphFilePath()
 }
 
 //特定のギミックの配置情報を取得する
-LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const VECTOR objPos, const char* const name)
+LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const VECTOR& objPos, const std::string& name)
 {
 
 	LoadObjectInfo info = {};
@@ -214,7 +214,7 @@ LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const VECTOR objPos, const 
 
 //カメラが特殊な動きを行う印(オブジェクト)が
 // どこにあるかの配置データを取得する
-LoadObjectInfo ExternalFile::GetCameraGimmickInfo(const VECTOR playerPos, const char* const name)
+LoadObjectInfo ExternalFile::GetCameraGimmickInfo(const VECTOR& playerPos, const std::string& name)
 {
 
 	float minDistance = 10000.0f;
@@ -231,7 +231,7 @@ LoadObjectInfo ExternalFile::GetCameraGimmickInfo(const VECTOR playerPos, const 
 }
 
 //指定した名前のオブジェクト配置データを返す
-LoadObjectInfo ExternalFile::GetSpecifiedInfo(const char* const stage, const char* const name)
+LoadObjectInfo ExternalFile::GetSpecifiedInfo(const std::string& stage, const std::string& name)
 {
 	LoadObjectInfo info = {};
 
@@ -261,7 +261,7 @@ LoadObjectInfo ExternalFile::GetSpecifiedInfo(const char* const stage, const cha
 }
 
 //エネミーの配置データを取得する
-std::list<LoadObjectInfo> ExternalFile::GetEnemyInfo(const VECTOR playerPos)
+std::list<LoadObjectInfo> ExternalFile::GetEnemyInfo(const VECTOR& playerPos)
 {
 	std::list<LoadObjectInfo> info = {};
 	float distanceSize = 0.0f;
@@ -281,7 +281,7 @@ std::list<LoadObjectInfo> ExternalFile::GetEnemyInfo(const VECTOR playerPos)
 }
 
 //プレイヤーの開始位置のデータを取得する
-VECTOR ExternalFile::GetStartPos(const std::string name)
+VECTOR ExternalFile::GetStartPos(const std::string& name)
 {
 	if (static_cast<int>(name.size()) == 0) {
 		return loadStartPos_["Chapter0"].pos;
@@ -291,7 +291,7 @@ VECTOR ExternalFile::GetStartPos(const std::string name)
 }
 
 //チュートリアルを表示するポイントの配置データを取得する
-LoadObjectInfo ExternalFile::GetTutorialObjInfo(const VECTOR pos)
+LoadObjectInfo ExternalFile::GetTutorialObjInfo(const VECTOR& pos)
 {
 
 	LoadObjectInfo info = {};
@@ -312,7 +312,7 @@ LoadObjectInfo ExternalFile::GetTutorialObjInfo(const VECTOR pos)
 
 
 //カメラの座標データを取得する
-VECTOR ExternalFile::GetCameraTargetPos(const std::string name)
+VECTOR ExternalFile::GetCameraTargetPos(const std::string& name)
 {
 	VECTOR pos = {};
 
@@ -327,7 +327,7 @@ VECTOR ExternalFile::GetCameraTargetPos(const std::string name)
 }
 
 //指定UIの配置座標を取得する
-VECTOR ExternalFile::GetUIPos(const std::string name)
+VECTOR ExternalFile::GetUIPos(const std::string& name)
 {
 	VECTOR pos = {};
 
@@ -342,7 +342,7 @@ VECTOR ExternalFile::GetUIPos(const std::string name)
 }
 
 //開始場所の名前を設定する
-void ExternalFile::SetStartName(const std::string name)
+void ExternalFile::SetStartName(const std::string& name)
 {
 	startPosName_ = name;
 }
@@ -406,7 +406,7 @@ void ExternalFile::LoadPlayerInfo()
 }
 
 //セーブデータを読み込む
-void ExternalFile::LoadSaveDataInfo(const char* const filename)
+void ExternalFile::LoadSaveDataInfo(const std::string& filename)
 {
 	std::string path = "data/jsonFile/";
 	path += filename;
@@ -426,7 +426,7 @@ void ExternalFile::LoadSaveDataInfo(const char* const filename)
 }
 
 //オブジェクトのポジションを読み込む
-void ExternalFile::LoadObjectDataList(const std::string name, std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
+void ExternalFile::LoadObjectDataList(const std::string& name,std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
 {
 	//読み込んだデータのハンドルを取得
 	auto dataHandle = loadFile_[name.c_str()];
@@ -480,7 +480,7 @@ void ExternalFile::LoadObjectDataList(const std::string name, std::unordered_map
 }
 
 //オブジェクトの配置情報を読み込む
-void ExternalFile::LoadObjectData(const std::string name, std::unordered_map<std::string, LoadObjectInfo>& dataTable)
+void ExternalFile::LoadObjectData(const std::string& name,std::unordered_map<std::string, LoadObjectInfo>& dataTable)
 {
 	//読み込んだデータのハンドルを取得
 	auto dataHandle = loadFile_[name.c_str()];

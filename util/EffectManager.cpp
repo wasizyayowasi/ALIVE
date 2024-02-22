@@ -80,7 +80,7 @@ void EffectManager::Draw()
 }
 
 //エフェクトの追加
-void EffectManager::AddEffect(std::string name,float size,VECTOR pos)
+void EffectManager::AddEffect(const std::string& name, const float size, const VECTOR& pos)
 {
 	effect2D_.push_back(std::make_shared<Effect2D>(handle_[name], size, pos));
 }

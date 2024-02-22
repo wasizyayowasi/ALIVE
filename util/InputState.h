@@ -63,14 +63,14 @@ public:
 	/// </summary>
 	/// <param name="type">キーのタイプ</param>
 	/// <returns>押しているかどうか</returns>
-	bool IsTriggered(InputType type) const;
+	bool IsTriggered(const InputType type) const;
 
 	/// <summary>
 	/// 長押し可能入力関数
 	/// </summary>
 	/// <param name="type">キーのタイプ</param>
 	/// <returns>押しているかどうか</returns>
-	bool IsPressed(InputType type) const;
+	bool IsPressed(const InputType type) const;
 
 	/// <summary>
 	/// 更新
@@ -83,7 +83,7 @@ public:
 	/// <param name="type">キータイプ</param>
 	/// <param name="cat">入力装置のカテゴリ</param>
 	/// <param name="id">キーの番号</param>
-	void RewriteInputInfo(InputType type, InputCategory cat, int id);
+	void RewriteInputInfo(const InputType type,const InputCategory cat,const int id);
 
 	/// <summary>
 	/// キーの変更を実行する
@@ -105,18 +105,18 @@ public:
 	/// </summary>
 	/// <param name="type">キーのタイプ</param>
 	/// <param name="cat">入力装置のカテゴリ</param>
-	void UndoSelectKey(InputType type, InputCategory cat);
+	void UndoSelectKey(const InputType type, const  InputCategory cat);
 
 	/// <summary>
 	/// キーコンフィグを外部ファイルとして保存する
 	/// </summary>
-	void SavekeyInfo()const;
+	void SavekeyInfo();
 
 	/// <summary>
 	/// キーコンフィグを読み込む
 	/// </summary>
 	/// <param name="filename">外部ファイルのパス</param>
-	void LoadKeyInfo(const char* filename);
+	void LoadKeyInfo(const std::string& filename);
 
 	/// <summary>
 	/// 最後に入力された入力装置を判別する
@@ -130,7 +130,7 @@ public:
 	/// <param name="type">ボタンのタイプ</param>
 	/// <param name="cat">入力装置のカテゴリー</param>
 	/// <returns>入力装置の番号</returns>
-	int GetInputNum(int num,InputCategory cat);
+	int GetInputNum(const int num, const InputCategory cat);
 
 	/// <summary>
 	/// key画像の描画
@@ -139,7 +139,7 @@ public:
 	/// <param name="posX">描画座標X</param>
 	/// <param name="posY">描画座標Y</param>
 	/// <param name="size">描画サイズY</param>
-	void DrawKeyGraph(int type,float posX, float posY, float size);
+	void DrawKeyGraph(const int type, const float posX, const float posY, const float size);
 
 	/// <summary>
 	/// padのボタンの描画
@@ -148,7 +148,7 @@ public:
 	/// <param name="posX">描画座標X</param>
 	/// <param name="posY">描画座標Y</param>
 	/// <param name="scale">描画サイズY</param>
-	void DrawPadGraph(int type, float posX, float posY,float scale);
+	void DrawPadGraph(const int type, const  float posX, const  float posY, const float scale);
 
 	/// <summary>
 	/// 名前の描画
@@ -161,7 +161,7 @@ public:
 	/// <param name="editName">名前を編集するか</param>
 	/// <param name="before">前か後か　true : 前　false：後ろ</param>
 	/// <param name="sign">記号</param>
-	void DrawName(int type, float posX, float posY, int color, int fontHandle,bool editName,bool before,std::string sign = "");
+	void DrawName(const int type, const  float posX, const  float posY, const  int color, const  int fontHandle, const bool editName, const bool before,const std::string& sign = "");
 private:
 	/// <summary>
 	/// コンストラクタ
@@ -171,8 +171,7 @@ private:
 	InputState(const InputState&) = delete;
 	void operator = (const InputState&) = delete;
 
-
-	bool currentInputDevice_ = false;			//true:キーボード　false:パッド
+	bool currentInputDevice_ = false;					//true:キーボード　false:パッド
 
 	using InputMap_t = std::map<InputType, std::vector<InputInfo>>;
 	InputMap_t inputMapTable_;							//ゲームプレイ中に実際に使われるinputテーブル

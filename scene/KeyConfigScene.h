@@ -86,17 +86,17 @@ private:
 
 private:
 
-	int fontHandleSize21_ = -1;				//フォント16サイズを保管する変数
-	int fontHandleSize42_ = -1;				//フォント32サイズを保管する変数
-	int makeScreenHandle_ = -1;				//作成したハンドルを保管する変数
-	int textColor_ = 0xffffff;				//カラー
-	int selectNum_ = 0;						//現在の選択番号
+	int fontHandleSize21_ = -1;							//フォント16サイズを保管する変数
+	int fontHandleSize42_ = -1;							//フォント32サイズを保管する変数
+	int makeScreenHandle_ = -1;							//作成したハンドルを保管する変数
+	int textColor_ = 0xffffff;							//カラー
+	int selectNum_ = 0;									//現在の選択番号
 
 	//ここも消すかもしれない
-	static constexpr int fadeInterval_ = 30;
-	int fadeTimer_ = 0;
-	int fadeValue_ = 0;
-	int fadeColor_ = 0x000000;
+	static constexpr int fadeInterval_ = 30;			//フェードする間隔
+	int fadeTimer_ = 0;									//タイマー
+	int fadeValue_ = 0;									//フェードの値
+	int fadeColor_ = 0x000000;							//背景の色
 
 	bool isEditing_ = false;							//編集中フラグ
 

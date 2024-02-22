@@ -50,7 +50,7 @@ void SelectChapterScene::Init()
 	//目標の座標の取得
 	targetPosX_ = file.GetSpecifiedInfo("title", "BookPutPos").pos.x;
 
-	model_->SetAnimation(static_cast<int>(BookAnim::normal), false, false);
+	model_->SetAnimation(static_cast<int>(BookAnim::idle), false, false);
 }
 
 //終了
@@ -102,7 +102,7 @@ void SelectChapterScene::SlideInBook()
 	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
 
 	//イージング
-	pos.x = Easing::InOutCubic(elapsedTime_, total_time, targetPosX_, model_->GetPos().x);
+	pos.x = Easing::InOutCubic(elapsedTime_, total_time, targetPosX_, pos.x);
 
 	//モデルのポジション座標
 	model_->SetPos(pos);
@@ -125,7 +125,7 @@ void SelectChapterScene::NormalUpdate()
 	model_->Update();
 
 	if (model_->IsAnimEnd()) {
-		model_->ChangeAnimation(static_cast<int>(BookAnim::normal), false, false, 10);
+		model_->ChangeAnimation(static_cast<int>(BookAnim::idle), false, false, 10);
 	}
 	else {
 		return;
@@ -151,7 +151,7 @@ void SelectChapterScene::NormalUpdate()
 	MV1SetTextureGraphHandle(model_->GetModelHandle(), 0, graph.GetGraph(str), true);
 
 	//戻る
-	if (input.IsTriggered(InputType::Down)) {
+	if (input.IsTriggered(InputType::Down) || input.IsTriggered(InputType::Activate)) {
 		updateFunc_ = &SelectChapterScene::SlideOutBook;
 	}
 
@@ -174,7 +174,7 @@ void SelectChapterScene::SlideOutBook()
 	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
 
 	//イージング
-	pos.x = Easing::InOutCubic(elapsedTime_, total_time, targetPosX_, model_->GetPos().x);
+	pos.x = Easing::InOutCubic(elapsedTime_, total_time, targetPosX_, pos.x);
 
 	//モデルのポジション座標
 	model_->SetPos(pos);

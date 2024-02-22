@@ -19,7 +19,7 @@ namespace
 }
 
 //コンストラクタ
-CrankScaffold::CrankScaffold(const int handle, const Material materialType, const LoadObjectInfo objInfo) : GimmickBase(handle, materialType, objInfo)
+CrankScaffold::CrankScaffold(const int handle, const Material materialType, const LoadObjectInfo& objInfo) : GimmickBase(handle, materialType, objInfo)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();

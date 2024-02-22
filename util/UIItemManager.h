@@ -60,7 +60,7 @@ public:
 	/// <param name="height">スクリーンの縦のサイズ</param>
 	/// <param name="str">文字列</param>
 	/// <param name="fontHandle">フォントハンドル</param>
-	void AddMenu(const float centerPosX, const float centerPosY, const int width, const int height, std::string str, const int fontHandle);
+	void AddMenu(const float centerPosX, const float centerPosY, const int width, const int height,const std::string& str, const int fontHandle);
 
 	/// <summary>
 	/// 文字列を分割したメニューの追加
@@ -71,7 +71,7 @@ public:
 	/// <param name="height">スクリーンの縦のサイズ</param>
 	/// <param name="str">文字列</param>
 	/// <param name="fontHandle">フォントハンドル</param>
-	void AddingMenuWithSplitStr(const float centerPosX, const float centerPosY, const int width, const int height, std::string str, const int fontHandle);
+	void AddingMenuWithSplitStr(const float centerPosX, const float centerPosY, const int width, const int height,const std::string& str, const int fontHandle);
 
 private:
 

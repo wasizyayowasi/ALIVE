@@ -38,7 +38,7 @@ namespace {
 }
 
 //コンストラクタ
-EnemyBase::EnemyBase(const int handle, const Material materialType, const LoadObjectInfo objInfo) : CharacterBase(handle, materialType, objInfo)
+EnemyBase::EnemyBase(const int handle, const Material materialType, const LoadObjectInfo& objInfo) : CharacterBase(handle, materialType, objInfo)
 {
 	//インスタンス化（使っていない）
 	Aster_ = std::make_shared<Aster>();
@@ -144,14 +144,10 @@ void EnemyBase::Draw()
 {
 	model_->Draw();
 	Aster_->Draw();
-
-	for (auto& marker : pointPos_) {
-		DrawSphere3D(marker, 16, 32, 0x0000ff, 0x0000ff, true);
-	}
 }
 
 // プレイヤーを追跡する
-void EnemyBase::TrackingUpdate(const VECTOR playerPos)
+void EnemyBase::TrackingUpdate(const VECTOR& playerPos)
 {
 	//プレイヤーと自分の差を算出する
 	VECTOR distancePlayerAndEnemy = VSub(playerPos, pos_);
@@ -176,7 +172,7 @@ void EnemyBase::TrackingUpdate(const VECTOR playerPos)
 }
 
 //プレイヤーを索敵する
-void EnemyBase::SearchForPlayer(const VECTOR playerPos)
+void EnemyBase::SearchForPlayer(const VECTOR& playerPos)
 {
 	//敵からプレイヤーの直線距離
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
@@ -218,7 +214,7 @@ void EnemyBase::ThrustAway(Player& player)
 }
 
 //ルート通りに移動する
-void EnemyBase::RoutingUpdate(const VECTOR playerPos)
+void EnemyBase::RoutingUpdate(const VECTOR& playerPos)
 {
 	//エネミーが次に目指す升の中心座標
 	VECTOR targetPos = Aster_->GetDestinationCoordinates(playerPos);
@@ -250,7 +246,7 @@ void EnemyBase::RoutingUpdate(const VECTOR playerPos)
 }
 
 //敵からプレイヤーの直線距離にオブジェクトがあるか
-bool EnemyBase::IsThereAnObject(const VECTOR playerPos)
+bool EnemyBase::IsThereAnObject(const VECTOR& playerPos)
 {
 	//エネミーとプレイヤーの距離
 	VECTOR distance = VSub(playerPos, pos_);
@@ -295,7 +291,7 @@ bool EnemyBase::IsThereAnObject(const VECTOR playerPos)
 }
 
 //弾を発射する
-void EnemyBase::Shot(const std::shared_ptr<ShotManager>& shotManager, const VECTOR playerPos, const  float height)
+void EnemyBase::Shot(const std::shared_ptr<ShotManager>& shotManager, const VECTOR& playerPos, const  float height)
 {
 	//プレイヤーを検知しているかどうか
 	//検知していなかったらreturn
@@ -320,7 +316,7 @@ void EnemyBase::Shot(const std::shared_ptr<ShotManager>& shotManager, const VECT
 }
 
 //回転行列と拡縮行列を乗算した行列を取得する
-const MATRIX& EnemyBase::CombiningRotAndScallMat(const VECTOR distance)
+const MATRIX& EnemyBase::CombiningRotAndScallMat(const VECTOR& distance)
 {
 	//回転行列の取得
 	MATRIX rotMtx = MGetRotVec2(model_front_vec, distance);

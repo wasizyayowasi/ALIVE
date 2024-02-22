@@ -29,7 +29,7 @@ public:
 	/// </summary>
 	/// <param name="name">‰æ‘œ‚Ì–¼‘O</param>
 	/// <returns>‰æ‘œƒnƒ“ƒhƒ‹</returns>
-	int GetGraph(std::string name);
+	int GetGraph(const std::string& name);
 
 private:
 	/// <summary>

@@ -31,7 +31,7 @@ Aster::~Aster()
 }
 
 // 経路探索を行う配列の初期化
-void Aster::ArrayInit(VECTOR pos)
+void Aster::ArrayInit(const VECTOR& pos)
 {
 	//縦横の半分のサイズを取得
 	int halfX = max_X / 2;
@@ -140,7 +140,7 @@ void Aster::Draw()
 }
 
 //現在のインデックス情報を更新する
-void Aster::CurrentIndexUpdate(VECTOR playerPos, VECTOR enemyPos)
+void Aster::CurrentIndexUpdate(const VECTOR& playerPos, const VECTOR& enemyPos)
 {
 	//敵のインデックスを取得
 	currentEnemyIndex_ = SearchCurrentIndex(enemyPos);
@@ -150,7 +150,7 @@ void Aster::CurrentIndexUpdate(VECTOR playerPos, VECTOR enemyPos)
 }
 
 // ポジション情報を元に配列の何番目に存在するか取得する
-bool Aster::LocationInformation(VECTOR playerPos, VECTOR enemyPos)
+bool Aster::LocationInformation(const VECTOR& playerPos, const VECTOR& enemyPos)
 {
 	//enemyとplayerがいたインデックス座標
 	int oldEnemyIndex = currentEnemyIndex_;
@@ -171,7 +171,7 @@ bool Aster::LocationInformation(VECTOR playerPos, VECTOR enemyPos)
 }
 
 // 目的地の座標を取得する
-VECTOR Aster::GetDestinationCoordinates(VECTOR playerPos)
+const VECTOR& Aster::GetDestinationCoordinates(const VECTOR& playerPos)
 {
 	//追跡ルートが存在しない場合、現在の座標を返す
 	if (route_.empty())
@@ -215,7 +215,7 @@ void Aster::RouteSearch()
 
 		//次にスコアを出すマスが既にスコアが出してあった場合
 		//何回目にスコア計算が行われたかを取得する
-		for (auto& list : preteriteIndex_) {
+		for (auto& list : ShortestCandidateIndex_) {
 			for (auto& index : list.second) {
 				if (index == routeSearchEnemyIndex_) {
 					moveCount_ = list.first;
@@ -241,7 +241,7 @@ void Aster::RouteSearch()
 	//リセット
 	scoreTable_.clear();
 	debugScoreTable.clear();
-	preteriteIndex_.clear();
+	ShortestCandidateIndex_.clear();
 }
 
 /// 周囲の升が存在するか探す
@@ -276,7 +276,7 @@ void Aster::SearchAroundSquares()
 }
 
 //周囲の升のスコアを取得する
-void Aster::SearchSurroundingSquares(bool skipCheckLeft, bool skipCheckRight, bool skipCheckTop, bool skipCheckBottom)
+void Aster::SearchSurroundingSquares(const bool skipCheckLeft, const  bool skipCheckRight, const  bool skipCheckTop, const  bool skipCheckBottom)
 {
 	//周囲の升のインデックス
 	int left = routeSearchEnemyIndex_ - 1;
@@ -321,7 +321,6 @@ void Aster::SearchSurroundingSquares(bool skipCheckLeft, bool skipCheckRight, bo
 			if (score > result.second.score) {
 				score = result.second.score;
 				routeSearchEnemyIndex_ = result.second.destinationIndex;
-				count_++;
 			}
 		}
 	}
@@ -331,7 +330,7 @@ void Aster::SearchSurroundingSquares(bool skipCheckLeft, bool skipCheckRight, bo
 }
 
 //特定の升のスコアを取得する
-void Aster::ScoreCaluculation(Direction direction, int index)
+void Aster::ScoreCaluculation(const Direction direction, const  int index)
 {
 	//推定コスト
 	int estimationCostX = 0;
@@ -370,11 +369,11 @@ void Aster::ScoreCaluculation(Direction direction, int index)
 		scoreTable_[index].dir = direction;
 	}
 
-	preteriteIndex_[moveCount_].push_back(index);
+	ShortestCandidateIndex_[moveCount_].push_back(index);
 }
 
 //座標から升のインデックスを取得する
-int Aster::SearchCurrentIndex(VECTOR pos)
+int Aster::SearchCurrentIndex(const VECTOR& pos)
 {
 	int index = 0;
 	float min = 1000.0f;
@@ -412,7 +411,7 @@ bool Aster::GetIsRouteEmpty()
 }
 
 //引数のポジションのマスがblockmodeか判断する
-bool Aster::SearchBlockadeMode(VECTOR pos)
+bool Aster::SearchBlockadeMode(const VECTOR& pos)
 {
 	//引数の座標のインデックス座標を取得
 	int pointIndex = SearchCurrentIndex(pos);

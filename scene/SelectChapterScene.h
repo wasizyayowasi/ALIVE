@@ -7,9 +7,10 @@ class Model;
 class SelectChapterScene : public SceneBase
 {
 private:
-
-	enum class BookAnim {
-		normal = 3,
+	//本のアニメーション
+	enum class BookAnim
+	{
+		idle,
 		open,
 		close,
 	};
@@ -73,7 +74,6 @@ private:
 	void FadeOutUpdate();
 private:
 
-	int textureHandle_[3] = {};						//テクスチャハンドル
 	int selectNum_ = 0;								//選択番号
 
 	float elapsedTime_ = 0;							//経過時間
@@ -86,6 +86,6 @@ private:
 
 	std::shared_ptr<Model> model_;					//モデルポインタ
 
-	void(SelectChapterScene::* updateFunc_)();
+	void(SelectChapterScene::* updateFunc_)();		//メンバ関数ポインタ
 };
 
