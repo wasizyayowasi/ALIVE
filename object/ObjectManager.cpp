@@ -93,7 +93,7 @@ void ObjectManager::EndStageObjectGenerator()
 	auto& file = ExternalFile::GetInstance();
 
 	//íuï®ÇÃê∂ê¨
-	for (auto& objTable : file.GetLoadMainStageObjectInfo()) {
+	for (auto& objTable : file.GetLoadEndingStageObjectInfo()) {
 		for (auto& objInfo : objTable.second)
 		{
 			for (auto& data : objData_)

@@ -40,7 +40,7 @@ void SelectChapterScene::Init()
 	auto& file = ExternalFile::GetInstance();
 
 	//モデル配置情報の取得
-	auto info = file.GetSpecifiedInfo("title", "Book");
+	auto info = file.GetTitleSpecifiedInfo("Book");
 
 	//モデルの情報設定
 	model_->SetPos(info.pos);
@@ -48,7 +48,7 @@ void SelectChapterScene::Init()
 	model_->SetScale(info.scale);
 
 	//目標の座標の取得
-	targetPosX_ = file.GetSpecifiedInfo("title", "BookPutPos").pos.x;
+	targetPosX_ = file.GetTitleSpecifiedInfo("BookPutPos").pos.x;
 
 	model_->SetAnimation(static_cast<int>(BookAnim::idle), false, false);
 }
@@ -109,7 +109,7 @@ void SelectChapterScene::SlideInBook()
 
 	if (elapsedTime_ == total_time) {
 		updateFunc_ = &SelectChapterScene::NormalUpdate;
-		targetPosX_ = file.GetSpecifiedInfo("title", "Book").pos.x;
+		targetPosX_ = file.GetTitleSpecifiedInfo("Book").pos.x;
 		elapsedTime_ = 0;
 	}
 }

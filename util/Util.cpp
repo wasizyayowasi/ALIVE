@@ -1,6 +1,6 @@
 #include "Util.h"
-#include <algorithm>
 #include <stdio.h>
+#include <algorithm>
 
 namespace MathUtil 
 {
@@ -42,14 +42,15 @@ namespace StrUtil
 		int strSize = static_cast<int>(name.size());
 
 		//文字列の数が0以下だったら0を返す
-		if (strSize <= 0) {
+		if (strSize <= 0)
+		{
 			return 0;
 		}
 
 		//文字列から第二引数がある番号を取得する
 		int searchStrNum = static_cast<int>(name.find(sign));
 
-		//上記で取得した番号から第一引数の文字列の末尾までを取得
+		//上記で取得した番号から一文字先までを取得
 		auto str = name.substr(searchStrNum + 1, strSize);
 
 		//文字列を数値に変換する
@@ -76,7 +77,10 @@ namespace StrUtil
 		//文字列を保管
 		std::string str = name;
 
-		if (name.find(sign) != -1) {
+		//singが文字列に含まれているか探す
+		if (name.find(sign) != -1) 
+		{
+			//sign以降の文字列を削除した文字列を取得する
 			str = str.erase(name.find(sign));
 		}
 
@@ -92,7 +96,7 @@ namespace StrUtil
 		//「.」が文字列の何番目かを取得する
 		int dotNum = static_cast<int>(name.find(sign));
 
-		//「.」以降から最後までの文字列を取得する
+		//「.」以降から一文字先までの文字列を取得する
 		std::string str = name.substr(dotNum + 1, size);
 
 		return str;

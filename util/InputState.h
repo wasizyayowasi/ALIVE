@@ -21,7 +21,7 @@ enum class InputType
 	Dush,			//走る
 	Activate,		//運ぶ
 	Creative,		//デバッグ用
-	max,			//最大入力インデックス
+	Max,			//最大入力インデックス
 };
 
 enum class InputCategory {

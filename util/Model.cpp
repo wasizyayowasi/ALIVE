@@ -1,7 +1,9 @@
 #include "Model.h"
 #include <cassert>
 
-namespace {
+namespace 
+{
+	//当たり判定用フレーム
 	const char* const collision_frame_name = "Coll";
 }
 
@@ -49,19 +51,24 @@ void Model::SetUseCollision(const bool isUse, const bool isNeedUpdate, const std
 
 	//指定のフレームがあった場合、そのフレームを
 	//衝突判定用フレームにする
-	if (size > 0) {
+	if (size > 0)
+	{
 		frameName = collFrameName;
 	}
 
-	if (isUseCollision_ != isUse) {
-		if (isUse) {
+	if (isUseCollision_ != isUse)
+	{
+		if (isUse) 
+		{
 			colFrameIndex_ = MV1SearchFrame(modelHandle_, frameName.c_str());
-			if (colFrameIndex_ < 0) {
+			if (colFrameIndex_ < 0) 
+			{
 				colFrameIndex_ = -1;
 			}
 			MV1SetupCollInfo(modelHandle_, colFrameIndex_, 8, 8, 8);
 		}
-		else {
+		else 
+		{
 			MV1TerminateCollInfo(modelHandle_, -1);
 		}
 	}
@@ -77,13 +84,15 @@ void Model::Update()
 	UpdateAnim(animNext_);
 
 	animChangeFrame_++;
-	if (animChangeFrame_ > animChangeFrameTotal_) {
+	if (animChangeFrame_ > animChangeFrameTotal_) 
+	{
 		animChangeFrame_ = animChangeFrameTotal_;
 	}
 
 	UpdateAnimBlendRate();
 
-	if (isUpdateCollsion_ && isUpdateCollsion_) {
+	if (isUpdateCollsion_ && isUpdateCollsion_)
+	{
 		MV1RefreshCollInfo(modelHandle_, colFrameIndex_);
 	}
 }
@@ -147,7 +156,8 @@ bool Model::GetSpecifiedAnimTime(const int specifiedTime) const
 
 	float currentAnimTime = MV1GetAttachAnimTime(modelHandle_, animNext_.attachNo);
 
-	if (currentAnimTime == specifiedTime) {
+	if (currentAnimTime == specifiedTime) 
+	{
 		return true;
 	}
 
@@ -179,7 +189,8 @@ void Model::SetScale(const VECTOR& scale)
 void Model::SetCollFrame(const std::string& collFrameName)
 {
 	colFrameIndex_ = MV1SearchFrame(modelHandle_, collFrameName.c_str());
-	if (colFrameIndex_ < 0) {
+	if (colFrameIndex_ < 0)
+	{
 		colFrameIndex_ = -1;
 	}
 	MV1SetupCollInfo(modelHandle_, colFrameIndex_, 8, 8, 8);
@@ -188,15 +199,18 @@ void Model::SetCollFrame(const std::string& collFrameName)
 //アニメーション設定
 void Model::SetAnimation(const int animNo, const  bool isLoop, const  bool IsForceChange)
 {
-	if (!IsForceChange) {
+	if (!IsForceChange) 
+	{
 		if (animNext_.animNo == animNo)return;
 	}
 
-	if (animPrev_.attachNo != -1) {
+	if (animPrev_.attachNo != -1) 
+	{
 		MV1DetachAnim(modelHandle_, animPrev_.attachNo);
 		ClearAnimData(animPrev_);
 	}
-	if (animNext_.attachNo != -1) {
+	if (animNext_.attachNo != -1) 
+	{
 		MV1DetachAnim(modelHandle_, animNext_.attachNo);
 		ClearAnimData(animNext_);
 	}

@@ -1,8 +1,32 @@
 #include "UIItemManager.h"
+#include "game.h"
 #include "Util.h"
 #include "UIItem.h"
 #include "FontsManager.h"
-#include "game.h"
+
+namespace
+{
+	//UIの位置補正X
+	constexpr int correction_pos_x = 20;
+
+	//UIの位置補正X
+	constexpr int correction_pos_y = 10;
+
+	//UIの上下に振れる幅の補正
+	constexpr int correction_swing = 36;
+
+	//blendMode関数の最大値
+	constexpr float dxlib_max_value = 255.0f;
+
+	//アルファ値の最小値
+	constexpr float min_alpha_value = 150.0f;
+
+	//ビルボート表示のアルファ値の最小値
+	constexpr float bill_board_min_alpha_value = 100.0f;
+
+	//サイズの最小値
+	constexpr float min_size_value = 0.7f;
+}
 
 //コンストラクタ
 UIItemManager::UIItemManager()
@@ -18,20 +42,37 @@ UIItemManager::~UIItemManager()
 //拡縮率を変更するときの描画
 void UIItemManager::AlphaChangeDraw(const int selectNum, const int fadeAlphaValue)
 {
+	//サイズ
 	float scale = 1.0f;
-	float alpha = 150;
 
-	float currentNum = 250.0f / 255.0f;
-	float notCurrentNum = 150.0f / 255.0f;
+	//アルファ値
+	float alpha = 0;
 
-	for (int i = 0; i < UIMenu_.size();i++) {
-		if (selectNum == i) {
+	//選択された文字列のアルファ値
+	float choiceAlphaValue = dxlib_max_value / dxlib_max_value;
+
+	//選択されていない文字列のアルファ値
+	float notChoiceAlphaValue = min_alpha_value / dxlib_max_value;
+
+	//文字列を描画する
+	for (int i = 0; i < UIMenu_.size();i++) 
+	{
+		//選択された文字列だった場合
+		if (selectNum == i) 
+		{
+			//サイズを1にする
 			scale = 1.0f;
-			alpha = currentNum * fadeAlphaValue;
+
+			//アルファ値を変更する
+			alpha = choiceAlphaValue * fadeAlphaValue;
 		}
-		else {
-			scale = 0.7f;
-			alpha = notCurrentNum * fadeAlphaValue;
+		else 
+		{
+			//サイズを0.7にする
+			scale = min_size_value;
+
+			//アルファ値を変更する
+			alpha = notChoiceAlphaValue * fadeAlphaValue;
 		}
 		UIMenu_[i]->AlphaChangeDraw(scale, static_cast<int>(alpha));
 	}
@@ -45,21 +86,22 @@ void UIItemManager::ChangePosDraw(const float centerPosX, const float centerPosY
 
 	time++;
 
-	for (int i = 0; i < UIMenu_.size(); i++) {
+	for (int i = 0; i < UIMenu_.size(); i++) 
+	{
 		//radianの取得
-		radian = (time + (UIMenu_.size() - i) * 36) * DX_PI_F / 180.0f;
+		radian = (time + (UIMenu_.size() - i) * correction_swing) * DX_PI_F / 180.0f;
 		float sin = std::sin(radian);
 
 		//文字が波のように動くようにした
-		UIMenu_[i]->ChangePosDraw(centerPosX + i * 20, centerPosY + sin * 10);
+		UIMenu_[i]->ChangePosDraw(centerPosX + i * correction_pos_x, centerPosY + sin * correction_pos_y);
 	}
-
 }
 
 //画像を3D空間に描画する
 void UIItemManager::DrawBillBoard(std::map<std::string, VECTOR> drawPos, const int alpha, const float size)
 {
-	for (int i = 0; i < UIMenu_.size(); i++) {
+	for (int i = 0; i < UIMenu_.size(); i++)
+	{
 		//画像に書かれた文字を取得
 		std::string name = UIMenu_[i]->GetString();
 
@@ -71,17 +113,20 @@ void UIItemManager::DrawBillBoard(std::map<std::string, VECTOR> drawPos, const i
 //アルファ値を変更した画像を3D空間に描画する
 void UIItemManager::AlphaChangeDrawBillBoard(std::map<std::string, VECTOR> drawPos, const int selectNum, const int fadeValue, const float size)
 {
-	float alpha = 100;
+	float alpha = 0;
 
-	float currentNum = 250.0f / 255.0f;
-	float notCurrentNum = 100.0f / 255.0f;
+	float currentNum = dxlib_max_value / dxlib_max_value;
+	float notCurrentNum = bill_board_min_alpha_value / dxlib_max_value;
 
-	for (int i = 0; i < UIMenu_.size(); i++) {
+	for (int i = 0; i < UIMenu_.size(); i++)
+	{
 
-		if (selectNum == i) {
+		if (selectNum == i)
+		{
 			alpha = currentNum * fadeValue;
 		}
-		else {
+		else 
+		{
 			alpha = notCurrentNum * fadeValue;
 		}
 
@@ -113,7 +158,8 @@ void UIItemManager::AddingMenuWithSplitStr(const float centerPosX, const float c
 	int num = static_cast<int>(str.size());
 	float size = 0.0f;
 
-	for (int i = 0; i < num; i++) {
+	for (int i = 0; i < num; i++)
+	{
 		//一文字を取得
 		std::string letter = str.substr(i, 1);
 

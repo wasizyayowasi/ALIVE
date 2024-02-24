@@ -78,7 +78,8 @@ void ExternalFile::LoadFileHandle(const std::string& name)
 //セーブデータの書き出し
 void ExternalFile::SaveDataRewriteInfo(const int num)
 {
-	json saveData = {
+	json saveData = 
+	{
 		{"name","saveData"},
 		{"pastTotalDeath",pastTotalDeathNum_},
 	};
@@ -191,7 +192,7 @@ void ExternalFile::LoadDivGraphFilePath()
 }
 
 //特定のギミックの配置情報を取得する
-LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const VECTOR& objPos, const std::string& name)
+LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const std::string& name)
 {
 
 	LoadObjectInfo info = {};
@@ -201,8 +202,10 @@ LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const VECTOR& objPos, const
 
 	//引数の名前とloadGimmickInfo_の配列の中で名前が一致するものを探す
 	//一致した配列の情報を取得する
-	for (auto& specifiedObj : loadGimmickInfo_[gimmickName]) {
-		if (specifiedObj.name != name) {
+	for (auto& specifiedObj : loadGimmickInfo_[gimmickName]) 
+	{
+		if (specifiedObj.name != name)
+		{
 			continue;
 		}
 		info = specifiedObj;
@@ -220,9 +223,11 @@ LoadObjectInfo ExternalFile::GetCameraGimmickInfo(const VECTOR& playerPos, const
 	float minDistance = 10000.0f;
 	LoadObjectInfo info = {};
 
-	for (auto& data : loadCameraGimmickInfo_[name]) {
+	for (auto& data : loadCameraGimmickInfo_[name])
+	{
 		float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(data.pos, playerPos);
-		if (minDistance > distanceSize) {
+		if (minDistance > distanceSize)
+		{
 			minDistance = distanceSize;
 			info = data;
 		}
@@ -230,30 +235,48 @@ LoadObjectInfo ExternalFile::GetCameraGimmickInfo(const VECTOR& playerPos, const
 	return info;
 }
 
-//指定した名前のオブジェクト配置データを返す
-LoadObjectInfo ExternalFile::GetSpecifiedInfo(const std::string& stage, const std::string& name)
+//タイトルの指定した名前のオブジェクト配置データを返す
+LoadObjectInfo ExternalFile::GetTitleSpecifiedInfo(const std::string& name)
+{
+	LoadObjectInfo info = {};
+		
+	for (auto& obj : loadOpeningStageObjInfo_) 
+	{
+		if (obj.first == name) 
+		{
+			info = loadOpeningStageObjInfo_[name].front();
+		}
+	}
+
+	return info;
+}
+
+//ゲームメインの指定した名前のオブジェクト配置データを返す
+LoadObjectInfo ExternalFile::GetMainSpecifiedInfo(const std::string& name)
 {
 	LoadObjectInfo info = {};
 
-	if (stage == "main") {
-		for (auto& obj : loadMainStageObjInfo_) {
-			if (obj.first == name) {
-				info = loadMainStageObjInfo_[name].front();
-			}
+	for (auto& obj : loadMainStageObjInfo_)
+	{
+		if (obj.first == name)
+		{
+			info = loadMainStageObjInfo_[name].front();
 		}
 	}
-	else if (stage == "title") {
-		for (auto& obj : loadOpeningStageObjInfo_) {
-			if (obj.first == name) {
-				info = loadOpeningStageObjInfo_[name].front();
-			}
-		}
-	}
-	else if (stage == "end") {
-		for (auto& obj : loadEndStageObjInfo_) {
-			if (obj.first == name) {
-				info = loadEndStageObjInfo_[name].front();
-			}
+
+	return info;
+}
+
+//エンディングシーンの指定した名前のオブジェクト配置データを返す
+LoadObjectInfo ExternalFile::GetEndSpecifiedInfo(const std::string& name)
+{
+	LoadObjectInfo info = {};
+
+	for (auto& obj : loadEndStageObjInfo_)
+	{
+		if (obj.first == name)
+		{
+			info = loadEndStageObjInfo_[name].front();
 		}
 	}
 
@@ -267,11 +290,13 @@ std::list<LoadObjectInfo> ExternalFile::GetEnemyInfo(const VECTOR& playerPos)
 	float distanceSize = 0.0f;
 	float minSize = 3000.0f;
 
-	for (auto& list : loadEnemyInfo_) {
-		for (auto& enemy : list.second) {
+	for (auto& list : loadEnemyInfo_) 
+	{
+		for (auto& enemy : list.second) 
+		{
 			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(enemy.pos, playerPos);
-
-			if (distanceSize < minSize) {
+			if (distanceSize < minSize) 
+			{
 				info.push_back(enemy);
 			}
 		}
@@ -283,7 +308,8 @@ std::list<LoadObjectInfo> ExternalFile::GetEnemyInfo(const VECTOR& playerPos)
 //プレイヤーの開始位置のデータを取得する
 VECTOR ExternalFile::GetStartPos(const std::string& name)
 {
-	if (static_cast<int>(name.size()) == 0) {
+	if (static_cast<int>(name.size()) == 0)
+	{
 		return loadStartPos_["Chapter0"].pos;
 	}
 
@@ -298,10 +324,11 @@ LoadObjectInfo ExternalFile::GetTutorialObjInfo(const VECTOR& pos)
 	float distanceSize = 0.0f;
 	float min = 10000.0f;
 
-	for (auto& tutorial : loadTutorialInfo_) {
+	for (auto& tutorial : loadTutorialInfo_) 
+	{
 		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorial.second.pos, pos);
-
-		if (min > distanceSize) {
+		if (min > distanceSize) 
+		{
 			min = distanceSize;
 			info = tutorial.second;
 		}
@@ -316,9 +343,11 @@ VECTOR ExternalFile::GetCameraTargetPos(const std::string& name)
 {
 	VECTOR pos = {};
 
-	for (auto& data : loadCameraPosInfo_) {
+	for (auto& data : loadCameraPosInfo_) 
+	{
 		auto& keyName = data.first;
-		if (keyName == name) {
+		if (keyName == name) 
+		{
 			pos = data.second.pos;
 		}
 	}
@@ -331,9 +360,11 @@ VECTOR ExternalFile::GetUIPos(const std::string& name)
 {
 	VECTOR pos = {};
 
-	for (auto& data : loadUIInfo_) {
+	for (auto& data : loadUIInfo_) 
+	{
 		auto& keyName = data.first;
-		if (keyName == name) {
+		if (keyName == name) 
+		{
 			pos = data.second.pos;
 		}
 	}
@@ -358,7 +389,8 @@ void ExternalFile::SetDeathCount(const int num)
 void ExternalFile::RewritePlayerInfo()
 {
 	//プレイヤーのステータスをまとめる
-	json player = {
+	json player = 
+	{
 	   {"name","player"},
 	   {"jumpPower",10.0f},
 	   {"runningJumpPower",8.0f},
@@ -418,7 +450,8 @@ void ExternalFile::LoadSaveDataInfo(const std::string& filename)
 	json json;
 	ifs >> json;
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 5; i++)
+	{
 		pastTotalDeathNum_.push_back(json["pastTotalDeath"][i]);
 	}
 
@@ -436,7 +469,8 @@ void ExternalFile::LoadObjectDataList(const std::string& name,std::unordered_map
 	int result = FileRead_read(&dataNum, sizeof(dataNum), dataHandle);
 	assert(result != -1);
 
-	for (int i = 0; i < dataNum; i++) {
+	for (int i = 0; i < dataNum; i++)
+	{
 
 		LoadObjectInfo info = {};
 
@@ -472,8 +506,10 @@ void ExternalFile::LoadObjectDataList(const std::string& name,std::unordered_map
 	FileRead_close(dataHandle);
 
 	//読み取ったデータの回転率を度数法から弧度法へと変換する
-	for (auto& obj : dataTable) {
-		for (auto& objSecond : obj.second) {
+	for (auto& obj : dataTable)
+	{
+		for (auto& objSecond : obj.second)
+		{
 			objSecond.rot = MathUtil::VECTORDegreeToRadian(objSecond.rot);
 		}
 	}
@@ -490,8 +526,8 @@ void ExternalFile::LoadObjectData(const std::string& name,std::unordered_map<std
 	int result = FileRead_read(&dataNum, sizeof(dataNum), dataHandle);
 	assert(result != -1);
 
-	for (int i = 0; i < dataNum; i++) {
-
+	for (int i = 0; i < dataNum; i++) 
+	{
 		LoadObjectInfo info = {};
 
 		//名前の文字列数を読み取る
@@ -526,7 +562,8 @@ void ExternalFile::LoadObjectData(const std::string& name,std::unordered_map<std
 	FileRead_close(dataHandle);
 
 	//読み取ったデータの回転率を度数法から弧度法へと変換する
-	for (auto& obj : dataTable) {
+	for (auto& obj : dataTable) 
+	{
 		obj.second.rot = MathUtil::VECTORDegreeToRadian(obj.second.rot);
 	}
 }

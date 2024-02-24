@@ -1,25 +1,35 @@
 #pragma once
 #include <map>
+#include <vector>
+#include <string>
 #include <DxLib.h>
-
-class InputState;
 
 class Tutorial
 {
 private:
 	//UI画像の列挙
-	enum class UIGraph {
+	enum class UIGraph
+	{
 		XboxBotton,
 		KeyBord,
-		max,
+		Max,
 	};
-	//チュートリアル
-	enum class TutorialGimmick {
-		Switch,
-		Lever,
-		Crank,
-		max,
+
+	//配置ポジション
+	struct ArrangementPos
+	{
+		float x = 0.0f;			//配置するX座標
+		float y = 0.0f;			//配置するY座標
 	};
+
+	//チュートリアルのデータ
+	struct TutorialData
+	{
+		int keyType = 0;		//キーの種類をint型にcastした値
+		bool isPushKey = false;	//そのキーが押されたか
+		std::string str = {};	//説明として表示したい文字列
+	};
+	
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -43,58 +53,22 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// 何も描画しない
+	/// キータイプを表示しないか
 	/// </summary>
-	/// <param name="input">InputStateクラスの参照</param>
-	void NoneDraw(InputState& input);
+	/// <param name="data">チュートリアルのデータ</param>
+	/// <returns>true:表示しない false:表示する</returns>
+	bool DoNotDiplayKeyType(const TutorialData& data);
 
-	/// <summary>
-	/// スイッチのチュートリアル
-	/// </summary>
-	/// <param name="input">InputStateクラスの参照</param>
-	void SwitchTutorialDraw(InputState& input);
-
-	/// <summary>
-	/// クランクのチュートリアル
-	/// </summary>
-	/// <param name="input">InputStateクラスの参照</param>
-	void CranckTutorialDraw(InputState& input);
-
-	/// <summary>
-	/// 走る動作のチュートリアル
-	/// </summary>
-	/// <param name="input">InputStateクラスの参照</param>
-	void RunTutorialDraw(InputState& input);
-
-	/// <summary>
-	/// ジャンプのチュートリアル
-	/// </summary>
-	/// <param name="input">InputStateクラスの参照</param>
-	void JumpTutorialDraw(InputState& input);
-
-	/// <summary>
-	/// エレベーターのチュートリアル
-	/// </summary>
-	/// <param name="input">InputStateクラスの参照</param>
-	void ElevatorTutorialDraw(InputState& input);
-
-	/// <summary>
-	/// 死体の足場のチュートリアル
-	/// </summary>
-	/// <param name="input">InputStateクラスの参照</param>
-	void CorpseScaffoldDraw(InputState& input);
 private:
 	
-	int fontPigumo42_ = -1;								//フォントハンドル
+	int elapsedTime_ = 0;												//経過時間
+	int fontPigumo42_ = -1;												//フォントハンドル
+	int currentDisplayNum_ = 0;											//現在の表示する番号
 
-	int nextDisplayKeyType_ = 0;						//InputTypeをint型に変換したもの
-	int nextDisplayBottanType_ = 0;						//XboxBottanをint型に変換したもの
+	std::string oldTutorialName_ = {};									//1フレーム前のチュートリアルに使われていた名前を保存する
+	std::string currentTutorialName_ = {};								//これから行われるチュートリアルの名前
 
-	std::map<int, bool> pushBottan_;					//押されたボタン
-
-	std::map<UIGraph, std::pair<float, float>> UIPos_;	//UIの画面ポジション pairの中身｜first：X｜second：Y
-
-	void(Tutorial::* drawFunc_)(InputState& input);
-
+	std::map<UIGraph, ArrangementPos> UIPos_;							//UIの画面ポジション pairの中身｜first：X｜second：Y
+	std::map<std::string, std::vector<TutorialData>> tutorialData_;		//チュートリアルに必要な情報を保管する
 };
 

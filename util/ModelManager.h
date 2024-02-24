@@ -1,5 +1,4 @@
 #pragma once
-#include "../object/ObjectData.h"
 #include <string>
 #include <DxLib.h>
 #include <unordered_map>

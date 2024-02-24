@@ -13,7 +13,8 @@ FontsManager::FontsManager()
 //デストラクタ
 FontsManager::~FontsManager()
 {
-	for (auto& font : fontHandle_) {
+	for (auto& font : fontHandle_) 
+	{
 		DeleteFontToHandle(font.second);
 	}
 }
@@ -55,11 +56,13 @@ int FontsManager::GetFontHandle(const std::string& filename)
 // 引数の値を元にフォントの名前を返す
 std::string FontsManager::GetFontName(const int fontHandle)
 {
-	std::string fontname;
+	std::string fontname = {};
 
 	//引数と同じ値のフォントを持つ配列を探す
-	for (auto& font : fontHandle_) {
-		if (fontHandle == font.second) {
+	for (auto& font : fontHandle_) 
+	{
+		if (fontHandle == font.second) 
+		{
 			fontname = font.first;
 		}
 	}

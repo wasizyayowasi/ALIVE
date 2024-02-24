@@ -3,14 +3,6 @@
 #include<unordered_map>
 #include<string>
 
-enum class SoundPlay {
-	notPlaying,		//再生していない
-	nowPlaying,		//再生中
-};
-
-/// <summary>
-/// SE、BGMの管理を行うシングルトンクラス
-/// </summary>
 class SoundManager
 {
 public:
@@ -51,36 +43,6 @@ public:
 	void PlayBGM(const std::string& name);
 
 	/// <summary>
-	/// SE音量を調整する
-	/// </summary>
-	/// <param name="volume">音量</param>
-	void SetSEVolume(unsigned int volume);
-
-	/// <summary>
-	/// SEの音量を取得する
-	/// </summary>
-	/// <returns>音量</returns>
-	int GetSEVolume()const { return volumeSE_; };
-
-	/// <summary>
-	/// BGMの音量を調整する
-	/// </summary>
-	/// <param name="volume">音量</param>
-	void SetBGMVolume(unsigned int volume);
-
-	/// <summary>
-	/// BGMの音量を取得する
-	/// </summary>
-	/// <returns>音量</returns>
-	int GetBGMVolume()const { return volumeBGM_; }
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="rate"></param>
-	void SetBGMRate(const float rate);
-	
-	/// <summary>
 	/// SEを止める
 	/// </summary>
 	/// <param name="name">音のファイル名</param>
@@ -97,6 +59,48 @@ public:
 	void SaveSoundConfig();
 
 	/// <summary>
+	/// サウンドが再生中か調べる
+	/// </summary>
+	/// <returns>1:再生中 1:終了</returns>
+	int CheckSoundFile(const std::string& name);
+
+
+	////////////////Getter////////////////
+
+	/// <summary>
+	/// SEの音量を取得する
+	/// </summary>
+	/// <returns>音量</returns>
+	int GetSEVolume()const { return volumeSE_; };
+
+	/// <summary>
+	/// BGMの音量を取得する
+	/// </summary>
+	/// <returns>音量</returns>
+	int GetBGMVolume()const { return volumeBGM_; }
+
+
+	////////////////Setter////////////////
+
+	/// <summary>
+	/// SE音量を調整する
+	/// </summary>
+	/// <param name="volume">音量</param>
+	void SetSEVolume(unsigned int volume);
+
+	/// <summary>
+	/// BGMの音量を調整する
+	/// </summary>
+	/// <param name="volume">音量</param>
+	void SetBGMVolume(unsigned int volume);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="rate"></param>
+	void SetBGMRate(const float rate);
+
+	/// <summary>
 	/// サウンドのポジション、聞こえる範囲を設定する
 	/// </summary>
 	/// <param name="pos">サウンドのポジション</param>
@@ -110,13 +114,6 @@ public:
 	/// <param name="pos"></param>
 	/// <param name="rot"></param>
 	void Set3DSoundListenerInfo(const VECTOR& pos, const VECTOR& rot);
-
-	/// <summary>
-	/// サウンドが再生中か調べる
-	/// </summary>
-	/// <returns>1:再生中 1:終了</returns>
-	int CheckSoundFile(const std::string& name);
-
 private:
 	//計　12byte
 	struct SoundConfigInfo {
@@ -160,17 +157,16 @@ private:
 	int Load3DSoundBGMFile(const std::string& fileName);
 
 	/// <summary>
+	/// サウンド情報の読み込み
+	/// </summary>
+	void LoadSoundConfig();
+
+	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	SoundManager();
 
 	SoundManager(const SoundManager&) = delete;
 	void operator = (const SoundManager&) = delete;
-
-	/// <summary>
-	/// サウンド情報の読み込み
-	/// </summary>
-	void LoadSoundConfig();
-
 };
 

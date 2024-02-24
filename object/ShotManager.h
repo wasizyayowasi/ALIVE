@@ -1,7 +1,7 @@
 #pragma once
-#include <DxLib.h>
-#include <memory>
 #include <list>
+#include <memory>
+#include <DxLib.h>
 
 class Model;
 class Shot;
@@ -31,13 +31,13 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// プレイヤーと衝突したかチェックする
+	/// 弾がプレイヤーと衝突したかチェックする
 	/// </summary>
 	/// <param name="player"></param>
 	void Hit(Player& player);
 
 	/// <summary>
-	/// 弾を打つ
+	/// 弾を撃つ
 	/// </summary>
 	/// <param name="framePos">初期ポジション</param>
 	/// <param name="playerPos">プレイヤーのポジション</param>

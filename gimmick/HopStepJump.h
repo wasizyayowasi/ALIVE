@@ -28,6 +28,21 @@ public:
 	/// </summary>
 	void Draw()override;
 
+	/// <summary>
+	/// 現在の番号を変える
+	/// </summary>
+	void ChangeCurrentNum();
+
+	/// <summary>
+	/// アルファ値を変更する
+	/// </summary>
+	void ChangeAlphaValue();
+
+	/// <summary>
+	/// マテリアルの色を変える
+	/// </summary>
+	void ChangeMaterialColor();
+
 private:
 
 	int currentNum_ = 0;			//現在の番号

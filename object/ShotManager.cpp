@@ -1,51 +1,69 @@
 #include "ShotManager.h"
 
 #include "../object/Shot.h"
+#include "../object/ObjectData.h"
 
 #include "../util/ModelManager.h"
 
-namespace {
+namespace 
+{
 	//投擲物の速度
 	constexpr float shot_speed = 20.0f;
 }
 
+//コンストラクタ
 ShotManager::ShotManager()
 {
 }
 
+//デストラクタ
 ShotManager::~ShotManager()
 {
 }
 
+//更新
 void ShotManager::Update()
 {
-	for (auto& shot : shots_) {
-		if (shot->GetIsEnabled()) {
+	//弾の更新
+	for (auto& shot : shots_)
+	{
+		if (shot->GetIsEnabled())
+		{
 			shot->Update();
 		}
 	}
 
+	//存在しているフラグがfalseの弾を消す
 	shots_.remove_if([](std::shared_ptr<Shot> shot) {return !shot->GetIsEnabled(); });
 }
 
+//描画
 void ShotManager::Draw()
 {
-	for (auto& shot : shots_) {
-		if (shot->GetIsEnabled()) {
+	//弾の描画
+	for (auto& shot : shots_)
+	{
+		if (shot->GetIsEnabled()) 
+		{
 			shot->Draw();
 		}
 	}
 }
 
+//弾がプレイヤーと衝突したかチェックする
 void ShotManager::Hit(Player& player)
 {
-	for (auto shot : shots_) {
-		if (shot->GetIsEnabled()) {
+	//弾とプレイヤーの衝突判定
+	for (auto shot : shots_)
+	{
+		if (shot->GetIsEnabled()) 
+		{
 			shot->HitCheck(player);
 		}
 	}
 }
 
+//弾を撃つ
 void ShotManager::Fire(const VECTOR& framePos, const  VECTOR& playerPos, const float height)
 {
 	//プレイヤーめがけてショットを撃つ

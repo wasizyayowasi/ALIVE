@@ -45,18 +45,18 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 	boardModel_  = std::make_shared<Model>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::WhiteBoard)].name), Material::Iron);
 
 	//モデルの設定
-	auto info = file.GetSpecifiedInfo("end", "player");
-	playerModel_->SetPos(info.pos);
-	playerModel_->SetRot(info.rot);
-	playerModel_->SetScale(info.scale);
+	auto playerInfo = file.GetEndSpecifiedInfo("player");
+	playerModel_->SetPos(playerInfo.pos);
+	playerModel_->SetRot(playerInfo.rot);
+	playerModel_->SetScale(playerInfo.scale);
 	//アニメーションの変更
 	playerModel_->SetAnimation(static_cast<int>(PlayerAnimType::Run), true, true);
 
 	//モデルの設定
-	info = file.GetSpecifiedInfo("end", "WhiteBoard");
-	boardModel_->SetPos(info.pos);
-	boardModel_->SetRot(info.rot);
-	boardModel_->SetScale(info.scale);
+	auto boardInfo = file.GetEndSpecifiedInfo("WhiteBoard");
+	boardModel_->SetPos(boardInfo.pos);
+	boardModel_->SetRot(boardInfo.rot);
+	boardModel_->SetScale(boardInfo.scale);
 
 	//オブジェクトの生成
 	objManager_->EndStageObjectGenerator();
@@ -65,14 +65,12 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 	VECTOR pos = playerModel_->GetFrameLocalPosition("hand.R_end");
 	float height = 0.0f;
 
-	info = file.GetSpecifiedInfo("end", "player");
-
 	//死体モデルの生成
 	for (int i = 0; i < file.GetTotalDeathNum().back(); i++) {
 		corpseModel_.push_back(std::make_pair(false, std::make_shared<Model>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name), Material::Other)));
 		corpseModel_[i].second->SetPos({ pos.x,pos.y + height,pos.z });
-		corpseModel_[i].second->SetRot(info.rot);
-		corpseModel_[i].second->SetScale(info.scale);
+		corpseModel_[i].second->SetRot(playerInfo.rot);
+		corpseModel_[i].second->SetScale(playerInfo.scale);
 		corpseModel_[i].second->SetAnimEndFrame(static_cast<int>(PlayerAnimType::Death));
 		//マテリアルの色を変える
 		MV1SetMaterialDifColor(corpseModel_[i].second->GetModelHandle(), 8, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
@@ -338,7 +336,7 @@ void GameEnd::NormalUpdate()
 	if (screenPos.x > Game::screen_width && isWentToRightSide_) {
 		isWentToRightSide_ = false;
 		moveVec_.x = -1;
-		playerModel_->SetPos(file.GetSpecifiedInfo("end", "secondPos").pos);
+		playerModel_->SetPos(file.GetEndSpecifiedInfo("secondPos").pos);
 		playerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::Pull), true, false, 10);
 		playerPos = playerModel_->GetPos();
 	}

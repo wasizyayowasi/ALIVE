@@ -18,16 +18,14 @@ public:
 	virtual ~PenetrationScaffld();
 
 	/// <summary>
-	/// 更新
-	/// </summary>
-	/// <param name="player">プレイヤーの参照</param>
-	void Update(Player& player)override;
-
-	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw()override;
 
+	/// <summary>
+	/// マテリアルの色を変更する
+	/// </summary>
+	void ChangeMaterialColor();
 private:
 
 	int materialNum_ = 0;				//マテリアルの数

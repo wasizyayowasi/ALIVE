@@ -66,6 +66,31 @@ void HopStepJump::Update(Player& player)
 	elapseddTime_ = (std::max)(elapseddTime_ - add_time, min_time);
 
 	//現在の番号を変更する
+	ChangeCurrentNum();
+
+	//アルファ値を変更する
+	ChangeAlphaValue();
+
+	//マテリアルの色を変える
+	ChangeMaterialColor();
+
+	//現在の番号を文字列に変える
+	std::string num = std::to_string(currentNum_);
+
+	//当たり判定用フレームの変更
+	model_->SetCollFrame(num.c_str());
+}
+
+//描画
+void HopStepJump::Draw()
+{
+	MV1DrawFrame(model_->GetModelHandle(), model_->GetColFrameIndex());
+}
+
+//現在の番号を変更する
+void HopStepJump::ChangeCurrentNum()
+{
+	//現在の番号を変更する
 	if (elapseddTime_ == min_time)
 	{
 		currentNum_ = (std::min)(currentNum_ + add_select_num, materialNum_);
@@ -77,24 +102,34 @@ void HopStepJump::Update(Player& player)
 	{
 		currentNum_ = min_select_num;
 	}
+}
 
+//アルファ値を変更する
+void HopStepJump::ChangeAlphaValue()
+{
 	//アルファ値を変更する
 	if (elapseddTime_ >= total_time - alpha_change_time)
 	{
 		alphaValue_ = (std::min)(alphaValue_ + (max_alpha_value / alpha_change_time), max_alpha_value);
 	}
-	else if(elapseddTime_ <= alpha_change_time)
+	else if (elapseddTime_ <= alpha_change_time)
 	{
 		alphaValue_ = (std::max)(alphaValue_ - (max_alpha_value / alpha_change_time), min_alpha_value);
 	}
+}
 
+//マテリアルの色を変える
+void HopStepJump::ChangeMaterialColor()
+{
 	COLOR_F color = {};
 
 	//現在の番号以外のマテリアルのカラーのアルファ値を0にする
-	for (int i = 0; i < materialNum_; i++) 
+	for (int i = 0; i < materialNum_; i++)
 	{
+		//マテリアルの色を取得する
 		color = MV1GetMaterialDifColor(model_->GetModelHandle(), i);
 
+		//マテリアルのアルファ値を変更する
 		if (currentNum_ == i)
 		{
 			color.a = alphaValue_;
@@ -103,18 +138,8 @@ void HopStepJump::Update(Player& player)
 		{
 			color.a = min_alpha_value;
 		}
-		
+
+		//マテリアルの色を設定する
 		MV1SetMaterialDifColor(model_->GetModelHandle(), i, color);
 	}
-
-	std::string num = std::to_string(currentNum_);
-
-	//当たり判定用フレームの変更
-	model_->SetCollFrame(num.c_str());
-}
-
-//描画
-void HopStepJump::Draw()
-{
-	MV1DrawFrame(model_->GetModelHandle(), model_->GetColFrameIndex());
 }

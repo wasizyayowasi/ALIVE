@@ -10,7 +10,8 @@
 #include <cassert>
 #include <nlohmann/json.hpp>
 
-namespace {
+namespace
+{
 	//入力装置のボタン画像のチップサイズ
 	constexpr int input_graph_chip_size = 59;
 }
@@ -86,8 +87,8 @@ InputState::InputState()
 	inputNameTable_[InputType::Dush]		= "走る";
 	inputNameTable_[InputType::Activate]	= "アクション";
 
-	currentInput_.resize(static_cast<int>(InputType::max));
-	lastInput_.resize(static_cast<int>(InputType::max));
+	currentInput_.resize(static_cast<int>(InputType::Max));
+	lastInput_.resize(static_cast<int>(InputType::Max));
 
 	{
 		keyNum_[0] = Key::ESC;
@@ -234,27 +235,36 @@ void InputState::Update()
 
 	int padState = GetJoypadInputState(DX_INPUT_PAD1);//パッド1コンの情報を取得する
 
-	for (const auto& keymap : inputMapTable_) {			//マップの全情報をループする
-		for (const auto& input : keymap.second) {		//入力情報配列をループする
+	//マップの全情報をループする
+	for (const auto& keymap : inputMapTable_) 
+	{			
+		//入力情報配列をループする
+		for (const auto& input : keymap.second) 
+		{		
 			//この中身は、keybd,KEY_INPUT_RETURNなどのセット(InputInfo)が入ってる
 			//keymap.secondには、この入力情報セットInputInfoが入っている。
 			//keymap.firstには、対応するゲーム入力名の"InputType"などが入っている
 
-			if (input.cat == InputCategory::keybd) {
+			if (input.cat == InputCategory::keybd)
+			{
 				currentInput_[static_cast<int>(keymap.first)] = keystate[input.id];
-				if (currentInput_[static_cast<int>(keymap.first)]) {
+				if (currentInput_[static_cast<int>(keymap.first)])
+				{
 					currentInputDevice_ = true;
 				}
 			}
-			else if (input.cat == InputCategory::pad) {
+			else if (input.cat == InputCategory::pad) 
+			{
 				currentInput_[static_cast<int>(keymap.first)] = padState & input.id;
-				if (currentInput_[static_cast<int>(keymap.first)]) {
+				if (currentInput_[static_cast<int>(keymap.first)])
+				{
 					currentInputDevice_ = false;
 				}
 			}
 			//2つの入力のうちどれかがtrueだったらもう「入力されてる」
 			//とみなして、breakする。
-			if (currentInput_[static_cast<int>(keymap.first)]) {
+			if (currentInput_[static_cast<int>(keymap.first)])
+			{
 				break;
 			}
 		}
@@ -265,13 +275,15 @@ void InputState::Update()
 void InputState::RewriteInputInfo(InputType type, InputCategory cat, const int id)
 {
 	//入力種別(割り当て先)がなければ、無効なので無視します。
-	if (tempMapTable_.count(type) == 0) {
+	if (tempMapTable_.count(type) == 0)
+	{
 		return;
 	}
 
 	bool isRewrite = false;
 
-	for (auto& info : tempMapTable_[type]) {
+	for (auto& info : tempMapTable_[type])
+	{
 		if (info.cat == cat)//カテゴリがヒットしたら
 		{
 			info.id = id;//IDを上書きする
@@ -279,7 +291,10 @@ void InputState::RewriteInputInfo(InputType type, InputCategory cat, const int i
 			break;
 		}
 	}
-	if (!isRewrite) {//もしカテゴリが存在しなかったら、ここで追加しておく
+
+	//もしカテゴリが存在しなかったら、ここで追加しておく
+	if (!isRewrite)
+	{
 		tempMapTable_[type].push_back({ cat,id });
 	}
 }
@@ -306,8 +321,10 @@ void InputState::ResetInputInfo()
 //変更したキーを戻す
 void InputState::UndoSelectKey(const InputType type, const InputCategory cat)
 {
-	for (auto& info : tempMapTable_[type]) {
-		if (info.cat == cat) {
+	for (auto& info : tempMapTable_[type]) 
+	{
+		if (info.cat == cat) 
+		{
 			info.id = inputMapTable_[type].begin()->id;
 			break;
 		}
@@ -318,10 +335,12 @@ void InputState::UndoSelectKey(const InputType type, const InputCategory cat)
 void InputState::SavekeyInfo()
 {
 	//決め打ちしか出来ないのがネック
-	json keyInfo_[static_cast<int>(InputType::max)];
+	json keyInfo_[static_cast<int>(InputType::Max)];
+
 	//配列番号を進めるための変数(出来るなら書きたくない)
 	int i = 0;
-	for (auto& input : inputMapTable_) {
+	for (auto& input : inputMapTable_)
+	{
 		//inputMapTable_(map型)のキーをもとに値を取得する
 		//vectorのサイズを値のサイズ分用意する
 		std::vector<InputInfo> rewrite(input.second.size());
@@ -337,7 +356,8 @@ void InputState::SavekeyInfo()
 		pad[static_cast<int>(rewrite.back().cat)] = static_cast<int>(rewrite.back().id);
 
 		//各入力装置とid、サイズ、inputTypeをデータにまとめる
-		keyInfo_[i] = {
+		keyInfo_[i] = 
+		{
 			{"inputType",static_cast<int>(input.first)},
 			{"inputSize",static_cast<int>(input.second.size())},
 			{"keybord",keybord},
@@ -347,7 +367,8 @@ void InputState::SavekeyInfo()
 	}
 
 	//出力したデータをまとめる
-	json keySize = {
+	json keySize = 
+	{
 		{"name","keyInfo"},
 		{"keyTypeNum",inputMapTable_.size()},
 		{"keyInfo",keyInfo_}
@@ -397,18 +418,20 @@ void InputState::LoadKeyInfo(const std::string& filename)
 	int keyTypeNum = json_["keyTypeNum"];
 
 	//決め打ちしか出来ないのがネック(知識、理解不足)
-	json inputInfo[static_cast<int>(InputType::max)];
+	json inputInfo[static_cast<int>(InputType::Max)];
 	//↓嫌だこれ嫌い
 	int i = 0;
 
 	//各入力装置、idを取得
-	for (auto& keyInfo : json_["keyInfo"]) {
+	for (auto& keyInfo : json_["keyInfo"]) 
+	{
 		inputInfo[i] = keyInfo;
 		i++;
 	}
 
 	//inputMapTable_に読み込んだデータを代入
-	for (auto& info : inputInfo) {
+	for (auto& info : inputInfo) 
+	{
 		//入力装置番号とキーidをそれぞれ保持するためのやつ(ひとまとめにできるなら死体)
 		std::unordered_map<int, int> keybord;
 		std::unordered_map<int, int> pad;
@@ -454,8 +477,10 @@ int InputState::GetInputNum(const int num, const InputCategory cat)
 
 	auto type = static_cast<InputType>(num);
 
-	for (auto& key : inputMapTable_[type]) {
-		if (key.cat == cat) {
+	for (auto& key : inputMapTable_[type]) 
+	{
+		if (key.cat == cat)
+		{
 			keyNum = static_cast<int>(key.id);
 			break;
 		}
@@ -507,12 +532,15 @@ void InputState::DrawName(const int type, const  float posX, const  float posY, 
 	std::string name = inputNameTable_[static_cast<InputType>(type)].c_str();
 
 	//名前を修正するか
-	if (editName) {
-		if (before) {
+	if (editName) 
+	{
+		if (before) 
+		{
 			//記号以降の文字を取得
 			name = StrUtil::GetStringBeforeSign(name, sign);
 		}
-		else{
+		else
+		{
 			//記号以前の文字を取得
 			name = StrUtil::GetStringAfterSign(name, sign);
 		}

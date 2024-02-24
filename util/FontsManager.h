@@ -27,6 +27,9 @@ public:
 	/// <param name="fontSize">フォントのサイズ指定</param>
 	void AddFonts(const std::string& filename, const std::string& extension,const int fontSize);
 
+
+	////////////////Getter////////////////
+
 	/// <summary>
 	/// フォントを適用したテキストの横幅を取得する
 	/// </summary>

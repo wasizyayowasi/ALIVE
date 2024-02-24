@@ -71,7 +71,8 @@ void Aster::Init()
 
 	for (auto& masu : masu_) 
 	{
-		if (masu.second.masuMode == MasuMode::doneMode) {
+		if (masu.second.masuMode == MasuMode::doneMode) 
+		{
 			masu.second.masuMode = MasuMode::normalMode;
 		}
 	}
@@ -82,7 +83,8 @@ void Aster::Update()
 {
 	//プレイヤーと敵のインデックスが同じだった場合
 	//そのマスの中心座標を返す
-	if (currentPlayerIndex_ == currentEnemyIndex_) {
+	if (currentPlayerIndex_ == currentEnemyIndex_) 
+	{
 
 		//最短ルートを削除する
 		route_.clear();
@@ -90,7 +92,8 @@ void Aster::Update()
 		//最短ルートを探す際にマスのモードをdoneModeにしたため
 		//doneModeからnormalModeに戻す
 		for (auto& mode : masu_) {
-			if (mode.second.masuMode != MasuMode::blockadeMode) {
+			if (mode.second.masuMode != MasuMode::blockadeMode) 
+			{
 				mode.second.masuMode = MasuMode::normalMode;
 			}
 		}

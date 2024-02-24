@@ -28,7 +28,7 @@ TransparentObject::TransparentObject(const int handle, const Material materialTy
 	std::string name = StrUtil::GetConcatenateNumAndStrings("TransSwitch", ".", num);
 
 	//データの取得
-	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(objInfo.pos, name.c_str());
+	auto info = ExternalFile::GetInstance().GetSpecifiedGimmickInfo(name);
 	//スイッチのインスタンス化
 	switch_ = std::make_shared<Switch>(info);
 

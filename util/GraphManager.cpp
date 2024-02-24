@@ -9,7 +9,8 @@
 //デストラクタ
 GraphManager::~GraphManager()
 {
-	for (auto& graph : graphHandle_) {
+	for (auto& graph : graphHandle_)
+	{
 		DeleteGraph(graph.second);
 	}
 }

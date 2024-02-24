@@ -30,10 +30,41 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw()override;;
+
+	/// <summary>
+	/// サウンドを鳴らす
+	/// </summary>
+	void PlayStopCrankSound();
+
+	/// <summary>
+	/// サウンドを鳴らすことが出来るかの条件分岐関数
+	/// </summary>
+	bool CanSound();
+
+	/// <summary>
+	/// モデルの移動
+	/// </summary>
+	void MoveModel();
+
+	////////////////Getter////////////////
+
+	/// <summary>
+	/// 足場の上限と下限の距離のサイズを取得する
+	/// </summary>
+	/// <param name="num">番号</param>
+	/// <returns>距離サイズ</returns>
+	float GetUpperAndLowerDistanceSize(int num);
+
+	/// <summary>
+	/// 足場の上昇ベクトルを取得する
+	/// </summary>
+	/// <param name="num">番号</param>
+	/// <returns>上昇ベクトル</returns>
+	float GetUpVec(int num);
 private:
 
 	float oldRotZ_ = 0.0f;						//古いZの回転
-	float upVec_ = 0.0f;						//上昇ベクトル
+	float upVecY_ = 0.0f;						//Y座標の上昇ベクトル
 
 	VECTOR initPos_ = {};						//初期ポジション
 

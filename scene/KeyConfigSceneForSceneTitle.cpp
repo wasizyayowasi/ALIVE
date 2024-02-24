@@ -466,7 +466,7 @@ void KeyConfigSceneForSceneTitle::ChangeKeyborardUpdate()
 	GetHitKeyStateAll(keyState);
 
 	int idx = 0;
-	InputType currentType = InputType::max;
+	InputType currentType = InputType::Max;
 	//Œ»İ‚Ì‘I‘ğinputNameTable‚ğæ“¾‚·‚é
 	for (const auto& name : input.inputNameTable_) {
 		if (selectNum_ == idx) {

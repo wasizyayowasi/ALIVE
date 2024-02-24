@@ -42,7 +42,7 @@ public:
 	/// </summary>
 	/// <param name="playerPos">プレイヤーのポジション</param>
 	/// <returns>true : 当たっている  false : 当たっていない</returns>
-	bool CollCheck(const VECTOR playerPos) const;
+	bool CollCheck(const VECTOR& playerPos) const;
 
 	/// <summary>
 	/// レバーの起動
@@ -64,6 +64,16 @@ public:
 	////////////////Getter////////////////
 
 	/// <summary>
+	/// 特殊な名前のオブジェクトの配置データを取得する
+	/// </summary>
+	/// <param name="name">名前</param>
+	/// <param name="sign">記号</param>
+	/// <param name="groupNum">グループ番号</param>
+	/// <param name="num">番号</param>
+	/// <returns>配置データ</returns>
+	LoadObjectInfo GetSpecialNameObjectInfo(const std::string& name, const std::string& sign, int groupNum, int num);
+
+	/// <summary>
 	/// モデルポインタの取得
 	/// </summary>
 	/// <returns>モデルのポインタ</returns>
@@ -74,6 +84,15 @@ public:
 	/// </summary>
 	/// <returns>レバーを引くポジション</returns>
 	const VECTOR& GetStandingPosition() const { return standingPos_; }
+
+
+	////////////////Setter////////////////
+
+	/// <summary>
+	/// レバーを引くポジションを設定する
+	/// </summary>
+	/// <param name="standingPos">レバーを引く位置</param>
+	void SetStandingPos(const VECTOR& standingPos) { standingPos_ = standingPos; }
 
 private:
 

@@ -4,6 +4,7 @@
 
 #include "../object/Player.h"
 
+//コンストラクタ
 PenetrationScaffld::PenetrationScaffld(const int handle,const Material materialType,const LoadObjectInfo& objInfo):GimmickBase(handle, materialType, objInfo)
 {
 	//モデルのマテリアルのアルファ値を0にして透過させる
@@ -12,6 +13,24 @@ PenetrationScaffld::PenetrationScaffld(const int handle,const Material materialT
 	//当たり判定を行わない
 	isCollCheck_ = false;
 
+	//マテリアルの色を変更する
+	ChangeMaterialColor();
+}
+
+//デストラクタ
+PenetrationScaffld::~PenetrationScaffld()
+{
+}
+
+//描画
+void PenetrationScaffld::Draw()
+{
+	model_->Draw();
+}
+
+//マテリアルの色を変更する
+void PenetrationScaffld::ChangeMaterialColor()
+{
 	//カラー変数
 	COLOR_F color = {};
 
@@ -22,17 +41,4 @@ PenetrationScaffld::PenetrationScaffld(const int handle,const Material materialT
 		color.a = alphaValue_;
 		MV1SetMaterialDifColor(model_->GetModelHandle(), i, color);
 	}
-}
-
-PenetrationScaffld::~PenetrationScaffld()
-{
-}
-
-void PenetrationScaffld::Update(Player& player)
-{
-}
-
-void PenetrationScaffld::Draw()
-{
-	model_->Draw();
 }

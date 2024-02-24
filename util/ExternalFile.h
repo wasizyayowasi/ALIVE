@@ -80,7 +80,7 @@ public:
 	/// </summary>
 	/// <param name="name">取得したいオブジェクトの名前</param>
 	/// <returns></returns>
-	LoadObjectInfo GetSpecifiedGimmickInfo(const VECTOR& objPos,const std::string& name);
+	LoadObjectInfo GetSpecifiedGimmickInfo(const std::string& name);
 
 	/// <summary>
 	/// カメラが特殊な動きを行う印(オブジェクト)が
@@ -90,11 +90,25 @@ public:
 	LoadObjectInfo GetCameraGimmickInfo(const VECTOR& playerPos, const std::string& name);
 
 	/// <summary>
-	/// 指定した名前のオブジェクト配置データを返す
+	/// タイトルの指定した名前のオブジェクト配置データを返す
 	/// </summary>
 	/// <param name="name">取得したいオブジェクトの名前</param>
 	/// <returns>オブジェクトのデータ</returns>
-	LoadObjectInfo GetSpecifiedInfo(const std::string& stage, const std::string& name);
+	LoadObjectInfo GetTitleSpecifiedInfo(const std::string& name);
+
+	/// <summary>
+	/// ゲームメイン指定した名前のオブジェクト配置データを返す
+	/// </summary>
+	/// <param name="name">取得したいオブジェクトの名前</param>
+	/// <returns>オブジェクトのデータ</returns>
+	LoadObjectInfo GetMainSpecifiedInfo(const std::string& name);
+
+	/// <summary>
+	/// エンディングシーンの指定した名前のオブジェクト配置データを返す
+	/// </summary>
+	/// <param name="name">取得したいオブジェクトの名前</param>
+	/// <returns>オブジェクトのデータ</returns>
+	LoadObjectInfo GetEndSpecifiedInfo(const std::string& name);
 
 	/// <summary>
 	/// エネミーの配置データを取得する

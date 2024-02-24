@@ -18,11 +18,5 @@ public:
 	/// デストラクタ
 	/// </summary>
 	virtual ~CharacterBase() {};
-protected:
-
-	int animNo_ = 0;				//アニメーション番号
-
-	bool isAnimLoop_ = false;		//アニメーションをループ再生させるか
-
 };
 

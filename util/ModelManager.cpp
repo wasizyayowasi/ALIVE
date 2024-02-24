@@ -5,7 +5,8 @@
 //デストラクタ
 ModelManager::~ModelManager()
 {
-	for (auto& type : modelHandle_) {
+	for (auto& type : modelHandle_)
+	{
 		MV1DeleteModel(type.second);
 	}
 }

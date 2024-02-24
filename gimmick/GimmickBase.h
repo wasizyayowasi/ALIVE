@@ -16,5 +16,13 @@ public:
 	/// デストラクタ
 	/// </summary>
 	virtual ~GimmickBase();
+
+	/// <summary>
+	/// 指定のオブジェクトの配置データを取得する
+	/// </summary>
+	/// <param name="name">取得したいオブジェクトの名前</param>
+	/// <param name="num">番号</param>
+	/// <returns>配置データ</returns>
+	LoadObjectInfo GetLoadObjectInfo(const std::string& name, int num);
 };
 

@@ -1,8 +1,8 @@
 #pragma once
 #include "../object/ObjectData.h"
-#include <DxLib.h>
 #include <list>
 #include <memory>
+#include <DxLib.h>
 
 class Player;
 class ObjectBase;
@@ -62,6 +62,10 @@ public:
 	/// <param name="time">ŽžŠÔ</param>
 	void ChangeDuringStartup(const float time);
 
+	/// <summary>
+	/// ƒTƒEƒ“ƒh‚ð–Â‚ç‚·
+	/// </summary>
+	void PlayOnSound();
 
 	////////////////Getter////////////////
 

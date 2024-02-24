@@ -15,18 +15,19 @@ private:
 	//エレベーターのアニメタイプ
 	enum class ElevatorAnimType
 	{
-		openIdle,
-		closeIdle,
-		open,
-		close,
-		max,
+		OpenIdle,
+		CloseIdle,
+		Open,
+		Close,
+
+		Max,
 	};
 
 	//エレベーターの状態
 	enum class ElevatorState
 	{
-		upper,
-		lower,
+		Upper,
+		Lower,
 	};
 
 public:
@@ -55,10 +56,41 @@ public:
 	void Draw()override;
 
 	/// <summary>
+	/// 音を鳴らす
+	/// </summary>
+	void PlayDoorSound();
+
+	/// <summary>
+	/// 出発することが可能か
+	/// </summary>
+	/// <returns></returns>
+	bool CanDeparture();
+
+	/// <summary>
 	/// 衝突判定を行うモデルの追加
 	/// </summary>
 	/// <returns></returns>
 	virtual const std::shared_ptr<Model>& AddCollModel()const override;
+
+
+	////////////////Getter////////////////
+
+	/// <summary>
+	/// 特殊な名前のオブジェクトの配置データを取得する
+	/// </summary>
+	/// <param name="name">名前</param>
+	/// <param name="sign">記号</param>
+	/// <param name="groupNum">グループ番号</param>
+	/// <param name="num">番号</param>
+	/// <returns>配置データ</returns>
+	LoadObjectInfo GetSpecialNameObjectInfo(const std::string& name, const std::string& sign, int groupNum, int num);
+
+	////////////////Setter////////////////
+
+	/// <summary>
+	/// 初期のエレベーターのステータスを設定する
+	/// </summary>
+	void SetInitState();
 
 private:
 
@@ -79,7 +111,7 @@ private:
 
 	bool isDeparture_ = false;							//エレベーターが出発しているかどうか
 	bool isPlaySound_ = false;							//サウンドが再生中か
-	bool isOnSwitch_ = false;							//スイッチを押しているか
+	bool oldOnSwitch_ = false;							//1フレーム前のスイッチが押されていたかを取得する
 
 	VECTOR targetPos_ = {};								//現在向かっているポジション
 
@@ -87,7 +119,7 @@ private:
 
 	std::unordered_map<ElevatorState, VECTOR> stopPos_;	//ストップポジション
 
-	std::shared_ptr<Switch> switch_;					//スイッチクラスのスマートポインタ
+	std::shared_ptr<Lever> movingLever_;				//レバークラスのスマートポインタ
 
 	std::vector<std::shared_ptr<Lever>> levers_;		//レバークラスのスマートポインタのVector配列
 };

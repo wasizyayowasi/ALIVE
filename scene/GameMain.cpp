@@ -137,10 +137,10 @@ void GameMain::Draw()
 	int initX = 0;
 	int initY = -1;
 
-	double vecASize = std::sqrt(initX * initX + initY * initY);
+	double vecASize = std::sqrt(tempX * tempX + tempY * tempY);
 	double vecBSize = std::sqrt(X * X + Y * Y);
 
-	float innerProduct = static_cast<float>(initX * X + initY * Y);
+	float innerProduct = static_cast<float>(tempX * X + tempY * Y);
 
 	float norm = static_cast<float>(vecASize * vecBSize);
 
@@ -150,6 +150,8 @@ void GameMain::Draw()
 
 	angle = angle / DX_PI_F * 180.0f;
 
+	tempX = X;
+	tempY = Y;
 
 
 
@@ -231,7 +233,7 @@ void GameMain::NormalUpdate()
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
 
-	auto info = file.GetSpecifiedInfo("main","GOAL");
+	auto info = file.GetMainSpecifiedInfo("GOAL");
 
 	auto result = MV1CollCheck_Capsule(	player_->GetModelPointer()->GetModelHandle(),
 										player_->GetModelPointer()->GetColFrameIndex(),

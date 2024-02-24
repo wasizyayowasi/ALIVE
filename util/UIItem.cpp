@@ -2,6 +2,12 @@
 #include "FontsManager.h"
 #include <cassert>
 
+namespace
+{
+	//文字列の角度
+	constexpr float str_angle = 0.0f;
+}
+
 //コンストラクタ
 UIItem::UIItem()
 {
@@ -16,21 +22,21 @@ UIItem::~UIItem()
 void UIItem::AlphaChangeDraw(const float scale, const int alpha)
 {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawRotaGraphF(centerPosX_, centerPosY_, scale, 0.0f, makeScreenHandle_, true, false);
+	DrawRotaGraphF(centerPosX_, centerPosY_, scale, str_angle, makeScreenHandle_, true, false);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
 //ポジションが変わるUIの描画
 void UIItem::ChangePosDraw(const float centerPosX, const  float centerPosY)
 {
-	DrawRotaGraphF(centerPosX, centerPosY, 1.0f, 0.0f, makeScreenHandle_, true);
+	DrawRotaGraphF(centerPosX, centerPosY, 1.0f, str_angle, makeScreenHandle_, true);
 }
 
 //画像を3D空間に描画する
 void UIItem::DrawBillboard(const VECTOR& drawPos, const int alpha, const  float size)
 {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawBillboard3D(drawPos, 0.5f, 0.5f, size, 0.0f, makeScreenHandle_, true);
+	DrawBillboard3D(drawPos, 0.5f, 0.5f, size, str_angle, makeScreenHandle_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
@@ -46,7 +52,6 @@ void UIItem::CreateUIGraphSetUp(const float centerPosX, const float centerPosY, 
 
 	makeScreenHandle_ = MakeScreen(makeScreenWidth_, makeScreenHeight_, true);
 	CreateUIGraph(fontHandle);
-
 }
 
 //UI画像の作成

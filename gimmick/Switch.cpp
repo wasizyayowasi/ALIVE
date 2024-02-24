@@ -1,8 +1,10 @@
 #include "Switch.h"
-#include "../util/Model.h"
-#include "../OBJECT/Player.h"
-#include "../util/SoundManager.h"
+
+#include "../object/Player.h"
 #include "../object/ObjectBase.h"
+
+#include "../util/Model.h"
+#include "../util/SoundManager.h"
 #include "../util/ModelManager.h"
 
 namespace
@@ -28,7 +30,7 @@ Switch::Switch(const LoadObjectInfo& objInfo)
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 	model_->SetRot(objInfo.rot);
-	model_->SetUseCollision(true,false);
+	model_->SetUseCollision(true,true);
 
 	//ポジションの初期化
 	pos_ = objInfo.pos;
@@ -60,6 +62,7 @@ void Switch::Draw()
 	model_->Draw();
 }
 
+//衝突結果の削除
 void Switch::DeleteHitResult()
 {
 	//衝突結果の削除
@@ -72,6 +75,7 @@ void Switch::DeleteHitResult()
 	hitDim_.clear();
 }
 
+//起動中かを変更する
 void Switch::ChangeDuringStartup(const float time)
 {
 	//短縮化
@@ -87,21 +91,29 @@ void Switch::ChangeDuringStartup(const float time)
 	}
 }
 
+//サウンドを鳴らす
+void Switch::PlayOnSound()
+{
+	if (stateFunc_ == &Switch::OffAnim)
+	{
+		SoundManager::GetInstance().Set3DSoundInfo(pos_, sound_range, "switchOn");
+		SoundManager::GetInstance().PlaySE("switchOn");
+	}
+}
+
 //衝突判定
 void Switch::HitCollPlayer(Player& player)
 {
-	MV1RefreshCollInfo(model_->GetModelHandle(), model_->GetColFrameIndex());
-
+	//プレイヤーのポジション
 	VECTOR playerPos = player.GetStatus().pos;
 
 	//プレイヤーの位置情報を元にしたカプセルとスイッチモデルの判定
 	hitDim_.push_back(MV1CollCheck_Sphere(model_->GetModelHandle(), model_->GetColFrameIndex(), playerPos, sphere_radius));
 }
 
+//スイッチモデルと死体の衝突判定を行う
 void Switch::HitColl(const std::shared_ptr<ObjectBase>& corpse)
 {
-	MV1RefreshCollInfo(corpse->GetModelPointer()->GetModelHandle(), corpse->GetModelPointer()->GetColFrameIndex());
-
 	//持ち運び中だったら以降の処理を行わない
 	if (corpse->GetIsTransit()) 
 	{
@@ -133,17 +145,15 @@ bool Switch::ElevatorCollResult()
 		return false;
 	}
 
-	if (stateFunc_ == &Switch::OffAnim)
-	{
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, sound_range, "switchOn");
-		SoundManager::GetInstance().PlaySE("switchOn");
-	}
+	//音を鳴らす
+	PlayOnSound();
 
 	stateFunc_ = &Switch::OnAnim;
 
 	return true;
 }
 
+//透過オブジェクトの衝突判定の結果
 bool Switch::TransCollResult()
 {
 	int hitNum = 0;
@@ -167,11 +177,8 @@ bool Switch::TransCollResult()
 		return false;
 	}
 
-	if (stateFunc_ == &Switch::OffAnim)
-	{
-		SoundManager::GetInstance().Set3DSoundInfo(pos_, sound_range, "switchOn");
-		SoundManager::GetInstance().PlaySE("switchOn");
-	}
+	//音を鳴らす
+	PlayOnSound();
 
 	stateFunc_ = &Switch::OnAnim;
 

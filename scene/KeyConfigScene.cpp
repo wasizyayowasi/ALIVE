@@ -467,7 +467,7 @@ void KeyConfigScene::ChangeKeyborardUpdate()
 	GetHitKeyStateAll(keyState);
 
 	int idx = 0;
-	InputType currentType = InputType::max;
+	InputType currentType = InputType::Max;
 
 	//一フレーム前の入力情報が残っていたらリターンする
 	for (const auto& key : input.lastInput_) {

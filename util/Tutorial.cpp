@@ -6,39 +6,63 @@
 #include "Util.h"
 #include "game.h"
 
-#include <string>
 #include <algorithm>
 
 namespace {
 	//キーボード画像のチップサイズ
 	constexpr int input_graph_chip_size = 59;
+
 	//パッド画像のチップサイズ
-	constexpr int controller_graph_chip_size = 71;
+	constexpr int controller_graph_chip_size = 59;
+
+	//最大時間
+	constexpr int max_time = 300;
+
+	//画像サイズの拡縮率
+	constexpr float graph_scale_size = 1.2f;
+
+	//UIを表示する高さの補正
+	constexpr float correction_height = 1.3f;
 }
 
 //コンストラクタ
-Tutorial::Tutorial():drawFunc_(&Tutorial::NoneDraw)
+Tutorial::Tutorial()
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
 
 	//キーボードの画像を描画する位置
-	UIPos_[UIGraph::KeyBord].first = Game::screen_width / 2 - input_graph_chip_size;
-	UIPos_[UIGraph::KeyBord].second = Game::screen_height - input_graph_chip_size * 1.3f;
+	UIPos_[UIGraph::KeyBord].x = Game::screen_width / 2 - input_graph_chip_size;
+	UIPos_[UIGraph::KeyBord].y = Game::screen_height - input_graph_chip_size * correction_height;
 
 	//padのボタンを描画する位置
-	UIPos_[UIGraph::XboxBotton].first = Game::screen_width / 2 - controller_graph_chip_size;
-	UIPos_[UIGraph::XboxBotton].second = Game::screen_height - controller_graph_chip_size;
+	UIPos_[UIGraph::XboxBotton].x = Game::screen_width / 2 - controller_graph_chip_size;
+	UIPos_[UIGraph::XboxBotton].y = Game::screen_height - controller_graph_chip_size * correction_height;
 
-	//配列の準備
-	pushBottan_[static_cast<int>(InputType::Activate)]	= false;
-	pushBottan_[static_cast<int>(InputType::Space)]		= false;
-	pushBottan_[static_cast<int>(InputType::Death)]		= false;
-	pushBottan_[static_cast<int>(InputType::Dush)]		= false;
+	//クランクのチュートリアル
+	tutorialData_["CrankTutorial"]	.push_back({ static_cast<int>(InputType::Activate)	,false , "クランクを回す" });
+	tutorialData_["CrankTutorial"]	.push_back({ static_cast<int>(InputType::Max)		,false , "回す" });
+	tutorialData_["CrankTutorial"]	.push_back({ static_cast<int>(InputType::Activate)	,false , "放す" });
 
-	nextDisplayBottanType_ = static_cast<int>(XboxBotton::Y);
-	nextDisplayKeyType_ = static_cast<int>(InputType::Death);
+	//死体を持てることについてのチュートリアル
+	tutorialData_["SwitchTutorial"]	.push_back({ static_cast<int>(InputType::Death)		,false , "死亡" });
+	tutorialData_["SwitchTutorial"] .push_back({ static_cast<int>(InputType::Activate)	,false , "死体を持つ" });
+	tutorialData_["SwitchTutorial"] .push_back({ static_cast<int>(InputType::Activate)	,false , "死体を置く" });
 
+	//走るチュートリアル
+	tutorialData_["RunTutorial"]	.push_back({ static_cast<int>(InputType::Dush)		,false , "走る" });
+
+	//ジャンプのチュートリアル
+	tutorialData_["JumpTutorial"]	.push_back({ static_cast<int>(InputType::Space)		,false , "ジャンプ" });
+
+	//エレベーターのチュートリアル
+	tutorialData_["ElevatorTutorial"].push_back({ static_cast<int>(InputType::Activate)	,false , "レバーを引く" });
+
+	//死体を足場として使うチュートリアル
+	tutorialData_["CorpseScaffoldTutorial"].push_back({ static_cast<int>(InputType::Death)	,false , "死亡" });
+	tutorialData_["CorpseScaffoldTutorial"].push_back({ static_cast<int>(InputType::Max)	,false , "死体は足場として使える" });
+
+	//フォントの取得
 	fontPigumo42_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
 }
 
@@ -50,230 +74,93 @@ Tutorial::~Tutorial()
 //更新
 void Tutorial::Update(const VECTOR& playerPos)
 {
-	float distanceSize = 0.0f;
+	//プレイヤーから一番近いチュートリアルの配置データを取得
+	LoadObjectInfo tutorialInfo = ExternalFile::GetInstance().GetTutorialObjInfo(playerPos);
 
-	auto tutorialInfo = ExternalFile::GetInstance().GetTutorialObjInfo(playerPos);
+	//取得したデータのポジションからプレイヤーのポジションの距離のサイズを取得する
+	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorialInfo.pos, playerPos);
 
-	distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorialInfo.pos, playerPos);
-
+	//取得したデータの距離のサイズを半分にする
 	float range = VSize(tutorialInfo.scale) / 2;
 
-	tutorialInfo.name = StrUtil::GetStringBeforeSign(tutorialInfo.name, ".");
+	//チュートリアルの範囲内に入っていたら
+	//一番近いチュートリアルの名前を取得する
+	if (range > distanceSize)
+	{
+		//一番近いチュートリアルの名前を取得
+		currentTutorialName_ = tutorialInfo.name;
+	}
 
-	if (range > distanceSize) {
-		if (tutorialInfo.name == "CrankTutorial") {
-			drawFunc_ = &Tutorial::CranckTutorialDraw;
-		}
-		else if (tutorialInfo.name == "SwitchTutorial") {
-			drawFunc_ = &Tutorial::SwitchTutorialDraw;
-		}
-		else if (tutorialInfo.name == "RunTutorial") {
-			drawFunc_ = &Tutorial::RunTutorialDraw;
-		}
-		else if (tutorialInfo.name == "JumpTutorial") {
-			drawFunc_ = &Tutorial::JumpTutorialDraw;
-		}
-		else if (tutorialInfo.name == "ElevatorTutorial") {
-			drawFunc_ = &Tutorial::ElevatorTutorialDraw;
-		}
-		else if (tutorialInfo.name == "CorpseScaffoldTutorial") {
-			drawFunc_ = &Tutorial::CorpseScaffoldDraw;
-		}
+	//現在のチュートリアルの名前と1フレーム前のチュートリアルの名前が
+	//違っていたらcurrentDisplayNum_に0をいれる
+	if (currentTutorialName_ != oldTutorialName_)
+	{
+		currentDisplayNum_ = 0;
+		elapsedTime_ = 0;
 	}
-	else {
-		drawFunc_ = &Tutorial::NoneDraw;
-	}
+
+	//1フレーム前のチュートリアルに使われていた名前を保存する
+	oldTutorialName_ = currentTutorialName_;
 }
 
 //描画
 void Tutorial::Draw()
 {
+	//短縮化
 	auto& input = InputState::GetInstance();
 
-	(this->*drawFunc_)(input);
-}
-
-//何もない時の描画
-void Tutorial::NoneDraw(InputState& input)
-{
-	for (auto& bottan : pushBottan_) {
-		bottan.second = false;
-	}
-}
-
-//スイッチのチュートリアル
-void Tutorial::SwitchTutorialDraw(InputState& input)
-{
-
-	static std::string str = "死体を持つ";
-
-	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(nextDisplayKeyType_, UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second,1.2f);
-	}
-	else {
-		//画像描画
-		input.DrawPadGraph(nextDisplayBottanType_, UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second,1.0f);
-	}
-
-	if (input.IsTriggered(InputType::Death)) {
-		nextDisplayKeyType_ = static_cast<int>(InputType::Activate);
-		nextDisplayBottanType_ = static_cast<int>(XboxBotton::B);
-		str = "死体を持つ";
-	}
-
-	if (input.IsTriggered(InputType::Activate)) {
-		str = "死体を置く";
-	}
-
-	//キーに対応した文字列の描画(アクションキーの文字列)
-	if (nextDisplayKeyType_ == static_cast<int>(InputType::Death) || nextDisplayBottanType_ == static_cast<int>(XboxBotton::Y)) {
-		input.DrawName(nextDisplayKeyType_, static_cast<float>(Game::screen_width / 2), Game::screen_height - input_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_, false, false);
-	}
-	else {
-		DrawStringToHandle(Game::screen_width / 2, static_cast<int>(Game::screen_height - input_graph_chip_size * 1.6f), str.c_str(), 0xffffff, fontPigumo42_);
-	}
-}
-
-//クランクのチュートリアル
-void Tutorial::CranckTutorialDraw(InputState& input)
-{
-	if (input.IsTriggered(InputType::Activate)) {
-		pushBottan_[static_cast<int>(InputType::Death)] = true;
-	}
-
-	if (pushBottan_[static_cast<int>(InputType::Death)]) {
-		//文字列の描画
-		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f) - 80, "左回転", 0xffffff, fontPigumo42_);
-		DrawStringToHandle(Game::screen_width / 2 , Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f), "右回転", 0xffffff, fontPigumo42_);
-
-		if (input.currentInputDevice_) {
-			//キー画像の描画
-			input.DrawKeyGraph(static_cast<int>(InputType::Up), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second - 80.0f, 1.2f);
-			input.DrawKeyGraph(static_cast<int>(InputType::Down), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
-		}
-		else {
-			input.DrawPadGraph(static_cast<int>(XboxBotton::Up),UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second - 80.0f, 1.0f);
-			input.DrawPadGraph(static_cast<int>(XboxBotton::Down),UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
-		}
-
-		if (input.IsTriggered(InputType::Up) || input.IsTriggered(InputType::Down)) {
-			pushBottan_[static_cast<int>(InputType::Activate)] = true;
-			pushBottan_[static_cast<int>(InputType::Death)] = false;
-		}
-		
+	//表示するチュートリアルの数を超えたら以降何も表示しない
+	//currentDisplayNum_は0から始まるため数調整で1を追加する
+	if (currentDisplayNum_ + 1 > static_cast<int>(tutorialData_[currentTutorialName_].size()))
+	{
 		return;
 	}
 
-	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(static_cast<int>(InputType::Activate), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second,1.2f);
-	}
-	else {
-		//画像描画
-		input.DrawPadGraph(static_cast<int>(XboxBotton::B), UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
-	}
+	//現在のチュートリアルデータの取得
+	TutorialData& data = tutorialData_[currentTutorialName_][currentDisplayNum_];
 
-	if (pushBottan_[static_cast<int>(InputType::Activate)]) {
-		//キーに対応した文字列の描画(アクションキーの文字列)
-		DrawStringToHandle(Game::screen_width / 2, Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f), "手を放す", 0xffffff, fontPigumo42_);
-	}
-	else {
-		//キーに対応した文字列の描画(アクションキーの文字列)
-		DrawStringToHandle(Game::screen_width / 2, Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f), "クランクを回す", 0xffffff, fontPigumo42_);
-	}
-}
+	//キータイプを表示するか
+	if (DoNotDiplayKeyType(data))
+	{
+		//文字列の横幅を取得する
+		int width = GetDrawStringWidthToHandle(data.str.c_str(), static_cast<int>(data.str.size()), fontPigumo42_);
 
-//走るチュートリアル
-void Tutorial::RunTutorialDraw(InputState& input)
-{
-	if (input.IsTriggered(InputType::Dush)) {
-		pushBottan_[static_cast<int>(InputType::Dush)] = true;
-	}
+		//キーの役割の描画
+		DrawStringToHandle(Game::screen_width / 2 - width / 2, Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f), data.str.c_str(), 0xffffff, fontPigumo42_);
 
-	if (pushBottan_[static_cast<int>(InputType::Dush)]) {
 		return;
 	}
 
-	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(static_cast<int>(InputType::Dush), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
-	}
-	else {
-		//画像描画
-		input.DrawPadGraph(static_cast<int>(XboxBotton::X), UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
-	}
+	//キーの役割の描画
+	DrawStringToHandle(Game::screen_width / 2, static_cast<int>(Game::screen_height - input_graph_chip_size * 1.6f), data.str.c_str(), 0xffffff, fontPigumo42_);
 
-	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(static_cast<int>(InputType::Dush), static_cast<float>(Game::screen_width / 2), Game::screen_height - input_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_,false,false);
+	//キー画像の描画
+	input.DrawKeyGraph(data.keyType, UIPos_[UIGraph::KeyBord].x, UIPos_[UIGraph::KeyBord].y, graph_scale_size);
+
+	//現在表示されているキーが押されたか
+	if (input.IsTriggered(static_cast<InputType>(data.keyType)))
+	{
+		data.isPushKey = true;
+		currentDisplayNum_++;
+	}
 }
 
-//ジャンプのチュートリアル
-void Tutorial::JumpTutorialDraw(InputState& input)
+//キータイプを表示しないか
+bool Tutorial::DoNotDiplayKeyType(const TutorialData& data)
 {
-
-	if (input.IsTriggered(InputType::Space)) {
-		pushBottan_[static_cast<int>(InputType::Space)] = true;
+	//経過時間が最大時間と同じだったら現在の表示番号を増やす
+	if (elapsedTime_ == max_time)
+	{
+		currentDisplayNum_++;
+		elapsedTime_ = 0;
 	}
 
-	if (pushBottan_[static_cast<int>(InputType::Space)]) {
-		return;
+	//keyタイプがmaxだったら経過時間を増やし、リターンする
+	if (static_cast<int>(InputType::Max) == data.keyType)
+	{
+		elapsedTime_ = (std::min)(elapsedTime_ + 1, max_time);
+		return true;
 	}
 
-	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(static_cast<int>(InputType::Space), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
-	}
-	else {
-		//画像描画
-		input.DrawPadGraph(static_cast<int>(XboxBotton::A), UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
-	}
-
-	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(static_cast<int>(InputType::Space), static_cast<float>(Game::screen_width / 2), Game::screen_height - input_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_,true,false,"/");
-}
-
-//エレベーターのチュートリアル
-void Tutorial::ElevatorTutorialDraw(InputState& input)
-{
-	if (input.IsTriggered(InputType::Activate)) {
-		pushBottan_[static_cast<int>(InputType::Activate)] = true;
-	}
-
-	if (pushBottan_[static_cast<int>(InputType::Activate)]) {
-		return;
-	}
-
-	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(static_cast<int>(InputType::Activate), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
-	}
-	else {
-		//画像描画
-		input.DrawPadGraph(static_cast<int>(XboxBotton::B), UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
-	}
-
-	//キーに対応した文字列の描画(アクションキーの文字列)
-	DrawStringToHandle(Game::screen_width / 2, static_cast<int>(Game::screen_height - input_graph_chip_size * 1.6f), "レバーを引く", 0xffffff, fontPigumo42_);
-}
-
-//死体のチュートリアル
-void Tutorial::CorpseScaffoldDraw(InputState& input)
-{
-	if (input.IsTriggered(InputType::Death)) {
-		pushBottan_[static_cast<int>(InputType::Death)] = true;
-	}
-
-	if (pushBottan_[static_cast<int>(InputType::Death)]) {
-		std::string str = "死体は足場として使える";
-		int width = GetDrawStringWidthToHandle(str.c_str(), static_cast<int>(str.size()), fontPigumo42_);
-		DrawStringToHandle(Game::screen_width / 2 - width / 2, Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f), str.c_str(), 0xffffff, fontPigumo42_);
-		return;
-	}
-
-	if (input.currentInputDevice_) {
-		input.DrawKeyGraph(static_cast<int>(InputType::Death), UIPos_[UIGraph::KeyBord].first, UIPos_[UIGraph::KeyBord].second, 1.2f);
-	}
-	else {
-		//画像描画
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Y), UIPos_[UIGraph::XboxBotton].first, UIPos_[UIGraph::XboxBotton].second, 1.0f);
-	}
-
-	//キーに対応した文字列の描画(アクションキーの文字列)
-	input.DrawName(static_cast<int>(InputType::Death), static_cast<float>(Game::screen_width / 2), Game::screen_height - input_graph_chip_size * 1.6f, 0xffffff, fontPigumo42_, false, false);
+	return false;
 }
