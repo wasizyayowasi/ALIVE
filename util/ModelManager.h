@@ -31,9 +31,6 @@ public:
 	/// <returns>モデルハンドル</returns>
 	int GetModelHandle(const std::string& name);
 private:
-
-	std::unordered_map<std::string, int> modelHandle_;		//モデルハンドルテーブル
-
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -41,5 +38,7 @@ private:
 
 	ModelManager(const ModelManager&) = delete;
 	void operator = (const ModelManager&) = delete;
+private:
+	std::unordered_map<std::string, int> modelHandle_;		//モデルハンドルテーブル
 };
 

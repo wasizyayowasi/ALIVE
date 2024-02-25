@@ -57,7 +57,7 @@ private:
 	EffectManager(const EffectManager&) = delete;
 	void operator = (const EffectManager&) = delete;
 private:
-	int arrayHandle_[30] = {};
+	int arrayHandle_[30] = {};								//画像の配列
 
 	std::map<std::string, std::vector<int>> handle_ = {};	//画像テーブル
 	std::map<std::string,std::string> filepath_ = {};		//ファイルパス

@@ -125,14 +125,6 @@ public:
 	bool LastInputDevice() const;
 
 	/// <summary>
-	/// 入力装置の番号を取得する
-	/// </summary>
-	/// <param name="type">ボタンのタイプ</param>
-	/// <param name="cat">入力装置のカテゴリー</param>
-	/// <returns>入力装置の番号</returns>
-	int GetInputNum(const int num, const InputCategory cat);
-
-	/// <summary>
 	/// key画像の描画
 	/// </summary>
 	/// <param name="type">描画したいkey　castでint型にした値</param>
@@ -162,6 +154,14 @@ public:
 	/// <param name="before">前か後か　true : 前　false：後ろ</param>
 	/// <param name="sign">記号</param>
 	void DrawName(const int type, const  float posX, const  float posY, const  int color, const  int fontHandle, const bool editName, const bool before,const std::string& sign = "");
+
+	/// <summary>
+	/// 入力装置の番号を取得する
+	/// </summary>
+	/// <param name="type">ボタンのタイプ</param>
+	/// <param name="cat">入力装置のカテゴリー</param>
+	/// <returns>入力装置の番号</returns>
+	int GetInputNum(const int num, const InputCategory cat);
 private:
 	/// <summary>
 	/// コンストラクタ
@@ -170,6 +170,7 @@ private:
 
 	InputState(const InputState&) = delete;
 	void operator = (const InputState&) = delete;
+private:
 
 	bool currentInputDevice_ = false;					//true:キーボード　false:パッド
 

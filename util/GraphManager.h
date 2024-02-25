@@ -39,7 +39,7 @@ private:
 
 	GraphManager(const GraphManager&) = delete;
 	void operator = (const GraphManager&) = delete;
-
+private:
 	std::map<std::string, int> graphHandle_ = {};		//グラフテーブル
 
 };

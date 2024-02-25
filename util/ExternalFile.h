@@ -265,10 +265,10 @@ private:
 
 	ExternalFile(const ExternalFile&) = delete;
 	void operator = (const ExternalFile&) = delete;
+private:
+	PlayerInfo player_ = {};																//プレイヤーのステータス情報
 
-	PlayerInfo player_ = {};		//プレイヤーのステータス情報
-
-	std::string startPosName_ = {};	//開始位置の名前
+	std::string startPosName_ = {};															//開始位置の名前
 
 	std::deque<int> pastTotalDeathNum_ = {};												//過去5回の死亡数
 

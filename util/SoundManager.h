@@ -26,11 +26,6 @@ public:
 	void LoadSound();
 
 	/// <summary>
-	/// サウンドボリュームを変更する
-	/// </summary>
-	void ChangeVolumeMem();
-
-	/// <summary>
 	/// 読み込んだサウンドを流す
 	/// </summary>
 	/// <param name="name">ファイル名</param>
@@ -52,11 +47,6 @@ public:
 	/// BGMを止める
 	/// </summary>
 	void StopBGM();
-
-	/// <summary>
-	/// BGM、SEの音量を外部出力する
-	/// </summary>
-	void SaveSoundConfig();
 
 	/// <summary>
 	/// サウンドが再生中か調べる
@@ -115,18 +105,15 @@ public:
 	/// <param name="rot"></param>
 	void Set3DSoundListenerInfo(const VECTOR& pos, const VECTOR& rot);
 private:
-	//計　12byte
-	struct SoundConfigInfo {
-		char signature[4];				//4byte
-		float version;					//4byte
-		unsigned short volumeSE;		//2byte
-		unsigned short volumeBGM;		//2byte
-	};
+	/// <summary>
+	/// BGM、SEの音量を外部出力する
+	/// </summary>
+	void SaveSoundConfig();
 
-	int volumeSE_ = 255;
-	int volumeBGM_ = 255;
-
-	std::unordered_map<std::string, int> nameAndHandleTable_;
+	/// <summary>
+	/// サウンド情報の読み込み
+	/// </summary>
+	void LoadSoundConfig();
 
 	/// <summary>
 	/// 2DSEをロードする
@@ -134,7 +121,7 @@ private:
 	/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
 	/// <returns>ロードしたサウンド</returns>
 	int Load2DSoundSEFile(const std::string& fileName);
- 
+
 	/// <summary>
 	/// 2DBGMをロードする
 	/// </summary>
@@ -155,12 +142,7 @@ private:
 	/// <param name="fileName">拡張子、場所抜きのファイル単体の名前</param>
 	/// <returns>ロードしたサウンド</returns>
 	int Load3DSoundBGMFile(const std::string& fileName);
-
-	/// <summary>
-	/// サウンド情報の読み込み
-	/// </summary>
-	void LoadSoundConfig();
-
+private:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -168,5 +150,18 @@ private:
 
 	SoundManager(const SoundManager&) = delete;
 	void operator = (const SoundManager&) = delete;
+private:
+	//計　12byte
+	struct SoundConfigInfo {
+		char signature[4];				//4byte
+		float version;					//4byte
+		unsigned short volumeSE;		//2byte
+		unsigned short volumeBGM;		//2byte
+	};
+
+	int volumeSE_ = 255;
+	int volumeBGM_ = 255;
+
+	std::unordered_map<std::string, int> nameAndHandleTable_;
 };
 

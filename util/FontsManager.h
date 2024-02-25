@@ -60,8 +60,7 @@ private:
 
 	FontsManager(const FontsManager&) = delete;
 	void operator = (const FontsManager&) = delete;
-
+private:
 	std::unordered_map<std::string,int> fontHandle_;		//文字列をキーとしたフォントを保管するための配列
-
 };
 

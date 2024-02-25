@@ -7,7 +7,6 @@
 #include "util/game.h"
 #include "util/InputState.h"
 #include "util/SoundManager.h"
-#include "util/EffekseerManager.h"
 
 // ƒvƒƒOƒ‰ƒ€‚Í WinMain ‚©‚çn‚Ü‚è‚Ü‚·
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)

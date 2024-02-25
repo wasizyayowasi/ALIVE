@@ -56,9 +56,15 @@ public:
 	/// <summary>
 	/// 衝突したモデルのポリゴンが壁かを判断し、移動ベクトルを補正する
 	/// </summary>
-	/// <param name="moveVec">プレイヤーの移動量</param>
-	/// <param name="playerHeight">プレイヤーの高さ</param>
+	/// <param name="player">プレイヤーを参照</param>
 	void CheckCollisionWall(const std::shared_ptr<Player>& player);
+
+	/// <summary>
+	/// 移動後座標で壁との衝突判定
+	/// </summary>
+	/// <param name="j">回数</param>
+	/// <param name="player">プレイヤーを参照</param>
+	void CollisionDetectionWithWallAfterMovement(int& j, const std::shared_ptr<Player>& player);
 
 	/// <summary>
 	/// 衝突したモデルのポリゴンが床かを判断する
@@ -101,14 +107,14 @@ private:
 	int hitWallNum = 0;									//壁と衝突したポリゴンの数
 	int hitFloorNum = 0;								//床と衝突したポリゴンの数
 
-	float objectHeightY = 0;							//衝突したオブジェクトの高さを保管する
+	float objectHeightY_ = 0;							//衝突したオブジェクトの高さを保管する
 
 	bool isGoUpStep_ = false;							//段差を上ることが出来る
 	bool moveFlag = false;								//現在移動しているかのフラグ
-	bool hitFlag = false;								//衝突したかのフラグ
+	bool hitFlag_ = false;								//衝突したかのフラグ
 
 	VECTOR oldPos = {};									//現在のプレイヤーの座標
-	VECTOR nowPos = {};									//プレイヤーの移動量と現在の座標を足して結果
+	VECTOR nowPos_ = {};									//プレイヤーの移動量と現在の座標を足して結果
 
 	//モデルとの当たり判定用メソッド
 	std::list<CollModelState> hitDim_;					//球とモデルの衝突判定用

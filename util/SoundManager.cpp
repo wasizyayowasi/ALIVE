@@ -23,6 +23,8 @@ SoundManager::~SoundManager()
     for (auto& sound : nameAndHandleTable_) {
         DeleteSoundMem(sound.second);
     }
+
+    SaveSoundConfig();
 }
 
 //音声ファイルをロードする
@@ -44,13 +46,6 @@ void SoundManager::LoadSound()
     Load3DSoundSEFile("switchOn");
     Load3DSoundSEFile("pullLever");
     Load3DSoundSEFile("stopCrank");
-}
-
-//サウンドボリュームを変更する
-void SoundManager::ChangeVolumeMem()
-{
-    SetSEVolume(volumeSE_);
-    SetBGMVolume(volumeBGM_);
 }
 
 //読み込んだサウンドを流す
