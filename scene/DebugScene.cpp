@@ -15,6 +15,12 @@ namespace
 {
 	//文字列の補正配置場所Y
 	constexpr int correction_pos_Y = 32;
+
+	//文字列を表示するX座標
+	constexpr int str_draw_pos_x = 100;
+
+	//文字列を表示するY座標
+	constexpr int str_draw_pos_y = 150;
 }
 
 //コンストラクタ
@@ -91,8 +97,8 @@ void DebugScene::Update()
 //描画
 void DebugScene::Draw()
 {
-	int x = 100;
-	int y = 150;
+	int x = str_draw_pos_x;
+	int y = str_draw_pos_y;
 
 	//文字列の描画
 	for (auto& scene : sceneName_) {

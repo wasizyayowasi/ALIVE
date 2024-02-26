@@ -10,14 +10,23 @@ namespace {
 	//二次元配列の最大数 Z
 	constexpr int max_Z = 11;
 
+	//二次元配列の最大要素数
+	constexpr int max_Index = max_X * max_Z;
+
+	//半分
+	constexpr int half = 2;
+
+	//球の分割数
+	constexpr int division_num = 32;
+
 	//1マスの縦のサイズ
 	constexpr float height_size = 100.0f;
 
 	//1マスの横のサイズ
 	constexpr float width_size = 100.0f;
 
-	//二次元配列の最大要素数
-	constexpr int max_Index = max_X * max_Z;
+	//球の半径
+	constexpr float sphere_radius = 16.0f;
 }
 
 //コンストラクタ
@@ -34,8 +43,8 @@ Aster::~Aster()
 void Aster::ArrayInit(const VECTOR& pos)
 {
 	//縦横の半分のサイズを取得
-	int halfX = max_X / 2;
-	int halfZ = max_Z / 2;
+	int halfX = max_X / half;
+	int halfZ = max_Z / half;
 
 	//中心座標
 	VECTOR centerPos = {};
@@ -100,38 +109,37 @@ void Aster::Update()
 	}
 }
 
-//描画
-void Aster::Draw()
+//デバッグ描画
+void Aster::DebugDraw()
 {
 	//デバッグ用描画
-	{
-		for (int i = 0; i < max_Index; i++) {
-			if (masu_[i].masuMode == MasuMode::normalMode) {
-				DrawSphere3D(masu_[i].centerPos, 16, 32, 0x00ff00, 0x00ff00, true);
-			}
-			else if(masu_[i].masuMode == MasuMode::blockadeMode) {
-				DrawSphere3D(masu_[i].centerPos, 16, 32, 0xff0000, 0xff0000, true);
-			}
-			else {
-				DrawSphere3D(masu_[i].centerPos, 16, 32, 0xffff00, 0xffff00, true);
-			}
-			
-			VECTOR pos = ConvWorldPosToScreenPos(masu_[i].centerPos);
-			DrawFormatStringF(pos.x, pos.y, 0x448844, "%d", i);
+	for (int i = 0; i < max_Index; i++) {
+		if (masu_[i].masuMode == MasuMode::normalMode) {
+			DrawSphere3D(masu_[i].centerPos, sphere_radius, division_num, 0x00ff00, 0x00ff00, true);
 		}
+		else if(masu_[i].masuMode == MasuMode::blockadeMode) {
+			DrawSphere3D(masu_[i].centerPos, sphere_radius, division_num, 0xff0000, 0xff0000, true);
+		}
+		else {
+			DrawSphere3D(masu_[i].centerPos, sphere_radius, division_num, 0xffff00, 0xffff00, true);
+		}
+		
+		VECTOR pos = ConvWorldPosToScreenPos(masu_[i].centerPos);
+		DrawFormatStringF(pos.x, pos.y, 0x448844, "%d", i);
+	}
 
-		DrawFormatString(0, 16, 0x448844, "敵がいるインデックス%d", currentEnemyIndex_);
-		DrawFormatString(0, 32, 0x448844, "プレイヤーがいるインデックス%d", currentPlayerIndex_);
-		if (!route_.empty()) {
-			DrawFormatString(0, 48, 0x448844, "目的のインデックス%d", route_.front());
-		}
+	DrawFormatString(0, 16, 0x448844, "敵がいるインデックス%d", currentEnemyIndex_);
+	DrawFormatString(0, 32, 0x448844, "プレイヤーがいるインデックス%d", currentPlayerIndex_);
 
-		//int y = 128;
-		for (auto& result : debugScoreTable) {
-			VECTOR pos = ConvWorldPosToScreenPos(masu_[result.second.destinationIndex].centerPos);
-			DrawFormatStringF(pos.x, pos.y + 10, 0xff0000, "S:%d", result.second.score);
-			//y += 16;
-		}
+	if (!route_.empty()) {
+		DrawFormatString(0, 48, 0x448844, "目的のインデックス%d", route_.front());
+	}
+
+	//int y = 128;
+	for (auto& result : debugScoreTable) {
+		VECTOR pos = ConvWorldPosToScreenPos(masu_[result.second.destinationIndex].centerPos);
+		DrawFormatStringF(pos.x, pos.y + 10, 0xff0000, "S:%d", result.second.score);
+		//y += 16;
 	}
 }
 
@@ -382,7 +390,8 @@ int Aster::SearchCurrentIndex(const VECTOR& pos)
 		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(masu_[i].centerPos, pos);
 
 		//過去最短に近い結果と比べる
-		if (min > distanceSize) {
+		if (min > distanceSize)
+		{
 			//過去最短を更新
 			min = distanceSize;
 
@@ -399,7 +408,8 @@ int Aster::SearchCurrentIndex(const VECTOR& pos)
 bool Aster::GetIsRouteEmpty()
 {
 	//ルートが無い時、trueを返す
-	if (route_.empty()) {
+	if (route_.empty())
+	{
 		return true;
 	}
 
@@ -413,7 +423,8 @@ bool Aster::SearchBlockadeMode(const VECTOR& pos)
 	int pointIndex = SearchCurrentIndex(pos);
 
 	//取得したインデックス座標の升がblockadeModeだったらtrueを返す
-	if (masu_[pointIndex].masuMode == MasuMode::blockadeMode) {
+	if (masu_[pointIndex].masuMode == MasuMode::blockadeMode)
+	{
 		return true;
 	}
 

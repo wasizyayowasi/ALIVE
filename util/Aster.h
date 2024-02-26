@@ -72,7 +72,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void DebugDraw();
 
 	/// <summary>
 	/// 現在のインデックス情報を更新する

@@ -40,6 +40,12 @@ namespace {
 
 	//音が聞こえる範囲
 	constexpr float sound_fange = 800.0f;
+
+	//初期カメラポジション
+	constexpr VECTOR camera_init_pos = { 265, 314, -803 };
+
+	//初期カメラのターゲットポジション
+	constexpr VECTOR camera_init_target_pos = { 265, 314, 1777 };
 }
 
 //コンストラクタ
@@ -53,7 +59,7 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 
 	//インスタンス化
 	objManager_ = std::make_shared<ObjectManager>();
-	camera_ = std::make_shared<Camera>(VGet(265, 314, -803), VGet(265, 314, 1777));
+	camera_ = std::make_shared<Camera>(camera_init_pos, camera_init_target_pos);
 	playerModel_ = std::make_shared<Model>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name), Material::Other);
 	boardModel_  = std::make_shared<Model>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::WhiteBoard)].name), Material::Iron);
 
