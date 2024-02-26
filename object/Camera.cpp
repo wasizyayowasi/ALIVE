@@ -186,7 +186,7 @@ float Camera::TrackingPosX(const VECTOR& playerPos)
 	if (playerPos.x < gimmickPosX && playerPos.x > boderlinePosX - border_range) {
 		distance = gimmickPosX - pos_.x;
 		moveVecX_ = distance / camera_moveY_speed;
-		moveVecX_ = moveVecX_ * 0.96f;
+		moveVecX_ = moveVecX_ * traking_rate_x;
 
 		return pos_.x + moveVecX_;
 	}
@@ -210,7 +210,7 @@ float Camera::TrackingPosY(const VECTOR& playerPos, const  float playerHeight)
 		if (playerHeadPosY < boderlinePos.y + border_range && playerHeadPosY > boderlinePos.y - border_range) {
 			distance = gimmickPosY - pos_.y;
 			moveVecY_ = distance / camera_moveY_speed;
-			moveVecY_ = moveVecY_ * 0.96f;
+			moveVecY_ = moveVecY_ * traking_rate_y;
 
 			return pos_.y + moveVecY_;
 		}

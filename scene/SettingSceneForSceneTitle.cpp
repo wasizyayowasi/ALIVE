@@ -15,12 +15,23 @@
 using namespace std;
 
 namespace {
-	//フォントの名前
-	const char* const pigumo42_font_name = "ピグモ 0042";
+	//音の1メモリの大きさ
+	constexpr int sound_1_momery_size = 25;
+
+	//音の最大メモリ
+	constexpr int sound_max_memory = 10;
+	 
+	//音の最小メモリ
+	constexpr int sound_min_memory = 1;
+
 	//円同士の間隔
 	constexpr float circle_distance = 53.5f;
+
 	//円の半径
 	constexpr float circle_radius = 14.5f;
+
+	//フォントの名前
+	const char* const pigumo42_font_name = "ピグモ 0042";
 }
 
 //コンストラクタ
@@ -45,8 +56,8 @@ void SettingSceneForSceneTitle::Init()
 	UIManager_ = std::make_shared<UIItemManager>();
 
 	//現在のボリュームの取得
-	volumeBGM_ = sound.GetBGMVolume() / 25;
-	volumeSE_ = sound.GetSEVolume() / 25;
+	volumeBGM_ = sound.GetBGMVolume() / sound_1_momery_size;
+	volumeSE_ = sound.GetSEVolume() / sound_1_momery_size;
 
 	//UI画像の作成
 	//フォントの取得
@@ -72,7 +83,8 @@ void SettingSceneForSceneTitle::Init()
 
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
 
-	if (manager_.GetWindowMode()) {
+	if (manager_.GetWindowMode()) 
+	{
 		windowModeText_ = "≪  ウィンドウモード  ≫";
 	}
 	else {
@@ -113,11 +125,14 @@ void SettingSceneForSceneTitle::Draw()
 
 	int alpha[3] = {};
 	
-	for (int i = 0; i < 3; i++) {
-		if (selectNum_ == i) {
+	for (int i = 0; i < 3; i++) 
+	{
+		if (selectNum_ == i) 
+		{
 			alpha[i] = 250;
 		}
-		else {
+		else 
+		{
 			alpha[i] = 150;
 		}
 	}
@@ -139,11 +154,13 @@ void SettingSceneForSceneTitle::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha[1]);
 
 	//音量バー画像の描画
-	for (int i = 1; i < 11; i++) {
+	for (int i = 1; i < 11; i++) 
+	{
 		scale = 1.0f;
 		color = 0xb1b3b6;
 
-		if (volumeBGM_ == i) {
+		if (volumeBGM_ == i) 
+		{
 			scale = 1.3f;
 			color = 0xff0000;
 		}
@@ -157,11 +174,13 @@ void SettingSceneForSceneTitle::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha[2]);
 
 	//音量バー画像の描画
-	for (int i = 1; i < 11; i++) {
+	for (int i = 1; i < 11; i++) 
+	{
 		scale = 1.0f;
 		color = 0xb1b3b6;
 
-		if (volumeSE_ == i) {
+		if (volumeSE_ == i) 
+		{
 			scale = 1.3f;
 			color = 0xff0000;
 		}
@@ -187,17 +206,20 @@ void SettingSceneForSceneTitle::NormalUpdate()
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	if (input.IsTriggered(InputType::Up)) {
+	if (input.IsTriggered(InputType::Up))
+	{
 		selectNum_ = (std::max)(selectNum_ - 1, 0);
 	}
-	else if (input.IsTriggered(InputType::Down)) {
+	else if (input.IsTriggered(InputType::Down)) 
+	{
 		selectNum_ = (std::min)(selectNum_ + 1, 4);
 	}
 
 	ChangeUpdateFunc();
 
 	//シーン切り替え
-	if (input.IsTriggered(InputType::Activate)) {
+	if (input.IsTriggered(InputType::Activate)) 
+	{
 		selectNum_ = 4;
 		updateFunc_ = &SettingSceneForSceneTitle::GaussFadeOutUpdate;
 	}
@@ -207,7 +229,8 @@ void SettingSceneForSceneTitle::NormalUpdate()
 void SettingSceneForSceneTitle::GaussFadeInUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
-	if (++fadeTimer_ == fadeInterval_) {
+	if (++fadeTimer_ == fadeInterval_)
+	{
 		updateFunc_ = &SettingSceneForSceneTitle::NormalUpdate;
 		fadeValue_ = 255;
 	}
@@ -217,7 +240,8 @@ void SettingSceneForSceneTitle::GaussFadeInUpdate()
 void SettingSceneForSceneTitle::GaussFadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
-	if (--fadeTimer_ == 0) {
+	if (--fadeTimer_ == 0) 
+	{
 		SceneChange();
 		fadeValue_ = 0;
 		return;
@@ -231,15 +255,17 @@ void SettingSceneForSceneTitle::BGMUpdate()
 	auto& input = InputState::GetInstance();
 
 	//BGM音量調整
-	if (input.IsTriggered(InputType::Left)) {
-		volumeBGM_ = (max)(volumeBGM_ - 1, 1);
+	if (input.IsTriggered(InputType::Left))
+	{
+		volumeBGM_ = (max)(volumeBGM_ - 1, sound_min_memory);
 	}
-	if (input.IsTriggered(InputType::Right)) {
-		volumeBGM_ = (min)(volumeBGM_ + 1, 10);
+	if (input.IsTriggered(InputType::Right)) 
+	{
+		volumeBGM_ = (min)(volumeBGM_ + 1, sound_max_memory);
 	}
 
 	//音量の変更
-	SoundManager::GetInstance().SetBGMVolume(volumeBGM_ * 25);
+	SoundManager::GetInstance().SetBGMVolume(volumeBGM_ * sound_1_momery_size);
 }
 
 //SEの音量を変更する
@@ -249,15 +275,17 @@ void SettingSceneForSceneTitle::SEUpdate()
 	auto& input = InputState::GetInstance();
 
 	//SE音量調整
-	if (input.IsTriggered(InputType::Left)) {
-		volumeSE_ = (max)(volumeSE_ - 1, 1);
+	if (input.IsTriggered(InputType::Left))
+	{
+		volumeSE_ = (max)(volumeSE_ - 1, sound_min_memory);
 	}
-	if (input.IsTriggered(InputType::Right)) {
-		volumeSE_ = (min)(volumeSE_ + 1, 10);
+	if (input.IsTriggered(InputType::Right)) 
+	{
+		volumeSE_ = (min)(volumeSE_ + 1, sound_max_memory);
 	}
 
 	//音量の変更
-	SoundManager::GetInstance().SetSEVolume(volumeSE_ * 25);
+	SoundManager::GetInstance().SetSEVolume(volumeSE_ * sound_1_momery_size);
 }
 
 //ウィンドウモードを変更する
@@ -266,11 +294,13 @@ void SettingSceneForSceneTitle::ChangeWindowUpdate()
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	if (input.IsTriggered(InputType::Left)) {
+	if (input.IsTriggered(InputType::Left))
+	{
 		windowModeText_ = "≪  ウィンドウモード  ≫";
 		manager_.SetChangeWindowMode(true);
 	}
-	if (input.IsTriggered(InputType::Right)) {
+	if (input.IsTriggered(InputType::Right))
+	{
 		windowModeText_ = "≪  フルスクリーン  ≫";
 		manager_.SetChangeWindowMode(false);
 	}
@@ -282,7 +312,8 @@ void SettingSceneForSceneTitle::ChangeUpdateFunc()
 	//短縮化
 	auto& input = InputState::GetInstance();
 
-	switch (selectNum_) {
+	switch (selectNum_) 
+	{
 	case 0:
 		ChangeWindowUpdate();
 		break;
@@ -308,7 +339,8 @@ void SettingSceneForSceneTitle::ChangeUpdateFunc()
 //シーンを切り替える
 void SettingSceneForSceneTitle::SceneChange()
 {
-	switch (selectNum_) {
+	switch (selectNum_)
+	{
 	case 3:
 		manager_.SwapScene(std::shared_ptr<SceneBase>(std::make_shared<KeyConfigSceneForSceneTitle>(manager_)));
 		break;

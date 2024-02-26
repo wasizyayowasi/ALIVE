@@ -18,11 +18,23 @@ namespace {
 	//最大時間
 	constexpr int max_time = 300;
 
+	//画面の横幅を半分にする
+	constexpr int screen_half_width = 2;
+
+	//文字列の横幅を半分にする
+	constexpr int str_half_width = 2;
+
+	//サイズの半分
+	constexpr int scale_half = 2;
+
 	//画像サイズの拡縮率
 	constexpr float graph_scale_size = 1.2f;
 
-	//UIを表示する高さの補正
-	constexpr float correction_height = 1.3f;
+	//UI画像を表示する高さの補正
+	constexpr float graph_correction_height = 1.3f;
+
+	//UI文字列を表示する高さの補正
+	constexpr float str_correction_height = 1.6f;
 }
 
 //コンストラクタ
@@ -32,12 +44,12 @@ Tutorial::Tutorial()
 	auto& input = InputState::GetInstance();
 
 	//キーボードの画像を描画する位置
-	UIPos_[UIGraph::KeyBord].x = Game::screen_width / 2 - input_graph_chip_size;
-	UIPos_[UIGraph::KeyBord].y = Game::screen_height - input_graph_chip_size * correction_height;
+	UIPos_[UIGraph::KeyBord].x = Game::screen_width / screen_half_width - input_graph_chip_size;
+	UIPos_[UIGraph::KeyBord].y = Game::screen_height - input_graph_chip_size * graph_correction_height;
 
 	//padのボタンを描画する位置
-	UIPos_[UIGraph::XboxBotton].x = Game::screen_width / 2 - controller_graph_chip_size;
-	UIPos_[UIGraph::XboxBotton].y = Game::screen_height - controller_graph_chip_size * correction_height;
+	UIPos_[UIGraph::XboxBotton].x = Game::screen_width / screen_half_width - controller_graph_chip_size;
+	UIPos_[UIGraph::XboxBotton].y = Game::screen_height - controller_graph_chip_size * graph_correction_height;
 
 	//クランクのチュートリアル
 	tutorialData_["CrankTutorial"]	.push_back({ static_cast<int>(InputType::Activate)	,false , "クランクを回す" });
@@ -62,6 +74,9 @@ Tutorial::Tutorial()
 	tutorialData_["CorpseScaffoldTutorial"].push_back({ static_cast<int>(InputType::Death)	,false , "死亡" });
 	tutorialData_["CorpseScaffoldTutorial"].push_back({ static_cast<int>(InputType::Max)	,false , "死体は足場として使える" });
 
+	//何も表示したくないとき
+	tutorialData_["None"].push_back({ static_cast<int>(InputType::Max)	,false , "" });
+
 	//フォントの取得
 	fontPigumo42_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0042");
 }
@@ -81,7 +96,7 @@ void Tutorial::Update(const VECTOR& playerPos)
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorialInfo.pos, playerPos);
 
 	//取得したデータの距離のサイズを半分にする
-	float range = VSize(tutorialInfo.scale) / 2;
+	float range = VSize(tutorialInfo.scale) / scale_half;
 
 	//チュートリアルの範囲内に入っていたら
 	//一番近いチュートリアルの名前を取得する
@@ -89,6 +104,10 @@ void Tutorial::Update(const VECTOR& playerPos)
 	{
 		//一番近いチュートリアルの名前を取得
 		currentTutorialName_ = tutorialInfo.name;
+	}
+	else
+	{
+		currentTutorialName_ = "None";
 	}
 
 	//現在のチュートリアルの名前と1フレーム前のチュートリアルの名前が
@@ -126,13 +145,13 @@ void Tutorial::Draw()
 		int width = GetDrawStringWidthToHandle(data.str.c_str(), static_cast<int>(data.str.size()), fontPigumo42_);
 
 		//キーの役割の描画
-		DrawStringToHandle(Game::screen_width / 2 - width / 2, Game::screen_height - static_cast<int>(input_graph_chip_size * 1.6f), data.str.c_str(), 0xffffff, fontPigumo42_);
+		DrawStringToHandle(Game::screen_width / screen_half_width - width / str_half_width, Game::screen_height - static_cast<int>(input_graph_chip_size * str_correction_height), data.str.c_str(), 0xffffff, fontPigumo42_);
 
 		return;
 	}
 
 	//キーの役割の描画
-	DrawStringToHandle(Game::screen_width / 2, static_cast<int>(Game::screen_height - input_graph_chip_size * 1.6f), data.str.c_str(), 0xffffff, fontPigumo42_);
+	DrawStringToHandle(Game::screen_width / screen_half_width, static_cast<int>(Game::screen_height - input_graph_chip_size * str_correction_height), data.str.c_str(), 0xffffff, fontPigumo42_);
 
 	//キー画像の描画
 	input.DrawKeyGraph(data.keyType, UIPos_[UIGraph::KeyBord].x, UIPos_[UIGraph::KeyBord].y, graph_scale_size);

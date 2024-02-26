@@ -89,7 +89,7 @@ void UIItemManager::ChangePosDraw(const float centerPosX, const float centerPosY
 	for (int i = 0; i < UIMenu_.size(); i++) 
 	{
 		//radian‚ÌŽæ“¾
-		radian = (time + (UIMenu_.size() - i) * correction_swing) * DX_PI_F / 180.0f;
+		radian = MathUtil::DegreeToRadian(static_cast<float>(time + (UIMenu_.size() - i) * correction_swing));
 		float sin = std::sin(radian);
 
 		//•¶Žš‚ª”g‚Ì‚æ‚¤‚É“®‚­‚æ‚¤‚É‚µ‚½

@@ -57,8 +57,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	/// <param name="pos">プレイヤーポジション</param>
-	void Draw(const VECTOR& PlayerPos);
+	void Draw();
 
 	/// <summary>
 	/// 衝突判定を行うモデルを追加する

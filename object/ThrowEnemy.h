@@ -29,7 +29,7 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// 敵が弾を撃つ処理
+	/// 弾を撃つ処理
 	/// </summary>
 	/// <param name="shotManager">弾を管理するクラスのポインタ</param>
 	/// <param name="playerPos">プレイヤーのポジション</param>

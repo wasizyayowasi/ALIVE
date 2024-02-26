@@ -1,8 +1,6 @@
 #pragma once
 #include "SceneBase.h"
-#include "../util/KeyData.h"
 #include <memory>
-#include <map>
 
 class UIItemManager;
 
@@ -103,11 +101,8 @@ private:
 	std::shared_ptr<UIItemManager> KeyUI_;				//UIマネージャーのスマートポインタ
 	std::shared_ptr<UIItemManager> PadUI_;				//UIマネージャーのスマートポインタ
 
-	std::map<int, Key> keyNum_;							//DXライブラリの入力番号と作成した画像の番号を合わせるためのテーブル
-
 	void (KeyConfigScene::* updateFunc_)();
 	void (KeyConfigScene::* changeKeyUpdateFunc_)();	//メンバ関数ポインタ
 	void (KeyConfigScene::* drawFunc_)();				//メンバ関数ポインタ
-
 };
 

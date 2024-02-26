@@ -131,6 +131,16 @@ public:
 
 private:
 	/// <summary>
+	/// プレイヤーのモデルの初期化
+	/// </summary>
+	void PlayerModelInit();
+
+	/// <summary>
+	/// UIの設定
+	/// </summary>
+	void UISetting();
+
+	/// <summary>
 	/// ライトの設定
 	/// </summary>
 	void LightSetting();

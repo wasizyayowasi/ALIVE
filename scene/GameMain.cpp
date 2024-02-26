@@ -19,10 +19,20 @@
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
 #include "../util/SoundManager.h"
+#include "../util/ModelManager.h"
 #include "../util/EffectManager.h"
 #include "../util/CheckCollisionModel.h"
 
 #include <algorithm>
+
+namespace
+{
+	//ガウス処理で使用するピクセル幅
+	constexpr int pixel_width = 32;
+
+	//ぼかしのパラメーター
+	constexpr int pixel_param = 800;
+}
 
 //コンストラクタ
 GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameMain::FadeInUpdate)
@@ -55,6 +65,9 @@ GameMain::~GameMain()
 //初期化
 void GameMain::Init()
 {
+	//短縮化
+	auto& model = ModelManager::GetInstance();
+
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
 
 	//仮でライト処理を消している
@@ -63,7 +76,7 @@ void GameMain::Init()
 	//1mの範囲を設定する
 	Set3DSoundOneMetre(10.0f);
 
-	skyHandle_ = MV1LoadModel("data/model/skyDorm/SkyDorm.mv1");
+	skyHandle_ = model.GetModelHandle("SkyDorm");
 	float scale = 30.0f;
 	MV1SetScale(skyHandle_, VGet(scale, scale, scale));
 	MV1SetPosition(skyHandle_, VGet(0, 200, 0));
@@ -97,7 +110,7 @@ void GameMain::Draw()
 	player_->Draw();
 
 	//オブジェクトの描画
-	objManager_->Draw(player_->GetStatus().pos);
+	objManager_->Draw();
 
 	//エフェクトの描画
 	EffectManager::GetInstance().Draw();
@@ -122,57 +135,70 @@ void GameMain::Draw()
 	//パッドのアナログ的なレバーの入力情報を得る
 	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_KEY_PAD1);
 
-	float size = 0;
-	size = static_cast<float>(std::sqrt(analogX * analogX + analogY * analogY));
-
-	float X = 0.0f;
-	float Y = 0.0f;
-
-	if (size != 0)
+	if (analogX != 0 || analogY != 0)
 	{
-		X = analogX / size;
-		Y = analogY / size;
+		float size = 0;
+		size = static_cast<float>(std::sqrt(analogX * analogX + analogY * analogY));
+
+		float X = 0.0f;
+		float Y = 0.0f;
+
+		if (size != 0)
+		{
+			X = analogX / size;
+			Y = analogY / size;
+		}
+
+		int initX = 0;
+		int initY = -1;
+
+		double vecASize = std::sqrt(tempX * tempX + tempY * tempY);
+		//	double vecASize = std::sqrt(initX * initX + initY * initY);
+		double vecBSize = std::sqrt(X * X + Y * Y);
+
+		float innerProduct = static_cast<float>(tempX * X + tempY * Y);
+		//	float innerProduct = static_cast<float>(initX * X + initY * Y);
+
+		float norm = static_cast<float>(vecASize * vecBSize);
+
+		float angle = innerProduct / norm;
+
+		angle = std::acos(angle);
+
+		angle = angle / DX_PI_F * 180.0f;
+
+		static float tempAngle = 0;
+
+		if (tempX != 0 || tempY != 0)
+		{
+			tempAngle += angle;
+		}
+
+		tempX = X;
+		tempY = Y;
+
+
+
+		float result = std::atan2(Y, X);
+
+		result = result / DX_PI_F * 180.0f;
+
+		//DrawFormatString(0, 64, 0xffffff, "X:%d,Y%d", analogX, analogY);
+		DrawFormatString(0, 64, 0xffffff, "%.2f", result);
+		DrawFormatString(0, 80, 0xffffff, "%.2f", angle);
+		DrawFormatString(0, 96, 0xffffff, "%.2f", tempAngle);
 	}
-
-	int initX = 0;
-	int initY = -1;
-
-	double vecASize = std::sqrt(tempX * tempX + tempY * tempY);
-	double vecBSize = std::sqrt(X * X + Y * Y);
-
-	float innerProduct = static_cast<float>(tempX * X + tempY * Y);
-
-	float norm = static_cast<float>(vecASize * vecBSize);
-
-	float angle = innerProduct / norm;
-
-	angle = std::acos(angle);
-
-	angle = angle / DX_PI_F * 180.0f;
-
-	tempX = X;
-	tempY = Y;
-
-
-
-	float result = std::atan2(Y, X);
-
-	result = result / DX_PI_F * 180.0f;
-
-	//DrawFormatString(0, 64, 0xffffff, "X:%d,Y%d", analogX, analogY);
-	DrawFormatString(0, 64, 0xffffff, "%.2f", result);
-	DrawFormatString(0, 80, 0xffffff, "%.2f", angle);
 
 #endif // _DEBUG
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
-	//DrawFormatString(0, 80, 0xffffff, "%d", sizeof(std::string));
-
 	//フィルター処理を行うか
-	if (isFilterOn_) {
-		GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 32, 800);
+	if (isFilterOn_) 
+	{
+		GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, pixel_width, pixel_param);
 	}
+
 	//makescreenHandleに書き込んだ内容を描画する
 	DrawGraph(0, 0, makeScreenHandle_, true);
 
@@ -186,7 +212,8 @@ void GameMain::Draw()
 void GameMain::FadeInUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
-	if (--fadeTimer_ == 0) {
+	if (--fadeTimer_ == 0) 
+	{
 		updateFunc_ = &GameMain::NormalUpdate;
 		fadeValue_ = 0;
 	}
@@ -228,7 +255,8 @@ void GameMain::NormalUpdate()
 	SoundManager::GetInstance().Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
 
 	//ポーズシーンを開く
-	if (input.IsTriggered(InputType::Pause)) {
+	if (input.IsTriggered(InputType::Pause)) 
+	{
 		isFilterOn_ = true;
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
@@ -240,7 +268,8 @@ void GameMain::NormalUpdate()
 										VGet(info.pos.x, info.pos.y - info.scale.y, info.pos.z), 
 										VGet(info.pos.x, info.pos.y + info.scale.y, info.pos.z), 600);
 
-	if (result.HitNum > 0) {
+	if (result.HitNum > 0)
+	{
 		totalDeathNum_ += player_->GetDeathCount();
 		file.SetDeathCount(totalDeathNum_);
 		updateFunc_ = &GameMain::FadeOutUpdate;
@@ -253,7 +282,8 @@ void GameMain::NormalUpdate()
 void GameMain::FadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
-	if (++fadeTimer_ == fadeInterval_) {
+	if (++fadeTimer_ == fadeInterval_) 
+	{
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager_)));
 		return;
 	}

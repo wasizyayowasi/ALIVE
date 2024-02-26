@@ -11,6 +11,7 @@
 #include "../object/ObjectManager.h"
 
 #include "../util/game.h"
+#include "../util/util.h"
 #include "../util/Model.h"
 #include "../util/InputState.h"
 #include "../util/FontsManager.h"
@@ -21,6 +22,57 @@
 #include "../util/UIItemManager.h"
 
 #include <algorithm>
+
+namespace
+{
+	//アニメーションを変更するのにかかる時間
+	constexpr int anim_change_time = 10;
+
+	//画面の分割数
+	constexpr int screen_split_num = 128;
+
+	//画面の半分
+	constexpr int screen_half = 2;
+
+	//各画像の画面の分割配置ポジション
+	constexpr int up_split_num = 92;
+	constexpr int down_split_num = 87;
+	constexpr int left_split_num = 92;
+	constexpr int right_split_num = 97;
+	constexpr int decision_split_num = 112;
+	constexpr int move_str_split_num = 100;
+	constexpr int decision_str_split_num = 116;
+
+	//タイトルのビルボートのサイズ
+	constexpr float title_bill_board_size = 300.0f;
+
+	//ビルボートのサイズ
+	constexpr float bill_board_size = 200.0f;
+
+	//中心位置
+	constexpr float center_pos_x = 0.5f;
+	constexpr float center_pos_y = 0.5f;
+
+	//キー画像のサイズ
+	constexpr float key_graph_size = 0.8f;
+
+	//UI画像の高さの補正
+	constexpr int str_UI_correction_heignt = 55;
+	constexpr float UI_correction_height = 40.0f;
+	constexpr float up_UI_correction_height = 90.0f;
+
+	//スポットライトの外側の角度
+	constexpr float spot_light_out_angle = 90.0f;
+
+	//スポットライトの内側の角度
+	constexpr float spot_light_in_angle = 30.0f;
+
+	//ディレクションライトの色
+	constexpr COLOR_F direction_light_color = { 0.41f, 0.41f, 0.41f, 1.0f };
+
+	//スポットライトの色
+	constexpr COLOR_F spot_light_color = { 0.87f, 0.72f, 0.52f, 1.0f };
+}
 
 //コンストラクタ
 SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
@@ -37,22 +89,8 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	camera_				= std::make_shared<Camera>(file.GetCameraTargetPos("start"),file.GetCameraTargetPos("startTargetPos"));
 	lightBulb_			= std::make_shared<LightBulb>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::LightBulb)].name), file.GetMainSpecialObjectInfo("LightBulb"));
 
-	//メインプレイヤーモデルの配置データをセットする
-	auto mainPlayerInfo = file.GetMainSpecialObjectInfo("MainPlayer");
-	mainPlayerModel_->SetScale(mainPlayerInfo.scale);
-	mainPlayerModel_->SetPos(mainPlayerInfo.pos);
-	mainPlayerModel_->SetRot(mainPlayerInfo.rot);
-	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::StopTimer), false, true);
-
-	//サブプレイヤーモデルの配置データをセットする
-	auto subPlayerInfo = file.GetMainSpecialObjectInfo("SubPlayer");
-	subPlayerModel_->SetScale(subPlayerInfo.scale);
-	subPlayerModel_->SetPos(subPlayerInfo.pos);
-	subPlayerModel_->SetRot(subPlayerInfo.rot);
-	subPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::Jump), false, true);
-
-	//オブジェクトの生成
-	objManager_->OpeningStageObjectGenerator();
+	//プレイヤーのモデルの初期化
+	PlayerModelInit();
 
 	//ライトの設定
 	LightSetting();
@@ -60,37 +98,18 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 	//カメラの配置等の設定
 	CameraPositionDataSetting();
 
-	//UIを表示する座標を取得
-	menuDrawPos_["SE"]				= file.GetUIPos("SEUIPos");
-	menuDrawPos_["BGM"]				= file.GetUIPos("BGMUIPos");
-	menuDrawPos_["終了"]			= file.GetUIPos("endDrawPos");
-	menuDrawPos_["設定"]			= file.GetUIPos("settingDrawPos");
-	menuDrawPos_["戻る"]			= file.GetUIPos("backUIPos");
-	menuDrawPos_["モード"]			= file.GetUIPos("windowModeUIPos");
-	menuDrawPos_["タイトル"]		= file.GetUIPos("titleDrawPos");
-	menuDrawPos_["操作設定"]		= file.GetUIPos("advancedSettingUIPos");
-	menuDrawPos_["シーン選択"]		= file.GetUIPos("continueDrawPos");
-	menuDrawPos_["ニューゲーム"]	= file.GetUIPos("startDrawPos");
+	//オブジェクトの生成
+	objManager_->OpeningStageObjectGenerator();
 
-	//UI文字列の作成
-	menuName_.push_back("ニューゲーム");
-	menuName_.push_back("シーン選択");
-	menuName_.push_back("設定");
-	menuName_.push_back("終了");
-
-	//UI画像の作成
-	fontHandle_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0033");
-	float y = 120.0f;
-	for (auto& menu : menuName_) {
-		UI_->AddMenu(static_cast<float>(Game::screen_width / 2), static_cast<float>(Game::screen_height / 2) + y, 320, 100, menu.c_str(), fontHandle_);
-		y += 40.0f;
-	}
+	//UIの設定
+	UISetting();
 }
 
 //デストラクタ
 SceneTitle::~SceneTitle()
 {
-	for (auto& light : lightHandle_) {
+	for (auto& light : lightHandle_) 
+	{
 		DeleteLightHandle(light);
 	}
 	DeleteLightHandleAll();
@@ -120,7 +139,7 @@ void SceneTitle::Update()
 	lightBulb_->Update();
 
 	//ライトの更新
-	SetLightDirection(lightBulb_->GetFrontVec());
+	SetLightDirection(lightBulb_->GetRotVec());
 	SetLightPosition(lightBulb_->GetFramePos());
 
 	//ライトの方向設定
@@ -141,7 +160,7 @@ void SceneTitle::Draw()
 	camera_->Init(VGet(0, 140, 0));
 
 	//オブジェクトの描画
-	objManager_->Draw({ 0,0,0 });
+	objManager_->Draw();
 
 	//電球の描画
 	SetUseLighting(false);
@@ -153,31 +172,33 @@ void SceneTitle::Draw()
 	subPlayerModel_->Draw();
 
 	//UIの描画
-	UI_->DrawBillBoard(menuDrawPos_,UIfadeValue_,200.0f);
+	UI_->DrawBillBoard(menuDrawPos_,UIfadeValue_, bill_board_size);
 
-	if (input.LastInputDevice()) {
+	if (input.LastInputDevice()) 
+	{
 		//キー画像描画
-		input.DrawKeyGraph(static_cast<int>(InputType::Up)	 , Game::screen_width / 128 * 92 , Game::screen_height - 90, 0.8f);
-		input.DrawKeyGraph(static_cast<int>(InputType::Left) , Game::screen_width / 128 * 87 , Game::screen_height - 40, 0.8f);
-		input.DrawKeyGraph(static_cast<int>(InputType::Down) , Game::screen_width / 128 * 92 , Game::screen_height - 40, 0.8f);
-		input.DrawKeyGraph(static_cast<int>(InputType::Right), Game::screen_width / 128 * 97 , Game::screen_height - 40, 0.8f);
-		input.DrawKeyGraph(static_cast<int>(InputType::Space), Game::screen_width / 128 * 112, Game::screen_height - 40, 0.8f);
+		input.DrawKeyGraph(static_cast<int>(InputType::Up)		, Game::screen_width / screen_split_num * up_split_num		, Game::screen_height - up_UI_correction_height, key_graph_size);
+		input.DrawKeyGraph(static_cast<int>(InputType::Down)	, Game::screen_width / screen_split_num * down_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawKeyGraph(static_cast<int>(InputType::Left)	, Game::screen_width / screen_split_num * left_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawKeyGraph(static_cast<int>(InputType::Right)	, Game::screen_width / screen_split_num * right_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawKeyGraph(static_cast<int>(InputType::Space)	, Game::screen_width / screen_split_num * decision_split_num, Game::screen_height - UI_correction_height, key_graph_size);
 	}
-	else {
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Up)     , Game::screen_width / 128 * 92 , Game::screen_height - 90, 0.8f);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Left)	, Game::screen_width / 128 * 87 , Game::screen_height - 40, 0.8f);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Down)   , Game::screen_width / 128 * 92 , Game::screen_height - 40, 0.8f);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Right)  , Game::screen_width / 128 * 97 , Game::screen_height - 40, 0.8f);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::A)      , Game::screen_width / 128 * 112, Game::screen_height - 40, 0.8f);
-	}
+	else 
+	{
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Up)     , Game::screen_width / screen_split_num * up_split_num		, Game::screen_height - up_UI_correction_height, key_graph_size);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Left)	, Game::screen_width / screen_split_num * down_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Down)	, Game::screen_width / screen_split_num * left_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::Right)	, Game::screen_width / screen_split_num * right_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawPadGraph(static_cast<int>(XboxBotton::A)		, Game::screen_width / screen_split_num * decision_split_num, Game::screen_height - UI_correction_height, key_graph_size);
+	}	
 	
-	//文字列の描画
-	DrawStringToHandle(Game::screen_width / 10 * 8 - 25, Game::screen_height - 60, "移動", 0xffffff, fontHandle_);
-	input.DrawName(static_cast<int>(InputType::Space), Game::screen_width / 20 * 18, Game::screen_height - 60, 0xffffff, fontHandle_, true, true, "/");
+	//キーの役割りの文字列の描画
+	DrawStringToHandle(Game::screen_width / screen_split_num * move_str_split_num, Game::screen_height - str_UI_correction_heignt, "移動", 0xffffff, fontHandle_);
+	input.DrawName(static_cast<int>(InputType::Space), Game::screen_width / screen_split_num * decision_str_split_num, Game::screen_height - str_UI_correction_heignt, 0xffffff, fontHandle_, true, true, "/");
 
 	//fadeValue_の値によって透過具合が変化するタイトルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
-	DrawBillboard3D(menuDrawPos_["タイトル"], 0.5f, 0.5f, 300.0f, 0.0f, GraphManager::GetInstance().GetGraph("title"), true);
+	DrawBillboard3D(menuDrawPos_["タイトル"], center_pos_x, center_pos_y, title_bill_board_size, 0.0f, GraphManager::GetInstance().GetGraph("title"), true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	//黒いフェード用boxの描画
@@ -186,39 +207,91 @@ void SceneTitle::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
+//プレイヤーのモデルの初期化
+void SceneTitle::PlayerModelInit()
+{
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+
+	//メインプレイヤーモデルの配置データをセットする
+	auto mainPlayerInfo = file.GetMainSpecialObjectInfo("MainPlayer");
+	mainPlayerModel_->SetScale(mainPlayerInfo.scale);
+	mainPlayerModel_->SetPos(mainPlayerInfo.pos);
+	mainPlayerModel_->SetRot(mainPlayerInfo.rot);
+	mainPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::StopTimer), false, true);
+
+	//サブプレイヤーモデルの配置データをセットする
+	auto subPlayerInfo = file.GetMainSpecialObjectInfo("SubPlayer");
+	subPlayerModel_->SetScale(subPlayerInfo.scale);
+	subPlayerModel_->SetPos(subPlayerInfo.pos);
+	subPlayerModel_->SetRot(subPlayerInfo.rot);
+	subPlayerModel_->SetAnimation(static_cast<int>(PlayerAnimType::Jump), false, true);
+}
+
+//UIの設定
+void SceneTitle::UISetting()
+{
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+
+	//UIを表示する座標を取得
+	menuDrawPos_["SE"]				= file.GetUIPos("SEUIPos");
+	menuDrawPos_["BGM"]				= file.GetUIPos("BGMUIPos");
+	menuDrawPos_["終了"]			= file.GetUIPos("endDrawPos");
+	menuDrawPos_["設定"]			= file.GetUIPos("settingDrawPos");
+	menuDrawPos_["戻る"]			= file.GetUIPos("backUIPos");
+	menuDrawPos_["モード"]			= file.GetUIPos("windowModeUIPos");
+	menuDrawPos_["タイトル"]		= file.GetUIPos("titleDrawPos");
+	menuDrawPos_["操作設定"]		= file.GetUIPos("advancedSettingUIPos");
+	menuDrawPos_["シーン選択"]		= file.GetUIPos("continueDrawPos");
+	menuDrawPos_["ニューゲーム"]	= file.GetUIPos("startDrawPos");
+
+	//UI文字列の作成
+	menuName_.push_back("ニューゲーム");
+	menuName_.push_back("シーン選択");
+	menuName_.push_back("設定");
+	menuName_.push_back("終了");
+
+	//UI画像の作成
+	fontHandle_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0033");
+	float y = 120.0f;
+	for (auto& menu : menuName_)
+	{
+		UI_->AddMenu(static_cast<float>(Game::screen_width / screen_half), static_cast<float>(Game::screen_height / screen_half) + y, 320, 100, menu.c_str(), fontHandle_);
+		y += 40.0f;
+	}
+}
+
 //ライトの設定
 void SceneTitle::LightSetting()
 {
 	SetUseLighting(true);
 
 	//スポットライトに変更する。ライトの設定
-	outAngle_ = 90.0f * DX_PI_F / 180.0f;
-	inAngle_ = 30.0f * DX_PI_F / 180.0f;
-	ChangeLightTypeSpot(lightBulb_->GetFramePos(), lightBulb_->GetFrontVec(), outAngle_, inAngle_, 600.0f, 0.0f, 0.003f, 0.0f);
+	outAngle_ = MathUtil::DegreeToRadian(spot_light_out_angle);
+	inAngle_ = MathUtil::DegreeToRadian(spot_light_in_angle);
+	ChangeLightTypeSpot(lightBulb_->GetFramePos(), lightBulb_->GetRotVec(), outAngle_, inAngle_, 600.0f, 0.0f, 0.003f, 0.0f);
 
 	//ライトのディフューズカラーの設定
-	SetLightDifColor(GetColorF(0.87f, 0.72f, 0.52f, 1.0f));
+	SetLightDifColor(spot_light_color);
 
 	//ディレクションライト角度取得
-	VECTOR dir = {};
-	dir.x = -33 / DX_PI_F * 180.0f;
-	dir.y = -33 / DX_PI_F * 180.0f;
-	dir.z = -33 / DX_PI_F * 180.0f;
+	VECTOR dir = { -33.0f,-33.0f ,-33.0f };
+	dir = MathUtil::VECTORDegreeToRadian(dir);
 
 	//ディレクションライトの作成
 	lightHandle_.push_back(CreateDirLightHandle(dir));
 	lightDir_.push_back(dir);
-	SetLightDifColorHandle(lightHandle_[0], GetColorF(0.41f, 0.41f, 0.41f, 1.0f));
+	SetLightDifColorHandle(lightHandle_[0], direction_light_color);
 
 	//ディレクションライト角度取得
-	dir.x = 33 / DX_PI_F * 180.0f;
-	dir.y = -33 / DX_PI_F * 180.0f;
-	dir.z = 33 / DX_PI_F * 180.0f;
+	dir = { 33,-33,33 };
+	dir = MathUtil::VECTORDegreeToRadian(dir);
 
 	//ディレクションライトの作成
 	lightHandle_.push_back(CreateDirLightHandle(dir));
 	lightDir_.push_back(dir);
-	SetLightDifColorHandle(lightHandle_[1], GetColorF(0.41f, 0.41f, 0.41f, 1.0f));
+	SetLightDifColorHandle(lightHandle_[1], direction_light_color);
 }
 
 //カメラの設定
@@ -330,7 +403,8 @@ void SceneTitle::FadeInUpdate()
 	//フェードイン
 	float timer = (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_));
 	UIfadeValue_ = static_cast <int>(255 * timer);
-	if (++fadeTimer_ == fadeInterval_) {
+	if (++fadeTimer_ == fadeInterval_)
+	{
 		updateFunc_ = &SceneTitle::UIUpdate;
 		UIfadeValue_ = 255;
 		return;
@@ -377,9 +451,9 @@ void SceneTitle::OpeningUpdate()
 	auto& sound = SoundManager::GetInstance();
 
 	//アニメーション番号チェック
+	bool checkWakeUpAnim = PlayerAnimType::WakeUp == static_cast<PlayerAnimType>(mainPlayerModel_->GetCurrentAnimNo());
 	bool checkStopTimerAnim = PlayerAnimType::StopTimer == static_cast<PlayerAnimType>(mainPlayerModel_->GetCurrentAnimNo());
 	bool checkStopTimerCancelAnim = PlayerAnimType::StopTimerCancel == static_cast<PlayerAnimType>(mainPlayerModel_->GetCurrentAnimNo());
-	bool checkWakeUpAnim = PlayerAnimType::WakeUp == static_cast<PlayerAnimType>(mainPlayerModel_->GetCurrentAnimNo());
 
 	//モデルの更新
 	mainPlayerModel_->Update();
@@ -389,13 +463,13 @@ void SceneTitle::OpeningUpdate()
 	{
 		sound.StopSE("alarm");
 		sound.PlaySE("stopAlarm");
-		mainPlayerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::StopTimerCancel), false, false, 10);
+		mainPlayerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::StopTimerCancel), false, false, anim_change_time);
 	}
 
 	//仰向けになるアニメーションが終わった後
 	if (mainPlayerModel_->IsAnimEnd() && checkStopTimerCancelAnim)
 	{
-		mainPlayerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::WakeUp), false, false, 10);
+		mainPlayerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::WakeUp), false, false, anim_change_time);
 	}
 
 	//起き上がるアニメーションが終わったら

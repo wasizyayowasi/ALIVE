@@ -9,8 +9,32 @@
 #include "../util/Aster.h"
 
 namespace {
-	//モデルの初期回転ベクトル
-	const VECTOR model_front_vec = { 0.0f,0.0f,-1.0f };
+	//色を変更するマテリアルの番号
+	constexpr int change_material_color_num = 8;
+
+	//物を投げているときのアニメーションフレーム
+	constexpr int throw_frame_time = 73;
+
+	//アニメーションを変更するのにかける時間
+	constexpr int change_anim_frame = 10;
+
+	//落ち影の調点数
+	constexpr int shadow_vertex_num = 7;
+
+	//落ち影で作る三角形の数
+	constexpr int shadow_triangle_num = 6;
+
+	//三角形を作る順番の数
+	constexpr int number_of_orders_to_form_a_triangle = 18;
+
+	//直線を分割する距離
+	constexpr float distance_to_divide = 50.0f;
+
+	//落ち影の半径
+	constexpr float shadow_radius = 25.0f;
+
+	//落ち影の高さ補正
+	constexpr float correction_chadow_height = 5.0f;
 
 	//敵の視野角
 	constexpr float viewing_angle = 45.0f;
@@ -27,14 +51,14 @@ namespace {
 	//リーチ
 	constexpr float within_reach = 80.0f;
 
+	//石を投げる距離
+	constexpr float throw_distance = 800.0f;
+
 	//右手のフレーム名
 	const char* const hand_framename = "mixamorig:RightHandIndex2";
 
-	//物を投げているときのアニメーションフレーム
-	constexpr int throw_frame_time = 73;
-
-	//石を投げる距離
-	constexpr float throw_distance = 800.0f;
+	//モデルの初期回転ベクトル
+	constexpr VECTOR model_front_vec = { 0.0f,0.0f,-1.0f };
 }
 
 //コンストラクタ
@@ -57,7 +81,7 @@ EnemyBase::EnemyBase(const int handle, const Material materialType, const LoadOb
 	initFrontVec_ = frontVec_;
 
 	//マテリアルの色を変える
-	MV1SetMaterialDifColor(model_->GetModelHandle(), 8, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
+	MV1SetMaterialDifColor(model_->GetModelHandle(), change_material_color_num, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
 //デストラクタ
@@ -89,14 +113,14 @@ void EnemyBase::Update(Player& player)
 	//待機アニメーションに変更する
 	if (!isDetection_)
 	{
-		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Idle), true, false, 20);
+		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Idle), true, false, change_anim_frame);
 	}
 
 	//投げるアニメーションが終わったら
 	//投げているというフラグをfalseにする
 	if (model_->IsAnimEnd() && isThrow_)
 	{
-		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Idle), true, false, 20);
+		model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Idle), true, false, change_anim_frame);
 		isThrow_ = false;
 	}
 
@@ -121,21 +145,6 @@ void EnemyBase::Update(Player& player)
 
 		//移動
 		RoutingUpdate(playerPos);
-	}
-
-	//敵からプレイヤーの直線距離
-	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(playerPos, pos_);
-
-	if (distanceSize < within_reach)
-	{
-		pushVec_ = VScale(VNorm(frontVec_), 10);
-	}
-
-	float pushVecSize = VSize(pushVec_);
-
-	if (pushVecSize > 1.0f)
-	{
-		ThrustAway(player);
 	}
 }
 
@@ -196,23 +205,6 @@ void EnemyBase::SearchForPlayer(const VECTOR& playerPos)
 	}
 }
 
-//プレイヤーを突き飛ばす
-void EnemyBase::ThrustAway(Player& player)
-{
-	pushVec_ = VScale(pushVec_, 0.96f);
-	float size = VSize(pushVec_);
-	VECTOR nockback = VAdd(player.GetStatus().pos,pushVec_);
-
-	//カメラ側の一定ラインを過ぎると
-	//Z座標のベクトルを0にする
-	if (nockback.z < -250.0f)
-	{
-		pushVec_.z = 0.0f;
-	}
-
-	player.SetMoveVec(VAdd(player.GetStatus().moveVec, pushVec_));
-}
-
 //ルート通りに移動する
 void EnemyBase::RoutingUpdate(const VECTOR& playerPos)
 {
@@ -252,7 +244,7 @@ bool EnemyBase::IsThereAnObject(const VECTOR& playerPos)
 	VECTOR distance = VSub(playerPos, pos_);
 
 	//エネミーとプレイヤーの距離のベクトルサイズ
-	int size = static_cast<int>(VSize(distance) / 50);
+	int size = static_cast<int>(VSize(distance) / distance_to_divide);
 
 	//エネミーとプレイヤーの距離の正規化
 	VECTOR norm = VNorm(distance);
@@ -265,7 +257,7 @@ bool EnemyBase::IsThereAnObject(const VECTOR& playerPos)
 	for (int i = 1; i < size; i++)
 	{
 		//敵からプレイヤーの距離を50×iで分割する
-		VECTOR pointPos = VScale(norm, 50.0f * i);
+		VECTOR pointPos = VScale(norm, distance_to_divide * i);
 
 		//敵の座標とpoint座標を足す
 		pointPos = VAdd(pos_, pointPos);
@@ -274,11 +266,13 @@ bool EnemyBase::IsThereAnObject(const VECTOR& playerPos)
 		noObject = !Aster_->SearchBlockadeMode(pointPos);
 
 		//オブジェクトがあったらブレイクする
-		if (!noObject) {
+		if (!noObject)
+		{
 
 			//経路探索の結果がなかったら
 			//経路探索用の配列を初期化する
-			if (Aster_->GetIsRouteEmpty()) {
+			if (Aster_->GetIsRouteEmpty()) 
+			{
 				Aster_->ArrayInit(playerPos);
 			}
 
@@ -302,7 +296,7 @@ void EnemyBase::Shot(const std::shared_ptr<ShotManager>& shotManager, const VECT
 
 	//今、投げているフラグがtrueではなかったら
 	//アニメーションを投げるアニメーションに変更する
-	model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Throw), false, false, 5);
+	model_->ChangeAnimation(static_cast<int>(PlayerAnimType::Throw), false, false, change_anim_frame);
 
 	//投げているアニメーションの特定フレームで
 	//弾を発射する
@@ -348,7 +342,7 @@ const VECTOR& EnemyBase::VertexPosition(const float angle)
 	pos.y = 0.0f;
 
 	//ポジションを25倍する(サイズ調整)
-	pos = VScale(pos, 25.0f);
+	pos = VScale(pos, shadow_radius);
 
 	//プレイヤーのポジションと上記で取得したポジションを足す
 	pos = VAdd(pos_, pos);
@@ -364,9 +358,10 @@ const VECTOR& EnemyBase::VertexPosition(const float angle)
 void EnemyBase::DrawPolygon3D()
 {
 	//頂点の数分配列を作る
-	VERTEX3D vertex[7] = {};
+	VERTEX3D vertex[shadow_vertex_num] = {};
+
 	//三角形を作成する順番を保存する配列
-	WORD index[18] = {};
+	WORD index[number_of_orders_to_form_a_triangle] = {};
 
 	//カラー
 	COLOR_U8 difColor = GetColorU8(51, 51, 51, 125);
@@ -379,7 +374,7 @@ void EnemyBase::DrawPolygon3D()
 	float angle = 0.0f;
 
 	//六角形の中心座標を取得
-	vertex[0].pos = VGet(pos_.x, pos_.y + 5.0f, pos_.z);
+	vertex[0].pos = VGet(pos_.x, pos_.y + correction_chadow_height, pos_.z);
 	vertex[0].norm = norm;
 	vertex[0].dif = difColor;
 	vertex[0].spc = GetColorU8(0, 0, 0, 0);
@@ -389,7 +384,7 @@ void EnemyBase::DrawPolygon3D()
 	vertex[0].sv = 0.0f;
 
 	//角度ごとの頂点を取得
-	for (int i = 1; i < 7; i++) {
+	for (int i = 1; i < shadow_vertex_num; i++) {
 		vertex[i].pos = VertexPosition(angle);
 		vertex[i].norm = norm;
 		vertex[i].dif = difColor;
@@ -398,7 +393,7 @@ void EnemyBase::DrawPolygon3D()
 		vertex[i].v = 0.0f;
 		vertex[i].su = 0.0f;
 		vertex[i].sv = 0.0f;
-		angle += 60.0f;
+		angle += 360.0f / shadow_triangle_num;
 	}
 
 	//三角形を作成する順番
@@ -421,5 +416,5 @@ void EnemyBase::DrawPolygon3D()
 	index[16] = 6;
 	index[17] = 1;
 
-	DrawPolygonIndexed3D(vertex, 7, index, 6, DX_NONE_GRAPH, true);
+	DrawPolygonIndexed3D(vertex, shadow_vertex_num, index, shadow_triangle_num, DX_NONE_GRAPH, true);
 }

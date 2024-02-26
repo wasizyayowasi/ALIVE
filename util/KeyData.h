@@ -24,9 +24,9 @@ enum class Key
 	L_ctrl,
 	A, S, D, F, G, H, J, K, L,
 	Semicolon,
+
 	L_shift,
 	Backslash,
-
 	Z, X, C, V, B, N, M,
 	Comma,
 	Period,
@@ -61,6 +61,7 @@ enum class Key
 	Key10_3,
 	Key10_0,
 	Key10_period,
+
 	F11,
 	F12,
 	KANA,
@@ -90,6 +91,8 @@ enum class Key
 	L_win,
 	Rwin,
 	App,
+
+	Max,
 };
 
 //padƒ{ƒ^ƒ“‚Ì—ñ‹“

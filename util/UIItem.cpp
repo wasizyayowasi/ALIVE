@@ -6,6 +6,19 @@ namespace
 {
 	//文字列の角度
 	constexpr float str_angle = 0.0f;
+
+	//画面を半分にする
+	constexpr float screen_half = 2;
+
+	//文字列を半分にする
+	constexpr float str_half = 2;
+
+	//中心位置
+	constexpr float center_pos_x = 0.5f;
+	constexpr float center_pos_y = 0.5f;
+
+	//表示サイズ
+	constexpr float bill_board_size = 1.0f;
 }
 
 //コンストラクタ
@@ -29,14 +42,14 @@ void UIItem::AlphaChangeDraw(const float scale, const int alpha)
 //ポジションが変わるUIの描画
 void UIItem::ChangePosDraw(const float centerPosX, const  float centerPosY)
 {
-	DrawRotaGraphF(centerPosX, centerPosY, 1.0f, str_angle, makeScreenHandle_, true);
+	DrawRotaGraphF(centerPosX, centerPosY, bill_board_size, str_angle, makeScreenHandle_, true);
 }
 
 //画像を3D空間に描画する
 void UIItem::DrawBillboard(const VECTOR& drawPos, const int alpha, const  float size)
 {
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
-	DrawBillboard3D(drawPos, 0.5f, 0.5f, size, str_angle, makeScreenHandle_, true);
+	DrawBillboard3D(drawPos, center_pos_x, center_pos_y, size, str_angle, makeScreenHandle_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
@@ -69,7 +82,7 @@ void UIItem::CreateUIGraph(const int fontHandle)
 	int strWidth = fontManager.GetStringSize(UIString_.c_str(), fontManager.GetFontName(fontHandle).c_str());
 
 	//フォントを適用した文字の描画
-	DrawStringToHandle(makeScreenWidth_ / 2 - strWidth / 2, makeScreenHeight_ / 2, UIString_.c_str(), 0xffffff, fontHandle);
+	DrawStringToHandle(makeScreenWidth_ / screen_half - strWidth / str_half, makeScreenHeight_ / screen_half, UIString_.c_str(), 0xffffff, fontHandle);
 
 	SetDrawScreen(DX_SCREEN_BACK);
 }

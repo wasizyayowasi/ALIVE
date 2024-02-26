@@ -5,6 +5,9 @@
 #include "../util/Model.h"
 
 namespace {
+	//色を変更するマテリアルの番号
+	constexpr int change_material_color_num = 8;
+
 	//モデルフレーム名
 	const char* const coll_frame_death = "CollDown";
 }
@@ -19,7 +22,7 @@ Corpse::Corpse(const int handle, const Material materialType, const LoadObjectIn
 	isUpdateColl_ = true;
 
 	//マテリアルの色を変更する
-	MV1SetMaterialDifColor(model_->GetModelHandle(), 8, GetColorF(1.0f,0.0f,0.0f,1.0f));
+	MV1SetMaterialDifColor(model_->GetModelHandle(), change_material_color_num, GetColorF(1.0f,0.0f,0.0f,1.0f));
 
 	//アニメーションの設定
 	model_->SetAnimation(animNo, false, true);

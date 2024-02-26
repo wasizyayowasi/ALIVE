@@ -35,7 +35,7 @@ public:
 	/// 回転ベクトルを取得する
 	/// </summary>
 	/// <returns>回転ベクトル</returns>
-	const VECTOR& GetFrontVec() const;
+	const VECTOR& GetRotVec() const;
 
 	/// <summary>
 	/// 特定のフレームの座標を取得する

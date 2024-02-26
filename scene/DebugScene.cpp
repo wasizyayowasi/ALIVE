@@ -11,6 +11,12 @@
 
 #include <algorithm>
 
+namespace
+{
+	//文字列の補正配置場所Y
+	constexpr int correction_pos_Y = 32;
+}
+
 //コンストラクタ
 DebugScene::DebugScene(SceneManager& manager):SceneBase(manager)
 {
@@ -85,13 +91,16 @@ void DebugScene::Update()
 //描画
 void DebugScene::Draw()
 {
-	//文字列の描画
+	int x = 100;
 	int y = 150;
+
+	//文字列の描画
 	for (auto& scene : sceneName_) {
 		DrawFormatString(0, y, 0xffffff, "%s", scene.c_str());
-		y += 32;
+		y += correction_pos_Y;
 	}
 
+	y = 150;
 	//選択番号によって変わる矢印の描画
-	DrawString(100, selectNum_ * 32 + 150, "←", 0xff0000);
+	DrawString(x, selectNum_ * correction_pos_Y + y, "←", 0xff0000);
 }

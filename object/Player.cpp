@@ -19,17 +19,49 @@
 #include <algorithm>
 
 namespace {
+	//走るアニメーションの足音を鳴らすフレーム数
+	constexpr int run_anim_foot_step_frame_type_1 = 6;
+	constexpr int run_anim_foot_step_frame_type_2 = 45;
+
+	//歩くアニメーションの足音を鳴らすフレーム数
+	constexpr int walk_anim_foot_step_frame_type_1 = 80;
+	constexpr int walk_anim_foot_step_frame_type_2 = 160;
+
+	//落ち影の調点数
+	constexpr int shadow_vertex_num = 7;
+
+	//落ち影で作る三角形の数
+	constexpr int shadow_triangle_num = 6;
+
+	//三角形を作る順番の数
+	constexpr int number_of_orders_to_form_a_triangle = 18;
+
+	//死体の数をカウントする最大数
+	constexpr int max_death_count = 99;
+
+	//アニメーションを変更するのにかかる時間
+	constexpr int anim_change_time = 20;
+
+	//落ち影の半径
+	constexpr float shadow_radius = 25.0f;
+
+	//音が聞こえる範囲
+	constexpr float sound_radius = 1500.0f;
+
+	//落ち影の高さ補正
+	constexpr float correction_chadow_height = 5.0f;
+
 	//重力
 	constexpr float gravity = -0.4f;
-
-	//フレームの名前
-	const char* const frame_name = "hand.R_end";
 
 	//プレイヤーの高さ
 	constexpr float player_hegiht = 130.0f;
 
-	//死体の数をカウントする最大数
-	constexpr int max_death_count = 99;
+	//Z軸の移動制限
+	constexpr float movement_restrictions_Z = -250.0f;
+
+	//フレームの名前
+	const char* const frame_name = "hand.R_end";
 
 	//初期正面ベクトル
 	constexpr VECTOR front_vec = { 0,0,-1 };
@@ -313,7 +345,7 @@ void Player::NormalUpdate(const std::shared_ptr<ObjectManager>& objManager)
 			{
 				SetJumpInfo(true,playerInfo_.jumpPower);
 			}
-			ChangeAnimNo(PlayerAnimType::Jump, false, 20);
+			ChangeAnimNo(PlayerAnimType::Jump, false, anim_change_time);
 			updateFunc_ = &Player::JumpUpdate;
 			return;
 		}
@@ -321,7 +353,7 @@ void Player::NormalUpdate(const std::shared_ptr<ObjectManager>& objManager)
 	else {
 		if (input.IsPressed(InputType::Space))
 		{
-			status_.moveVec.y = 10.0;
+			status_.moveVec.y = 10.0f;
 		}
 	}
 #else
@@ -335,7 +367,7 @@ void Player::NormalUpdate(const std::shared_ptr<ObjectManager>& objManager)
 		}
 
 		//アニメーションをジャンプに変更する
-		ChangeAnimNo(PlayerAnimType::Jump, false, 20);
+		ChangeAnimNo(PlayerAnimType::Jump, false, anim_change_time);
 
 		//メンバ関数を変更する
 		updateFunc_ = &Player::JumpUpdate;
@@ -376,11 +408,11 @@ void Player::MovingUpdate()
 	if (movingSpeed != 0.0f) {
 		if (movingSpeed > playerInfo_.walkSpeed) {
 			//アニメーションの変更
-			ChangeAnimNo(PlayerAnimType::Run, true, 20);
+			ChangeAnimNo(PlayerAnimType::Run, true, anim_change_time);
 		}
 		else if (movingSpeed <= playerInfo_.walkSpeed) {
 			//アニメーションの変更
-			ChangeAnimNo(PlayerAnimType::Walk, true, 20);
+			ChangeAnimNo(PlayerAnimType::Walk, true, anim_change_time);
 		}
 		
 	}
@@ -459,7 +491,7 @@ float Player::Move()
 	RotationUpdate();
 
 	VECTOR destination = VAdd(status_.pos, status_.moveVec);
-	if (destination.z < -250.0f) {
+	if (destination.z < movement_restrictions_Z) {
 		status_.moveVec.z = 0.0f;
 	}
 
@@ -557,7 +589,7 @@ void Player::JumpUpdate(const std::shared_ptr<ObjectManager>& objManager)
 void Player::DeathUpdate(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//アニメーションの変更
-	ChangeAnimNo(PlayerAnimType::Death, false, 20);
+	ChangeAnimNo(PlayerAnimType::Death, false, anim_change_time);
 
 	if (model_->IsAnimEnd()) {
 		CorpsePostProsessing(objManager);
@@ -656,7 +688,7 @@ void Player::GoCrankRotationPosition(const std::shared_ptr<ObjectManager>& objMa
 		angle_ = -90.0f;
 		status_.rot = VGet(0, angle_, 0);
 		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
-		ChangeAnimNo(PlayerAnimType::Crank, false, 20);
+		ChangeAnimNo(PlayerAnimType::Crank, false, anim_change_time);
 		updateFunc_ = &Player::CrankUpdate;
 	}
 }
@@ -763,7 +795,7 @@ void Player::GoLeverPullPosition(const std::shared_ptr<ObjectManager>& objManage
 		lever_->OnAnimation();
 		status_.rot = VGet(0, angle_, 0);
 		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
-		ChangeAnimNo(PlayerAnimType::LeverOn, false, 10);
+		ChangeAnimNo(PlayerAnimType::LeverOn, false, anim_change_time);
 		updateFunc_ = &Player::LeverUpdate;
 	}
 }
@@ -792,7 +824,7 @@ void Player::BulletHitMeUpdate(const std::shared_ptr<ObjectManager>& objManager)
 
 	//移動ベクトルを足した行き先が-250以下だったら
 	//移動ベクトルのZ値を0にする
-	if (destinationPos.z < -250.0f)
+	if (destinationPos.z < movement_restrictions_Z)
 	{
 		status_.moveVec.z = 0.0f;
 	}
@@ -819,7 +851,7 @@ void Player::ChangeAnimIdle()
 	//待機アニメーションに戻す
 	if (!status_.situation.isMoving)
 	{
-		ChangeAnimNo(PlayerAnimType::Idle, true, 20);
+		ChangeAnimNo(PlayerAnimType::Idle, true, anim_change_time);
 	}
 }
 
@@ -863,14 +895,14 @@ void Player::FootStepSound()
 	{
 	case PlayerAnimType::Walk:
 
-		if (model_->GetSpecifiedAnimTime(80) || model_->GetSpecifiedAnimTime(160)) {
+		if (model_->GetSpecifiedAnimTime(walk_anim_foot_step_frame_type_1) || model_->GetSpecifiedAnimTime(walk_anim_foot_step_frame_type_2)) {
 			playSound = true;
 		}
 
 		break;
 	case PlayerAnimType::Run:
 
-		if (model_->GetSpecifiedAnimTime(6) || model_->GetSpecifiedAnimTime(45)) {
+		if (model_->GetSpecifiedAnimTime(run_anim_foot_step_frame_type_1) || model_->GetSpecifiedAnimTime(run_anim_foot_step_frame_type_2)) {
 			playSound = true;
 		}
 
@@ -888,11 +920,11 @@ void Player::FootStepSound()
 	switch (materialSteppedOn_)
 	{
 	case Material::Iron:
-		SoundManager::GetInstance().Set3DSoundInfo(status_.pos, 1500.0f, "ironStep");
+		SoundManager::GetInstance().Set3DSoundInfo(status_.pos, sound_radius, "ironStep");
 		SoundManager::GetInstance().PlaySE("ironStep");
 		break;
 	case Material::Stone:
-		SoundManager::GetInstance().Set3DSoundInfo(status_.pos, 1500.0f, "asphaltStep");
+		SoundManager::GetInstance().Set3DSoundInfo(status_.pos, sound_radius, "asphaltStep");
 		SoundManager::GetInstance().PlaySE("asphaltStep");
 		break;
 	}
@@ -902,9 +934,9 @@ void Player::FootStepSound()
 void Player::DrawPolygon3D()
 {
 	//頂点の数分配列を作る
-	VERTEX3D vertex[7] = {};
+	VERTEX3D vertex[shadow_vertex_num] = {};
 	//三角形を作成する順番を保存する配列
-	WORD index[18] = {};
+	WORD index[number_of_orders_to_form_a_triangle] = {};
 
 	//カラー
 	COLOR_U8 difColor = GetColorU8(51, 51, 51, 125);
@@ -927,7 +959,7 @@ void Player::DrawPolygon3D()
 	vertex[0].sv = 0.0f;
 
 	//角度ごとの頂点を取得
-	for (int i = 1; i < 7; i++)
+	for (int i = 1; i < shadow_vertex_num; i++)
 	{
 		vertex[i].pos = VertexPosition(angle);
 		vertex[i].norm = norm;
@@ -937,7 +969,7 @@ void Player::DrawPolygon3D()
 		vertex[i].v = 0.0f;
 		vertex[i].su = 0.0f;
 		vertex[i].sv = 0.0f;
-		angle += 60.0f;
+		angle += 360.0f / shadow_vertex_num;
 	}
 
 	//三角形を作成する順番
@@ -960,7 +992,7 @@ void Player::DrawPolygon3D()
 	index[16] = 6;
 	index[17] = 1;
 
-	DrawPolygonIndexed3D(vertex, 7, index, 6, DX_NONE_GRAPH, true);
+	DrawPolygonIndexed3D(vertex, shadow_vertex_num, index, shadow_triangle_num, DX_NONE_GRAPH, true);
 }
 
 //プレイヤーの落ち影に使用する頂点を取得
@@ -978,7 +1010,7 @@ VECTOR Player::VertexPosition(float angle)
 	pos.y = 0.0f;
 
 	//ポジションを25倍する(サイズ調整)
-	pos = VScale(pos, 25.0f);
+	pos = VScale(pos, shadow_radius);
 
 	//プレイヤーのポジションと上記で取得したポジションを足す
 	pos = VAdd(status_.pos, pos);

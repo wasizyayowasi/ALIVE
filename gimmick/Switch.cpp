@@ -9,6 +9,9 @@
 
 namespace
 {
+	//色を変更するマテリアルの番号
+	constexpr int change_material_color_num = 1;
+
 	//アニメーションが変わる時間
 	constexpr int anim_change_time = 10;
 
@@ -195,12 +198,12 @@ const std::shared_ptr<Model>& Switch::GetModelPointer() const
 void Switch::OnAnim()
 {
 	model_->ChangeAnimation(0, false, false, anim_change_time);
-	MV1SetMaterialDifColor(model_->GetModelHandle(), 1, GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
+	MV1SetMaterialDifColor(model_->GetModelHandle(), change_material_color_num, GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
 }
 
 //スイッチオフアニメーション
 void Switch::OffAnim()
 {
 	model_->ChangeAnimation(1, false, false, anim_change_time);
-	MV1SetMaterialDifColor(model_->GetModelHandle(), 1, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
+	MV1SetMaterialDifColor(model_->GetModelHandle(), change_material_color_num, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 }

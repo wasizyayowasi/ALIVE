@@ -16,6 +16,13 @@
 #include <algorithm>
 
 namespace {
+	//走るアニメーションの足音を鳴らすフレーム数
+	constexpr int run_anim_foot_step_frame_type_1 = 6;
+	constexpr int run_anim_foot_step_frame_type_2 = 45;
+
+	//色を変えるマテリアルの番号
+	constexpr int change_material_num = 8;
+
 	//棒グラフの横のサイズ
 	constexpr int bar_graph_width = 20;
 
@@ -27,6 +34,12 @@ namespace {
 
 	//縦の分割数
 	constexpr int division_height = 15;
+
+	//棒グラフの1メモリのサイズ
+	constexpr int bar_graph_1_memory_size = 12;
+
+	//音が聞こえる範囲
+	constexpr float sound_fange = 800.0f;
 }
 
 //コンストラクタ
@@ -73,19 +86,19 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 		corpseModel_[i].second->SetScale(playerInfo.scale);
 		corpseModel_[i].second->SetAnimEndFrame(static_cast<int>(PlayerAnimType::Death));
 		//マテリアルの色を変える
-		MV1SetMaterialDifColor(corpseModel_[i].second->GetModelHandle(), 8, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
+		MV1SetMaterialDifColor(corpseModel_[i].second->GetModelHandle(), change_material_num, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
 		height += 15.0f;
 	}
 
 	//棒グラフの初期高さ
-	for (int i = 0; i < 5;i++) {
-		barGraphHeight_.push_back(Game::screen_height / division_height * 12);
+	for (int i = 0; i < file.GetTotalDeathNum().size(); i++) {
+		barGraphHeight_.push_back(Game::screen_height / division_height * bar_graph_1_memory_size);
 	}
 
 	//死体を置く場所を画面を分割して決める
 	//画面の分割数の取得
-	divisionNum_ = file.GetTotalDeathNum().back() / 5 + 1;
-	if (file.GetTotalDeathNum().back() % 5 > 0) {
+	divisionNum_ = file.GetTotalDeathNum().back() / file.GetTotalDeathNum().size() + 1;
+	if (file.GetTotalDeathNum().back() % file.GetTotalDeathNum().size() > 0) {
 		divisionNum_++;
 	}
 
@@ -140,7 +153,7 @@ void GameEnd::Draw()
 	}
 
 	//オブジェクトの描画
-	objManager_->Draw({ 0,0,0 });
+	objManager_->Draw();
 
 	//プレイヤーの座標をスクリーン座標にする
 	VECTOR screenPos = ConvWorldPosToScreenPos(boardModel_->GetPos());
@@ -171,18 +184,18 @@ void GameEnd::Draw()
 
 		//数字の描画
 		DrawFormatStringToHandle(Game::screen_width / division_width * (i + 3) - size / 2 - (Game::screen_width / 2 - castScreenPosX),
-								 Game::screen_height / division_height * 12 - file.GetTotalDeathNum()[i] * bar_graph_height - size,
+								 Game::screen_height / division_height * bar_graph_1_memory_size - file.GetTotalDeathNum()[i] * bar_graph_height - size,
 								 0x000000, pigumo42FontHandle_, "%d体", file.GetTotalDeathNum()[i]);
 
 		if (4 - i == 0) {
 			DrawVStringToHandle(Game::screen_width / division_width * (i + 3) - 10 - (Game::screen_width / 2 - castScreenPosX),
-								Game::screen_height / division_height * 12 + 15,
+								Game::screen_height / division_height * bar_graph_1_memory_size + 15,
 								"今回", 0xff0000, pigumo21FontHandle_);
 			continue;
 		}
 
 		DrawFormatVStringToHandle(Game::screen_width / division_width * (i + 3)-10 - (Game::screen_width / 2 - castScreenPosX),
-								  Game::screen_height / division_height * 12+15,
+								  Game::screen_height / division_height * bar_graph_1_memory_size +15,
 								  0x000000,
 								  pigumo21FontHandle_,
 								  "%d回前", 4 - i);
@@ -344,8 +357,8 @@ void GameEnd::NormalUpdate()
 	if (!isPutting_ && !isResultDisplaying_) {
 		//プレイヤーモデルの座標変更
 		playerModel_->SetPos(VAdd(playerPos, moveVec_));
-		if (playerModel_->GetSpecifiedAnimTime(6) || playerModel_->GetSpecifiedAnimTime(45)) {
-			sound.Set3DSoundInfo(playerPos, 800.0f, "asphaltStep");
+		if (playerModel_->GetSpecifiedAnimTime(run_anim_foot_step_frame_type_1) || playerModel_->GetSpecifiedAnimTime(run_anim_foot_step_frame_type_2)) {
+			sound.Set3DSoundInfo(playerPos, sound_fange, "asphaltStep");
 			sound.PlaySE("asphaltStep");
 		}
 	}

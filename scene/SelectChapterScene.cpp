@@ -12,10 +12,22 @@
 #include "../util/ModelManager.h"
 #include "../util/GraphManager.h"
 
-#include <algorithm>
 #include <string>
+#include <algorithm>
 
 namespace {
+	//アニメーションを変更するのにかかる時間
+	constexpr int anim_change_time = 10;
+
+	//マテリアルの番号
+	constexpr int material_num = 0;
+
+	//最大チャプター数
+	constexpr int max_chapter_num = 2;
+
+	//最小チャプター数
+	constexpr int min_chapter_num = 0;
+
 	//総時間
 	constexpr float total_time = 60.0f;
 }
@@ -107,7 +119,8 @@ void SelectChapterScene::SlideInBook()
 	//モデルのポジション座標
 	model_->SetPos(pos);
 
-	if (elapsedTime_ == total_time) {
+	if (elapsedTime_ == total_time)
+	{
 		updateFunc_ = &SelectChapterScene::NormalUpdate;
 		targetPosX_ = file.GetTitleSpecifiedInfo("Book").pos.x;
 		elapsedTime_ = 0;
@@ -124,39 +137,49 @@ void SelectChapterScene::NormalUpdate()
 	//モデルの更新
 	model_->Update();
 
-	if (model_->IsAnimEnd()) {
-		model_->ChangeAnimation(static_cast<int>(BookAnim::idle), false, false, 10);
+	if (model_->IsAnimEnd()) 
+	{
+		model_->ChangeAnimation(static_cast<int>(BookAnim::idle), false, false, anim_change_time);
 	}
-	else {
+	else 
+	{
 		return;
 	}
 
 	//チャプター選択
-	if (input.IsTriggered(InputType::Right)) {
-		if (selectNum_ < 2) {
-			model_->ChangeAnimation(static_cast<int>(BookAnim::open), false, false, 10);
+	if (input.IsTriggered(InputType::Right)) 
+	{
+		if (selectNum_ < max_chapter_num)
+		{
+			model_->ChangeAnimation(static_cast<int>(BookAnim::open), false, false, anim_change_time);
 		}
-		selectNum_ = (std::min)(selectNum_ + 1, 2);
+		selectNum_ = (std::min)(selectNum_ + 1, max_chapter_num);
 	}
-	if (input.IsTriggered(InputType::Left)) {
-		if (selectNum_ > 0) {
-			model_->ChangeAnimation(static_cast<int>(BookAnim::close), false, false, 10);
+	//チャプター選択
+	if (input.IsTriggered(InputType::Left))
+	{
+		if (selectNum_ > 0) 
+		{
+			model_->ChangeAnimation(static_cast<int>(BookAnim::close), false, false, anim_change_time);
 		}
-		selectNum_ = (std::max)(selectNum_ - 1, 0);
+		selectNum_ = (std::max)(selectNum_ - 1, min_chapter_num);
 	}
 
 	//画像名の文字列の取得
 	std::string str = "chapter" + std::to_string(selectNum_ + 1);
 
-	MV1SetTextureGraphHandle(model_->GetModelHandle(), 0, graph.GetGraph(str), true);
+	//マテリアルのテクスチャを変更する
+	MV1SetTextureGraphHandle(model_->GetModelHandle(), material_num, graph.GetGraph(str), true);
 
 	//戻る
-	if (input.IsTriggered(InputType::Down) || input.IsTriggered(InputType::Activate)) {
+	if (input.IsTriggered(InputType::Down) || input.IsTriggered(InputType::Activate))
+	{
 		updateFunc_ = &SelectChapterScene::SlideOutBook;
 	}
 
 	//決定
-	if (input.IsTriggered(InputType::Space)) {
+	if (input.IsTriggered(InputType::Space)) 
+	{
 		updateFunc_ = &SelectChapterScene::FadeOutUpdate;
 	}
 }
@@ -179,7 +202,8 @@ void SelectChapterScene::SlideOutBook()
 	//モデルのポジション座標
 	model_->SetPos(pos);
 
-	if (elapsedTime_ == total_time) {
+	if (elapsedTime_ == total_time) 
+	{
 		manager_.PopFrontScene();
 	}
 }
@@ -188,7 +212,9 @@ void SelectChapterScene::SlideOutBook()
 void SelectChapterScene::FadeOutUpdate()
 {
 	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
-	if (++fadeTimer_ == fadeInterval_) {
+
+	if (++fadeTimer_ == fadeInterval_) 
+	{
 		ChangeChapter();
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));
 		return;

@@ -50,12 +50,6 @@ public:
 	void SearchForPlayer(const VECTOR& playerPos);
 
 	/// <summary>
-	/// プレイヤーを突き飛ばす
-	/// </summary>
-	/// <param name="player">プレイヤーの参照</param>
-	void ThrustAway(Player& player);
-
-	/// <summary>
 	/// ルート通りに移動する
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの座標</param>

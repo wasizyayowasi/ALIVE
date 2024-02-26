@@ -22,14 +22,17 @@
 
 #include <random>
 
+//コンストラクタ
 ObjectManager::ObjectManager()
 {
 }
 
+//デストラクタ
 ObjectManager::~ObjectManager()
 {
 }
 
+//メインステージのオブジェクト生成
 void ObjectManager::MainStageObjectGenerator()
 {
 	//短縮化
@@ -66,6 +69,7 @@ void ObjectManager::MainStageObjectGenerator()
 	}
 }
 
+//オープニングシーンのオブジェクトを生成する
 void ObjectManager::OpeningStageObjectGenerator()
 {
 	//短縮化
@@ -87,6 +91,7 @@ void ObjectManager::OpeningStageObjectGenerator()
 	}
 }
 
+//エンディングシーンのオブジェクトを生成する
 void ObjectManager::EndStageObjectGenerator()
 {
 	//短縮化
@@ -107,6 +112,7 @@ void ObjectManager::EndStageObjectGenerator()
 	}
 }
 
+//死体生成
 void ObjectManager::CorpseGenerator(const int handle, const LoadObjectInfo& objInfo, const int animNo)
 {
 	//死体を一つ生成する
@@ -181,27 +187,18 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 }
 
 //描画
-void ObjectManager::Draw(const VECTOR& PlayerPos)
+void ObjectManager::Draw()
 {
-	float distance = 0.0f;
-
 	for (auto& objs : objects_) {
 		for (auto& obj : objs.second) {
-			//オブジェクトからプレイヤーまでの距離をとりサイズ変換する
-			distance = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), PlayerPos);
-			//プレイヤーから距離が8000.0f未満だったら描画する
-			if (distance < 8000.0f) {
-				obj->Draw();
-			}
+			obj->Draw();
 		}
 	}
-
-	int size = static_cast<int>(objects_[ObjectType::Enemy].size());
 }
 
+//衝突判定に使用するモデルを取得する
 const std::list<std::shared_ptr<Model>>& ObjectManager::GetAllCheckCollModel()
 {
-
 	for (auto& obj : objects_) {
 		for (auto& model : obj.second) {
 			if (model->GetIsCollCheck()) {
@@ -213,9 +210,9 @@ const std::list<std::shared_ptr<Model>>& ObjectManager::GetAllCheckCollModel()
 	return checkCollList_;
 }
 
+//特定のモデルポインタを取得する
 const std::shared_ptr<Model>& ObjectManager::GetSpecificModel(const ObjectType type)
 {
-
 	std::shared_ptr<Model> specificPoint;
 
 	//引数で指定されたオブジェクトのモデルポインタを上記で宣言した
@@ -237,9 +234,9 @@ const std::shared_ptr<Model>& ObjectManager::GetSpecificModel(const ObjectType t
 	return specificPoint;
 }
 
+//特定のオブジェクトベースポインタを取得する
 std::list<std::shared_ptr<ObjectBase>> ObjectManager::GetSpecificObject(const ObjectType type)
 {
-
 	std::list<std::shared_ptr<ObjectBase>> obj = {};
 
 	if (objects_.count(type) > 0) {
@@ -249,9 +246,9 @@ std::list<std::shared_ptr<ObjectBase>> ObjectManager::GetSpecificObject(const Ob
 	return obj;
 }
 
+//衝突判定を行うモデルを追加する
 void ObjectManager::AddCheckCollModel()
 {
-
 	checkCollList_.clear();
 
 	for (auto& obj : objects_) {
@@ -263,6 +260,7 @@ void ObjectManager::AddCheckCollModel()
 	}
 }
 
+//ランダムにポジションを生成する
 void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, const VECTOR& loadObjPos)
 {
 	float distance = 500.0f;
@@ -277,6 +275,7 @@ void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, const VECTOR& 
 	info.pos.z = static_cast<float>(randomPosZ(value));
 }
 
+//円周上のポジションを取得する
 void ObjectManager::CircumferencePosition(const float angle,VECTOR& infoPos, const VECTOR& playerPos)
 {
 	VECTOR pos = {};
@@ -297,6 +296,7 @@ void ObjectManager::CircumferencePosition(const float angle,VECTOR& infoPos, con
 	infoPos = pos;
 }
 
+//敵生成
 void ObjectManager::EnemyGenerator(const int deathCount, const LoadObjectInfo& info)
 {
 	//短縮化
@@ -327,6 +327,7 @@ void ObjectManager::EnemyGenerator(const int deathCount, const LoadObjectInfo& i
 	}
 }
 
+//エンディングの敵の生成
 void ObjectManager::EndEnemyGenerator(const int deathCount,LoadObjectInfo& info)
 {
 	//短縮化
@@ -344,6 +345,7 @@ void ObjectManager::EndEnemyGenerator(const int deathCount,LoadObjectInfo& info)
 	}
 }
 
+//死んだ回数分生成する
 void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount,LoadObjectInfo info)
 {
 	//短縮化
@@ -365,6 +367,7 @@ void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount,Load
 	}
 }
 
+//既定の回数分生成する
 void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, const std::string& str, const LoadObjectInfo& info)
 {
 	//短縮化
@@ -381,6 +384,7 @@ void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, con
 	}
 }
 
+//死んだ回数によって補助足場を生成する
 void ObjectManager::GenerateCorpseMountain(const int deathCount, const LoadObjectInfo& info)
 {
 	//短縮化
@@ -409,6 +413,7 @@ void ObjectManager::OrnamentGenerator(const std::string& name, const ObjectType 
 	objects_[objType].push_front(std::make_shared<OrnamentBase>(model.GetModelHandle(name), materialType, objInfo));
 }
 
+//ギミック生成機
 void ObjectManager::GimmickObjectGenerator(const std::string& name, const ObjectType objType, const  Material materialType, const LoadObjectInfo& objInfo)
 {
 	//短縮化

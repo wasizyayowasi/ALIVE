@@ -341,7 +341,6 @@ void KeyConfigSceneForSceneTitle::ChangeKeyPopUpText()
 	//文字列の横幅
 	int strWidth = GetDrawStringWidthToHandle(text, static_cast<int>(strlen(text)), fontHandleSize21_);
 
-
 	//選択したキーの名前を出力
 	DrawStringToHandle(Game::screen_width / 6 + strWidth / 2, Game::screen_height / 5 - graph_chip_size / 2 - 8, text, 0xffffff, fontHandleSize21_);
 

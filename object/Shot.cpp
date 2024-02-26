@@ -13,15 +13,34 @@ namespace {
 
 	//重力
 	constexpr float gravity = -1.0f;
+
+	//球の半径
+	constexpr float sphere_radius = 30.0f;
+
+	//カプセルの半径
+	constexpr float capsule_radius = 20.0f;
+
+	//ノックバック率
+	constexpr float nock_back_rate = 10.0f;
+
+	//音が聞こえる範囲
+	constexpr float sound_range = 1500.0f;
+
+	//エフェクトのサイズ
+	constexpr float effect_size = 100.0f;
+
+	//石のサイズ
+	constexpr float stone_size = 20.0f;
 }
 
+//コンストラクタ
 Shot::Shot(const int handle, const VECTOR& initPos, const VECTOR& moveVec)
 {
 	//モデルのインスタンス化
 	model_ = std::make_shared<Model>(handle,Material::Stone);
 
 	//サイズの調整
-	float scale = 20.0f;
+	float scale = stone_size;
 	model_->SetScale(VGet(scale, scale, scale));
 
 	//ポジション
@@ -37,10 +56,12 @@ Shot::Shot(const int handle, const VECTOR& initPos, const VECTOR& moveVec)
 	isEnable_ = true;
 }
 
+//デストラクタ
 Shot::~Shot()
 {
 }
 
+//更新
 void Shot::Update()
 {
 	//ポジションの更新
@@ -61,11 +82,13 @@ void Shot::Update()
 	model_->Update();
 }
 
+//描画
 void Shot::Draw()
 {
 	model_->Draw();
 }
 
+//衝突判定
 void Shot::HitCheck(Player& player)
 {
 	//プレイヤーの座標
@@ -76,21 +99,21 @@ void Shot::HitCheck(Player& player)
 
 	//プレイヤーとショットの当たり判定
 	//カプセルと球体
-	bool hit = HitCheck_Sphere_Capsule(pos_, 50.0f, playerPos, VGet(playerPos.x, playerPos.y + playerHeight, playerPos.z),20.0f);
+	bool hit = HitCheck_Sphere_Capsule(pos_, sphere_radius, playerPos, VGet(playerPos.x, playerPos.y + playerHeight, playerPos.z),capsule_radius);
 
 	//衝突したらノックバックベクトルを作り
 	// 音を鳴らして
 	//プレイヤーのベクトルに設定し、存在するフラグをfalseにする
 	if (hit) {
-		VECTOR nockBack = VScale(VNorm(moveVec_),10.0f);
+		VECTOR nockBack = VScale(VNorm(moveVec_), nock_back_rate);
 		player.BulletHitMe(nockBack);
 
 		//サウンドを鳴らす
-		SoundManager::GetInstance().Set3DSoundInfo(playerPos, 1200.0f, "hit");
+		SoundManager::GetInstance().Set3DSoundInfo(playerPos, sound_range, "hit");
 		SoundManager::GetInstance().PlaySE("hit");
 
 		//エフェクトを出す
-		EffectManager::GetInstance().AddEffect("BigHit",100.0f, pos_);
+		EffectManager::GetInstance().AddEffect("BigHit", effect_size, pos_);
 
 		isEnable_ = false;
 	}

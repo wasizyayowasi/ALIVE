@@ -105,13 +105,6 @@ void Aster::Draw()
 {
 	//デバッグ用描画
 	{
-		//for (float x = -900.0f; x < 3000.0f; x += 100.0f) {
-		//	DrawLine3D(VGet(x, 20, 300), VGet(x, 20, -300), 0xff0000);
-		//}
-		//for (float z = -300.0f; z < 300.0f; z += 100.0f) {
-		//	DrawLine3D(VGet(-900, 20, z), VGet(3000, 20, z), 0xff0000);
-		//}
-
 		for (int i = 0; i < max_Index; i++) {
 			if (masu_[i].masuMode == MasuMode::normalMode) {
 				DrawSphere3D(masu_[i].centerPos, 16, 32, 0x00ff00, 0x00ff00, true);
