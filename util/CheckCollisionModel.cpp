@@ -11,7 +11,14 @@
 #include <algorithm>
 
 namespace {
+	//三角形の頂点の数
+	constexpr int triangle_vertex_num = 3;
+
+	//球の半径
 	constexpr float collition_radius = 200.0f;
+
+	//カプセルの半径
+	constexpr float capsel_radius = 20.0f;
 }
 
 CheckCollisionModel::CheckCollisionModel()
@@ -131,7 +138,7 @@ void CheckCollisionModel::CheckCollisionWall(const std::shared_ptr<Player>& play
 			{
 				auto hitPoly = wallHitDim_[i];
 				//プレイヤーを元にしたカプセルと壁ポリゴンの判定　　当たっていなかったらcontinue
-				if (!HitCheck_Capsule_Triangle(nowPos_, VAdd(nowPos_, VGet(0.0f, playerState.height, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]))
+				if (!HitCheck_Capsule_Triangle(nowPos_, VAdd(nowPos_, VGet(0.0f, playerState.height, 0.0f)), capsel_radius, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]))
 				{
 					continue;
 				}
@@ -172,7 +179,7 @@ void CheckCollisionModel::CheckCollisionWall(const std::shared_ptr<Player>& play
 		for (int i = 0; i < hitWallNum; i++)
 		{
 			auto hitPoly = wallHitDim_[i];
-			if (HitCheck_Capsule_Triangle(nowPos_, VAdd(nowPos_, VGet(0.0f, playerState.height, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2])) 
+			if (HitCheck_Capsule_Triangle(nowPos_, VAdd(nowPos_, VGet(0.0f, playerState.height, 0.0f)), capsel_radius, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]))
 			{
 				hitFlag_ = false;
 				break;
@@ -192,7 +199,7 @@ void CheckCollisionModel::CheckCollisionWall(const std::shared_ptr<Player>& play
 			for (i = 0; i < hitWallNum; i++)
 			{
 				auto& hitPoly = wallHitDim_[i];
-				if (!HitCheck_Capsule_Triangle(nowPos_, VAdd(nowPos_, VGet(0.0f, playerState.height, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]))
+				if (!HitCheck_Capsule_Triangle(nowPos_, VAdd(nowPos_, VGet(0.0f, playerState.height, 0.0f)), capsel_radius, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]))
 				{
 					continue;
 				}
@@ -220,7 +227,7 @@ void CheckCollisionModel::CollisionDetectionWithWallAfterMovement(int& j, const 
 	for (j = 0; j < hitWallNum; j++)
 	{
 		auto& hitPoly = wallHitDim_[j];
-		if (HitCheck_Capsule_Triangle(nowPos_, VAdd(nowPos_, VGet(0.0f, playerState.height, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]))
+		if (HitCheck_Capsule_Triangle(nowPos_, VAdd(nowPos_, VGet(0.0f, playerState.height, 0.0f)), capsel_radius, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]))
 		{
 			player->SetMoveVec(VGet(0, 0, 0));
 			break;
@@ -280,7 +287,7 @@ void CheckCollisionModel::CheckCollisionFloor(const std::shared_ptr<Player>& pla
 		}
 		else {
 			float maxY = nowPos_.y + playerState.height;
-			float correction = 20.0f;
+			float correction = capsel_radius;
 			hitFlag_ = false;
 			for (int i = 0; i < hitFloorNum; i++)
 			{
@@ -382,16 +389,16 @@ void CheckCollisionModel::CheckStepDifference(const std::shared_ptr<Player>& pla
 		for (int i = 0; i < hitWallNum; i++)
 		{
 			auto hitPoly = wallHitDim_[i];
-			if (!HitCheck_Capsule_Triangle(VGet(nowPos_.x, nowPos_.y, nowPos_.z), VAdd(nowPos_, VGet(0.0f, playerState.height, 0.0f)), 20.0f, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]))
+			if (!HitCheck_Capsule_Triangle(VGet(nowPos_.x, nowPos_.y, nowPos_.z), VAdd(nowPos_, VGet(0.0f, playerState.height, 0.0f)), capsel_radius, hitPoly.hitDim->Position[0], hitPoly.hitDim->Position[1], hitPoly.hitDim->Position[2]))
 			{
 				continue;
 			}
 
 			//衝突したポリゴンの一番Y軸の高い頂点を見つけ出し
 			//乗り越えられる段差以上だったらoverHeightをtrueにする
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < triangle_vertex_num; i++)
 			{
-				if (nowPos_.y + 60 < hitPoly.hitDim->Position[i].y)
+				if (nowPos_.y + playerState.height < hitPoly.hitDim->Position[i].y)
 				{
 					overHeight = true;
 				}
@@ -399,7 +406,7 @@ void CheckCollisionModel::CheckStepDifference(const std::shared_ptr<Player>& pla
 
 			//乗り越えることができる高さで一番高いY軸の値を見つける
 			if (!overHeight) {
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < triangle_vertex_num; i++)
 				{
 					if (objectHeightY_ < hitPoly.hitDim->Position[i].y)
 					{
@@ -514,7 +521,7 @@ void CheckCollisionModel::CheckCollCorpseModel(const std::shared_ptr<Player>& pl
 			}
 
 			//死体のモデルとプレイヤーの座標を基準に作成されたカプセルとの衝突判定
-			auto result = MV1CollCheck_Capsule(hit.model->GetModelHandle(), hit.model->GetColFrameIndex(), playerState.pos, VAdd(playerState.pos, VGet(0, playerState.height, 0)),30);
+			auto result = MV1CollCheck_Capsule(hit.model->GetModelHandle(), hit.model->GetColFrameIndex(), playerState.pos, VAdd(playerState.pos, VGet(0, playerState.height, 0)), capsel_radius);
 
 			//上記の衝突判定の結果が1つでもあればプレイヤーに
 			//その死体のポインターと持ち運べるフラグを送る

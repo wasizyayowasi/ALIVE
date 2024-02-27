@@ -63,13 +63,6 @@ void Aster::ArrayInit(const VECTOR& pos)
 		masu_[i].x = i % max_X;
 		masu_[i].z = i / max_Z;
 	}
-
-	for (int i = 0; i < max_Z; i++)
-	{
-		masu_[8 + max_Z * i].masuMode = MasuMode::blockadeMode;
-	}
-
-	masu_[118].masuMode = MasuMode::normalMode;
 }
 
 //‰Šú‰»

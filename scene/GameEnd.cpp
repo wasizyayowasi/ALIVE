@@ -6,6 +6,7 @@
 #include "../object/objectManager.h"
 
 #include "../util/game.h"
+#include "../util/Util.h"
 #include "../util/Model.h"
 #include "../util/InputState.h"
 #include "../util/ModelManager.h"
@@ -15,10 +16,35 @@
 
 #include <algorithm>
 
-namespace {
+namespace 
+{
+	//半分
+	constexpr int half = 2;
+
+	//過去5回の記録を残すが1/5は違う処理をするため4回にする
+	constexpr int old_result_num = 4;
+
+	//補正値
+	constexpr int correction = 3;
+
 	//走るアニメーションの足音を鳴らすフレーム数
 	constexpr int run_anim_foot_step_frame_type_1 = 6;
 	constexpr int run_anim_foot_step_frame_type_2 = 45;
+
+	//正面を向いた時のアニメーションフレーム数
+	constexpr int front_anim_frame = 30;
+
+	//進行方向を向いた時のアニメーションフレーム数
+	constexpr int direction_of_travel_anim_frame = 40;
+
+	//一回の動作で置く死体の数
+	constexpr int number_placed_in_first_order_action = 5;
+
+	//アニメーションを変更するのにかかる時間
+	constexpr int anim_change_time = 10;
+
+	//フェードの最大値
+	constexpr int max_fade_value = 255;
 
 	//色を変えるマテリアルの番号
 	constexpr int change_material_num = 8;
@@ -38,14 +64,32 @@ namespace {
 	//棒グラフの1メモリのサイズ
 	constexpr int bar_graph_1_memory_size = 12;
 
+	//文字列の描画位置の高さ補正値
+	constexpr int str_height_correction = 15;
+
+	//文字列の描画位置の横の補正値
+	constexpr int str_width_correction = 10;
+
 	//音が聞こえる範囲
 	constexpr float sound_fange = 800.0f;
+
+	//死体の高さの間隔
+	constexpr float corpse_height_gap = 15.0f;
+
+	//死体に正面を向かせる角度
+	constexpr float corpse_front_angle = -90.0f;
+
+	//死体を置く場所の補正値
+	constexpr float corpse_put_pos = 50.0f;
 
 	//初期カメラポジション
 	constexpr VECTOR camera_init_pos = { 265, 314, -803 };
 
 	//初期カメラのターゲットポジション
 	constexpr VECTOR camera_init_target_pos = { 265, 314, 1777 };
+
+	//死体の色
+	constexpr COLOR_F corpse_color = { 1.0f, 0.0f, 0.0f, 1.0f };
 }
 
 //コンストラクタ
@@ -77,7 +121,7 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 
 	//死体を置く場所を画面を分割して決める
 	//画面の分割数の取得
-	divisionNum_ = file.GetTotalDeathNum().back() / file.GetTotalDeathNum().size() + 1;
+	divisionNum_ = file.GetTotalDeathNum().back() / static_cast<int>(file.GetTotalDeathNum().size()) + 1;
 	if (file.GetTotalDeathNum().back() % file.GetTotalDeathNum().size() > 0)
 	{
 		divisionNum_++;
@@ -158,9 +202,9 @@ void GameEnd::Draw()
 		}
 
 		//棒グラフの描画
-		DrawBox(Game::screen_width / division_width * (i + 3) - bar_graph_width - (Game::screen_width / 2 - castScreenPosX),
+		DrawBox(Game::screen_width / division_width * (i + correction) - bar_graph_width - (Game::screen_width / half - castScreenPosX),
 				barGraphHeight_[i],
-				Game::screen_width / division_width * (i + 3) + bar_graph_width - (Game::screen_width / 2 - castScreenPosX),
+				Game::screen_width / division_width * (i + correction) + bar_graph_width - (Game::screen_width / half - castScreenPosX),
 				Game::screen_height / division_height * bar_graph_1_memory_size,
 				color, true);
 
@@ -168,23 +212,23 @@ void GameEnd::Draw()
 		int size = GetDrawFormatStringWidthToHandle(pigumo42FontHandle_,"%d体", file.GetTotalDeathNum()[i]);
 
 		//数字の描画
-		DrawFormatStringToHandle(Game::screen_width / division_width * (i + 3) - size / 2 - (Game::screen_width / 2 - castScreenPosX),
+		DrawFormatStringToHandle(Game::screen_width / division_width * (i + correction) - size / half - (Game::screen_width / half - castScreenPosX),
 								 Game::screen_height / division_height * bar_graph_1_memory_size - file.GetTotalDeathNum()[i] * bar_graph_height - size,
 								 0x000000, pigumo42FontHandle_, "%d体", file.GetTotalDeathNum()[i]);
 
-		if (4 - i == 0) 
+		if (old_result_num - i == 0)
 		{
-			DrawVStringToHandle(Game::screen_width / division_width * (i + 3) - 10 - (Game::screen_width / 2 - castScreenPosX),
-								Game::screen_height / division_height * bar_graph_1_memory_size + 15,
+			DrawVStringToHandle(Game::screen_width / division_width * (i + correction) - str_width_correction - (Game::screen_width / half - castScreenPosX),
+								Game::screen_height / division_height * bar_graph_1_memory_size + str_height_correction,
 								"今回", 0xff0000, pigumo21FontHandle_);
 			continue;
 		}
 
-		DrawFormatVStringToHandle(Game::screen_width / division_width * (i + 3)-10 - (Game::screen_width / 2 - castScreenPosX),
-								  Game::screen_height / division_height * bar_graph_1_memory_size +15,
+		DrawFormatVStringToHandle(Game::screen_width / division_width * (i + correction) - str_width_correction - (Game::screen_width / half - castScreenPosX),
+								  Game::screen_height / division_height * bar_graph_1_memory_size + str_height_correction,
 								  0x000000,
 								  pigumo21FontHandle_,
-								  "%d回前", 4 - i);
+								  "%d回前", old_result_num - i);
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
@@ -227,8 +271,8 @@ void GameEnd::ModelSetting()
 		corpseModel_[i].second->SetScale(playerInfo.scale);
 		corpseModel_[i].second->SetAnimEndFrame(static_cast<int>(PlayerAnimType::Death));
 		//マテリアルの色を変える
-		MV1SetMaterialDifColor(corpseModel_[i].second->GetModelHandle(), change_material_num, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
-		height += 15.0f;
+		MV1SetMaterialDifColor(corpseModel_[i].second->GetModelHandle(), change_material_num, corpse_color);
+		height += corpse_height_gap;
 	}
 }
 
@@ -248,7 +292,7 @@ void GameEnd::CorpseUpdate(const VECTOR& playerPos)
 				continue;
 			}
 			VECTOR rot = {};
-			rot.y = 0 * DX_PI_F / 180.0f;
+			rot.y = MathUtil::DegreeToRadian(0);
 			corpseModel_[i].second->SetRot(rot);
 		}
 	}
@@ -256,7 +300,7 @@ void GameEnd::CorpseUpdate(const VECTOR& playerPos)
 	//アニメーションが終了したら、足元に死体を置く
 	if (playerModel_->IsAnimEnd()) 
 	{
-		for (int i = corpseNum_; i < corpseNum_ + 5; i++) 
+		for (int i = corpseNum_; i < corpseNum_ + number_placed_in_first_order_action; i++)
 		{
 			//現在の番号が死体の総数を超えたら以降の処理を行わない
 			if (i > static_cast<int>(corpseModel_.size() - 1)) 
@@ -271,7 +315,7 @@ void GameEnd::CorpseUpdate(const VECTOR& playerPos)
 			corpseModel_[i].first = true;
 
 			//高さを変更する
-			height += 15.0f;
+			height += corpse_height_gap;
 		}
 
 		//まだ置かれていない死体のモデルを回転させる
@@ -283,15 +327,15 @@ void GameEnd::CorpseUpdate(const VECTOR& playerPos)
 			}
 
 			VECTOR rot = {};
-			rot.y = -90 * DX_PI_F / 180.0f;
+			rot.y = MathUtil::DegreeToRadian(corpse_front_angle);
 			corpseModel_[i].second->SetRot(rot);
 		}
 
 		//死体を5個足元に置いた後、まだ手元に死体が残っていたら
 		//操作する死体の番号範囲を変える
-		if ((static_cast<int>(corpseModel_.size()) - 1 - corpseNum_ + 1) / 5 > 0) 
+		if ((static_cast<int>(corpseModel_.size()) - 1 - corpseNum_ + 1) / number_placed_in_first_order_action > 0)
 		{
-			corpseNum_ += 5;
+			corpseNum_ += number_placed_in_first_order_action;
 		}
 
 		//フラグを折る
@@ -311,7 +355,7 @@ void GameEnd::CorpseUpdate(const VECTOR& playerPos)
 		}
 
 		corpseModel_[i].second->SetPos({ pos.x,pos.y + height,pos.z });
-		height += 15.0f;
+		height += corpse_height_gap;
 	}
 }
 
@@ -328,8 +372,8 @@ void GameEnd::WhiteBoardUpdate()
 
 	if (!isResultDisplaying_)
 	{
-		boardModel_->SetPos(VAdd(boardModel_->GetPos(), moveVec_));
 		boardIsMoving_ = true;
+		boardModel_->SetPos(VAdd(boardModel_->GetPos(), moveVec_));
 		if (!sound.CheckSoundFile("pull")) 
 		{
 			sound.PlaySE("pull");
@@ -343,17 +387,17 @@ void GameEnd::WhiteBoardUpdate()
 	int castScreenPosX = static_cast<int>(screenPos.x);
 
 	//画面の半分のサイズ(横)
-	int screenWidthHalf = Game::screen_width / 2;
+	int screenWidthHalf = Game::screen_width / half;
 
 	if (castScreenPosX >= screenWidthHalf - 1 && castScreenPosX <= screenWidthHalf + 1)
 	{
 		boardIsMoving_ = false;
 		isResultDisplaying_ = true;
-		playerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::Idle), true, false, 10);
+		playerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::Idle), true, false, anim_change_time);
 	}
 
 	//ホワイトボードが画面外に出たらフェードアウトする
-	if (castScreenPosX < -Game::screen_width / 2) 
+	if (castScreenPosX < -Game::screen_width / half)
 	{
 		updateFunc_ = &GameEnd::FadeOutUpdate;
 	}
@@ -362,7 +406,7 @@ void GameEnd::WhiteBoardUpdate()
 //フェードインの更新
 void GameEnd::FadeInUpdate()
 {
-	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	fadeValue_ = static_cast <int>(max_fade_value * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0)
 	{
 		updateFunc_ = &GameEnd::NormalUpdate;
@@ -393,7 +437,7 @@ void GameEnd::NormalUpdate()
 		isWentToRightSide_ = false;
 		moveVec_.x = -1;
 		playerModel_->SetPos(file.GetEndSpecifiedInfo("secondPos").pos);
-		playerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::Pull), true, false, 10);
+		playerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::Pull), true, false, anim_change_time);
 		playerPos = playerModel_->GetPos();
 	}
 
@@ -428,13 +472,13 @@ void GameEnd::NormalUpdate()
 	//上記のサイズで余りを求める
 	int errorRange = static_cast<int>(screenPos.x) % (divisionPosX * currentDivisionNum_);
 
-	if (screenPos.x > 50 && screenPos.x < Game::screen_width - 50)
+	if (screenPos.x > corpse_put_pos && screenPos.x < Game::screen_width - corpse_put_pos)
 	{
 		//誤差範囲内だったら、プレイヤーのアニメーションを変更する
 		if (errorRange >= -1 && errorRange <= 1 && !isPutting_) 
 		{
 			//アニメーションを変更する
-			playerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::Put), false, true, 10);
+			playerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::Put), false, true, anim_change_time);
 
 			//フラグを立てる
 			isPutting_ = true;
@@ -446,11 +490,11 @@ void GameEnd::NormalUpdate()
 	//プレイヤーが特定のアニメーションフレームになったらフラグを立てる
 	if (isPutting_) 
 	{
-		if (playerModel_->GetSpecifiedAnimTime(30))
+		if (playerModel_->GetSpecifiedAnimTime(front_anim_frame))
 		{
 			isTurn_ = true;
 		}
-		else if (playerModel_->GetSpecifiedAnimTime(40))
+		else if (playerModel_->GetSpecifiedAnimTime(direction_of_travel_anim_frame))
 		{
 			isTurn_ = false;
 		}
@@ -462,14 +506,14 @@ void GameEnd::NormalUpdate()
 	if (!isPutting_)
 	{
 		//アニメーションを変更する
-		playerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::Run), true, false, 10);
+		playerModel_->ChangeAnimation(static_cast<int>(PlayerAnimType::Run), true, false, anim_change_time);
 	}
 }
 
 //フェードアウトの更新
 void GameEnd::FadeOutUpdate()
 {
-	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	fadeValue_ = static_cast <int>(max_fade_value * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) 
 	{
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneTitle>(manager_)));
