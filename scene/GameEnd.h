@@ -43,6 +43,10 @@ public:
 	void Draw();
 
 private:
+	/// <summary>
+	/// ƒ‚ƒfƒ‹‚Ìİ’è
+	/// </summary>
+	void ModelSetting();
 
 	/// <summary>
 	/// €‘Ì‚ÌXV

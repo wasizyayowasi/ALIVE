@@ -8,6 +8,16 @@ class UIItemManager;
 
 class SettingScene : public SceneBase
 {
+private:
+	//アップデートを行う項目
+	enum class UpdateItem
+	{
+		WindowMode,
+		BGM,
+		SE,
+
+		Max,
+	};
 public:
 	/// <summary>
 	/// コンストラクタ
@@ -39,6 +49,24 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// ウィンドウモードの描画
+	/// </summary>
+	/// <param name="alphaValue">アルファ値</param>
+	void DrawWindowMode(int alphaValue);
+
+	/// <summary>
+	/// SE調整バーの描画
+	/// </summary>
+	/// <param name="alphaValue">アルファ値</param>
+	void DrawSEBar(int alphaValue);
+
+	/// <summary>
+	/// BGM調整バーの描画
+	/// </summary>
+	/// <param name="alphaValue">アルファ値</param>
+	void DrawBGMBar(int alphaValue);
 
 	/// <summary>
 	/// 通常時の更新

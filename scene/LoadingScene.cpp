@@ -12,6 +12,15 @@
 #include "../util/EffectManager.h"
 #include "../util/UIItemManager.h"
 
+namespace
+{
+	//文字列表示の座標補正X
+	constexpr float correction_x = 230.0f;
+
+	//文字列表示の座標補正X
+	constexpr float correction_y = 80.0f;
+}
+
 //コンストラクタ
 LoadingScene::LoadingScene(SceneManager& manager):SceneBase(manager)
 {
@@ -32,7 +41,7 @@ void LoadingScene::Init()
 	UIManager_ = std::make_shared<UIItemManager>();
 
 	//UI画像作成
-	UIManager_->AddingMenuWithSplitStr(Game::screen_width - 230, Game::screen_height - 80, Game::screen_width, Game::screen_height, "Loading...", font.GetFontHandle("ピグモ 0042"));
+	UIManager_->AddingMenuWithSplitStr(Game::screen_width - correction_x, Game::screen_height - correction_y, Game::screen_width, Game::screen_height, "Loading...", font.GetFontHandle("ピグモ 0042"));
 
 	//非同期初期の開始
 	SetUseASyncLoadFlag(true);
@@ -69,8 +78,10 @@ void LoadingScene::Update()
 	//非同期読み込み中の数を取得
 	aSyncLoadNum_ = GetASyncLoadNum();
 
-	if (loadingFile_) {
-		if (aSyncLoadNum_ < 1) {
+	if (loadingFile_)
+	{
+		if (aSyncLoadNum_ < 1) 
+		{
 			loadingFile_ = false;
 
 			//データのロード
@@ -78,7 +89,8 @@ void LoadingScene::Update()
 		}
 	}
 	else {
-		if (aSyncLoadNum_ < 1) {
+		if (aSyncLoadNum_ < 1) 
+		{
 #ifdef _DEBUG
 			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<DebugScene>(manager_)));
 #else
@@ -91,5 +103,5 @@ void LoadingScene::Update()
 //描画
 void LoadingScene::Draw()
 {
-	UIManager_->ChangePosDraw(Game::screen_width - 230, Game::screen_height - 80);
+	UIManager_->ChangePosDraw(Game::screen_width - correction_x, Game::screen_height - correction_y);
 }

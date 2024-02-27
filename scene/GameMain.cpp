@@ -27,11 +27,29 @@
 
 namespace
 {
+	//フェードの最大値
+	constexpr int max_fade_value = 255;
+
 	//ガウス処理で使用するピクセル幅
 	constexpr int pixel_width = 32;
 
 	//ぼかしのパラメーター
 	constexpr int pixel_param = 800;
+
+	//カプセルの半径
+	constexpr float capsel_radius = 600.0f;
+
+	//スカイドームのサイズ
+	constexpr float skydorm_scale = 30.0f;
+
+	//3Dサウンドの1mの値
+	constexpr float sound_3D_1m_value = 1.0f;
+
+	//カメラの初期位置
+	constexpr VECTOR camera_init_pos = { 0, 300, -550 };
+
+	//スカイドームの初期位置
+	constexpr VECTOR skydorm_init_pos = { 0, 200, 0 };
 }
 
 //コンストラクタ
@@ -47,7 +65,7 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	objManager_ = std::make_shared<ObjectManager>();
 	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
 
-	VECTOR pos = VAdd(player_->GetStatus().pos, VGet(0, 300, -550));
+	VECTOR pos = VAdd(player_->GetStatus().pos, camera_init_pos);
 	camera_ = std::make_shared<Camera>(pos, player_->GetStatus().pos);
 
 	//ゲームオブジェクトの生成
@@ -68,18 +86,19 @@ void GameMain::Init()
 	//短縮化
 	auto& model = ModelManager::GetInstance();
 
+	//スクリーン画像の作成
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
 
 	//仮でライト処理を消している
 	SetUseLighting(false);
 
 	//1mの範囲を設定する
-	Set3DSoundOneMetre(10.0f);
+	Set3DSoundOneMetre(sound_3D_1m_value);
 
+	//スカイドームの設定
 	skyHandle_ = model.GetModelHandle("SkyDorm");
-	float scale = 30.0f;
-	MV1SetScale(skyHandle_, VGet(scale, scale, scale));
-	MV1SetPosition(skyHandle_, VGet(0, 200, 0));
+	MV1SetScale(skyHandle_, VGet(skydorm_scale, skydorm_scale, skydorm_scale));
+	MV1SetPosition(skyHandle_, skydorm_init_pos);
 }
 
 //終了
@@ -208,10 +227,36 @@ void GameMain::Draw()
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
+//ゴールしているかを判定する
+void GameMain::GoalCheck()
+{
+	//短縮化
+	auto& file = ExternalFile::GetInstance();
+
+	//ゴールの配置データを取得
+	auto info = file.GetMainSpecifiedInfo("GOAL");
+
+	//衝突判定
+	auto result = MV1CollCheck_Capsule( player_->GetModelPointer()->GetModelHandle(),
+										player_->GetModelPointer()->GetColFrameIndex(),
+										VGet(info.pos.x, info.pos.y - info.scale.y, info.pos.z),
+										VGet(info.pos.x, info.pos.y + info.scale.y, info.pos.z), capsel_radius);
+	//終了判定
+	if (result.HitNum > 0)
+	{
+		totalDeathNum_ += player_->GetDeathCount();
+		file.SetDeathCount(totalDeathNum_);
+		updateFunc_ = &GameMain::FadeOutUpdate;
+	}
+
+	//衝突判定の削除
+	MV1CollResultPolyDimTerminate(result);
+}
+
 //TODO：別のフェードインが出来次第消去
 void GameMain::FadeInUpdate()
 {
-	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	fadeValue_ = static_cast <int>(max_fade_value * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0) 
 	{
 		updateFunc_ = &GameMain::NormalUpdate;
@@ -250,6 +295,9 @@ void GameMain::NormalUpdate()
 	//チュートリアル
 	tutorial_->Update(player_->GetStatus().pos);
 
+	//ごーるしているかを判定する
+	GoalCheck();
+
 	//リスナーの位置と方向を設定
 	//今回は、プレイヤーではなくカメラの座標にしている
 	SoundManager::GetInstance().Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
@@ -260,28 +308,12 @@ void GameMain::NormalUpdate()
 		isFilterOn_ = true;
 		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<ScenePause>(manager_)));
 	}
-
-	auto info = file.GetMainSpecifiedInfo("GOAL");
-
-	auto result = MV1CollCheck_Capsule(	player_->GetModelPointer()->GetModelHandle(),
-										player_->GetModelPointer()->GetColFrameIndex(),
-										VGet(info.pos.x, info.pos.y - info.scale.y, info.pos.z), 
-										VGet(info.pos.x, info.pos.y + info.scale.y, info.pos.z), 600);
-
-	if (result.HitNum > 0)
-	{
-		totalDeathNum_ += player_->GetDeathCount();
-		file.SetDeathCount(totalDeathNum_);
-		updateFunc_ = &GameMain::FadeOutUpdate;
-	}
-
-	MV1CollResultPolyDimTerminate(result);
 }
 
 //TODO：別のフェードインが出来次第消去
 void GameMain::FadeOutUpdate()
 {
-	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	fadeValue_ = static_cast <int>(max_fade_value * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_) 
 	{
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameEnd>(manager_)));

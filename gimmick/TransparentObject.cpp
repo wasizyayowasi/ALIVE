@@ -17,6 +17,7 @@ namespace
 	constexpr float min_alpha_value = 0.1f;
 }
 
+//コンストラクタ
 TransparentObject::TransparentObject(const int handle, const Material materialType, const LoadObjectInfo& objInfo) : GimmickBase(handle, materialType, objInfo)
 {
 	//衝突判定用フレームの設定
@@ -48,10 +49,12 @@ TransparentObject::TransparentObject(const int handle, const Material materialTy
 	}
 }
 
+//デストラクタ
 TransparentObject::~TransparentObject()
 {
 }
 
+//更新
 void TransparentObject::Update(Player& player)
 {
 	switch_->Update(player);
@@ -86,6 +89,7 @@ void TransparentObject::Update(Player& player)
 	}
 }
 
+//描画
 void TransparentObject::Draw()
 {
 	model_->Draw();
@@ -93,11 +97,13 @@ void TransparentObject::Draw()
 	switch_->Draw();
 }
 
+//スイッチモデルと死体の衝突判定を行う
 void TransparentObject::UpdateForCorpse(const std::shared_ptr<ObjectBase>& deadPerson)
 {
 	switch_->HitColl(deadPerson);
 }
 
+//衝突判定を行うモデルの追加
 const std::shared_ptr<Model>& TransparentObject::AddCollModel() const
 {
 	return switch_->GetModelPointer();

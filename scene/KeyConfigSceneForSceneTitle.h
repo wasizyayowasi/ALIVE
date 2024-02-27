@@ -44,6 +44,11 @@ public:
 	void Draw();
 
 	/// <summary>
+	/// ‘I‘ğ‘€ì
+	/// </summary>
+	void SelectionOperation();
+
+	/// <summary>
 	/// ƒL[‚Ì–ğŠ„‚è‚Ì•`‰æ
 	/// </summary>
 	void KeyStateDraw();

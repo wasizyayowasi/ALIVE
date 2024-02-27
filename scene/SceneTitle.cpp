@@ -1,7 +1,6 @@
 #include "SceneTitle.h"
 #include "GameMain.h"
 #include "ScenePause.h"
-#include "SceneMovie.h"
 #include "SceneManager.h"
 #include "SelectChapterScene.h"
 #include "SettingSceneForSceneTitle.h"
@@ -43,6 +42,15 @@ namespace
 	constexpr int move_str_split_num = 100;
 	constexpr int decision_str_split_num = 116;
 
+	//フェードの最大値
+	constexpr int max_fade_value = 255;
+
+	//UI配置ポジションX
+	constexpr int UI_pos_x = 320;
+
+	//UI配置ポジションY
+	constexpr int UI_pos_y = 100;
+
 	//タイトルのビルボートのサイズ
 	constexpr float title_bill_board_size = 300.0f;
 
@@ -61,11 +69,44 @@ namespace
 	constexpr float UI_correction_height = 40.0f;
 	constexpr float up_UI_correction_height = 90.0f;
 
+	//UImenuのY座標の初期位置
+	constexpr float UI_menu_init_pos_y = 120.0f;
+
+	//UImenuの隙間サイズ
+	constexpr float UI_menu_gap_size = 40.0f;
+
 	//スポットライトの外側の角度
 	constexpr float spot_light_out_angle = 90.0f;
 
 	//スポットライトの内側の角度
 	constexpr float spot_light_in_angle = 30.0f;
+
+	//スポットライトの光が届く範囲
+	constexpr float stop_light_range = 600.0f;
+
+	//距離関係なく減衰するパラメーター
+	constexpr float attenuation_regardless_of_distance = 0.0f;
+
+	//距離に比例して減衰するパラメーター
+	constexpr float attenuation_proportional_to_distance = 0.003f;
+
+	//距離の2乗に比例して減衰するパラメーター
+	constexpr float attenuation_proportional_to_the_square_of_the_distance = 0.0f;
+
+	//カメラの初期位置
+	constexpr VECTOR camera_init_pos = { 0, 140, 0 };
+
+	//通常時のカメラの上ベクトル
+	constexpr VECTOR normal_up_vec = { 0,1,0 };
+
+	//本を見る時の上ベクトル
+	constexpr VECTOR book_up_vec = { 0,0,1 };
+
+	//ディレクションライトの角度タイプ1
+	constexpr VECTOR direction_light_diagonally_lower_left = { -33.0f,-33.0f ,-33.0f };
+
+	//ディレクションライトの角度タイプ2
+	constexpr VECTOR direction_light_diagonally_lower_right = { 33.0f,-33.0f ,33.0f };
 
 	//ディレクションライトの色
 	constexpr COLOR_F direction_light_color = { 0.41f, 0.41f, 0.41f, 1.0f };
@@ -143,9 +184,11 @@ void SceneTitle::Update()
 	SetLightPosition(lightBulb_->GetFramePos());
 
 	//ライトの方向設定
-	SetLightDirectionHandle(lightHandle_[0], lightDir_[0]);
-	SetLightDirectionHandle(lightHandle_[1], lightDir_[1]);
-
+	for (int i = 0;i < lightHandle_.size();i++)
+	{
+		SetLightDirectionHandle(lightHandle_[i], lightDir_[i]);
+	}
+	
 	(this->*updateFunc_)();
 }
 
@@ -157,7 +200,7 @@ void SceneTitle::Draw()
 	auto& file = ExternalFile::GetInstance();
 
 	//カメラの初期化
-	camera_->Init(VGet(0, 140, 0));
+	camera_->Init(camera_init_pos);
 
 	//オブジェクトの描画
 	objManager_->Draw();
@@ -254,11 +297,13 @@ void SceneTitle::UISetting()
 
 	//UI画像の作成
 	fontHandle_ = FontsManager::GetInstance().GetFontHandle("ピグモ 0033");
-	float y = 120.0f;
+
+	//UImenuの作成
+	float y = UI_menu_init_pos_y;
 	for (auto& menu : menuName_)
 	{
-		UI_->AddMenu(static_cast<float>(Game::screen_width / screen_half), static_cast<float>(Game::screen_height / screen_half) + y, 320, 100, menu.c_str(), fontHandle_);
-		y += 40.0f;
+		UI_->AddMenu(static_cast<float>(Game::screen_width / screen_half), static_cast<float>(Game::screen_height / screen_half) + y, UI_pos_x, UI_pos_y, menu.c_str(), fontHandle_);
+		y += UI_menu_gap_size;
 	}
 }
 
@@ -270,13 +315,17 @@ void SceneTitle::LightSetting()
 	//スポットライトに変更する。ライトの設定
 	outAngle_ = MathUtil::DegreeToRadian(spot_light_out_angle);
 	inAngle_ = MathUtil::DegreeToRadian(spot_light_in_angle);
-	ChangeLightTypeSpot(lightBulb_->GetFramePos(), lightBulb_->GetRotVec(), outAngle_, inAngle_, 600.0f, 0.0f, 0.003f, 0.0f);
+	ChangeLightTypeSpot(lightBulb_->GetFramePos(), lightBulb_->GetRotVec(), 
+						outAngle_, inAngle_,
+						stop_light_range, attenuation_regardless_of_distance, 
+						attenuation_proportional_to_distance, 
+						attenuation_proportional_to_the_square_of_the_distance);
 
 	//ライトのディフューズカラーの設定
 	SetLightDifColor(spot_light_color);
 
 	//ディレクションライト角度取得
-	VECTOR dir = { -33.0f,-33.0f ,-33.0f };
+	VECTOR dir = direction_light_diagonally_lower_left;
 	dir = MathUtil::VECTORDegreeToRadian(dir);
 
 	//ディレクションライトの作成
@@ -285,7 +334,7 @@ void SceneTitle::LightSetting()
 	SetLightDifColorHandle(lightHandle_[0], direction_light_color);
 
 	//ディレクションライト角度取得
-	dir = { 33,-33,33 };
+	dir = direction_light_diagonally_lower_right;
 	dir = MathUtil::VECTORDegreeToRadian(dir);
 
 	//ディレクションライトの作成
@@ -301,10 +350,10 @@ void SceneTitle::CameraPositionDataSetting()
 	auto& file = ExternalFile::GetInstance();
 
 	//カメラの初期化
-	camera_->Init(VGet(0, 140, 0));
+	camera_->Init(camera_init_pos);
 
 	//カメラのポジションと見る位置の設定
-	camera_->SetCameraTargetPosAndView(file.GetCameraTargetPos("start"), file.GetCameraTargetPos("startTargetPos"), { 0,1,0 });
+	camera_->SetCameraTargetPosAndView(file.GetCameraTargetPos("start"), file.GetCameraTargetPos("startTargetPos"), normal_up_vec);
 
 	//カメラ情報の設定
 	CameraInfo info = {};
@@ -312,28 +361,28 @@ void SceneTitle::CameraPositionDataSetting()
 	//設定オブジェクトを見るカメラ
 	info.targetPos = file.GetCameraTargetPos("setting");
 	info.targetView = file.GetCameraTargetPos("settingTargetPos");
-	info.upVec = VGet(0, 1, 0);
+	info.upVec = normal_up_vec;
 
 	cameraInfo_.push_back(info);
 
 	//ベッドを見るカメラ
 	info.targetPos = file.GetCameraTargetPos("start");
 	info.targetView = file.GetCameraTargetPos("startTargetPos");
-	info.upVec = VGet(0, 1, 0);
+	info.upVec = normal_up_vec;
 
 	cameraInfo_.push_back(info);
 
 	//本を見るカメラ
 	info.targetPos = file.GetCameraTargetPos("continue");
 	info.targetView = file.GetCameraTargetPos("continueTargetPos");
-	info.upVec = VGet(0, 0, 1);
+	info.upVec = book_up_vec;
 
 	cameraInfo_.push_back(info);
 
 	//扉を見るカメラ
 	info.targetPos = file.GetCameraTargetPos("end");
 	info.targetView = file.GetCameraTargetPos("endTargetPos");
-	info.upVec = VGet(0, 1, 0);
+	info.upVec = normal_up_vec;
 
 	cameraInfo_.push_back(info);
 }
@@ -402,11 +451,11 @@ void SceneTitle::FadeInUpdate()
 {
 	//フェードイン
 	float timer = (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_));
-	UIfadeValue_ = static_cast <int>(255 * timer);
+	UIfadeValue_ = static_cast <int>(max_fade_value * timer);
 	if (++fadeTimer_ == fadeInterval_)
 	{
 		updateFunc_ = &SceneTitle::UIUpdate;
-		UIfadeValue_ = 255;
+		UIfadeValue_ = max_fade_value;
 		return;
 	}
 }
@@ -435,12 +484,6 @@ void SceneTitle::UIUpdate()
 	if (input.IsTriggered(InputType::Space))
 	{
 		NewGameOrGameEndChange();
-	}
-
-	//動画を再生する
-	if (input.IsTriggered(InputType::Pause))
-	{
-		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<SceneMovie>(manager_)));
 	}
 }
 
@@ -483,7 +526,7 @@ void SceneTitle::OpeningUpdate()
 void SceneTitle::UIFadeOutUpdate()
 {
 	//UIのフェードアウト
-	UIfadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	UIfadeValue_ = static_cast <int>(max_fade_value * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0)
 	{
 		UIfadeValue_ = 0;
@@ -497,7 +540,7 @@ void SceneTitle::UIFadeOutUpdate()
 void SceneTitle::SceneTitleFadeOutUpdate()
 {
 	//フェードアウト
-	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	fadeValue_ = static_cast <int>(max_fade_value * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_)
 	{
 		manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<GameMain>(manager_)));

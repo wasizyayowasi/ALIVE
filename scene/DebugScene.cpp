@@ -5,6 +5,8 @@
 #include "SceneTitle.h"
 #include "LoadingScene.h"
 #include "SceneManager.h"
+#include "SettingScene.h"
+#include "KeyConfigScene.h"
 
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
@@ -76,7 +78,7 @@ void DebugScene::Update()
 			break;
 		case 2:
 			//デバッグしたいシーン
-			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<LoadingScene>(manager_)));
+			manager_.ChangeScene(std::shared_ptr<SceneBase>(std::make_shared<KeyConfigScene>(manager_)));
 			break;
 		case 3:
 			//終了画面
@@ -106,7 +108,7 @@ void DebugScene::Draw()
 		y += correction_pos_Y;
 	}
 
-	y = 150;
+	y = str_draw_pos_y;
 	//選択番号によって変わる矢印の描画
 	DrawString(x, selectNum_ * correction_pos_Y + y, "←", 0xff0000);
 }

@@ -13,13 +13,88 @@
 
 using namespace std;
 
-namespace {
-	//フォントの名前
-	const char* const pigumo42_font_name = "ピグモ 0042";
+namespace 
+{
+	//半分
+	constexpr int half = 2;
+
+	//画面の横幅の分割数
+	constexpr int screen_width_division_num = 128;
+
+	//画面の縦の分割数
+	constexpr int screen_height_division_num = 72;
+
+	//UI配置ポジションX
+	constexpr int UI_pos_x = 320;
+
+	//UI配置ポジションY
+	constexpr int UI_pos_y = 100;
+
+	//音の最小値
+	constexpr int min_sound_value = 0;
+	
+	//音の最大値
+	constexpr int max_sound_value = 9;
+
+	//音の1メモリの大きさ
+	constexpr int sound_1_momery_size = 25;
+
+	//フェードの最大値
+	constexpr int max_fade_value = 255;
+
+	//ガウス処理で使用するピクセル幅
+	constexpr int pixel_width = 32;
+
+	//ブレンドモードのアルファ値
+	constexpr int blend_mode_alpha_value = 150;
+
+	//操作設定と戻るの分割数
+	constexpr int operation_setting_and_back_width_division_num = 64;
+
+	//モード、SE、BGMの分割数
+	constexpr int mode_SE_BGM_width_division_num = 32;
+
+	//モードの高さの分割数
+	constexpr int mode_height_division_num = 24;
+	 
+	//SEの高さの分割数
+	constexpr int SE_height_division_num = 34;
+
+	//BGMの高さの分割数
+	constexpr int BGM_height_division_num = 46;
+
+	//操作設定の高さの分割数
+	constexpr int operation_height_division_num = 54;
+	
+	//戻るの高さの分割数
+	constexpr int back_height_division_num = 58;
+
+	//円の横幅の分割数
+	constexpr int circle_width_division_num = 34;
+
+	//円の数
+	constexpr int circle_num = 10;
+
+	//BGMの高さの分割数
+	constexpr int circle_height_division_num = 48;
+
+	//円の頂点の数
+	constexpr int circle_vertex_num = 32;
+
+	//選択されている項目のアルファ値
+	constexpr int selected_item_alpha_value = 250;
+
+	//選択されていない項目のアルファ値
+	constexpr int not_selected_item_alpha_value = 150;
+
 	//円同士の間隔
 	constexpr float circle_distance = 53.5f;
+
 	//円の半径
 	constexpr float circle_radius = 14.5f;
+
+	//円の拡縮率
+	constexpr float circle_expansion_size = 1.3f;
 }
 
 //コンストラクタ
@@ -43,24 +118,26 @@ void SettingScene::Init()
 	UIManager_ = std::make_shared<UIItemManager>();
 
 	//現在のボリュームの取得
-	volumeBGM_ = sound.GetBGMVolume() / 25;
-	volumeSE_ = sound.GetSEVolume() / 25;
+	volumeBGM_ = sound.GetBGMVolume() / sound_1_momery_size;
+	volumeSE_ = sound.GetSEVolume() / sound_1_momery_size;
 
 	//UI画像の作成
 	//フォントの取得
-	int pigumo42Font = font.GetFontHandle(pigumo42_font_name);
+	int pigumo42Font = font.GetFontHandle("ピグモ 0042");
+
 	//フォントを適用した文字列のサイズ取得
-	int windowFontSize = font.GetStringSize("モード", pigumo42_font_name);
-	int BGMFontSize = font.GetStringSize("BGM", pigumo42_font_name);
-	int SEFontSize = font.GetStringSize("SE", pigumo42_font_name);
+	int windowFontSize	= font.GetStringSize("モード", "ピグモ 0042");
+	int BGMFontSize		= font.GetStringSize("BGM", "ピグモ 0042");
+	int SEFontSize		= font.GetStringSize("SE", "ピグモ 0042");
 
 	//UI画像の作成
-	UIManager_->AddMenu(Game::screen_width / 4, Game::screen_height / 3, 320, 100, "モード", pigumo42Font);
-	UIManager_->AddMenu(Game::screen_width / 4, Game::screen_height / 2 - 20, 320, 100, "BGM", pigumo42Font);
-	UIManager_->AddMenu(Game::screen_width / 4, Game::screen_height / 3 * 2 - 20, 320, 100, "SE", pigumo42Font);
-	UIManager_->AddMenu(Game::screen_width / 2, Game::screen_height / 4 * 3, 320, 100, "操作設定", pigumo42Font);
-	UIManager_->AddMenu(Game::screen_width / 2, Game::screen_height / 4 * 3 + 40, 320, 100, "戻る", pigumo42Font);
+	UIManager_->AddMenu(Game::screen_width / screen_width_division_num * mode_SE_BGM_width_division_num, Game::screen_height / screen_height_division_num * mode_height_division_num					, UI_pos_x, UI_pos_y, "モード", pigumo42Font);
+	UIManager_->AddMenu(Game::screen_width / screen_width_division_num * mode_SE_BGM_width_division_num, Game::screen_height / screen_height_division_num * SE_height_division_num						, UI_pos_x, UI_pos_y, "BGM", pigumo42Font);
+	UIManager_->AddMenu(Game::screen_width / screen_width_division_num * mode_SE_BGM_width_division_num, Game::screen_height / screen_height_division_num * BGM_height_division_num						, UI_pos_x, UI_pos_y, "SE", pigumo42Font);
+	UIManager_->AddMenu(Game::screen_width / screen_width_division_num * operation_setting_and_back_width_division_num, Game::screen_height / screen_height_division_num * operation_height_division_num, UI_pos_x, UI_pos_y, "操作設定", pigumo42Font);
+	UIManager_->AddMenu(Game::screen_width / screen_width_division_num * operation_setting_and_back_width_division_num, Game::screen_height / screen_height_division_num * back_height_division_num		, UI_pos_x, UI_pos_y, "戻る", pigumo42Font);
 
+	//スクリーン画像の作成
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
 
 	if (manager_.GetWindowMode()) 
@@ -70,7 +147,6 @@ void SettingScene::Init()
 	else {
 		windowModeText_ = "≪  フルスクリーン  ≫";
 	}
-
 }
 
 //終了
@@ -89,7 +165,7 @@ void SettingScene::Update()
 void SettingScene::Draw()
 {
 	//少し透過した黒の背景を描画
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, blend_mode_alpha_value);
 	DrawBox(0, 0, Game::screen_width, Game::screen_height, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
@@ -101,31 +177,96 @@ void SettingScene::Draw()
 	//UI文字列の描画
 	UIManager_->AlphaChangeDraw(selectNum_,fadeValue_);
 
+	int alpha[static_cast<int>(UpdateItem::Max)] = {};
+
+	for (int i = 0; i < static_cast<int>(UpdateItem::Max); i++)
+	{
+		if (selectNum_ == i)
+		{
+			alpha[i] = selected_item_alpha_value;
+		}
+		else
+		{
+			alpha[i] = not_selected_item_alpha_value;
+		}
+	}
+
+	//ウィンドウモードの描画
+	DrawWindowMode(alpha[static_cast<int>(UpdateItem::WindowMode)]);
+
+	//BGM調整バーの描画
+	DrawBGMBar(alpha[static_cast<int>(UpdateItem::BGM)]);
+
+	//SE調整バーの描画
+	DrawSEBar(alpha[static_cast<int>(UpdateItem::SE)]);
+
+	//通常に戻す
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	//フェードの時、アルファ値を変更するとともにガウスぼかしを掛ける
+	GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, pixel_width, max_fade_value - fadeValue_);
+
+	//描画画像のアルファ値を変更する
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
+	DrawGraph(0, 0, makeScreenHandle_, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+//ウィンドウモードの描画
+void SettingScene::DrawWindowMode(int alphaValue)
+{
 	//短縮化
 	auto& font = FontsManager::GetInstance();
 
 	//現在の画面モードを表示
-	int pigumo42 = font.GetFontHandle(pigumo42_font_name);
-	int windowModeFontSize = font.GetStringSize(windowModeText_.c_str(), pigumo42_font_name);
+	int pigumo42 = font.GetFontHandle("ピグモ 0042");
 
-	int alpha[3];
+	//フォントを適用した文字列の横幅のサイズを取得
+	int windowModeFontSize = font.GetStringSize(windowModeText_.c_str(), "ピグモ 0042");
 
-	for (int i = 0; i < 3; i++)
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alphaValue);
+	DrawStringToHandle(Game::screen_width / half - windowModeFontSize / half, Game::screen_height / screen_height_division_num * mode_height_division_num, windowModeText_.c_str(), 0xffffff, pigumo42);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+//SE調整バーの描画
+void SettingScene::DrawSEBar(int alphaValue)
+{
+	//円を描画する位置
+	float circlePosX = Game::screen_width / screen_width_division_num * circle_width_division_num;
+
+	//拡縮率
+	float scale = 1.0f;
+
+	//色
+	int color = 0xb1b3b6;
+
+	//SEバー
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alphaValue);
+
+	//音量バー画像の描画
+	for (int i = 0; i < circle_num; i++)
 	{
-		if (selectNum_ == i) {
-			alpha[i] = 250;
+		scale = 1.0f;
+		color = 0xb1b3b6;
+
+		if (volumeSE_ == i)
+		{
+			scale = circle_expansion_size;
+			color = 0xff0000;
 		}
-		else {
-			alpha[i] = 150;
-		}
+
+		DrawCircleAA(circlePosX + i * circle_distance + circle_distance, Game::screen_height / screen_height_division_num * circle_height_division_num, circle_radius * scale, circle_vertex_num, color, true);
 	}
 
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha[0]);
-	DrawStringToHandle(Game::screen_width / 2 - windowModeFontSize / 2, Game::screen_height / 3, windowModeText_.c_str(), 0xffffff, pigumo42);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
 
+//BGM調整バーの描画
+void SettingScene::DrawBGMBar(int alphaValue)
+{
 	//円を描画する位置
-	float circlePosX = Game::screen_width / 3 - circle_distance * 1.5f;
+	float circlePosX = Game::screen_width / screen_width_division_num * circle_width_division_num;
 
 	//拡縮率
 	float scale = 1.0f;
@@ -134,52 +275,23 @@ void SettingScene::Draw()
 	int color = 0xb1b3b6;
 
 	//BGMバー
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha[1]);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alphaValue);
 
 	//音量バー画像の描画
-	for (int i = 1; i < 11; i++)
+	for (int i = 0; i < circle_num; i++)
 	{
 		scale = 1.0f;
 		color = 0xb1b3b6;
 
-		if (volumeBGM_ == i) 
+		if (volumeBGM_ == i)
 		{
-			scale = 1.3f;
+			scale = circle_expansion_size;
 			color = 0xff0000;
 		}
 
-		DrawCircleAA(circlePosX + i * circle_distance, Game::screen_height / 2, circle_radius * scale, 32, color, true);
+		DrawCircleAA(circlePosX + i * circle_distance + circle_distance, Game::screen_height / half, circle_radius * scale, circle_vertex_num, color, true);
 	}
 
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-	//SEバー
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha[2]);
-
-	//音量バー画像の描画
-	for (int i = 1; i < 11; i++)
-	{
-		scale = 1.0f;
-		color = 0xb1b3b6;
-
-		if (volumeSE_ == i)
-		{
-			scale = 1.3f;
-			color = 0xff0000;
-		}
-
-		DrawCircleAA(circlePosX + i * circle_distance, Game::screen_height / 3 * 2, circle_radius * scale, 32, color, true);
-	}
-
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-	SetDrawScreen(DX_SCREEN_BACK);
-
-	//フェードの時、アルファ値を変更するとともにガウスぼかしを掛ける
-	GraphFilter(makeScreenHandle_, DX_GRAPH_FILTER_GAUSS, 8, 255-fadeValue_);
-	//描画画像のアルファ値を変更する
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue_);
-	DrawGraph(0, 0, makeScreenHandle_, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
@@ -195,7 +307,7 @@ void SettingScene::NormalUpdate()
 	}
 	else if (input.IsTriggered(InputType::Down))
 	{
-		selectNum_ = (std::min)(selectNum_ + 1, 4);
+		selectNum_ = (std::min)(selectNum_ + 1, UIManager_->GetUINum() - 1);
 	}
 
 	ChangeUpdateFunc();
@@ -211,18 +323,18 @@ void SettingScene::NormalUpdate()
 //ガウス処理を施したフェードイン
 void SettingScene::GaussFadeInUpdate()
 {
-	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	fadeValue_ = static_cast <int>(max_fade_value * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (++fadeTimer_ == fadeInterval_)
 	{
 		updateFunc_ = &SettingScene::NormalUpdate;
-		fadeValue_ = 255;
+		fadeValue_ = max_fade_value;
 	}
 }
 
 //ガウス処理を施したフェードアウト
 void SettingScene::GaussFadeOutUpdate()
 {
-	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	fadeValue_ = static_cast <int>(max_fade_value * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 	if (--fadeTimer_ == 0)
 	{
 		manager_.SwapScene(std::shared_ptr<SceneBase>(nextScene_));
@@ -241,17 +353,17 @@ void SettingScene::BGMUpdate()
 	//BGM音量調整
 	if (input.IsTriggered(InputType::Left))
 	{
-		volumeBGM_ = (max)(volumeBGM_ - 1, 1);
+		volumeBGM_ = (max)(volumeBGM_ - 1, min_sound_value);
 		sound.PlayBGM("checkSoundBGM");
 	}
 	if (input.IsTriggered(InputType::Right))
 	{
-		volumeBGM_ = (min)(volumeBGM_ + 1, 10);
+		volumeBGM_ = (min)(volumeBGM_ + 1, max_sound_value);
 		sound.PlayBGM("checkSoundBGM");
 	}
 
 	//音量の変更
-	SoundManager::GetInstance().SetBGMVolume(volumeBGM_ * 25);
+	SoundManager::GetInstance().SetBGMVolume(volumeBGM_ * sound_1_momery_size);
 }
 
 //SEの音量を変更する
@@ -264,17 +376,17 @@ void SettingScene::SEUpdate()
 	//SE音量調整
 	if (input.IsTriggered(InputType::Left)) 
 	{
-		volumeSE_ = (max)(volumeSE_ - 1, 1);
+		volumeSE_ = (max)(volumeSE_ - 1, min_sound_value);
 		sound.PlaySE("checkSoundSE");
 	}
 	if (input.IsTriggered(InputType::Right))
 	{
-		volumeSE_ = (min)(volumeSE_ + 1, 10);
+		volumeSE_ = (min)(volumeSE_ + 1, max_sound_value);
 		sound.PlaySE("checkSoundSE");
 	}
 
 	//音量の変更
-	SoundManager::GetInstance().SetSEVolume(volumeSE_ * 25);
+	SoundManager::GetInstance().SetSEVolume(volumeSE_ * sound_1_momery_size);
 }
 
 //ウィンドウモードを変更する

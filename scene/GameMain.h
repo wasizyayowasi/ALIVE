@@ -46,6 +46,10 @@ public:
 	/// </summary>
 	void Draw();
 private:
+	/// <summary>
+	/// ƒS[ƒ‹‚µ‚Ä‚¢‚é‚©‚ğ”»’è‚·‚é
+	/// </summary>
+	void GoalCheck();
 
 	//Á‚·‚©‚à‚µ‚ê‚È‚¢
 	void FadeInUpdate();

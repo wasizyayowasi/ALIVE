@@ -28,6 +28,9 @@ namespace {
 	//最小チャプター数
 	constexpr int min_chapter_num = 0;
 
+	//フェードの最大値
+	constexpr int max_fade_value = 255;
+
 	//総時間
 	constexpr float total_time = 60.0f;
 }
@@ -211,7 +214,7 @@ void SelectChapterScene::SlideOutBook()
 //フェードアウト
 void SelectChapterScene::FadeOutUpdate()
 {
-	fadeValue_ = static_cast <int>(255 * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
+	fadeValue_ = static_cast <int>(max_fade_value * (static_cast<float>(fadeTimer_) / static_cast<float>(fadeInterval_)));
 
 	if (++fadeTimer_ == fadeInterval_) 
 	{

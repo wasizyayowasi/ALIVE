@@ -3,6 +3,29 @@
 #include "DxLib.h"
 #include "util/game.h"
 
+namespace
+{
+	//updateBarを描画する上の座標の補正値
+	constexpr int update_bar_up_correction = 16;
+
+	//boxを作る描画する上の座標の補正値
+	constexpr int draw_box_up_correction = 48;
+
+	//boxを作る描画する下の座標の補正値
+	constexpr int draw_box_down_correction = 32;
+
+	//UIUpdateBox表示位置X
+	constexpr int UI_update_box_draw_pos_x = 0;
+
+	//UIDrawBox表示位置X
+	constexpr int UI_draw_box_draw_pos_x = 64;
+	
+	//UIboxサイズ
+	constexpr int draw_box_size = 16;
+
+	//デバッグUIの
+}
+
 //シーン遷移
 void SceneManager::ChangeScene(const std::shared_ptr<SceneBase>& scene)
 {
@@ -67,7 +90,8 @@ void SceneManager::Draw()
 	LONGLONG start = GetNowHiPerformanceCount();
 
 	//シーンすべての描画
-	for (int i = static_cast<int>(scenes_.size() - 1); i >= 0; --i) {
+	for (int i = static_cast<int>(scenes_.size() - 1); i >= 0; --i) 
+	{
 		scenes_[i]->Draw();
 	}
 
@@ -76,17 +100,17 @@ void SceneManager::Draw()
 #ifdef _DEBUG
 	float rate = static_cast<float>(debugUpdateTime_ + debugDrawTime_) / 16666.6f;
 	int width = static_cast<int>(Game::screen_width * rate);
-	DrawBox(0, Game::screen_height - 16, width, Game::screen_height, 0xff0000, true);
+	DrawBox(UI_update_box_draw_pos_x, Game::screen_height - update_bar_up_correction, width, Game::screen_height, 0xff0000, true);
 
 	rate = static_cast<float>(debugUpdateTime_) / 16666.6f;
 	width = static_cast<int>(Game::screen_width * rate);
-	DrawBox(0, Game::screen_height - 16, width, Game::screen_height, 0x0000ff, true);
+	DrawBox(UI_update_box_draw_pos_x, Game::screen_height - update_bar_up_correction, width, Game::screen_height, 0x0000ff, true);
 
-	DrawBox( 0, Game::screen_height - 48, 16, Game::screen_height - 32, 0x0000ff, true);
-	DrawBox(64, Game::screen_height - 48, 80, Game::screen_height - 32, 0xff0000, true);
+	DrawBox(UI_update_box_draw_pos_x, Game::screen_height - draw_box_up_correction, UI_update_box_draw_pos_x + draw_box_size, Game::screen_height - draw_box_down_correction, 0x0000ff, true);
+	DrawBox(UI_draw_box_draw_pos_x, Game::screen_height - draw_box_up_correction, UI_draw_box_draw_pos_x + draw_box_size, Game::screen_height - draw_box_down_correction, 0xff0000, true);
 
-	DrawString( 0, Game::screen_height - 32, "update", 0xffffff);
-	DrawString(64, Game::screen_height - 32, "draw", 0xffffff);
+	DrawString( 0, Game::screen_height - draw_box_down_correction, "update", 0xffffff);
+	DrawString(64, Game::screen_height - draw_box_down_correction, "draw", 0xffffff);
 #endif
 }
 

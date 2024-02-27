@@ -73,6 +73,11 @@ public:
 	/// <param name="fontHandle">フォントハンドル</param>
 	void AddingMenuWithSplitStr(const float centerPosX, const float centerPosY, const int width, const int height,const std::string& str, const int fontHandle);
 
+	/// <summary>
+	/// 作成されたUIの数を取得する
+	/// </summary>
+	/// <returns>UIの数</returns>
+	int GetUINum();
 private:
 
 	std::vector<std::shared_ptr<UIItem>> UIMenu_;			//UIItemのスマートポインタのvector配列

@@ -23,6 +23,12 @@ namespace
 
 	//球の半径
 	constexpr float sphere_radius = 30.0f;
+
+	//赤色
+	constexpr COLOR_F red = { 1.0f, 0.0f, 0.0f, 1.0f };
+
+	//青色
+	constexpr COLOR_F blue = { 0.0f, 0.0f, 1.0f, 1.0f };
 }
 
 //コンストラクタ
@@ -197,13 +203,13 @@ const std::shared_ptr<Model>& Switch::GetModelPointer() const
 //スイッチオンアニメーション
 void Switch::OnAnim()
 {
-	model_->ChangeAnimation(0, false, false, anim_change_time);
-	MV1SetMaterialDifColor(model_->GetModelHandle(), change_material_color_num, GetColorF(0.0f, 0.0f, 1.0f, 1.0f));
+	model_->ChangeAnimation(static_cast<int>(Anim::On), false, false, anim_change_time);
+	MV1SetMaterialDifColor(model_->GetModelHandle(), change_material_color_num, blue);
 }
 
 //スイッチオフアニメーション
 void Switch::OffAnim()
 {
-	model_->ChangeAnimation(1, false, false, anim_change_time);
-	MV1SetMaterialDifColor(model_->GetModelHandle(), change_material_color_num, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
+	model_->ChangeAnimation(static_cast<int>(Anim::Off), false, false, anim_change_time);
+	MV1SetMaterialDifColor(model_->GetModelHandle(), change_material_color_num, red);
 }

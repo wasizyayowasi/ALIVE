@@ -113,14 +113,18 @@ void Aster::Update()
 void Aster::DebugDraw()
 {
 	//デバッグ用描画
-	for (int i = 0; i < max_Index; i++) {
-		if (masu_[i].masuMode == MasuMode::normalMode) {
+	for (int i = 0; i < max_Index; i++) 
+	{
+		if (masu_[i].masuMode == MasuMode::normalMode) 
+		{
 			DrawSphere3D(masu_[i].centerPos, sphere_radius, division_num, 0x00ff00, 0x00ff00, true);
 		}
-		else if(masu_[i].masuMode == MasuMode::blockadeMode) {
+		else if(masu_[i].masuMode == MasuMode::blockadeMode) 
+		{
 			DrawSphere3D(masu_[i].centerPos, sphere_radius, division_num, 0xff0000, 0xff0000, true);
 		}
-		else {
+		else 
+		{
 			DrawSphere3D(masu_[i].centerPos, sphere_radius, division_num, 0xffff00, 0xffff00, true);
 		}
 		
@@ -128,18 +132,10 @@ void Aster::DebugDraw()
 		DrawFormatStringF(pos.x, pos.y, 0x448844, "%d", i);
 	}
 
-	DrawFormatString(0, 16, 0x448844, "敵がいるインデックス%d", currentEnemyIndex_);
-	DrawFormatString(0, 32, 0x448844, "プレイヤーがいるインデックス%d", currentPlayerIndex_);
-
-	if (!route_.empty()) {
-		DrawFormatString(0, 48, 0x448844, "目的のインデックス%d", route_.front());
-	}
-
-	//int y = 128;
-	for (auto& result : debugScoreTable) {
+	for (auto& result : debugScoreTable)
+	{
 		VECTOR pos = ConvWorldPosToScreenPos(masu_[result.second.destinationIndex].centerPos);
-		DrawFormatStringF(pos.x, pos.y + 10, 0xff0000, "S:%d", result.second.score);
-		//y += 16;
+		DrawFormatStringF(pos.x, pos.y, 0xff0000, "S:%d", result.second.score);
 	}
 }
 

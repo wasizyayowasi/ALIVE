@@ -147,7 +147,6 @@
     <ClCompile Include="object\LightBulb.cpp" />
     <ClCompile Include="object\Player.cpp" />
     <ClCompile Include="object\SignBoardEnemy.cpp" />
-    <ClCompile Include="scene\SceneMovie.cpp" />
     <ClCompile Include="util\Effect2D.cpp" />
     <ClCompile Include="util\EffectManager.cpp" />
     <ClCompile Include="gimmick\HopStepJump.cpp" />
@@ -203,7 +202,6 @@
     <ClInclude Include="object\LightBulb.h" />
     <ClInclude Include="object\Player.h" />
     <ClInclude Include="object\SignBoardEnemy.h" />
-    <ClInclude Include="scene\SceneMovie.h" />
     <ClInclude Include="util\Effect2D.h" />
     <ClInclude Include="util\EffectManager.h" />
     <ClInclude Include="gimmick\HopStepJump.h" />

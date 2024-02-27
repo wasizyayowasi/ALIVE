@@ -10,6 +10,13 @@ class Model;
 
 class Switch
 {
+private:
+	//スイッチのアニメーション
+	enum class Anim
+	{
+		On,
+		Off,
+	};
 public:
 	/// <summary>
 	/// コンストラクタ

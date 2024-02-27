@@ -152,7 +152,9 @@ void EnemyBase::Update(Player& player)
 void EnemyBase::Draw()
 {
 	model_->Draw();
+#ifdef _DEBUG
 	Aster_->DebugDraw();
+#endif
 }
 
 // ƒvƒŒƒCƒ„[‚ğ’ÇÕ‚·‚é

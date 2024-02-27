@@ -30,6 +30,9 @@ namespace
 
 	//タイマーを進める時間
 	constexpr float add_time = 1.0f;
+
+	//レバーに関するオブジェクトのY座標の補正値
+	constexpr float correction_y = 8.0f;
 }
 
 //コンストラクタ
@@ -243,13 +246,13 @@ void Elevator::Move()
 	model_->SetPos(pos_);
 
 	//スイッチのポジションの設定
-	movingLever_->GetModelPointer()->SetPos(VGet(pos_.x, pos_.y + 8.0f, pos_.z));
+	movingLever_->GetModelPointer()->SetPos(VGet(pos_.x, pos_.y + correction_y, pos_.z));
 
 	//レバーを引く立ち位置の取得
 	VECTOR standingPos = movingLever_->GetStandingPosition();
 
 	//レバーを引く立ち位置の設定
-	movingLever_->SetStandingPos(VGet(standingPos.x, pos_.y + 8.0f, standingPos.z));
+	movingLever_->SetStandingPos(VGet(standingPos.x, pos_.y + correction_y, standingPos.z));
 }
 
 //移動先のポジションを取得する
@@ -267,7 +270,7 @@ void Elevator::TargetPosition()
 	elapsedTime_ = 0;
 
 	//アニメーションを変更
-	model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::Close), false, false, 10);
+	model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::Close), false, false, anim_cange_frame);
 
 	//elevatorの状態によって
 	//elevatorの停止ポジションを変更する
@@ -290,5 +293,4 @@ void Elevator::TargetPosition()
 const std::shared_ptr<Model>& Elevator::AddCollModel()const
 {
 	return nullptr;
-	//return switch_->GetModelPointer();
 }

@@ -170,3 +170,9 @@ void UIItemManager::AddingMenuWithSplitStr(const float centerPosX, const float c
 		UIMenu_.back()->CreateUIGraphSetUp(centerPosX, centerPosY, width, height, letter, fontHandle);
 	}
 }
+
+//ì¬‚³‚ê‚½UI‚Ì”‚ğæ“¾‚·‚é
+int UIItemManager::GetUINum()
+{
+	return static_cast<int>(UIMenu_.size());
+}

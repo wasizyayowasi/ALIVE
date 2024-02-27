@@ -6,6 +6,9 @@
 #include <algorithm>
 
 namespace {
+	//半分
+	constexpr int half = 2;
+
 	//カメラのどの位置から見えるようにするか
 	constexpr float camera_near = 5.0f;
 
@@ -99,7 +102,7 @@ void Camera::TrackingCameraUpdate(const VECTOR& playerPos, const float playerHei
 
 	//プレイヤーがいた位置を見るようにする
 	cameraViewingPos_.x = (cameraViewingPos_.x * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
-	cameraViewingPos_.y = (cameraViewingPos_.y * traking_rate_y) + ((playerPos.y + playerHeight / 2) * (1 - traking_rate_y));
+	cameraViewingPos_.y = (cameraViewingPos_.y * traking_rate_y) + ((playerPos.y + playerHeight / half) * (1 - traking_rate_y));
 	cameraViewingPos_.z = (cameraViewingPos_.z * traking_rate_z) + (playerPos.z * (1 - traking_rate_z));
 
 	//カメラの注視点を変更する
@@ -117,10 +120,10 @@ void Camera::ChangeOfFocus(const VECTOR& playerPos, const float playerHeight)
 	GetJoypadDirectInputState(DX_INPUT_PAD1, &input_);
 
 	if (input_.Ry < 0 || input.IsPressed(InputType::UpArrow)) {
-		cameraViewingPos_.y = ((cameraViewingPos_.y + add_focus) * traking_rate_y) + ((playerPos.y + playerHeight / 2) * (1 - traking_rate_y));
+		cameraViewingPos_.y = ((cameraViewingPos_.y + add_focus) * traking_rate_y) + ((playerPos.y + playerHeight / half) * (1 - traking_rate_y));
 	}
 	if (input_.Ry > 0 || input.IsPressed(InputType::DownArrow)) {
-		cameraViewingPos_.y = ((cameraViewingPos_.y - add_focus) * traking_rate_y) + ((playerPos.y + playerHeight / 2) * (1 - traking_rate_y));
+		cameraViewingPos_.y = ((cameraViewingPos_.y - add_focus) * traking_rate_y) + ((playerPos.y + playerHeight / half) * (1 - traking_rate_y));
 	}
 	if (input_.Rx < 0 || input.IsPressed(InputType::LeftArrow)) {
 		cameraViewingPos_.x = ((cameraViewingPos_.x - add_focus) * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
@@ -183,7 +186,8 @@ float Camera::TrackingPosX(const VECTOR& playerPos)
 	float gimmickPosX = ExternalFile::GetInstance().GetCameraGimmickInfo(playerPos, "TrackingX").pos.x;
 	float distance = 0.0f;
 
-	if (playerPos.x < gimmickPosX && playerPos.x > boderlinePosX - border_range) {
+	if (playerPos.x < gimmickPosX && playerPos.x > boderlinePosX - border_range) 
+	{
 		distance = gimmickPosX - pos_.x;
 		moveVecX_ = distance / camera_moveY_speed;
 		moveVecX_ = moveVecX_ * traking_rate_x;
@@ -206,8 +210,10 @@ float Camera::TrackingPosY(const VECTOR& playerPos, const  float playerHeight)
 
 	distance = (std::max)(distance, -distance);
 
-	if (distance < 1000.0f) {
-		if (playerHeadPosY < boderlinePos.y + border_range && playerHeadPosY > boderlinePos.y - border_range) {
+	if (distance < 1000.0f) 
+	{
+		if (playerHeadPosY < boderlinePos.y + border_range && playerHeadPosY > boderlinePos.y - border_range)
+		{
 			distance = gimmickPosY - pos_.y;
 			moveVecY_ = distance / camera_moveY_speed;
 			moveVecY_ = moveVecY_ * traking_rate_y;
