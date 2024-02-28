@@ -28,6 +28,15 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// 数字の変換行列を行い、フレーム番号を返す
+	/// </summary>
+	/// <param name="handle">モデルハンドル</param>
+	/// <param name="displayFrameName">表示したい場所のフレーム名</param>
+	/// <param name="number">数字の文字列</param>
+	/// <returns>フレーム番号</returns>
+	int NumericTransformationMatrix(int handle,const std::string& displayFrameName, const std::string& number);
 private:
 	int numModel_[2] = {};							//数のモデル
 	int deathCount_ = 0;							//死んだ回数

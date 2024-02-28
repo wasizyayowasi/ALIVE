@@ -153,8 +153,16 @@ void Tutorial::Draw()
 	//キーの役割の描画
 	DrawStringToHandle(Game::screen_width / screen_half_width, static_cast<int>(Game::screen_height - input_graph_chip_size * str_correction_height), data.str.c_str(), 0xffffff, fontPigumo42_);
 
-	//キー画像の描画
-	input.DrawKeyGraph(data.keyType, UIPos_[UIGraph::KeyBord].x, UIPos_[UIGraph::KeyBord].y, graph_scale_size);
+	if (input.LastInputDevice())
+	{
+		//キー画像の描画
+		input.DrawKeyGraph(data.keyType, UIPos_[UIGraph::KeyBord].x, UIPos_[UIGraph::KeyBord].y, graph_scale_size);
+	}
+	else
+	{
+		input.DrawPadGraph(data.keyType, UIPos_[UIGraph::XboxBotton].x, UIPos_[UIGraph::XboxBotton].y, graph_scale_size);
+	}
+	
 
 	//現在表示されているキーが押されたか
 	if (input.IsTriggered(static_cast<InputType>(data.keyType)))

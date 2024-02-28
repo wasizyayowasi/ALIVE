@@ -4,14 +4,14 @@
 
 namespace
 {
-	//文字列の角度
-	constexpr float str_angle = 0.0f;
+	//文字列を半分にする
+	constexpr int str_half = 2;
 
 	//画面を半分にする
-	constexpr float screen_half = 2;
+	constexpr int screen_half = 2;
 
-	//文字列を半分にする
-	constexpr float str_half = 2;
+	//文字列の角度
+	constexpr float str_angle = 0.0f;
 
 	//中心位置
 	constexpr float center_pos_x = 0.5f;

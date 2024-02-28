@@ -232,7 +232,7 @@ void SettingSceneForSceneTitle::DrawWindowMode(int alphaValue)
 	float windowModeFontSize = static_cast<float>(font.GetStringSize(windowModeText_.c_str(), "ƒsƒOƒ‚ 0042"));
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, alphaValue);
-	DrawStringToHandle(Game::screen_width / half - windowModeFontSize / UI_str_correction_rate, Game::screen_height / screen_height_division_num * draw_mode_text_division_num, windowModeText_.c_str(), 0xffffff, pigumo42);
+	DrawStringToHandle(Game::screen_width / half - static_cast<int>(windowModeFontSize / UI_str_correction_rate), Game::screen_height / screen_height_division_num * draw_mode_text_division_num, windowModeText_.c_str(), 0xffffff, pigumo42);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 

@@ -7,6 +7,9 @@
 
 namespace 
 {
+	//半分
+	constexpr int half = 2;
+
 	//投擲物の速度
 	constexpr float shot_speed = 20.0f;
 }
@@ -67,7 +70,7 @@ void ShotManager::Hit(Player& player)
 void ShotManager::Fire(const VECTOR& framePos, const  VECTOR& playerPos, const float height)
 {
 	//プレイヤーめがけてショットを撃つ
-	VECTOR distance = VSub(VGet(playerPos.x, playerPos.y + height / 2, playerPos.z), framePos);
+	VECTOR distance = VSub(VGet(playerPos.x, playerPos.y + height / half, playerPos.z), framePos);
 	VECTOR moveVec = VScale(VNorm(distance), shot_speed);
 
 	shots_.push_back(std::make_shared<Shot>(ModelManager::GetInstance().GetModelHandle(objData_[static_cast<int>(ObjectType::Rock)].name), framePos, moveVec));

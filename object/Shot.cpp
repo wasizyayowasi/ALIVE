@@ -21,7 +21,7 @@ namespace {
 	constexpr float capsule_radius = 20.0f;
 
 	//ノックバック率
-	constexpr float nock_back_rate = 10.0f;
+	constexpr float knockback_rate = 10.0f;
 
 	//音が聞こえる範囲
 	constexpr float sound_range = 1500.0f;
@@ -105,7 +105,7 @@ void Shot::HitCheck(Player& player)
 	// 音を鳴らして
 	//プレイヤーのベクトルに設定し、存在するフラグをfalseにする
 	if (hit) {
-		VECTOR nockBack = VScale(VNorm(moveVec_), nock_back_rate);
+		VECTOR nockBack = VScale(VNorm(moveVec_), knockback_rate);
 		player.BulletHitMe(nockBack);
 
 		//サウンドを鳴らす

@@ -221,18 +221,18 @@ void SceneTitle::Draw()
 	{
 		//キー画像描画
 		input.DrawKeyGraph(static_cast<int>(InputType::Up)		, Game::screen_width / screen_split_num * up_split_num		, Game::screen_height - up_UI_correction_height, key_graph_size);
-		input.DrawKeyGraph(static_cast<int>(InputType::Down)	, Game::screen_width / screen_split_num * down_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
-		input.DrawKeyGraph(static_cast<int>(InputType::Left)	, Game::screen_width / screen_split_num * left_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawKeyGraph(static_cast<int>(InputType::Down)	, Game::screen_width / screen_split_num * left_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawKeyGraph(static_cast<int>(InputType::Left)	, Game::screen_width / screen_split_num * down_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
 		input.DrawKeyGraph(static_cast<int>(InputType::Right)	, Game::screen_width / screen_split_num * right_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
 		input.DrawKeyGraph(static_cast<int>(InputType::Space)	, Game::screen_width / screen_split_num * decision_split_num, Game::screen_height - UI_correction_height, key_graph_size);
 	}
 	else 
 	{
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Up)     , Game::screen_width / screen_split_num * up_split_num		, Game::screen_height - up_UI_correction_height, key_graph_size);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Left)	, Game::screen_width / screen_split_num * down_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Down)	, Game::screen_width / screen_split_num * left_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::Right)	, Game::screen_width / screen_split_num * right_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
-		input.DrawPadGraph(static_cast<int>(XboxBotton::A)		, Game::screen_width / screen_split_num * decision_split_num, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawPadGraph(static_cast<int>(InputType::Up)		, Game::screen_width / screen_split_num * up_split_num		, Game::screen_height - up_UI_correction_height, key_graph_size);
+		input.DrawPadGraph(static_cast<int>(InputType::Down)	, Game::screen_width / screen_split_num * left_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawPadGraph(static_cast<int>(InputType::Left)	, Game::screen_width / screen_split_num * down_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawPadGraph(static_cast<int>(InputType::Right)	, Game::screen_width / screen_split_num * right_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
+		input.DrawPadGraph(static_cast<int>(InputType::Space)	, Game::screen_width / screen_split_num * decision_split_num, Game::screen_height - UI_correction_height, key_graph_size);
 	}	
 	
 	//キーの役割りの文字列の描画

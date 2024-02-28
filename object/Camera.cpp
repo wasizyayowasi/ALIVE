@@ -1,13 +1,18 @@
 #include "Camera.h"
+
 #include "../util/Util.h"
 #include "../util/Easing.h"
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
+
 #include <algorithm>
 
 namespace {
 	//半分
 	constexpr int half = 2;
+
+	//高さの調整用
+	constexpr int height_adjustment = 2;
 
 	//カメラのどの位置から見えるようにするか
 	constexpr float camera_near = 5.0f;
@@ -41,10 +46,16 @@ namespace {
 	//カメラの移動にかかる合計時間
 	constexpr float total_time = 90.0f;
 
+	//カメラのギミックの有効範囲
+	constexpr float camera_gimmick_range = 1000.0f;
+
 	//追跡してくる割合
 	constexpr float traking_rate_x = 0.97f;
 	constexpr float traking_rate_y = 0.9f;
 	constexpr float traking_rate_z = 0.98f;
+
+	//割合の最大
+	constexpr float max_rate = 1.0f;
 }
 
 Camera::Camera(const VECTOR& pos, const VECTOR& viewPos)
@@ -83,7 +94,8 @@ void Camera::Init(const VECTOR& targetPos)
 	SetCameraPositionAndTargetAndUpVec(pos_, cameraViewingPos_, upVec_);
 
 	// カメラの視野角を設定(ラジアン)
-	SetupCamera_Perspective(viewing_angle * DX_PI_F / 180.0f);
+	float angle = MathUtil::DegreeToRadian(viewing_angle);
+	SetupCamera_Perspective(angle);
 }
 
 void Camera::Update(const VECTOR& playerPos, const float playerHeight)
@@ -98,12 +110,12 @@ void Camera::TrackingCameraUpdate(const VECTOR& playerPos, const float playerHei
 	//カメラがプレイヤーを追いかける用にする
 	pos_.x = TrackingPosX(playerPos);
 	pos_.y = TrackingPosY(playerPos,playerHeight);
-	pos_.z = (pos_.z * traking_rate_z) + ((playerPos.z + init_pos.z) * (1 - traking_rate_z));
+	pos_.z = (pos_.z * traking_rate_z) + ((playerPos.z + init_pos.z) * (max_rate - traking_rate_z));
 
 	//プレイヤーがいた位置を見るようにする
-	cameraViewingPos_.x = (cameraViewingPos_.x * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
-	cameraViewingPos_.y = (cameraViewingPos_.y * traking_rate_y) + ((playerPos.y + playerHeight / half) * (1 - traking_rate_y));
-	cameraViewingPos_.z = (cameraViewingPos_.z * traking_rate_z) + (playerPos.z * (1 - traking_rate_z));
+	cameraViewingPos_.x = (cameraViewingPos_.x * traking_rate_x) + (playerPos.x * (max_rate - traking_rate_x));
+	cameraViewingPos_.y = (cameraViewingPos_.y * traking_rate_y) + ((playerPos.y + playerHeight / half) * (max_rate - traking_rate_y));
+	cameraViewingPos_.z = (cameraViewingPos_.z * traking_rate_z) + (playerPos.z * (max_rate - traking_rate_z));
 
 	//カメラの注視点を変更する
 	ChangeOfFocus(playerPos, playerHeight);
@@ -120,16 +132,16 @@ void Camera::ChangeOfFocus(const VECTOR& playerPos, const float playerHeight)
 	GetJoypadDirectInputState(DX_INPUT_PAD1, &input_);
 
 	if (input_.Ry < 0 || input.IsPressed(InputType::UpArrow)) {
-		cameraViewingPos_.y = ((cameraViewingPos_.y + add_focus) * traking_rate_y) + ((playerPos.y + playerHeight / half) * (1 - traking_rate_y));
+		cameraViewingPos_.y = ((cameraViewingPos_.y + add_focus) * traking_rate_y) + ((playerPos.y + playerHeight / half) * (max_rate - traking_rate_y));
 	}
 	if (input_.Ry > 0 || input.IsPressed(InputType::DownArrow)) {
-		cameraViewingPos_.y = ((cameraViewingPos_.y - add_focus) * traking_rate_y) + ((playerPos.y + playerHeight / half) * (1 - traking_rate_y));
+		cameraViewingPos_.y = ((cameraViewingPos_.y - add_focus) * traking_rate_y) + ((playerPos.y + playerHeight / half) * (max_rate - traking_rate_y));
 	}
 	if (input_.Rx < 0 || input.IsPressed(InputType::LeftArrow)) {
-		cameraViewingPos_.x = ((cameraViewingPos_.x - add_focus) * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
+		cameraViewingPos_.x = ((cameraViewingPos_.x - add_focus) * traking_rate_x) + (playerPos.x * (max_rate - traking_rate_x));
 	} 
 	if (input_.Rx > 0 || input.IsPressed(InputType::RightArrow)) {
-		cameraViewingPos_.x = ((cameraViewingPos_.x + add_focus) * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
+		cameraViewingPos_.x = ((cameraViewingPos_.x + add_focus) * traking_rate_x) + (playerPos.x * (max_rate - traking_rate_x));
 	}
 
 	SetCameraPositionAndTarget_UpVecY(pos_, cameraViewingPos_);
@@ -166,6 +178,7 @@ void Camera::EasingMoveCamera()
 	}
 }
 
+//カメラが目標とする座標と見る位置を設定する
 void Camera::SetCameraTargetPosAndView(const VECTOR& targetPos, const VECTOR& targetViewPos, const VECTOR& upVec)
 {
 	//目標位置の設定
@@ -178,7 +191,7 @@ void Camera::SetCameraTargetPosAndView(const VECTOR& targetPos, const VECTOR& ta
 	targetUpVec_ = upVec;
 }
 
-//プレイヤーを追跡
+//プレイヤーのX座標を追跡
 float Camera::TrackingPosX(const VECTOR& playerPos)
 {
 
@@ -195,9 +208,10 @@ float Camera::TrackingPosX(const VECTOR& playerPos)
 		return pos_.x + moveVecX_;
 	}
 
-	return (pos_.x * traking_rate_x) + (playerPos.x * (1 - traking_rate_x));
+	return (pos_.x * traking_rate_x) + (playerPos.x * (max_rate - traking_rate_x));
 }
 
+//プレイヤーのY座標を追跡
 float Camera::TrackingPosY(const VECTOR& playerPos, const  float playerHeight)
 {
 
@@ -210,7 +224,7 @@ float Camera::TrackingPosY(const VECTOR& playerPos, const  float playerHeight)
 
 	distance = (std::max)(distance, -distance);
 
-	if (distance < 1000.0f) 
+	if (distance < camera_gimmick_range)
 	{
 		if (playerHeadPosY < boderlinePos.y + border_range && playerHeadPosY > boderlinePos.y - border_range)
 		{
@@ -222,5 +236,5 @@ float Camera::TrackingPosY(const VECTOR& playerPos, const  float playerHeight)
 		}
 	}
 	
-	return (pos_.y * traking_rate_y + ((playerHeadPosY + playerHeight * 2) * (1 - traking_rate_y)));
+	return (pos_.y * traking_rate_y + ((playerHeadPosY + playerHeight * height_adjustment) * (max_rate - traking_rate_y)));
 }

@@ -1,11 +1,19 @@
 #include "LightBulb.h"
 
+#include "../util/Util.h"
 #include "../util/Model.h"
 #include "../util/Easing.h"
 
 #include <algorithm>
 
-namespace {
+namespace 
+{
+	//Šp“x‚ð”{‚É‚·‚é
+	constexpr int angle_scale = 2;
+
+	//ŽžŠÔ’²®—p
+	constexpr int time_adjustment = 4;
+
 	//‘ŽžŠÔ
 	constexpr float total_time = 360.0f;
 }
@@ -36,16 +44,17 @@ void LightBulb::Update()
 	//Šp“x‚ÌŽæ“¾
 	angle_ = Easing::InOutSine(elapsedTime_, total_time, targetAngle_, angle_);
 
-	if (elapsedTime_ >= total_time / 4) {
+	if (elapsedTime_ >= total_time / time_adjustment)
+	{
 		//Œo‰ßŽžŠÔ‚ÌƒŠƒZƒbƒg
 		elapsedTime_ = 0.0f;
 
 		//–Ú•WŠp“x‚ð•ÏX‚·‚é
-		targetAngle_ -= targetAngle_ * 2;
+		targetAngle_ -= targetAngle_ * angle_scale;
 	}
 
 	//Z‚Ì‰ñ“]‚ðŒÊ“x–@‚É•ÏX‚·‚é
-	rot_.z = angle_ * DX_PI_F / 180.0f;
+	rot_.z = MathUtil::DegreeToRadian(angle_);
 
 	//‰ñ“]‚ÌÝ’è
 	model_->SetRot(rot_);

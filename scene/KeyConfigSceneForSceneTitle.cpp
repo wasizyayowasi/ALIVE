@@ -85,6 +85,9 @@ namespace {
 	//画像分割総数
 	constexpr int division_graph_total = division_graph_x * division_graph_y;
 
+	//key画像の一枚当たりのサイズ
+	constexpr int graph_chip_size = 59;
+
 	//選択された画像のアルファ値
 	constexpr float selection_alpha_value = 255;
 
@@ -96,9 +99,6 @@ namespace {
 
 	//画像の中心座標X
 	constexpr float graph_center_y = 0.5f;
-
-	//key画像の一枚当たりのサイズ
-	constexpr float graph_chip_size = 59.0f;
 
 	//画像の隙間サイズ
 	constexpr float graph_gap_size = 5.5f;
@@ -489,7 +489,7 @@ void KeyConfigSceneForSceneTitle::ChangeKeyPopUpText()
 	std::string text = input.inputNameTable_.find(static_cast<InputType>(selectNum_))->second.c_str();
 
 	//文字列の横幅
-	int strWidth = GetDrawStringWidthToHandle(text.c_str(), text.size(), fontHandleSize21_);
+	int strWidth = GetDrawStringWidthToHandle(text.c_str(), static_cast<int>(text.size()), fontHandleSize21_);
 
 	//選択したキーの名前を出力
 	DrawStringToHandle(Game::screen_width / screen_division_width * pop_up_background_division_left_x + strWidth / half,
@@ -505,7 +505,7 @@ void KeyConfigSceneForSceneTitle::ChangeKeyPopUpText()
 	//文字列
 	text = "変更したいキーを入力してください";
 	//文字列の横幅
-	strWidth = GetDrawStringWidthToHandle(text.c_str(), text.size(), fontHandleSize42_);
+	strWidth = GetDrawStringWidthToHandle(text.c_str(), static_cast<int>(text.size()), fontHandleSize42_);
 	//文字列の描画
 	DrawStringToHandle(Game::screen_width / half - strWidth / half, Game::screen_height / half, text.c_str(), 0xffffff, fontHandleSize42_);
 

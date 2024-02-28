@@ -65,12 +65,6 @@ public:
 	void AddCheckCollModel();
 
 	/// <summary>
-	/// ランダムにポジションを生成する
-	/// </summary>
-	/// <param name="info">オブジェクト情報</param>
-	void RandomPositionGenerator(LoadObjectInfo& info, const VECTOR& loadObjPos);
-
-	/// <summary>
 	/// 円周上のポジションを取得する
 	/// </summary>
 	/// <param name="info"></param>
@@ -83,13 +77,6 @@ public:
 	/// <param name="deathCount">今までにプレイヤーが死亡した数</param>
 	/// <param name="info">配置データ</param>
 	void EnemyGenerator(const int deathCount, const LoadObjectInfo& info);
-
-	/// <summary>
-	/// エンディングの敵の生成
-	/// </summary>
-	/// <param name="deathCount">死んだ回数</param>
-	/// <param name="info">配置データ</param>
-	void EndEnemyGenerator(const int deathCount,LoadObjectInfo& info);
 
 	////////////////Getter////////////////
 

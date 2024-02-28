@@ -361,7 +361,7 @@ void KeyConfigScene::ChangeKeyPopUpText()
 	std::string text = input.inputNameTable_.find(static_cast<InputType>(selectNum_))->second;
 
 	//文字列の横幅
-	int strWidth = GetDrawStringWidthToHandle(text.c_str(), text.size(), fontHandleSize21_);
+	int strWidth = GetDrawStringWidthToHandle(text.c_str(), static_cast<int>(text.size()), fontHandleSize21_);
 
 	//選択したキーの名前を出力
 	DrawStringToHandle(Game::screen_width / screen_division_width * pop_up_background_division_left_x + strWidth / half ,

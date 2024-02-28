@@ -11,6 +11,9 @@
 #include <algorithm>
 
 namespace {
+	//半分
+	constexpr int half = 2;
+
 	//三角形の頂点の数
 	constexpr int triangle_vertex_num = 3;
 
@@ -398,7 +401,7 @@ void CheckCollisionModel::CheckStepDifference(const std::shared_ptr<Player>& pla
 			//乗り越えられる段差以上だったらoverHeightをtrueにする
 			for (int i = 0; i < triangle_vertex_num; i++)
 			{
-				if (nowPos_.y + playerState.height < hitPoly.hitDim->Position[i].y)
+				if (nowPos_.y + playerState.height / half < hitPoly.hitDim->Position[i].y)
 				{
 					overHeight = true;
 				}

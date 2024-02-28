@@ -34,13 +34,11 @@ struct InputInfo {
 	int id;					//4byte
 };
 
-class Tutorial;
 class KeyConfigScene;
 class KeyConfigSceneForSceneTitle;
 
 class InputState
 {
-	friend Tutorial;
 	friend KeyConfigScene;
 	friend KeyConfigSceneForSceneTitle;
 public:
@@ -182,6 +180,7 @@ private:
 	InputMap_t defaultMapTable_;						//初期の入力割り当て
 
 	std::map<int, Key> keyNum_;							//キー番号
+	std::map<int, XboxBotton> padNum_;					//パッド番号
 	std::map<InputType, std::string> inputNameTable_;	//キーに名前を付けるよう
 
 	std::vector<bool> currentInput_;					//現在の入力

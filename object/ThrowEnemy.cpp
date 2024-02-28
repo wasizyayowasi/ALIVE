@@ -19,6 +19,9 @@ namespace
 
 	//右手のフレーム名
 	const char* const hand_framename = "hand.R_end";
+
+	//色
+	constexpr COLOR_F color = { 1.0f, 0.0f, 0.0f, 1.0f };
 }
 
 //コンストラクタ
@@ -38,7 +41,7 @@ namespace
 	 }
 
 	 //マテリアルの色を変える
-	 MV1SetMaterialDifColor(model_->GetModelHandle(), change_material_num, GetColorF(1.0f, 0.0f, 0.0f, 1.0f));
+	 MV1SetMaterialDifColor(model_->GetModelHandle(), change_material_num, color);
 }
 
  //デストラクタ

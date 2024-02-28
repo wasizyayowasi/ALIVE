@@ -18,7 +18,11 @@
 #include <string>
 #include <algorithm>
 
-namespace {
+namespace
+{
+	//半分
+	constexpr int half = 2;
+
 	//走るアニメーションの足音を鳴らすフレーム数
 	constexpr int run_anim_foot_step_frame_type_1 = 6;
 	constexpr int run_anim_foot_step_frame_type_2 = 45;
@@ -60,11 +64,29 @@ namespace {
 	//Z軸の移動制限
 	constexpr float movement_restrictions_Z = -250.0f;
 
+	//3Dサウンドの範囲
+	constexpr float sound_range = 1500.0f;
+
 	//フレームの名前
 	const char* const frame_name = "hand.R_end";
 
+	//操作を行うオブジェクトとの許容範囲
+	constexpr float permissible_range = 30.0f;
+
+	//90度
+	constexpr float degree_of_90 = 90.0f;
+
+	//ノックバック率
+	constexpr float knockback_rate = 0.96f;
+
+	//ノックバックベクトルの切り捨て範囲
+	constexpr float knockback_vector_truncation_range = 2.0f;
+
 	//初期正面ベクトル
 	constexpr VECTOR front_vec = { 0,0,-1 };
+
+	//クランクの持ち手の座標
+	constexpr VECTOR crank_pos = { 0.0f,1.8f,0.0f };
 }
 
 //コンストラクタ
@@ -217,7 +239,6 @@ void Player::SetRoundShadowHeightAndMaterial(const float height, const  Material
 	materialSteppedOn_ = materialType;
 }
 
-//HACK:↓汚い、気に食わない
 //通常時の更新
 void Player::NormalUpdate(const std::shared_ptr<ObjectManager>& objManager)
 {
@@ -353,7 +374,7 @@ void Player::NormalUpdate(const std::shared_ptr<ObjectManager>& objManager)
 	else {
 		if (input.IsPressed(InputType::Space))
 		{
-			status_.moveVec.y = 10.0f;
+			status_.moveVec.y = playerInfo_.jumpPower;
 		}
 	}
 #else
@@ -390,7 +411,6 @@ void Player::NormalUpdate(const std::shared_ptr<ObjectManager>& objManager)
 	}
 }
 
-//HACK:↓汚い、気に食わない
 //移動の更新
 void Player::MovingUpdate()
 {
@@ -400,24 +420,23 @@ void Player::MovingUpdate()
 	//移動スピードの取得
 	float movingSpeed = Move();
 	
-	//tempRotationUpdate();
-	
-	//model_->SetPos(VAdd(status_.pos,status_.moveVec));
-
-	//HACK：もっといいアニメーション番号変更があるはず
-	if (movingSpeed != 0.0f) {
-		if (movingSpeed > playerInfo_.walkSpeed) {
+	if (movingSpeed != 0.0f) 
+	{
+		if (movingSpeed > playerInfo_.walkSpeed)
+		{
 			//アニメーションの変更
 			ChangeAnimNo(PlayerAnimType::Run, true, anim_change_time);
 		}
-		else if (movingSpeed <= playerInfo_.walkSpeed) {
+		else if (movingSpeed <= playerInfo_.walkSpeed)
+		{
 			//アニメーションの変更
 			ChangeAnimNo(PlayerAnimType::Walk, true, anim_change_time);
 		}
 		
 	}
 
-	if (VSize(status_.moveVec) == 0.0f) {
+	if (VSize(status_.moveVec) == 0.0f) 
+	{
 		status_.situation.isMoving = false;
 		return;
 	}
@@ -444,59 +463,60 @@ float Player::Move()
 	status_.situation.isMoving = false;
 	float movingSpeed = 0.0f;
 
-	if (pressedUp || pressedDown || pressedLeft || pressedRight) {
+	if (pressedUp || pressedDown || pressedLeft || pressedRight) 
+	{
 		movingSpeed = PlayerSpeed(pressedShift);
 		status_.situation.isMoving = true;
 	}
 
 	//HACK：汚い、リファクタリング必須
-	if (pressedUp) {
+	if (pressedUp) 
+	{
 		status_.moveVec.z += movingSpeed;
 		targetAngle_ = 180.0f;
-//		tentativeRot_ = { -0.01f,0,0.99f };
 	}
-	if (pressedDown) {
+	if (pressedDown) 
+	{
 		status_.moveVec.z -= movingSpeed;
 		targetAngle_ = 0.0f;
-//		tentativeRot_ = { 0,0,-1 };
 	}
-	if (pressedLeft) {
+	if (pressedLeft) 
+	{
 		status_.moveVec.x -= movingSpeed;
 		targetAngle_ = 90.0f;
-//		tentativeRot_ = { -1,0,0 };
 	}
-	if (pressedRight) {
+	if (pressedRight) 
+	{
 		status_.moveVec.x += movingSpeed;
 		targetAngle_ = 270.0f;
-//		tentativeRot_ = { 1,0,0 };
 	}
-	if (pressedUp && pressedRight) {
+	if (pressedUp && pressedRight)
+	{
 		targetAngle_ = 225.0f;
-//		tentativeRot_ = { 1,0,1 };
 	}
-	if (pressedUp && pressedLeft) {
+	if (pressedUp && pressedLeft) 
+	{
 		targetAngle_ = 135.0f;
-//		tentativeRot_ = { -1,0,1 };
 	}
-	if (pressedDown && pressedLeft) {
+	if (pressedDown && pressedLeft) 
+	{
 		targetAngle_ = 45.0f;
-//		tentativeRot_ = { -1,0,-1 };
 	}
-	if (pressedDown && pressedRight) {
+	if (pressedDown && pressedRight) 
+	{
 		targetAngle_ = 315.0f;
-//		tentativeRot_ = { 1,0,-1 };
 	}
 
 	//回転処理
 	RotationUpdate();
 
 	VECTOR destination = VAdd(status_.pos, status_.moveVec);
-	if (destination.z < movement_restrictions_Z) {
+	if (destination.z < movement_restrictions_Z) 
+	{
 		status_.moveVec.z = 0.0f;
 	}
 
 	return movingSpeed;
-
 }
 
 //回転の処理
@@ -510,29 +530,35 @@ void Player::RotationUpdate()
 
 	//常にプレイヤーモデルを大周りさせたくないので
 	//181度又は-181度以上の場合、逆回りにしてあげる
-	if (differenceAngle_ >= oneRevolution / 2) {
+	if (differenceAngle_ >= oneRevolution / half) 
+	{
 		differenceAngle_ = targetAngle_ - angle_ - oneRevolution;
 	}
-	else if (differenceAngle_ <= -oneRevolution / 2) {
+	else if (differenceAngle_ <= -oneRevolution / half)
+	{
 		differenceAngle_ = targetAngle_ - angle_ + oneRevolution;
 	}
 
 	//滑らかに回転させるため
 	//現在の角度に回転スピードを増減させている
-	if (differenceAngle_ < 0.0f) {
+	if (differenceAngle_ < 0.0f) 
+	{
 		status_.rot.y -= playerInfo_.rotSpeed;
 		angle_ -= playerInfo_.rotSpeed;
 	}
-	else if (differenceAngle_ > 0.0f) {
+	else if (differenceAngle_ > 0.0f) 
+	{
 		status_.rot.y += playerInfo_.rotSpeed;
 		angle_ += playerInfo_.rotSpeed;
 	}
 
 	//360度、一周したら0度に戻すようにしている
-	if (angle_ == oneRevolution || angle_ == -oneRevolution) {
+	if (angle_ == oneRevolution || angle_ == -oneRevolution)
+	{
 		angle_ = 0.0f;
 	}
-	if (status_.rot.y == oneRevolution || status_.rot.y == -oneRevolution) {
+	if (status_.rot.y == oneRevolution || status_.rot.y == -oneRevolution)
+	{
 		status_.rot.y = 0.0f;
 	}
 
@@ -540,49 +566,24 @@ void Player::RotationUpdate()
 	model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 }
 
-void Player::tempRotationUpdate()
-{
-	//行列
-	MATRIX mtx = {};
-
-	//回転行列の取得
-	MATRIX rotMtx = MGetRotVec2(front_vec, VNorm(tentativeRot_));
-
-	//拡縮行列の取得
-	MATRIX scaleMtx = MGetScale(scale_);
-
-	//平行移動行列
-	MATRIX moveMtx = MGetTranslate(status_.pos);
-
-	//回転行列と拡縮行列の乗算
-	mtx = MMult(rotMtx, scaleMtx);
-
-	//（回転行列と拡縮行列）と平行移動行列の乗算
-	mtx = MMult(mtx, moveMtx);
-
-	MV1SetMatrix(model_->GetModelHandle(),mtx);
-}
-
-//HACK:↓汚い、気に食わない
+//ジャンプ
 void Player::JumpUpdate(const std::shared_ptr<ObjectManager>& objManager)
 {
 	//プレイヤー移動関数
 	Move();
 
 	//ジャンプ処理
+	//ジャンプベクトルが0でジャンプ中ではなかったら
+	//idle状態のアップデートに変更する、アニメーションも変更する
+	if (!status_.jump.isJump) 
 	{
-		//ジャンプベクトルが0でジャンプ中ではなかったら
-		//idle状態のアップデートに変更する、アニメーションも変更する
-		if (!status_.jump.isJump) {
-			updateFunc_ = &Player::NormalUpdate;
-			return;
-		}
-
-		status_.jump.jumpVec += gravity;
-		status_.pos.y += status_.jump.jumpVec;
-		model_->SetPos(status_.pos);
-
+		updateFunc_ = &Player::NormalUpdate;
+		return;
 	}
+
+	status_.jump.jumpVec += gravity;
+	status_.pos.y += status_.jump.jumpVec;
+	model_->SetPos(status_.pos);
 }
 
 // プレイヤーの死体に与える情報を作る関数
@@ -591,7 +592,8 @@ void Player::DeathUpdate(const std::shared_ptr<ObjectManager>& objManager)
 	//アニメーションの変更
 	ChangeAnimNo(PlayerAnimType::Death, false, anim_change_time);
 
-	if (model_->IsAnimEnd()) {
+	if (model_->IsAnimEnd()) 
+	{
 		CorpsePostProsessing(objManager);
 	}
 }
@@ -633,7 +635,6 @@ void Player::CorpseGenerater(const std::shared_ptr<ObjectManager>& objManager)
 //荷物を運ぶ
 void Player::CarryObject()
 {
-	
 	if (!status_.situation.isCanBeCarried) return;
 
 	status_.situation.isInTransit = true;
@@ -641,13 +642,13 @@ void Player::CarryObject()
 	corpseModelPointer_->SetIsTransit(true);
 
 	carryUpdateFunc_ = &Player::DropOffObject;
-
 }
 
 //荷物をおろす
 void Player::DropOffObject()
 {
-	if (status_.situation.isCanBeCarried) {
+	if (status_.situation.isCanBeCarried)
+	{
 		status_.situation.isCanBeCarried = false;
 		corpseModelPointer_->SetIsTransit(false);
 		int frameNo = MV1SearchFrame(model_->GetModelHandle(), "PlaceToPutTheCorpse");
@@ -660,7 +661,6 @@ void Player::DropOffObject()
 	status_.situation.isCanBeCarried = false;
 
 	carryUpdateFunc_ = &Player::CarryObject;
-
 }
 
 //クランクを回すためにクランクを回すポジションへと移動する
@@ -674,7 +674,8 @@ void Player::GoCrankRotationPosition(const std::shared_ptr<ObjectManager>& objMa
 
 	//distanceSizeが一定の範囲外だったら
 	//一定の速度で立ってほしいポジションに向かう
-	if (distanceSize > 30.0f) {
+	if (distanceSize > permissible_range)
+	{
 		VECTOR distance = VNorm(VSub(standPos, status_.pos));
 		VECTOR moveVec = VScale(distance, playerInfo_.walkSpeed);
 		status_.pos = VAdd(status_.pos, moveVec);
@@ -682,10 +683,11 @@ void Player::GoCrankRotationPosition(const std::shared_ptr<ObjectManager>& objMa
 	}
 	//distanceSizeが一定の範囲内に入ったら
 	//立ってほしいポジションをプレイヤーのポジションとする
-	else {
+	else 
+	{
 		status_.pos = standPos;
 		model_->SetPos(status_.pos);
-		angle_ = -90.0f;
+		angle_ = -degree_of_90;
 		status_.rot = VGet(0, angle_, 0);
 		model_->SetRot(MathUtil::VECTORDegreeToRadian(status_.rot));
 		ChangeAnimNo(PlayerAnimType::Crank, false, anim_change_time);
@@ -694,19 +696,19 @@ void Player::GoCrankRotationPosition(const std::shared_ptr<ObjectManager>& objMa
 }
 
 //クランクを回転させるアップデート
-void Player::CrankRotationUpdate(float rotZ) {
-
+void Player::CrankRotationUpdate(float rotZ)
+{
 	float radian = MathUtil::DegreeToRadian(rotZ);
 
 	int frameNo = MV1SearchFrame(crank_->GetModelPointer()->GetModelHandle(), "Crank");
 
 	VECTOR pos = MV1GetFramePosition(crank_->GetModelPointer()->GetModelHandle(), frameNo);
-	//クランクのポジションからオブジェクト全体のポジションを引いた距離
-	VECTOR distance = { 0,1.8f,0 };
+
+	VECTOR distance = crank_pos;
 
 	MATRIX mat = {};
 
-	float x = MathUtil::DegreeToRadian(90.0f);
+	float x = MathUtil::DegreeToRadian(degree_of_90);
 
 	//平行移動行列
 	MATRIX posMat = MGetTranslate(distance);
@@ -751,7 +753,7 @@ void Player::CrankUpdate(const std::shared_ptr<ObjectManager>& objManager)
 
 	if (oldRotZ != rotZ && !sound.CheckSoundFile("crank"))
 	{
-		sound.Set3DSoundInfo(crank_->GetStandingPosition(), 1500.0f, "crank");
+		sound.Set3DSoundInfo(crank_->GetStandingPosition(), sound_range, "crank");
 		sound.PlaySE("crank");
 	}
 
@@ -778,7 +780,7 @@ void Player::GoLeverPullPosition(const std::shared_ptr<ObjectManager>& objManage
 
 	//distanceSizeが一定の範囲外だったら
 	//一定の速度で立ってほしいポジションに向かう
-	if (distanceSize > 30.0f)
+	if (distanceSize > permissible_range)
 	{
 		VECTOR distance = VNorm(VSub(standPos, status_.pos));
 		VECTOR moveVec = VScale(distance, playerInfo_.walkSpeed);
@@ -817,7 +819,7 @@ void Player::BulletHitMeUpdate(const std::shared_ptr<ObjectManager>& objManager)
 	status_.moveVec.y = status_.jump.jumpVec;
 
 	//ノックバック
-	status_.moveVec = VScale(status_.moveVec, 0.96f);
+	status_.moveVec = VScale(status_.moveVec, knockback_rate);
 
 	//移動ベクトルを足した行き先を取得する
 	VECTOR destinationPos = VAdd(status_.pos, status_.moveVec);
@@ -835,11 +837,9 @@ void Player::BulletHitMeUpdate(const std::shared_ptr<ObjectManager>& objManager)
 	//モデルにポジションを設定する
 	model_->SetPos(status_.pos);
 
-
-	//以下、不安要素
 	float moveVecSize = VSize(status_.moveVec);
 
-	if (moveVecSize < 2.0f)
+	if (moveVecSize < knockback_vector_truncation_range)
 	{
 		updateFunc_ = &Player::NormalUpdate;
 	}

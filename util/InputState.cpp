@@ -106,76 +106,76 @@ InputState::InputState()
 
 		keyNum_[ 14] = Key::Back;
 		keyNum_[ 15] = Key::Tab;
-		keyNum_[ 16] = Key::Q;
-		keyNum_[ 17] = Key::W;
-		keyNum_[ 18] = Key::E;
-		keyNum_[ 19] = Key::R;
-		keyNum_[ 20] = Key::T;
-		keyNum_[ 21] = Key::Y;
-		keyNum_[ 22] = Key::U;
-		keyNum_[ 23] = Key::I;
-		keyNum_[ 24] = Key::O;
-		keyNum_[ 25] = Key::P;
-		keyNum_[ 26] = Key::Left_parenthesis_key;
-		keyNum_[ 27] = Key::Right_parenthesis_key;
-		keyNum_[ 28] = Key::Big_enter;
-		keyNum_[ 29] = Key::L_ctrl;
-		keyNum_[ 30] = Key::A;
-		keyNum_[ 31] = Key::S;
-		keyNum_[ 32] = Key::D;
-		keyNum_[ 33] = Key::F;
-		keyNum_[ 34] = Key::G;
-		keyNum_[ 35] = Key::H;
-		keyNum_[ 36] = Key::J;
-		keyNum_[ 37] = Key::K;
-		keyNum_[ 38] = Key::L;
-		keyNum_[ 39] = Key::Semicolon;
-
-		keyNum_[ 42] = Key::L_shift;
-		keyNum_[ 43] = Key::Backslash;
-		keyNum_[ 44] = Key::Z;
-		keyNum_[ 45] = Key::X;
-		keyNum_[ 46] = Key::C;
-		keyNum_[ 47] = Key::V;
-		keyNum_[ 48] = Key::B;
-		keyNum_[ 49] = Key::N;
-		keyNum_[ 50] = Key::M;
-		keyNum_[ 51] = Key::Comma;
-		keyNum_[ 52] = Key::Period;
-		keyNum_[ 53] = Key::Slash;
-		keyNum_[ 54] = Key::R_shift;
-		keyNum_[ 55] = Key::Asterisk;
-		keyNum_[ 56] = Key::L_alt;
-		keyNum_[ 57] = Key::Space;
-		keyNum_[ 58] = Key::CaspLock;
-		keyNum_[ 59] = Key::F1;
-		keyNum_[ 60] = Key::F2;
-		keyNum_[ 61] = Key::F3;
-		keyNum_[ 62] = Key::F4;
-		keyNum_[ 63] = Key::F5;
-		keyNum_[ 64] = Key::F6;
-		keyNum_[ 65] = Key::F7;
-		keyNum_[ 66] = Key::F8;
-		keyNum_[ 67] = Key::F9;
-		keyNum_[ 68] = Key::F10;
-		keyNum_[ 69] = Key::NumLock;
-		keyNum_[ 70] = Key::ScrollLock;
-		keyNum_[ 71] = Key::Key10_7;
-		keyNum_[ 72] = Key::Key10_8;
-		keyNum_[ 73] = Key::Key10_9;
-		keyNum_[ 74] = Key::Key10_minus;
-		keyNum_[ 75] = Key::Key10_4;
-		keyNum_[ 76] = Key::Key10_5;
-		keyNum_[ 77] = Key::Key10_6;
-		keyNum_[ 78] = Key::Key10_plus;
-		keyNum_[ 79] = Key::Key10_1;
-		keyNum_[ 80] = Key::Key10_2;
-		keyNum_[ 81] = Key::Key10_3;
-		keyNum_[ 82] = Key::Key10_0;
-		keyNum_[ 83] = Key::Key10_period;
-
-		keyNum_[ 87] = Key::F11;
-		keyNum_[ 88] = Key::F12;
+		keyNum_[16] = Key::Q;
+		keyNum_[17] = Key::W;
+		keyNum_[18] = Key::E;
+		keyNum_[19] = Key::R;
+		keyNum_[20] = Key::T;
+		keyNum_[21] = Key::Y;
+		keyNum_[22] = Key::U;
+		keyNum_[23] = Key::I;
+		keyNum_[24] = Key::O;
+		keyNum_[25] = Key::P;
+		keyNum_[26] = Key::Left_parenthesis_key;
+		keyNum_[27] = Key::Right_parenthesis_key;
+		keyNum_[28] = Key::Big_enter;
+		keyNum_[29] = Key::L_ctrl;
+		keyNum_[30] = Key::A;
+		keyNum_[31] = Key::S;
+		keyNum_[32] = Key::D;
+		keyNum_[33] = Key::F;
+		keyNum_[34] = Key::G;
+		keyNum_[35] = Key::H;
+		keyNum_[36] = Key::J;
+		keyNum_[37] = Key::K;
+		keyNum_[38] = Key::L;
+		keyNum_[39] = Key::Semicolon;
+		
+		keyNum_[42] = Key::L_shift;
+		keyNum_[43] = Key::Backslash;
+		keyNum_[44] = Key::Z;
+		keyNum_[45] = Key::X;
+		keyNum_[46] = Key::C;
+		keyNum_[47] = Key::V;
+		keyNum_[48] = Key::B;
+		keyNum_[49] = Key::N;
+		keyNum_[50] = Key::M;
+		keyNum_[51] = Key::Comma;
+		keyNum_[52] = Key::Period;
+		keyNum_[53] = Key::Slash;
+		keyNum_[54] = Key::R_shift;
+		keyNum_[55] = Key::Asterisk;
+		keyNum_[56] = Key::L_alt;
+		keyNum_[57] = Key::Space;
+		keyNum_[58] = Key::CaspLock;
+		keyNum_[59] = Key::F1;
+		keyNum_[60] = Key::F2;
+		keyNum_[61] = Key::F3;
+		keyNum_[62] = Key::F4;
+		keyNum_[63] = Key::F5;
+		keyNum_[64] = Key::F6;
+		keyNum_[65] = Key::F7;
+		keyNum_[66] = Key::F8;
+		keyNum_[67] = Key::F9;
+		keyNum_[68] = Key::F10;
+		keyNum_[69] = Key::NumLock;
+		keyNum_[70] = Key::ScrollLock;
+		keyNum_[71] = Key::Key10_7;
+		keyNum_[72] = Key::Key10_8;
+		keyNum_[73] = Key::Key10_9;
+		keyNum_[74] = Key::Key10_minus;
+		keyNum_[75] = Key::Key10_4;
+		keyNum_[76] = Key::Key10_5;
+		keyNum_[77] = Key::Key10_6;
+		keyNum_[78] = Key::Key10_plus;
+		keyNum_[79] = Key::Key10_1;
+		keyNum_[80] = Key::Key10_2;
+		keyNum_[81] = Key::Key10_3;
+		keyNum_[82] = Key::Key10_0;
+		keyNum_[83] = Key::Key10_period;
+		
+		keyNum_[87] = Key::F11;
+		keyNum_[88] = Key::F12;
 		keyNum_[112] = Key::KANA;
 		keyNum_[121] = Key::Conversion;
 		keyNum_[123] = Key::NoConversion;
@@ -205,6 +205,16 @@ InputState::InputState()
 		keyNum_[221] = Key::App;
 	}
 
+	{
+		padNum_[static_cast<int>(InputType::Up)]		= XboxBotton::Up;
+		padNum_[static_cast<int>(InputType::Down)]		= XboxBotton::Down;
+		padNum_[static_cast<int>(InputType::Left)]		= XboxBotton::Left;
+		padNum_[static_cast<int>(InputType::Right)]		= XboxBotton::Right;
+		padNum_[static_cast<int>(InputType::Space)]		= XboxBotton::A;
+		padNum_[static_cast<int>(InputType::Activate)]	= XboxBotton::B;
+		padNum_[static_cast<int>(InputType::Dush)]		= XboxBotton::X;
+		padNum_[static_cast<int>(InputType::Death)]		= XboxBotton::Y;
+	}
 }
 
 //デストラクタ
@@ -518,7 +528,7 @@ void InputState::DrawPadGraph(const int type, const  float posX, const  float po
 {
 	//画像の描画
 	Graph::DrawRectRotaGraph(posX, posY,
-							static_cast<int>(type) * input_graph_chip_size, 0,
+							static_cast<int>(padNum_[type]) * input_graph_chip_size, 0,
 							input_graph_chip_size, input_graph_chip_size,
 							scale, 0.0f, 
 							GraphManager::GetInstance().GetGraph("controllerBotton"),

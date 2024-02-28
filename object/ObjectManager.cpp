@@ -20,7 +20,17 @@
 #include "../util/ExternalFile.h"
 #include "../util/ModelManager.h"
 
-#include <random>
+namespace
+{
+	//円の半径
+	constexpr float distance_from_center = 200.0f;
+
+	//敵を円周上に出現させる際の一体当たりの角度
+	constexpr float center_angle = 10.0f;
+
+	//オブジェクトの更新を行わない範囲
+	constexpr float not_update_range = 4000.0f;
+}
 
 //コンストラクタ
 ObjectManager::ObjectManager()
@@ -98,7 +108,8 @@ void ObjectManager::EndStageObjectGenerator()
 	auto& file = ExternalFile::GetInstance();
 
 	//置物の生成
-	for (auto& objTable : file.GetLoadEndingStageObjectInfo()) {
+	for (auto& objTable : file.GetLoadEndingStageObjectInfo()) 
+	{
 		for (auto& objInfo : objTable.second)
 		{
 			for (auto& data : objData_)
@@ -119,17 +130,18 @@ void ObjectManager::CorpseGenerator(const int handle, const LoadObjectInfo& objI
 	objects_[ObjectType::Corpse].push_back(std::make_shared<Corpse>(handle, Material::Other, objInfo, animNo));
 
 	//死体が4個未満だったらリターン
-	if (objects_[ObjectType::Corpse].size() < 4) return;
-
-	//死体のリストの一番先頭(古い)死体を削除する
-	objects_[ObjectType::Corpse].remove(objects_[ObjectType::Corpse].front());
+//	if (objects_[ObjectType::Corpse].size() < 4) return;
+//
+//	//死体のリストの一番先頭(古い)死体を削除する
+//	objects_[ObjectType::Corpse].remove(objects_[ObjectType::Corpse].front());
 }
 
 //更新
 void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& shotManager)
 {
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
-	for (auto& list : objects_) {
+	for (auto& list : objects_) 
+	{
 		list.second.remove_if([](std::shared_ptr<ObjectBase> obj) {return !obj->GetIsEnabled(); });
 	}
 
@@ -137,14 +149,19 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 	VECTOR playerPos = player.GetStatus().pos;
 
 	//死体とその他のオブジェクトの衝突判定を行う
-	for (auto& list : objects_) {
-		for (auto& obj : list.second) {
-			if (list.first == ObjectType::Corpse) {
+	for (auto& list : objects_) 
+	{
+		for (auto& obj : list.second)
+		{
+			if (list.first == ObjectType::Corpse) 
+			{
 				continue;
 			}
-			for (auto& deadperson : objects_[ObjectType::Corpse]) {
+			for (auto& deadperson : objects_[ObjectType::Corpse])
+			{
 				distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
-				if (distanceSize < 4000.0f) {
+				if (distanceSize < not_update_range)
+				{
 					obj->UpdateForCorpse(deadperson);
 				}
 			}
@@ -152,34 +169,45 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 	}
 
 	//enemyのShot
-	for (auto& obj : objects_[ObjectType::Enemy]) {
-		if (std::dynamic_pointer_cast<ThrowEnemy>(obj) != nullptr) {
+	for (auto& obj : objects_[ObjectType::Enemy]) 
+	{
+		if (std::dynamic_pointer_cast<ThrowEnemy>(obj) != nullptr)
+		{
 			std::dynamic_pointer_cast<ThrowEnemy>(obj)->Shot(shotManager, player.GetStatus().pos, player.GetStatus().height);
 		}
 	}
 
 	//更新
-	for (auto& list : objects_) {
-		for (auto& obj : list.second) {
+	for (auto& list : objects_)
+	{
+		for (auto& obj : list.second) 
+		{
 			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
-			if (distanceSize < 4000) {
+			if (distanceSize < not_update_range)
+			{
 				obj->Update(player);
 			}
 		}
 	}
 
-	for (auto& enemy : ExternalFile::GetInstance().GetEnemyInfo(playerPos)) {
-		if (!usedEnemyList_[enemy.name]) {
+	for (auto& enemy : ExternalFile::GetInstance().GetEnemyInfo(playerPos))
+	{
+		if (!usedEnemyList_[enemy.name])
+		{
 			EnemyGenerator(player.GetDeathCount(), enemy);
 		}
 	}
 
-	for (auto& table : ExternalFile::GetInstance().GetGimmickInfo()) {
-		if (table.first != "CorpseMountain") {
+	for (auto& table : ExternalFile::GetInstance().GetGimmickInfo())
+	{
+		if (table.first != "CorpseMountain")
+		{
 			continue;
 		}
-		for (auto& corpseMt : table.second) {
-			if (!usedCorpseMtList_[corpseMt.name]) {
+		for (auto& corpseMt : table.second) 
+		{
+			if (!usedCorpseMtList_[corpseMt.name]) 
+			{
 				GenerateCorpseMountain(player.GetDeathCount(), corpseMt);
 			}
 		}
@@ -189,8 +217,10 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 //描画
 void ObjectManager::Draw()
 {
-	for (auto& objs : objects_) {
-		for (auto& obj : objs.second) {
+	for (auto& objs : objects_) 
+	{
+		for (auto& obj : objs.second)
+		{
 			obj->Draw();
 		}
 	}
@@ -199,9 +229,12 @@ void ObjectManager::Draw()
 //衝突判定に使用するモデルを取得する
 const std::list<std::shared_ptr<Model>>& ObjectManager::GetAllCheckCollModel()
 {
-	for (auto& obj : objects_) {
-		for (auto& model : obj.second) {
-			if (model->GetIsCollCheck()) {
+	for (auto& obj : objects_)
+	{
+		for (auto& model : obj.second) 
+		{
+			if (model->GetIsCollCheck())
+			{
 				checkCollList_.push_back(model->GetModelPointer());
 			}
 		}
@@ -217,9 +250,11 @@ const std::shared_ptr<Model>& ObjectManager::GetSpecificModel(const ObjectType t
 
 	//引数で指定されたオブジェクトのモデルポインタを上記で宣言した
 	//配列に代入する
-	for (auto& obj : objects_) {
+	for (auto& obj : objects_) 
+	{
 		//引数と違うタイプだった場合continue
-		if (obj.first != type) {
+		if (obj.first != type) 
+		{
 			continue;
 		}
 		//指定されたタイプだった場合
@@ -239,7 +274,8 @@ std::list<std::shared_ptr<ObjectBase>> ObjectManager::GetSpecificObject(const Ob
 {
 	std::list<std::shared_ptr<ObjectBase>> obj = {};
 
-	if (objects_.count(type) > 0) {
+	if (objects_.count(type) > 0)
+	{
 		obj = objects_[type];
 	}
 
@@ -251,28 +287,16 @@ void ObjectManager::AddCheckCollModel()
 {
 	checkCollList_.clear();
 
-	for (auto& obj : objects_) {
-		for (auto& objSecond : obj.second) {
-			if (objSecond->AddCollModel() != nullptr) {
+	for (auto& obj : objects_)
+	{
+		for (auto& objSecond : obj.second) 
+		{
+			if (objSecond->AddCollModel() != nullptr) 
+			{
 				checkCollList_.push_back(objSecond->AddCollModel());
 			}
 		}
 	}
-}
-
-//ランダムにポジションを生成する
-void ObjectManager::RandomPositionGenerator(LoadObjectInfo& info, const VECTOR& loadObjPos)
-{
-	float distance = 500.0f;
-
-	std::random_device random;
-	std::mt19937 value(random());
-
-	std::uniform_int_distribution<> randomPosX(loadObjPos.x - distance, loadObjPos.x);
-	std::uniform_int_distribution<> randomPosZ(loadObjPos.z, loadObjPos.z + distance);
-
-	info.pos.x = static_cast<float>(randomPosX(value));
-	info.pos.z = static_cast<float>(randomPosZ(value));
 }
 
 //円周上のポジションを取得する
@@ -285,7 +309,7 @@ void ObjectManager::CircumferencePosition(const float angle,VECTOR& infoPos, con
 	pos.z = cos(radian);
 	pos.y = 0.0f;
 
-	pos = VScale(pos,200.0f);
+	pos = VScale(pos, distance_from_center);
 
 	pos.y = infoPos.y;
 
@@ -314,34 +338,19 @@ void ObjectManager::EnemyGenerator(const int deathCount, const LoadObjectInfo& i
 		std::string str = StrUtil::GetStringBeforeSign(info.name, ".");
 
 		//文字列が「ALL」だったら
-		if (numStr == "ALL") {
+		if (numStr == "ALL") 
+		{
 			GeneratedForTheNumberOfTimesYouDie(deathCount, info);
 		}
-		else if (str == "SignBoardEnemy") {
+		else if (str == "SignBoardEnemy") 
+		{
 			objects_[ObjectType::Enemy].push_back(std::make_shared<SignBoardEnemy>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::SignBoardPlayer)].name), Material::Other, info));
 			usedEnemyList_[info.name] = true;
 		}
-		else {
+		else 
+		{
 			GeneratePredeterminedNumberOfTimes(deathCount, numStr, info);
 		}
-	}
-}
-
-//エンディングの敵の生成
-void ObjectManager::EndEnemyGenerator(const int deathCount,LoadObjectInfo& info)
-{
-	//短縮化
-	auto& model = ModelManager::GetInstance();
-
-	float angle = 0.0f;
-	for (int i = 0; i < deathCount; i++) {
-		info.pos.x += angle;
-
-		//インスタンス化
-		objects_[ObjectType::Enemy].push_back(std::make_shared<EnemyBase>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name), Material::Other, info));
-		angle -= 15.0f;
-
-		usedEnemyList_[info.name] = true;
 	}
 }
 
@@ -352,16 +361,14 @@ void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount,Load
 	auto& model = ModelManager::GetInstance();
 
 	float angle = 0.0f;
-	for (int i = 0; i < deathCount; i++) {
-		//一定範囲の中でランダムにスポーンさせる
-		RandomPositionGenerator(info, info.pos);
-
+	for (int i = 0; i < deathCount; i++) 
+	{
 		//プレイヤーを中心に円周上でスポーンさせる
-		//CircumferencePosition(angle, info.pos, info.pos);
+		CircumferencePosition(angle, info.pos, info.pos);
 
 		//インスタンス化
 		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name), Material::Other, info));
-		angle -= 15.0f;
+		angle -= center_angle;
 
 		usedEnemyList_[info.name] = true;
 	}
@@ -378,7 +385,8 @@ void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, con
 
 	//文字列の最後の数よりもdeathCountが多ければ
 	//エネミーを召喚する
-	if (num <= deathCount) {
+	if (num <= deathCount) 
+	{
 		objects_[ObjectType::Enemy].push_back(std::make_shared<ThrowEnemy>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Player)].name), Material::Other, info));
 		usedEnemyList_[info.name] = true;
 	}
@@ -398,7 +406,8 @@ void ObjectManager::GenerateCorpseMountain(const int deathCount, const LoadObjec
 
 	//文字列の最後の数よりもdeathCountが多ければ
 	//エネミーを召喚する
-	if (num <= deathCount) {
+	if (num <= deathCount) 
+	{
 		objects_[ObjectType::CorpseMountain].push_back(std::make_shared<OrnamentBase>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::CorpseMountain)].name), Material::Other, info));
 		usedCorpseMtList_[info.name] = true;
 	}
@@ -419,7 +428,8 @@ void ObjectManager::GimmickObjectGenerator(const std::string& name, const Object
 	//短縮化
 	auto& model = ModelManager::GetInstance();
 
-	switch (objType) {
+	switch (objType) 
+	{
 	case ObjectType::TransScaffold:
 		objects_[objType].push_front(std::make_shared<TransparentObject>(model.GetModelHandle(name),materialType, objInfo));
 		break;

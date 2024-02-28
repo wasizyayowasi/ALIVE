@@ -171,10 +171,8 @@ private:
 	/// </summary>
 	void RotationUpdate();
 
-	void tempRotationUpdate();
-
 	/// <summary>
-	/// 走りジャンプではないときのジャンプ
+	/// ジャンプ
 	/// </summary>
 	/// <param name="input">外部装置の入力情報を参照する</param>
 	void JumpUpdate(const std::shared_ptr<ObjectManager>& objManager);
