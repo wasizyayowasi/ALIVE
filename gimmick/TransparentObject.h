@@ -41,7 +41,7 @@ public:
 	/// 衝突判定を行うモデルの追加
 	/// </summary>
 	/// <returns>モデルポインタ</returns>
-	virtual const std::shared_ptr<Model>& AddCollModel() const override;
+	virtual std::shared_ptr<Model> AddCollModel() const override;
 
 private:
 

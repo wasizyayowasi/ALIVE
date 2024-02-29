@@ -164,7 +164,7 @@ bool Aster::LocationInformation(const VECTOR& playerPos, const VECTOR& enemyPos)
 }
 
 // 目的地の座標を取得する
-const VECTOR& Aster::GetDestinationCoordinates(const VECTOR& playerPos)
+VECTOR Aster::GetDestinationCoordinates(const VECTOR& playerPos)
 {
 	//追跡ルートが存在しない場合、現在の座標を返す
 	if (route_.empty())
@@ -174,7 +174,8 @@ const VECTOR& Aster::GetDestinationCoordinates(const VECTOR& playerPos)
 
 	//プレイヤーが追跡不可能なオブジェクトの上に立っている時
 	//エネミーが立っているインデックスの中心ポジションを返す
-	if (masu_[currentPlayerIndex_].masuMode == MasuMode::blockadeMode) {
+	if (masu_[currentPlayerIndex_].masuMode == MasuMode::blockadeMode) 
+	{
 		return masu_[currentEnemyIndex_].centerPos;
 	}
 
@@ -182,7 +183,8 @@ const VECTOR& Aster::GetDestinationCoordinates(const VECTOR& playerPos)
 	VECTOR targetPos = masu_[route_.front()].centerPos;
 
 	//プレイヤーを追跡するルートで通った升を追跡ルート配列から削除する
-	if (currentEnemyIndex_ == route_.front()) {
+	if (currentEnemyIndex_ == route_.front()) 
+	{
 		route_.pop_front();
 	}
 

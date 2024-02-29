@@ -104,7 +104,7 @@ void TransparentObject::UpdateForCorpse(const std::shared_ptr<ObjectBase>& deadP
 }
 
 //Õ“Ë”»’è‚ğs‚¤ƒ‚ƒfƒ‹‚Ì’Ç‰Á
-const std::shared_ptr<Model>& TransparentObject::AddCollModel() const
+std::shared_ptr<Model> TransparentObject::AddCollModel() const
 {
 	return switch_->GetModelPointer();
 }

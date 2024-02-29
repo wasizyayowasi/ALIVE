@@ -244,7 +244,7 @@ const std::list<std::shared_ptr<Model>>& ObjectManager::GetAllCheckCollModel()
 }
 
 //特定のモデルポインタを取得する
-const std::shared_ptr<Model>& ObjectManager::GetSpecificModel(const ObjectType type)
+std::shared_ptr<Model> ObjectManager::GetSpecificModel(const ObjectType type)
 {
 	std::shared_ptr<Model> specificPoint;
 

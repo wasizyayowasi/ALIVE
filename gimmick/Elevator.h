@@ -65,13 +65,7 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool CanDeparture();
-
-	/// <summary>
-	/// Õ“Ë”»’è‚ğs‚¤ƒ‚ƒfƒ‹‚Ì’Ç‰Á
-	/// </summary>
-	/// <returns></returns>
-	virtual const std::shared_ptr<Model>& AddCollModel()const override;
-
+	
 
 	////////////////Getter////////////////
 

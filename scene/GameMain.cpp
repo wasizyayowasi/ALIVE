@@ -147,67 +147,6 @@ void GameMain::Draw()
 #ifdef _DEBUG
 	VECTOR pos = player_->GetStatus().pos;
 	DrawFormatString(0, 48, 0xffffff, "%.2f,%.2f,%.2f", pos.x, pos.y, pos.z);
-
-	int analogX = 0;
-	int analogY = 0;
-
-	//パッドのアナログ的なレバーの入力情報を得る
-	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_KEY_PAD1);
-
-	if (analogX != 0 || analogY != 0)
-	{
-		float size = 0;
-		size = static_cast<float>(std::sqrt(analogX * analogX + analogY * analogY));
-
-		float X = 0.0f;
-		float Y = 0.0f;
-
-		if (size != 0)
-		{
-			X = analogX / size;
-			Y = analogY / size;
-		}
-
-		int initX = 0;
-		int initY = -1;
-
-		double vecASize = std::sqrt(tempX * tempX + tempY * tempY);
-		//	double vecASize = std::sqrt(initX * initX + initY * initY);
-		double vecBSize = std::sqrt(X * X + Y * Y);
-
-		float innerProduct = static_cast<float>(tempX * X + tempY * Y);
-		//	float innerProduct = static_cast<float>(initX * X + initY * Y);
-
-		float norm = static_cast<float>(vecASize * vecBSize);
-
-		float angle = innerProduct / norm;
-
-		angle = std::acos(angle);
-
-		angle = angle / DX_PI_F * 180.0f;
-
-		static float tempAngle = 0;
-
-		if (tempX != 0 || tempY != 0)
-		{
-			tempAngle += angle;
-		}
-
-		tempX = X;
-		tempY = Y;
-
-
-
-		float result = std::atan2(Y, X);
-
-		result = result / DX_PI_F * 180.0f;
-
-		//DrawFormatString(0, 64, 0xffffff, "X:%d,Y%d", analogX, analogY);
-		DrawFormatString(0, 64, 0xffffff, "%.2f", result);
-		DrawFormatString(0, 80, 0xffffff, "%.2f", angle);
-		DrawFormatString(0, 96, 0xffffff, "%.2f", tempAngle);
-	}
-
 #endif // _DEBUG
 
 	SetDrawScreen(DX_SCREEN_BACK);

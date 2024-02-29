@@ -57,9 +57,6 @@ private:
 	void FadeOutUpdate();
 
 private:
-	float tempX = 0;
-	float tempY = 0;
-
 	//ここも消すかもしれない
 	static constexpr int fadeInterval_ = 60;					//フェードする間隔
 	int fadeTimer_ = fadeInterval_;								//タイマー

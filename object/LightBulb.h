@@ -35,13 +35,13 @@ public:
 	/// 回転ベクトルを取得する
 	/// </summary>
 	/// <returns>回転ベクトル</returns>
-	const VECTOR& GetRotVec() const;
+	VECTOR GetRotVec() const;
 
 	/// <summary>
 	/// 特定のフレームの座標を取得する
 	/// </summary>
 	/// <returns></returns>
-	const VECTOR& GetFramePos() const;
+	VECTOR GetFramePos() const;
 private:
 
 	float elapsedTime_ = 0.0f;			//経過時間

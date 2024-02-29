@@ -312,7 +312,7 @@ void EnemyBase::Shot(const std::shared_ptr<ShotManager>& shotManager, const VECT
 }
 
 //回転行列と拡縮行列を乗算した行列を取得する
-const MATRIX& EnemyBase::CombiningRotAndScallMat(const VECTOR& distance)
+MATRIX EnemyBase::CombiningRotAndScallMat(const VECTOR& distance)
 {
 	//回転行列の取得
 	MATRIX rotMtx = MGetRotVec2(model_front_vec, distance);
@@ -330,7 +330,7 @@ const MATRIX& EnemyBase::CombiningRotAndScallMat(const VECTOR& distance)
 }
 
 //プレイヤーの落ち影に使用する頂点を取得
-const VECTOR& EnemyBase::VertexPosition(const float angle)
+VECTOR EnemyBase::VertexPosition(const float angle)
 {
 
 	VECTOR pos = {};

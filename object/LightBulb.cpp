@@ -67,7 +67,7 @@ void LightBulb::Draw()
 }
 
 //回転ベクトルの取得
-const VECTOR& LightBulb::GetRotVec() const
+VECTOR LightBulb::GetRotVec() const
 {
 	MATRIX mtxRotZ = MGetRotZ(rot_.z);
 
@@ -77,7 +77,7 @@ const VECTOR& LightBulb::GetRotVec() const
 }
 
 //フレームのポジションの取得
-const VECTOR& LightBulb::GetFramePos() const
+VECTOR LightBulb::GetFramePos() const
 {
 	VECTOR pos = model_->GetFrameLocalPosition("LightBulb");
 	return pos;

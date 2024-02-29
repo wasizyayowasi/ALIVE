@@ -734,11 +734,50 @@ void Player::CrankUpdate(const std::shared_ptr<ObjectManager>& objManager)
 	//移動ベクトルを0にする
 	status_.moveVec = VGet(0, 0, 0);
 
+	//クランクを回す処理を止める
+	if (input.IsTriggered(InputType::Activate))
+	{
+		crank_.reset();
+		status_.situation.isGimmickCanBeOperated = false;
+		updateFunc_ = &Player::NormalUpdate;
+	}
+
 	//クランクの回転を取得する(変化しているか確認用)
 	float oldRotZ = crank_->GetRotZ();
 
 	//クランクの回転を取得する(実際に値を変えるよう)
 	float rotZ = crank_->GetRotZ();
+
+	int analogX = 0;
+	int analogY = 0;
+
+	//パッドのアナログ的なレバーの入力情報を得る
+	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_KEY_PAD1);
+
+	float angle = 0.0f;
+	float result = 0.0f;
+
+	if (analogX != 0 || analogY != 0)
+	{
+		angle = std::atan2(analogX, analogY);
+
+		angle = angle / DX_PI_F * 180.0f;
+
+		angle = 180.0f - angle;
+
+		angle -= oldRotZ;
+
+		rotZ += angle;
+
+		CrankRotationUpdate(-rotZ);
+	}
+
+	int naturalNumber = static_cast<int>((std::max)(rotZ, -rotZ));
+	float animTime = static_cast<float>(naturalNumber % 360) / 3;
+
+	model_->SetAnimationFrame(animTime);
+
+#if false
 
 	if (input.IsPressed(InputType::Down))
 	{
@@ -762,12 +801,7 @@ void Player::CrankUpdate(const std::shared_ptr<ObjectManager>& objManager)
 
 	model_->SetAnimationFrame(animTime);
 
-	if (input.IsTriggered(InputType::Activate))
-	{
-		status_.situation.isGimmickCanBeOperated = false;
-		crank_.reset();
-		updateFunc_ = &Player::NormalUpdate;
-	}
+#endif
 }
 
 //レバーを倒すポジションへ行く

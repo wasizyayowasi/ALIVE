@@ -288,9 +288,3 @@ void Elevator::TargetPosition()
 	//出発できるフラグをfalseにする
 	isDeparture_ = false;
 }
-
-//衝突判定を行うモデルの追加
-const std::shared_ptr<Model>& Elevator::AddCollModel()const
-{
-	return nullptr;
-}

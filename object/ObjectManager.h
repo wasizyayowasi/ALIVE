@@ -91,7 +91,7 @@ public:
 	/// </summary>
 	/// <param name="type">取得したいオブジェクトタイプ</param>
 	/// <returns>特定のモデルポインタ</returns>
-	const std::shared_ptr<Model>& GetSpecificModel(const ObjectType type);
+	std::shared_ptr<Model> GetSpecificModel(const ObjectType type);
 
 	/// <summary>
 	/// 特定のオブジェクトベースポインタを取得する

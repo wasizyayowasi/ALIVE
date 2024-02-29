@@ -43,18 +43,19 @@ void ObjectBase::Draw()
 	model_->Draw();
 }
 
+//死体に対しての更新
 void ObjectBase::UpdateForCorpse(const std::shared_ptr<ObjectBase>& pointer)
 {
+}
+
+//衝突判定を行うモデルを追加する
+std::shared_ptr<Model> ObjectBase::AddCollModel() const
+{
+	return nullptr;
 }
 
 //モデルのスマートポインタを取得する
 const std::shared_ptr<Model>& ObjectBase::GetModelPointer()const
 {
 	return model_;
-}
-
-//衝突判定を行うモデルを追加する
-const std::shared_ptr<Model>& ObjectBase::AddCollModel() const
-{
-	return nullptr;
 }

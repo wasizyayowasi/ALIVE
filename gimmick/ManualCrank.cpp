@@ -13,7 +13,7 @@
 namespace
 {
 	//最大回転値
-	constexpr float max_rot_Z = -630.0f;
+	constexpr float max_rot_Z = -359.0f;
 
 	//衝突判定用カプセルの半径
 	constexpr float radius_capsule = 60.0f;

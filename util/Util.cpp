@@ -51,7 +51,7 @@ namespace StrUtil
 		int searchStrNum = static_cast<int>(name.find(sign));
 
 		//ã‹L‚Åæ“¾‚µ‚½”Ô†‚©‚çˆê•¶šæ‚Ü‚Å‚ğæ“¾
-		auto str = name.substr(searchStrNum + 1, strSize);
+		std::string str = name.substr(searchStrNum + 1, strSize);
 
 		//•¶š—ñ‚ğ”’l‚É•ÏŠ·‚·‚é
 		int num = atoi(str.c_str());

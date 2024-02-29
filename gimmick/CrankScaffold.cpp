@@ -79,6 +79,7 @@ void CrankScaffold::Draw()
 	crank_->Draw();
 }
 
+//ƒTƒEƒ“ƒh‚ğ–Â‚ç‚·
 void CrankScaffold::PlayStopCrankSound()
 {
 	//’Zk‰»

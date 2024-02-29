@@ -74,14 +74,14 @@ public:
 	/// 回転行列と拡縮行列を乗算した行列を取得する
 	/// </summary>
 	/// <returns>回転行列と拡縮行列を乗算した行列</returns>
-	const MATRIX& CombiningRotAndScallMat(const VECTOR& distance);
+	MATRIX CombiningRotAndScallMat(const VECTOR& distance);
 
 	/// <summary>
 	/// 落ち影の頂点のポジションを取得する
 	/// </summary>
 	/// <param name="angle">角度</param>
 	/// <returns>ポジション</returns>
-	const VECTOR& VertexPosition(const float angle);
+	VECTOR VertexPosition(const float angle);
 
 	/// <summary>
 	/// 落ち影もどきの描画

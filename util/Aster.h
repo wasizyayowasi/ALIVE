@@ -94,7 +94,7 @@ public:
 	/// </summary>
 	/// /// <param name="playerPos">プレイヤーのポジション</param>
 	/// <returns>目的地のポジション</returns>
-	const VECTOR& GetDestinationCoordinates(const VECTOR& playerPos);
+	VECTOR GetDestinationCoordinates(const VECTOR& playerPos);
 
 	/// <summary>
 	/// 経路探索
