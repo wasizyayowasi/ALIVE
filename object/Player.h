@@ -10,6 +10,21 @@ class ObjectBase;
 class ManualCrank;
 class Lever;
 
+//回転のステート
+enum class RotationState
+{
+	Up,
+	UpperRight,
+	Right,
+	LowerRight,
+	Down,
+	LowerLeft,
+	Left,
+	UpperLeft,
+
+	Max,
+};
+
 class Player
 {
 private:
@@ -40,6 +55,122 @@ private:
 		bool isAnimLoop;						//アニメーションのループが必要か	//2byte
 	};
 
+	
+
+	//回転のデータ
+	struct RotationData
+	{
+		float targetAngle_ = 0.0f;			//目標の角度
+		RotationState rotState_ = {};		//回転の状態
+		bool up			= false;			//上に行けるか
+		bool upperRight	= false;			//右上に行けるか
+		bool right		= false;			//右に行けるか
+		bool lowerRight	= false;			//右下に行けるか
+		bool down		= false;			//下に行けるか
+		bool lowerLeft	= false;			//左下に行けるか
+		bool left		= false;			//左に行けるか
+		bool upperLeft	= false;			//左上に行けるか
+	};
+
+	//回転のデータ配列
+	RotationData rotData_[static_cast<int>(RotationState::Max)]
+	{
+		//Up
+		0.0f,						//目標の角度
+		RotationState::Up,			//回転の状態
+		true,						//上に行けるか
+		true,						//右上に行けるか
+		true,						//右に行けるか
+		true,						//右下に行けるか
+		false,						//下に行けるか
+		false,						//左下に行けるか
+		false,						//左に行けるか
+		false,						//左上に行けるか
+
+		//UpperRight
+		45.0f,						//目標の角度
+		RotationState::UpperRight,	//回転の状態
+		true,						//上に行けるか
+		true,						//右上に行けるか
+		true,						//右に行けるか
+		true,						//右下に行けるか
+		true,						//下に行けるか
+		false,						//左下に行けるか
+		false,						//左に行けるか
+		false,						//左上に行けるか
+
+		//Right
+		90.0f,						//目標の角度
+		RotationState::Right,		//回転の状態
+		true,						//上に行けるか
+		true,						//右上に行けるか
+		true,						//右に行けるか
+		true,						//右下に行けるか
+		true,						//下に行けるか
+		true,						//左下に行けるか
+		false,						//左に行けるか
+		false,						//左上に行けるか
+
+		//LowerRight
+		135.0f,						//目標の角度
+		RotationState::LowerRight,	//回転の状態
+		true,						//上に行けるか
+		true,						//右上に行けるか
+		true,						//右に行けるか
+		true,						//右下に行けるか
+		true,						//下に行けるか
+		true,						//左下に行けるか
+		true,						//左に行けるか
+		false,						//左上に行けるか
+
+		//Down
+		180.0f,						//目標の角度
+		RotationState::Down,		//回転の状態
+		false,						//上に行けるか
+		true,						//右上に行けるか
+		true,						//右に行けるか
+		true,						//右下に行けるか
+		true,						//下に行けるか
+		true,						//左下に行けるか
+		true,						//左に行けるか
+		true,						//左上に行けるか
+
+		//LowerLeft
+		225.0f,						//目標の角度
+		RotationState::LowerLeft,	//回転の状態
+		true,						//上に行けるか
+		false,						//右上に行けるか
+		true,						//右に行けるか
+		true,						//右下に行けるか
+		true,						//下に行けるか
+		true,						//左下に行けるか
+		true,						//左に行けるか
+		true,						//左上に行けるか
+
+		//Left
+		270.0f,						//目標の角度
+		RotationState::Left,		//回転の状態
+		true,						//上に行けるか
+		true,						//右上に行けるか
+		false,						//右に行けるか
+		true,						//右下に行けるか
+		false,						//下に行けるか
+		true,						//左下に行けるか
+		true,						//左に行けるか
+		true,						//左上に行けるか
+
+		//UpperLeft
+		315.0f,						//目標の角度
+		RotationState::UpperLeft,	//回転の状態
+		true,						//上に行けるか
+		true,						//右上に行けるか
+		true,						//右に行けるか
+		false,						//右下に行けるか
+		true,						//下に行けるか
+		true,						//左下に行けるか
+		true,						//左に行けるか
+		true,						//左上に行けるか
+	};
 public:
 
 	/// <summary>
@@ -70,6 +201,11 @@ public:
 	/// </summary>
 	void BulletHitMe(const VECTOR& moveVec);
 
+	/// <summary>
+	/// どんな回転状態か取得する
+	/// </summary>
+	/// <returns>回転状況</returns>
+	const RotationState& WhatRotationState();
 
 	///////Getter///////
 
@@ -281,24 +417,24 @@ private:
 
 private:
 
-	int deathCount_ = 0;					//死んだ回数を記録する
+	int deathCount_ = 0;										//死んだ回数を記録する
 
-	float targetAngle_ = 0.0f;				//回転
-	float differenceAngle_ = 0.0f;			//目標の角度と現在の角度の差
+	float targetAngle_ = 0.0f;									//回転
+	float differenceAngle_ = 0.0f;								//目標の角度と現在の角度の差
 	float angle_ = 0.0f;
 	float roundShadowHeight_ = 0.0f;
+	float crankTargetAngle_ = 0.0f;								//クランクが目指す角度
 
-	bool debugCreativeMode = false;
-
-	VECTOR tentativeRot_ = {};
+	bool debugCreativeMode_ = false;							//デバッグ用変数
 
 	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};						//中間ポイント
 	VECTOR scale_ = {0.0f,0.0f, 0.0f};							//拡縮率
 
-	PlayerInfo playerInfo_ = {};
-	PlayerStatus status_ = {};
+	PlayerInfo playerInfo_ = {};								//プレイヤーの情報
+	PlayerStatus status_ = {};									//プレイヤーのステータス
 
-	Material materialSteppedOn_ = Material::Stone;
+	Material materialSteppedOn_ = Material::Stone;				//足音用変数
+	RotationState currentRotState_ = RotationState::Up;			//回転ステータス
 
 	std::shared_ptr<Model> model_;								//モデルクラスのポインタ
 	std::shared_ptr<ManualCrank> crank_;						//クランククラスのポインタ

@@ -42,6 +42,7 @@ private:
 		SelectScene rigntScene	= SelectScene::None;
 	};
 
+	//データ
 	SelectSceneData selectData_[static_cast<int>(SelectScene::max)]
 	{
 		//指定方向に移動できるか

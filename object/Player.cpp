@@ -131,8 +131,6 @@ Player::Player(const LoadObjectInfo& info):updateFunc_(&Player::NormalUpdate),ca
 	status_.jump.jumpVec = 0.0f;
 	//プレイヤーの高さの設定
 	status_.height = player_hegiht;
-
-	tentativeRot_ = front_vec;
 }
 
 // デストラクタ
@@ -174,6 +172,34 @@ void Player::BulletHitMe(const VECTOR& moveVec)
 
 	//メンバ関数を変更する
 	updateFunc_ = &Player::BulletHitMeUpdate;
+}
+
+//どんな回転状態か取得する
+const RotationState& Player::WhatRotationState()
+{
+	//短縮化
+	auto& input = InputState::GetInstance();
+
+	//インプット情報
+	bool isTriggerUp = input.IsTriggered(InputType::Up);
+	bool isTriggerDown = input.IsTriggered(InputType::Down);
+	bool isTriggerLeft = input.IsTriggered(InputType::Left);
+	bool isTriggerRight = input.IsTriggered(InputType::Right);
+
+	//現在のステートのint型を取得
+	int currentRotStateNum = static_cast<int>(currentRotState_);
+
+	//入力状況に応じて回転状態を返す
+	if (rotData_[currentRotStateNum].upperRight && isTriggerUp   && isTriggerRight)		return RotationState::UpperRight;
+	if (rotData_[currentRotStateNum].upperLeft  && isTriggerUp   && isTriggerLeft)		return RotationState::UpperLeft;
+	if (rotData_[currentRotStateNum].lowerRight && isTriggerDown && isTriggerRight)		return RotationState::LowerRight;
+	if (rotData_[currentRotStateNum].lowerLeft  && isTriggerDown && isTriggerLeft)		return RotationState::LowerLeft;
+	if (rotData_[currentRotStateNum].up         && isTriggerUp)							return RotationState::Up;
+	if (rotData_[currentRotStateNum].down       && isTriggerDown)						return RotationState::Down;
+	if (rotData_[currentRotStateNum].left       && isTriggerLeft)						return RotationState::Left;
+	if (rotData_[currentRotStateNum].right      && isTriggerRight)						return RotationState::Right;
+
+	return currentRotState_;
 }
 
 //ポジションの設定
@@ -249,7 +275,7 @@ void Player::NormalUpdate(const std::shared_ptr<ObjectManager>& objManager)
 	//削除予定
 	if (input.IsTriggered(InputType::Creative))
 	{
-		debugCreativeMode = !debugCreativeMode;
+		debugCreativeMode_ = !debugCreativeMode_;
 	}
 #endif
 	
@@ -323,7 +349,7 @@ void Player::NormalUpdate(const std::shared_ptr<ObjectManager>& objManager)
 #ifdef _DEBUG
 	//空中にいるとき
 	//重力をベクトルに足してポジションに足す
-	if (!debugCreativeMode)
+	if (!debugCreativeMode_)
 	{
 		if (status_.jump.isJump)
 		{
@@ -358,7 +384,7 @@ void Player::NormalUpdate(const std::shared_ptr<ObjectManager>& objManager)
 
 #ifdef _DEBUG
 	//メンバ関数ポインタをjumpUpdateに変更する
-	if (!debugCreativeMode)
+	if (!debugCreativeMode_)
 	{
 		if (input.IsTriggered(InputType::Space))
 		{
@@ -720,7 +746,7 @@ void Player::CrankRotationUpdate(float rotZ)
 	mat = MMult(mat, posMat);
 
 	MV1SetFrameUserLocalMatrix(crank_->GetModelPointer()->GetModelHandle(), frameNo, mat);
-
+	
 	crank_->SetRotZ(rotZ);
 }
 
@@ -730,6 +756,12 @@ void Player::CrankUpdate(const std::shared_ptr<ObjectManager>& objManager)
 	//短縮化
 	auto& input = InputState::GetInstance();
 	auto& sound = SoundManager::GetInstance();
+
+	//インプット情報
+	bool isTriggerUp    = input.IsTriggered(InputType::Up);
+	bool isTriggerDown  = input.IsTriggered(InputType::Down);
+	bool isTriggerLeft  = input.IsTriggered(InputType::Left);
+	bool isTriggerRight = input.IsTriggered(InputType::Right);
 
 	//移動ベクトルを0にする
 	status_.moveVec = VGet(0, 0, 0);
@@ -742,6 +774,13 @@ void Player::CrankUpdate(const std::shared_ptr<ObjectManager>& objManager)
 		updateFunc_ = &Player::NormalUpdate;
 	}
 
+	//どんな回転状態か取得する
+	currentRotState_ = WhatRotationState();
+
+	//クランクが目指す角度
+	crankTargetAngle_ = rotData_[static_cast<int>(currentRotState_)].targetAngle_;
+
+#if false
 	//クランクの回転を取得する(変化しているか確認用)
 	float oldRotZ = crank_->GetRotZ();
 
@@ -776,6 +815,7 @@ void Player::CrankUpdate(const std::shared_ptr<ObjectManager>& objManager)
 	float animTime = static_cast<float>(naturalNumber % 360) / 3;
 
 	model_->SetAnimationFrame(animTime);
+#endif
 
 #if false
 
@@ -904,7 +944,7 @@ float Player::PlayerSpeed(bool pressedShift)
 	if (pressedShift)
 	{
 #ifdef _DEBUG
-		if (debugCreativeMode) {
+		if (debugCreativeMode_) {
 			return playerInfo_.runningSpeed * 3;
 		}
 		return playerInfo_.runningSpeed;
