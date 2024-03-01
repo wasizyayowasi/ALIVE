@@ -16,7 +16,7 @@ namespace
 }
 
 //コンストラクタ
-Lever::Lever(const LoadObjectInfo& info)
+Lever::Lever(const ObjectInfo& info)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
@@ -29,7 +29,7 @@ Lever::Lever(const LoadObjectInfo& info)
 	int num = StrUtil::GetNumberFromString(info.name, "-");
 
 	//立ち位置の取得
-	LoadObjectInfo standingData = GetSpecialNameObjectInfo("LeverStandingPos", "-", groupNum, num);
+	ObjectInfo standingData = GetSpecialNameObjectInfo("LeverStandingPos", "-", groupNum, num);
 
 	//モデルクラスのインスタンス化
 	model_ = std::make_shared<Model>(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Lever)].name), Material::Iron);
@@ -104,7 +104,7 @@ void Lever::OffAnimation()
 }
 
 //特殊な名前のオブジェクトの配置データを取得する
-LoadObjectInfo Lever::GetSpecialNameObjectInfo(const std::string& name, const std::string& sign, int groupNum, int num)
+ObjectInfo Lever::GetSpecialNameObjectInfo(const std::string& name, const std::string& sign, int groupNum, int num)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
@@ -116,7 +116,7 @@ LoadObjectInfo Lever::GetSpecialNameObjectInfo(const std::string& name, const st
 	str = StrUtil::GetConcatenateNumAndStrings(str, "-", num);
 
 	//配置データの取得
-	LoadObjectInfo objInfo = file.GetSpecifiedGimmickInfo(str);
+	ObjectInfo objInfo = file.GetSpecifiedGimmickInfo(str);
 
 	return objInfo;
 }

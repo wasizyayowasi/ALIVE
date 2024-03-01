@@ -19,7 +19,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	EnemyBase(const int handle, const Material materialType, const LoadObjectInfo& objInfo);
+	EnemyBase(const int handle, const Material materialType, const ObjectInfo& objInfo);
 
 	/// <summary>
 	/// デストラクタ

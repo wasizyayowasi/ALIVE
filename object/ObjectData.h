@@ -97,7 +97,7 @@ static ObjectData objData_[static_cast<int>(ObjectType::Max)]
 
 	//死体
 	ObjectType::Corpse,
-	"Corpse",
+	"Player",
 	Material::Other,
 
 	//死体の山
@@ -328,7 +328,7 @@ static ObjectData objData_[static_cast<int>(ObjectType::Max)]
 };
 
 //計　76byte
-struct LoadObjectInfo
+struct ObjectInfo
 {
 	std::string name;	//オブジェクトの名前	//40byte
 	VECTOR pos = {};	//ポジション			//12byte

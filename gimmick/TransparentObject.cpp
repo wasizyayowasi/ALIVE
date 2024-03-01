@@ -18,7 +18,7 @@ namespace
 }
 
 //コンストラクタ
-TransparentObject::TransparentObject(const int handle, const Material materialType, const LoadObjectInfo& objInfo) : GimmickBase(handle, materialType, objInfo)
+TransparentObject::TransparentObject(const int handle, const Material materialType, const ObjectInfo& objInfo) : GimmickBase(handle, materialType, objInfo)
 {
 	//衝突判定用フレームの設定
 	model_->SetUseCollision(true, false);

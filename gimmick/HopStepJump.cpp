@@ -36,7 +36,7 @@ namespace
 }
 
 //コンストラクタ
-HopStepJump::HopStepJump(const int handle, const Material materialType, const LoadObjectInfo& objInfo):GimmickBase(handle,materialType,objInfo)
+HopStepJump::HopStepJump(const int handle, const Material materialType, const ObjectInfo& objInfo):GimmickBase(handle,materialType,objInfo)
 {
 	//マテリアルの数の取得
 	materialNum_ = MV1GetMaterialNum(handle);

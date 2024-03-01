@@ -5,7 +5,7 @@
 #include "../object/Player.h"
 
 //コンストラクタ
-PenetrationScaffld::PenetrationScaffld(const int handle,const Material materialType,const LoadObjectInfo& objInfo):GimmickBase(handle, materialType, objInfo)
+PenetrationScaffld::PenetrationScaffld(const int handle,const Material materialType,const ObjectInfo& objInfo):GimmickBase(handle, materialType, objInfo)
 {
 	//モデルのマテリアルのアルファ値を0にして透過させる
 	materialNum_ = MV1GetMaterialNum(model_->GetModelHandle());

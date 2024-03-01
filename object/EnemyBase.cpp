@@ -62,7 +62,7 @@ namespace {
 }
 
 //コンストラクタ
-EnemyBase::EnemyBase(const int handle, const Material materialType, const LoadObjectInfo& objInfo) : CharacterBase(handle, materialType, objInfo)
+EnemyBase::EnemyBase(const int handle, const Material materialType, const ObjectInfo& objInfo) : CharacterBase(handle, materialType, objInfo)
 {
 	//インスタンス化（使っていない）
 	Aster_ = std::make_shared<Aster>();

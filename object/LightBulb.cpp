@@ -19,7 +19,7 @@ namespace
 }
 
 //コンストラクタ
-LightBulb::LightBulb(const int handle, const  LoadObjectInfo& info)
+LightBulb::LightBulb(const int handle, const  ObjectInfo& info)
 {
 	//モデルの設定
 	model_ = std::make_shared<Model>(handle,Material::Iron);

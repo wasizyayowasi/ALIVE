@@ -13,7 +13,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	CrankScaffold(const int handle, const Material materialType, const LoadObjectInfo& objInfo);
+	CrankScaffold(const int handle, const Material materialType, const ObjectInfo& objInfo);
 	
 	/// <summary>
 	/// デストラクタ

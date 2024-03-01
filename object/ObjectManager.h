@@ -44,8 +44,7 @@ public:
 	/// </summary>
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="objInfo">オブジェクトの配置データ等</param>
-	/// <param name="animNo">初期化時に使用するアニメーション番号</param>
-	void CorpseGenerator(const int handle, const  LoadObjectInfo& objInfo, const int animNo);
+	void CorpseGenerator(const int handle, const ObjectInfo& objInfo);
 
 	/// <summary>
 	/// 更新
@@ -76,7 +75,7 @@ public:
 	/// </summary>
 	/// <param name="deathCount">今までにプレイヤーが死亡した数</param>
 	/// <param name="info">配置データ</param>
-	void EnemyGenerator(const int deathCount, const LoadObjectInfo& info);
+	void EnemyGenerator(const int deathCount, const ObjectInfo& info);
 
 	////////////////Getter////////////////
 
@@ -106,7 +105,7 @@ private:
 	/// </summary>
 	/// <param name="deathCount">今までにプレイヤーが死亡した数</param>
 	/// <param name="info">配置データ</param>
-	void GeneratedForTheNumberOfTimesYouDie(const int deathCount,LoadObjectInfo info);
+	void GeneratedForTheNumberOfTimesYouDie(const int deathCount,ObjectInfo info);
 
 	/// <summary>
 	/// 既定の回数分生成する
@@ -114,14 +113,14 @@ private:
 	/// <param name="deathCount">今までにプレイヤーが死亡した数</param>
 	/// <param name="str">文字列</param>
 	/// <param name="info">配置データ</param>
-	void GeneratePredeterminedNumberOfTimes(const int deathCount, const std::string& str, const LoadObjectInfo& info);
+	void GeneratePredeterminedNumberOfTimes(const int deathCount, const std::string& str, const ObjectInfo& info);
 
 	/// <summary>
 	/// 死んだ回数によって補助足場を生成する
 	/// </summary>
 	/// <param name="deathCount">死んだ回数</param>
 	/// <param name="info">配置データ</param>
-	void GenerateCorpseMountain(const int deathCount, const LoadObjectInfo& info);
+	void GenerateCorpseMountain(const int deathCount, const ObjectInfo& info);
 
 	/// <summary>
 	/// 置物生成機
@@ -130,7 +129,7 @@ private:
 	/// <param name="objType">オブジェクトのタイプ</param>
 	/// <param name="materialType">オブジェクトのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	void OrnamentGenerator(const std::string& name, const ObjectType objType, const Material materialType, const LoadObjectInfo& objInfo);
+	void OrnamentGenerator(const std::string& name, const ObjectType objType, const Material materialType, const ObjectInfo& objInfo);
 
 	/// <summary>
 	/// ギミック生成機
@@ -139,7 +138,7 @@ private:
 	/// <param name="objType">オブジェクトのタイプ</param>
 	/// <param name="materialType">オブジェクトのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	void GimmickObjectGenerator(const std::string& name, const ObjectType objType, const Material materialType, const LoadObjectInfo& objInfo);
+	void GimmickObjectGenerator(const std::string& name, const ObjectType objType, const Material materialType, const ObjectInfo& objInfo);
 private:
 
 	std::list<std::shared_ptr<Model>> checkCollList_;											//衝突判定を行うモデルのリスト

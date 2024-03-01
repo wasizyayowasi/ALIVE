@@ -25,7 +25,7 @@ namespace
 }
 
 //コンストラクタ
- ThrowEnemy::ThrowEnemy(const int handle, const Material materialType, const LoadObjectInfo& objInfo):EnemyBase(handle, materialType, objInfo)
+ ThrowEnemy::ThrowEnemy(const int handle, const Material materialType, const ObjectInfo& objInfo):EnemyBase(handle, materialType, objInfo)
 {
 	 //衝突判定の設定
 	 isCollCheck_ = true;

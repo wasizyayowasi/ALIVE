@@ -5,7 +5,7 @@
 #include "../util/Model.h"
 
 //コンストラクタ
-ObjectBase::ObjectBase(const int handle, const Material materialType, const LoadObjectInfo& objInfo)
+ObjectBase::ObjectBase(const int handle, const Material materialType, const ObjectInfo& objInfo)
 {
 	//ポジション
 	pos_ = objInfo.pos;

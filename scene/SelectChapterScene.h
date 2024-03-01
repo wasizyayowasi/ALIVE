@@ -10,7 +10,7 @@ private:
 	//本のアニメーション
 	enum class BookAnim
 	{
-		idle,
+		idle = 3,
 		open,
 		close,
 	};
@@ -21,6 +21,12 @@ public:
 	/// </summary>
 	/// <param name="manager">シーンマネージャーの参照</param>
 	SelectChapterScene(SceneManager& manager);
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="manager">シーンマネージャーの参照</param>
+	SelectChapterScene(SceneManager& manager,std::shared_ptr<Model> modelPointer);
 
 	/// <summary>
 	/// デストラクタ
@@ -54,19 +60,9 @@ public:
 
 private:
 	/// <summary>
-	/// 本がスライドインしてくる
-	/// </summary>
-	void SlideInBook();
-
-	/// <summary>
 	/// 通常の更新
 	/// </summary>
 	void NormalUpdate();
-
-	/// <summary>
-	/// 本がスライドアウトしていく
-	/// </summary>
-	void SlideOutBook();
 
 	/// <summary>
 	/// フェードアウト
@@ -77,7 +73,6 @@ private:
 	int selectNum_ = 0;								//選択番号
 
 	float elapsedTime_ = 0;							//経過時間
-	float targetPosX_ = 0.0f;						//目標のz座標
 
 	static constexpr int fadeInterval_ = 60;		//フェードインターバル
 	int fadeTimer_ = 0;								//フェード時間

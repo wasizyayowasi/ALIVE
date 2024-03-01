@@ -30,6 +30,9 @@ namespace
 
 	//オブジェクトの更新を行わない範囲
 	constexpr float not_update_range = 4000.0f;
+
+	//死体を生成する最大数
+	constexpr int max_corpse_num = 10;
 }
 
 //コンストラクタ
@@ -124,16 +127,16 @@ void ObjectManager::EndStageObjectGenerator()
 }
 
 //死体生成
-void ObjectManager::CorpseGenerator(const int handle, const LoadObjectInfo& objInfo, const int animNo)
+void ObjectManager::CorpseGenerator(const int handle, const ObjectInfo& objInfo)
 {
 	//死体を一つ生成する
-	objects_[ObjectType::Corpse].push_back(std::make_shared<Corpse>(handle, Material::Other, objInfo, animNo));
+	objects_[ObjectType::Corpse].push_back(std::make_shared<Corpse>(handle, Material::Other, objInfo));
 
-	//死体が4個未満だったらリターン
-//	if (objects_[ObjectType::Corpse].size() < 4) return;
-//
-//	//死体のリストの一番先頭(古い)死体を削除する
-//	objects_[ObjectType::Corpse].remove(objects_[ObjectType::Corpse].front());
+	//死体が10個未満だったらリターン
+	if (objects_[ObjectType::Corpse].size() < max_corpse_num) return;
+	
+	//死体のリストの一番先頭(古い)死体を削除する
+	objects_[ObjectType::Corpse].remove(objects_[ObjectType::Corpse].front());
 }
 
 //更新
@@ -145,8 +148,18 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 		list.second.remove_if([](std::shared_ptr<ObjectBase> obj) {return !obj->GetIsEnabled(); });
 	}
 
+	//短縮化
+	auto& model = ModelManager::GetInstance();
+
 	float distanceSize = 0.0f;
 	VECTOR playerPos = player.GetStatus().pos;
+
+	//死体を生成する
+	if (player.GetIsCorpseGeneratable())
+	{
+		CorpseGenerator(model.GetModelHandle(objData_[static_cast<int>(ObjectType::Corpse)].name), player.GetCorpseInfo());
+		player.SetIsCorpseGeneratable(false);
+	}
 
 	//死体とその他のオブジェクトの衝突判定を行う
 	for (auto& list : objects_) 
@@ -173,7 +186,7 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 	{
 		if (std::dynamic_pointer_cast<ThrowEnemy>(obj) != nullptr)
 		{
-			std::dynamic_pointer_cast<ThrowEnemy>(obj)->Shot(shotManager, player.GetStatus().pos, player.GetStatus().height);
+			std::dynamic_pointer_cast<ThrowEnemy>(obj)->Shot(shotManager, playerPos, player.GetStatus().height);
 		}
 	}
 
@@ -322,7 +335,7 @@ void ObjectManager::CircumferencePosition(const float angle,VECTOR& infoPos, con
 }
 
 //敵生成
-void ObjectManager::EnemyGenerator(const int deathCount, const LoadObjectInfo& info)
+void ObjectManager::EnemyGenerator(const int deathCount, const ObjectInfo& info)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -356,7 +369,7 @@ void ObjectManager::EnemyGenerator(const int deathCount, const LoadObjectInfo& i
 }
 
 //死んだ回数分生成する
-void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount,LoadObjectInfo info)
+void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount,ObjectInfo info)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -376,7 +389,7 @@ void ObjectManager::GeneratedForTheNumberOfTimesYouDie(const int deathCount,Load
 }
 
 //既定の回数分生成する
-void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, const std::string& str, const LoadObjectInfo& info)
+void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, const std::string& str, const ObjectInfo& info)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -394,7 +407,7 @@ void ObjectManager::GeneratePredeterminedNumberOfTimes(const int deathCount, con
 }
 
 //死んだ回数によって補助足場を生成する
-void ObjectManager::GenerateCorpseMountain(const int deathCount, const LoadObjectInfo& info)
+void ObjectManager::GenerateCorpseMountain(const int deathCount, const ObjectInfo& info)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -415,7 +428,7 @@ void ObjectManager::GenerateCorpseMountain(const int deathCount, const LoadObjec
 }
 
 //置物生成機
-void ObjectManager::OrnamentGenerator(const std::string& name, const ObjectType objType, const Material materialType, const LoadObjectInfo& objInfo)
+void ObjectManager::OrnamentGenerator(const std::string& name, const ObjectType objType, const Material materialType, const ObjectInfo& objInfo)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -424,7 +437,7 @@ void ObjectManager::OrnamentGenerator(const std::string& name, const ObjectType 
 }
 
 //ギミック生成機
-void ObjectManager::GimmickObjectGenerator(const std::string& name, const ObjectType objType, const  Material materialType, const LoadObjectInfo& objInfo)
+void ObjectManager::GimmickObjectGenerator(const std::string& name, const ObjectType objType, const  Material materialType, const ObjectInfo& objInfo)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();

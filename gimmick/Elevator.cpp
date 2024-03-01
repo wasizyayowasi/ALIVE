@@ -36,13 +36,13 @@ namespace
 }
 
 //コンストラクタ
-Elevator::Elevator(const int handle, const Material materialType, const LoadObjectInfo& objInfo):GimmickBase(handle, materialType, objInfo)
+Elevator::Elevator(const int handle, const Material materialType, const ObjectInfo& objInfo):GimmickBase(handle, materialType, objInfo)
 {
 	//このエレベーターが何番目のエレベーターかを名前の末尾から取得する
 	int elevatorNum = StrUtil::GetNumberFromString(objInfo.name, ".");
 
 	//スイッチの配置データを取得する
-	LoadObjectInfo leverData = GetSpecialNameObjectInfo("MovingLever", "-", elevatorNum, 0);
+	ObjectInfo leverData = GetSpecialNameObjectInfo("MovingLever", "-", elevatorNum, 0);
 
 	//スイッチのインスタンス化
 	movingLever_ = std::make_shared<Lever>(leverData);
@@ -50,14 +50,14 @@ Elevator::Elevator(const int handle, const Material materialType, const LoadObje
 	//レバーのインスタンス化
 	for (int i = 1; i < lever_generate_num; i++)
 	{
-		LoadObjectInfo LeverData = GetSpecialNameObjectInfo("ElevatorLever", "-", elevatorNum, i);
+		ObjectInfo LeverData = GetSpecialNameObjectInfo("ElevatorLever", "-", elevatorNum, i);
 		levers_.push_back(std::make_shared<Lever>(LeverData));
 	}
 
 	//停止ポジションの取得
 	for (int i = 0; i < stop_position_num; i++)
 	{
-		LoadObjectInfo pointData = GetSpecialNameObjectInfo("ElevatorPoint", "-", elevatorNum, i);
+		ObjectInfo pointData = GetSpecialNameObjectInfo("ElevatorPoint", "-", elevatorNum, i);
 		stopPos_[static_cast<ElevatorState>(i)] = pointData.pos;
 	}
 
@@ -186,7 +186,7 @@ bool Elevator::CanDeparture()
 }
 
 //特殊な名前のオブジェクトの配置データを取得する
-LoadObjectInfo Elevator::GetSpecialNameObjectInfo(const std::string& name, const std::string& sign, int groupNum, int num)
+ObjectInfo Elevator::GetSpecialNameObjectInfo(const std::string& name, const std::string& sign, int groupNum, int num)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
@@ -198,7 +198,7 @@ LoadObjectInfo Elevator::GetSpecialNameObjectInfo(const std::string& name, const
 	str = StrUtil::GetConcatenateNumAndStrings(str, "-", num);
 
 	//配置データの取得
-	LoadObjectInfo objInfo = file.GetSpecifiedGimmickInfo(str);
+	ObjectInfo objInfo = file.GetSpecifiedGimmickInfo(str);
 
 	return objInfo;
 }

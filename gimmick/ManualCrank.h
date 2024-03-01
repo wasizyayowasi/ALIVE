@@ -14,7 +14,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="info">配置データ</param>
-	ManualCrank(const LoadObjectInfo& objInfo);
+	ManualCrank(const ObjectInfo& objInfo);
 
 	/// <summary>
 	/// デストラクタ
@@ -47,7 +47,7 @@ public:
 	/// <param name="name">取得したいオブジェクトの名前</param>
 	/// <param name="num">番号</param>
 	/// <returns>配置データ</returns>
-	LoadObjectInfo GetLoadObjectInfo(const std::string& name, int num);
+	ObjectInfo GetLoadObjectInfo(const std::string& name, int num);
 
 	/// <summary>
 	/// 現在のZ軸の回転率を取得する

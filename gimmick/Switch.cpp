@@ -32,7 +32,7 @@ namespace
 }
 
 //コンストラクタ
-Switch::Switch(const LoadObjectInfo& objInfo)
+Switch::Switch(const ObjectInfo& objInfo)
 {
 	//モデルクラスの初期化
 	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(objData_[static_cast<int>(ObjectType::Switch)].name), Material::Iron);

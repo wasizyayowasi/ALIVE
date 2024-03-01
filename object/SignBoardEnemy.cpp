@@ -20,7 +20,7 @@ namespace
 }
 
 //コンストラクタ
-SignBoardEnemy::SignBoardEnemy(const int handle, const Material materialType, const LoadObjectInfo& objInfo):EnemyBase(handle,materialType,objInfo)
+SignBoardEnemy::SignBoardEnemy(const int handle, const Material materialType, const ObjectInfo& objInfo):EnemyBase(handle,materialType,objInfo)
 {
 	auto& model = ModelManager::GetInstance();
 

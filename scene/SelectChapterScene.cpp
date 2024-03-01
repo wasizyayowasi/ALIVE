@@ -19,8 +19,8 @@ namespace {
 	//アニメーションを変更するのにかかる時間
 	constexpr int anim_change_time = 10;
 
-	//マテリアルの番号
-	constexpr int material_num = 0;
+	//テクスチャの番号
+	constexpr int texture_num = 0;
 
 	//最大チャプター数
 	constexpr int max_chapter_num = 2;
@@ -35,9 +35,18 @@ namespace {
 	constexpr float total_time = 60.0f;
 }
 
-//コンストラクタ
-SelectChapterScene::SelectChapterScene(SceneManager& manager) : SceneBase(manager),updateFunc_(&SelectChapterScene::SlideInBook)
+SelectChapterScene::SelectChapterScene(SceneManager& manager) : SceneBase(manager), updateFunc_(&SelectChapterScene::NormalUpdate)
 {
+}
+
+//コンストラクタ
+SelectChapterScene::SelectChapterScene(SceneManager& manager, std::shared_ptr<Model> modelPointer) : SceneBase(manager),updateFunc_(&SelectChapterScene::NormalUpdate)
+{
+	//モデルのポインタを設定する
+	model_ = modelPointer;
+
+	//モデルのアニメーションを設定する
+	model_->SetAnimation(static_cast<int>(BookAnim::idle), false, false);
 }
 
 //デストラクタ
@@ -48,24 +57,6 @@ SelectChapterScene::~SelectChapterScene()
 //初期化
 void SelectChapterScene::Init()
 {
-	//インスタンス化
-	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(objData_[static_cast<int>(ObjectType::Book)].name),Material::Other);
-
-	//オブジェクト配置データ
-	auto& file = ExternalFile::GetInstance();
-
-	//モデル配置情報の取得
-	auto info = file.GetTitleSpecifiedInfo("Book");
-
-	//モデルの情報設定
-	model_->SetPos(info.pos);
-	model_->SetRot(info.rot);
-	model_->SetScale(info.scale);
-
-	//目標の座標の取得
-	targetPosX_ = file.GetTitleSpecifiedInfo("BookPutPos").pos.x;
-
-	model_->SetAnimation(static_cast<int>(BookAnim::idle), false, false);
 }
 
 //終了
@@ -102,32 +93,6 @@ void SelectChapterScene::ChangeChapter()
 
 	//プレイヤーの開始位置を設定する
 	file.SetStartName(str);
-}
-
-//本がスライドインしてくる
-void SelectChapterScene::SlideInBook()
-{
-	//短縮化
-	auto& file = ExternalFile::GetInstance();
-
-	//モデルの座標
-	VECTOR pos = model_->GetPos();
-
-	//時間を増加させる
-	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
-
-	//イージング
-	pos.x = Easing::InOutCubic(elapsedTime_, total_time, targetPosX_, pos.x);
-
-	//モデルのポジション座標
-	model_->SetPos(pos);
-
-	if (elapsedTime_ == total_time)
-	{
-		updateFunc_ = &SelectChapterScene::NormalUpdate;
-		targetPosX_ = file.GetTitleSpecifiedInfo("Book").pos.x;
-		elapsedTime_ = 0;
-	}
 }
 
 //通常の更新
@@ -169,45 +134,21 @@ void SelectChapterScene::NormalUpdate()
 	}
 
 	//画像名の文字列の取得
-	std::string str = "chapter" + std::to_string(selectNum_ + 1);
+	std::string str = "Chapter" + std::to_string(selectNum_ + 1);
 
 	//マテリアルのテクスチャを変更する
-	MV1SetTextureGraphHandle(model_->GetModelHandle(), material_num, graph.GetGraph(str), true);
+	MV1SetTextureGraphHandle(model_->GetModelHandle(), texture_num, graph.GetGraph(str), true);
 
 	//戻る
 	if (input.IsTriggered(InputType::Down) || input.IsTriggered(InputType::Activate))
 	{
-		updateFunc_ = &SelectChapterScene::SlideOutBook;
+		manager_.PopFrontScene();
 	}
 
 	//決定
 	if (input.IsTriggered(InputType::Space)) 
 	{
 		updateFunc_ = &SelectChapterScene::FadeOutUpdate;
-	}
-}
-
-//本がスライドアウトしていく
-void SelectChapterScene::SlideOutBook()
-{
-	//短縮化
-	auto& file = ExternalFile::GetInstance();
-
-	//モデルの座標
-	VECTOR pos = model_->GetPos();
-
-	//時間を増加させる
-	elapsedTime_ = (std::min)(elapsedTime_ + 1.0f, total_time);
-
-	//イージング
-	pos.x = Easing::InOutCubic(elapsedTime_, total_time, targetPosX_, pos.x);
-
-	//モデルのポジション座標
-	model_->SetPos(pos);
-
-	if (elapsedTime_ == total_time) 
-	{
-		manager_.PopFrontScene();
 	}
 }
 

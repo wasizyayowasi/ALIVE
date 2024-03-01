@@ -37,7 +37,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	Elevator(const int handle, const Material materialType, const LoadObjectInfo& objInfo);
+	Elevator(const int handle, const Material materialType, const ObjectInfo& objInfo);
 	
 	/// <summary>
 	/// デストラクタ
@@ -77,7 +77,7 @@ public:
 	/// <param name="groupNum">グループ番号</param>
 	/// <param name="num">番号</param>
 	/// <returns>配置データ</returns>
-	LoadObjectInfo GetSpecialNameObjectInfo(const std::string& name, const std::string& sign, int groupNum, int num);
+	ObjectInfo GetSpecialNameObjectInfo(const std::string& name, const std::string& sign, int groupNum, int num);
 
 	////////////////Setter////////////////
 

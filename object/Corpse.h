@@ -12,8 +12,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	/// <param name="animNo">アニメーション番号</param>
-	Corpse(const int handle, const Material materialType, const LoadObjectInfo& objInfo,const int animNo);
+	Corpse(const int handle, const Material materialType, const ObjectInfo& objInfo);
 
 	/// <summary>
 	/// デストラクタ

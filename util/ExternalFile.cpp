@@ -192,10 +192,10 @@ void ExternalFile::LoadDivGraphFilePath()
 }
 
 //特定のギミックの配置情報を取得する
-LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const std::string& name)
+ObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const std::string& name)
 {
 
-	LoadObjectInfo info = {};
+	ObjectInfo info = {};
 
 	//番号と記号を抜いた名前を取得する
 	std::string gimmickName = StrUtil::GetStringWithPartsAfterTheSymbolDeleted(name, ".");
@@ -217,11 +217,11 @@ LoadObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const std::string& name)
 
 //カメラが特殊な動きを行う印(オブジェクト)が
 // どこにあるかの配置データを取得する
-LoadObjectInfo ExternalFile::GetCameraGimmickInfo(const VECTOR& playerPos, const std::string& name)
+ObjectInfo ExternalFile::GetCameraGimmickInfo(const VECTOR& playerPos, const std::string& name)
 {
 
 	float minDistance = 10000.0f;
-	LoadObjectInfo info = {};
+	ObjectInfo info = {};
 
 	for (auto& data : loadCameraGimmickInfo_[name])
 	{
@@ -236,9 +236,9 @@ LoadObjectInfo ExternalFile::GetCameraGimmickInfo(const VECTOR& playerPos, const
 }
 
 //タイトルの指定した名前のオブジェクト配置データを返す
-LoadObjectInfo ExternalFile::GetTitleSpecifiedInfo(const std::string& name)
+ObjectInfo ExternalFile::GetTitleSpecifiedInfo(const std::string& name)
 {
-	LoadObjectInfo info = {};
+	ObjectInfo info = {};
 		
 	for (auto& obj : loadOpeningStageObjInfo_) 
 	{
@@ -252,9 +252,9 @@ LoadObjectInfo ExternalFile::GetTitleSpecifiedInfo(const std::string& name)
 }
 
 //ゲームメインの指定した名前のオブジェクト配置データを返す
-LoadObjectInfo ExternalFile::GetMainSpecifiedInfo(const std::string& name)
+ObjectInfo ExternalFile::GetMainSpecifiedInfo(const std::string& name)
 {
-	LoadObjectInfo info = {};
+	ObjectInfo info = {};
 
 	for (auto& obj : loadMainStageObjInfo_)
 	{
@@ -268,9 +268,9 @@ LoadObjectInfo ExternalFile::GetMainSpecifiedInfo(const std::string& name)
 }
 
 //エンディングシーンの指定した名前のオブジェクト配置データを返す
-LoadObjectInfo ExternalFile::GetEndSpecifiedInfo(const std::string& name)
+ObjectInfo ExternalFile::GetEndSpecifiedInfo(const std::string& name)
 {
-	LoadObjectInfo info = {};
+	ObjectInfo info = {};
 
 	for (auto& obj : loadEndStageObjInfo_)
 	{
@@ -284,9 +284,9 @@ LoadObjectInfo ExternalFile::GetEndSpecifiedInfo(const std::string& name)
 }
 
 //エネミーの配置データを取得する
-std::list<LoadObjectInfo> ExternalFile::GetEnemyInfo(const VECTOR& playerPos)
+std::list<ObjectInfo> ExternalFile::GetEnemyInfo(const VECTOR& playerPos)
 {
-	std::list<LoadObjectInfo> info = {};
+	std::list<ObjectInfo> info = {};
 	float distanceSize = 0.0f;
 	float minSize = 3000.0f;
 
@@ -317,10 +317,10 @@ VECTOR ExternalFile::GetStartPos(const std::string& name)
 }
 
 //チュートリアルを表示するポイントの配置データを取得する
-LoadObjectInfo ExternalFile::GetTutorialObjInfo(const VECTOR& pos)
+ObjectInfo ExternalFile::GetTutorialObjInfo(const VECTOR& pos)
 {
 
-	LoadObjectInfo info = {};
+	ObjectInfo info = {};
 	float distanceSize = 0.0f;
 	float min = 10000.0f;
 
@@ -459,7 +459,7 @@ void ExternalFile::LoadSaveDataInfo(const std::string& filename)
 }
 
 //オブジェクトのポジションを読み込む
-void ExternalFile::LoadObjectDataList(const std::string& name,std::unordered_map<std::string, std::list<LoadObjectInfo>>& dataTable)
+void ExternalFile::LoadObjectDataList(const std::string& name,std::unordered_map<std::string, std::list<ObjectInfo>>& dataTable)
 {
 	//読み込んだデータのハンドルを取得
 	auto dataHandle = loadFile_[name.c_str()];
@@ -472,7 +472,7 @@ void ExternalFile::LoadObjectDataList(const std::string& name,std::unordered_map
 	for (int i = 0; i < dataNum; i++)
 	{
 
-		LoadObjectInfo info = {};
+		ObjectInfo info = {};
 
 		//名前の文字列数を読み取る
 		uint8_t nameSize = 0;
@@ -516,7 +516,7 @@ void ExternalFile::LoadObjectDataList(const std::string& name,std::unordered_map
 }
 
 //オブジェクトの配置情報を読み込む
-void ExternalFile::LoadObjectData(const std::string& name,std::unordered_map<std::string, LoadObjectInfo>& dataTable)
+void ExternalFile::LoadObjectData(const std::string& name,std::unordered_map<std::string, ObjectInfo>& dataTable)
 {
 	//読み込んだデータのハンドルを取得
 	auto dataHandle = loadFile_[name.c_str()];
@@ -528,7 +528,7 @@ void ExternalFile::LoadObjectData(const std::string& name,std::unordered_map<std
 
 	for (int i = 0; i < dataNum; i++) 
 	{
-		LoadObjectInfo info = {};
+		ObjectInfo info = {};
 
 		//名前の文字列数を読み取る
 		uint8_t nameSize = 0;

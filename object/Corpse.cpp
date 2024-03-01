@@ -10,10 +10,13 @@ namespace {
 
 	//モデルフレーム名
 	const char* const coll_frame_death = "CollDown";
+
+	//アニメーション名
+	const char* const anim_name_death = "Death";
 }
 
 //コンストラクタ
-Corpse::Corpse(const int handle, const Material materialType, const LoadObjectInfo& objInfo, const int animNo) : CharacterBase(handle, materialType,objInfo)
+Corpse::Corpse(const int handle, const Material materialType, const ObjectInfo& objInfo) : CharacterBase(handle, materialType,objInfo)
 {
 	//衝突判定を行う
 	isCollCheck_ = true;
@@ -25,10 +28,10 @@ Corpse::Corpse(const int handle, const Material materialType, const LoadObjectIn
 	MV1SetMaterialDifColor(model_->GetModelHandle(), change_material_color_num, GetColorF(1.0f,0.0f,0.0f,1.0f));
 
 	//アニメーションの設定
-	model_->SetAnimation(animNo, false, true);
+	model_->SetAnimation(static_cast<int>(PlayerAnimType::Death), false, true);
 
 	//アニメーションの指定の再生時間を設定する
-	model_->SetAnimEndFrame(animNo);
+	model_->SetAnimEndFrame(static_cast<int>(PlayerAnimType::Death));
 
 	//衝突判定を行うことを設定する
 	model_->SetUseCollision(isCollCheck_, isUpdateColl_,coll_frame_death);

@@ -20,7 +20,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="info">配置データ</param>
-	Lever(const LoadObjectInfo& info);
+	Lever(const ObjectInfo& info);
 
 	/// <summary>
 	/// デストラクタ
@@ -71,7 +71,7 @@ public:
 	/// <param name="groupNum">グループ番号</param>
 	/// <param name="num">番号</param>
 	/// <returns>配置データ</returns>
-	LoadObjectInfo GetSpecialNameObjectInfo(const std::string& name, const std::string& sign, int groupNum, int num);
+	ObjectInfo GetSpecialNameObjectInfo(const std::string& name, const std::string& sign, int groupNum, int num);
 
 	/// <summary>
 	/// モデルポインタの取得

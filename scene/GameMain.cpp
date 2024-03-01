@@ -214,7 +214,7 @@ void GameMain::NormalUpdate()
 	isFilterOn_ = false;
 
 	//プレイヤーの更新
-	player_->Update(objManager_);
+	player_->Update();
 
 	//オブジェクトの更新
 	objManager_->Update(*player_,shotManager_);

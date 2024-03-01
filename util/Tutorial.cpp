@@ -90,7 +90,7 @@ Tutorial::~Tutorial()
 void Tutorial::Update(const VECTOR& playerPos)
 {
 	//プレイヤーから一番近いチュートリアルの配置データを取得
-	LoadObjectInfo tutorialInfo = ExternalFile::GetInstance().GetTutorialObjInfo(playerPos);
+	ObjectInfo tutorialInfo = ExternalFile::GetInstance().GetTutorialObjInfo(playerPos);
 
 	//取得したデータのポジションからプレイヤーのポジションの距離のサイズを取得する
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorialInfo.pos, playerPos);

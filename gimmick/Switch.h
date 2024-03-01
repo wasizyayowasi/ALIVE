@@ -22,7 +22,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="objInfo">配置データ</param>
-	Switch(const LoadObjectInfo& objInfo);
+	Switch(const ObjectInfo& objInfo);
 	
 	/// <summary>
 	/// デストラクタ

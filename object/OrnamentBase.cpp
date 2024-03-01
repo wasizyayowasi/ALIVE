@@ -3,7 +3,7 @@
 #include "../util/Model.h"
 
 //コンストラクタ
-OrnamentBase::OrnamentBase(const int handle, const Material materialType, const LoadObjectInfo objInfo) : ObjectBase(handle, materialType,objInfo)
+OrnamentBase::OrnamentBase(const int handle, const Material materialType, const ObjectInfo objInfo) : ObjectBase(handle, materialType,objInfo)
 {
 	//衝突判定を行う
 	isCollCheck_ = true;

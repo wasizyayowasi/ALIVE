@@ -23,7 +23,7 @@ namespace
 }
 
 //コンストラクタ
-ManualCrank::ManualCrank(const LoadObjectInfo& objInfo)
+ManualCrank::ManualCrank(const ObjectInfo& objInfo)
 {
 	//モデルクラスの初期化
 	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(objData_[static_cast<int>(ObjectType::Crank)].name), Material::Iron);
@@ -33,7 +33,7 @@ ManualCrank::ManualCrank(const LoadObjectInfo& objInfo)
 
 	//クランクを回す立ち位置を取得
 	int standingNum = StrUtil::GetNumberFromString(objInfo.name, ".");
-	LoadObjectInfo standingData = GetLoadObjectInfo("StandingPosition", standingNum);
+	ObjectInfo standingData = GetLoadObjectInfo("StandingPosition", standingNum);
 
 	//立つ位置の初期化
 	standingPos_ = standingData.pos;
@@ -90,7 +90,7 @@ float ManualCrank::GetMaxRotZ() const
 }
 
 //指定のオブジェクトの配置データを取得する
-LoadObjectInfo ManualCrank::GetLoadObjectInfo(const std::string& name, int num)
+ObjectInfo ManualCrank::GetLoadObjectInfo(const std::string& name, int num)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
@@ -99,7 +99,7 @@ LoadObjectInfo ManualCrank::GetLoadObjectInfo(const std::string& name, int num)
 	std::string str = StrUtil::GetConcatenateNumAndStrings(name, ".", num);
 
 	//上記で取得した文字列のオブジェクトの配置データを取得する	
-	LoadObjectInfo objInfo = file.GetSpecifiedGimmickInfo(str);
+	ObjectInfo objInfo = file.GetSpecifiedGimmickInfo(str);
 
 	//配置データを返す
 	return objInfo;

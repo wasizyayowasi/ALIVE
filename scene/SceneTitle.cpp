@@ -161,6 +161,11 @@ void SceneTitle::Init()
 {
 	updateFunc_ = &SceneTitle::FadeInUpdate;
 
+	oldSelectScene_ = currentSelectScene_;
+	currentSelectScene_ = SelectScene::NewGame;
+
+	CameraTargetUpdate();
+
 	fadeTimer_ = 0;
 	fadeValue_ = 0;
 }
@@ -561,7 +566,7 @@ void SceneTitle::SceneChange()
 	if (currentSelectScene_ == SelectScene::SelectChapter)
 	{
 		Init();
-		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<SelectChapterScene>(manager_)));
+		manager_.PushFrontScene(std::shared_ptr<SceneBase>(std::make_shared<SelectChapterScene>(manager_,objManager_->GetSpecificModel(ObjectType::Book))));
 		return;
 	}
 }

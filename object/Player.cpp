@@ -97,7 +97,7 @@ namespace
 }
 
 //コンストラクタ
-Player::Player(const LoadObjectInfo& info):updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObject)
+Player::Player(const ObjectInfo& info):updateFunc_(&Player::NormalUpdate),carryUpdateFunc_(&Player::CarryObject)
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
@@ -147,12 +147,12 @@ Player::~Player()
 }
 
 //更新
-void Player::Update(const std::shared_ptr<ObjectManager>& objManager)
+void Player::Update()
 {
 	//プレイヤーのアニメーション更新
 	model_->Update();
 	
-	(this->*updateFunc_)(objManager);
+	(this->*updateFunc_)();
 }
 
 //描画
@@ -306,7 +306,7 @@ void Player::SetRoundShadowHeightAndMaterial(const float height, const  Material
 }
 
 //通常時の更新
-void Player::NormalUpdate(const std::shared_ptr<ObjectManager>& objManager)
+void Player::NormalUpdate()
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
@@ -626,7 +626,7 @@ void Player::RotationUpdate()
 }
 
 //ジャンプ
-void Player::JumpUpdate(const std::shared_ptr<ObjectManager>& objManager)
+void Player::JumpUpdate()
 {
 	//プレイヤー移動関数
 	Move();
@@ -646,31 +646,31 @@ void Player::JumpUpdate(const std::shared_ptr<ObjectManager>& objManager)
 }
 
 // プレイヤーの死体に与える情報を作る関数
-void Player::DeathUpdate(const std::shared_ptr<ObjectManager>& objManager)
+void Player::DeathUpdate()
 {
 	//アニメーションの変更
 	ChangeAnimNo(PlayerAnimType::Death, false, anim_change_time);
 
 	if (model_->IsAnimEnd()) 
 	{
-		CorpsePostProsessing(objManager);
+		CorpsePostProsessing();
 	}
 }
 
 //死体の後処理
-void Player::CorpsePostProsessing(const std::shared_ptr<ObjectManager>& objManager)
+void Player::CorpsePostProsessing()
 {
 	//死体を生成する関数
-	CorpseGenerater(objManager);			
+	CorpseInfoGenerater();			
 
 	updateFunc_ = &Player::NormalUpdate;
 }
 
 // プレイヤーの死体をvector配列で管理する関数
-void Player::CorpseGenerater(const std::shared_ptr<ObjectManager>& objManager)
+void Player::CorpseInfoGenerater()
 {
 	//配置データの作成
-	LoadObjectInfo info = {};
+	corpseInfo_ = {};
 
 	//モデルの中から指定のフレームの番号を取得する
 	int frameNo = MV1SearchFrame(model_->GetModelHandle(), "PlaceToPutTheCorpse");
@@ -679,16 +679,16 @@ void Player::CorpseGenerater(const std::shared_ptr<ObjectManager>& objManager)
 	VECTOR putPos = MV1GetFramePosition(model_->GetModelHandle(), frameNo);
 
 	//取得した座標を死体のポジションとする
-	info.pos = putPos;
+	corpseInfo_.pos = putPos;
 
 	//プレイヤーの回転値を死体の回転値とする
-	info.rot = MathUtil::VECTORDegreeToRadian(status_.rot);
+	corpseInfo_.rot = MathUtil::VECTORDegreeToRadian(status_.rot);
 
 	//拡縮率を同じにする
-	info.scale = scale_;
+	corpseInfo_.scale = scale_;
 
-	//死体を生成する
-	objManager->CorpseGenerator(model_->GetModelHandle(),info, status_.animNo);
+	//死体を生成できるフラグをtrueにする
+	isCorpseGeneratable_ = true;
 }
 
 //荷物を運ぶ
@@ -723,7 +723,7 @@ void Player::DropOffObject()
 }
 
 //クランクを回すためにクランクを回すポジションへと移動する
-void Player::GoCrankRotationPosition(const std::shared_ptr<ObjectManager>& objManager)
+void Player::GoCrankRotationPosition()
 {
 	//クランクの立ってほしいポジションを取得する
 	VECTOR standPos = crank_->GetStandingPosition();
@@ -784,7 +784,7 @@ void Player::CrankRotationUpdate(float rotZ)
 }
 
 //クランクの更新
-void Player::CrankUpdate(const std::shared_ptr<ObjectManager>& objManager)
+void Player::CrankUpdate()
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
@@ -850,7 +850,7 @@ void Player::CrankUpdate(const std::shared_ptr<ObjectManager>& objManager)
 }
 
 //レバーを倒すポジションへ行く
-void Player::GoLeverPullPosition(const std::shared_ptr<ObjectManager>& objManager)
+void Player::GoLeverPullPosition()
 {
 	//クランクの立ってほしいポジションを取得する
 	VECTOR standPos = lever_->GetStandingPosition();
@@ -882,7 +882,7 @@ void Player::GoLeverPullPosition(const std::shared_ptr<ObjectManager>& objManage
 }
 
 //レバーの更新
-void Player::LeverUpdate(const std::shared_ptr<ObjectManager>& objManager)
+void Player::LeverUpdate()
 {
 	if (!lever_->IsOn())
 	{
@@ -891,7 +891,7 @@ void Player::LeverUpdate(const std::shared_ptr<ObjectManager>& objManager)
 }
 
 //投擲物との衝突アップデート
-void Player::BulletHitMeUpdate(const std::shared_ptr<ObjectManager>& objManager)
+void Player::BulletHitMeUpdate()
 {
 	//重力
 	status_.jump.jumpVec += gravity;

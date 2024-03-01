@@ -60,14 +60,6 @@ private:
 	{
 		float targetAngle_ = 0.0f;			//目標の角度
 		RotationState rotState_ = {};		//回転の状態
-		bool up			= false;			//上に行けるか
-		bool upperRight	= false;			//右上に行けるか
-		bool right		= false;			//右に行けるか
-		bool lowerRight	= false;			//右下に行けるか
-		bool down		= false;			//下に行けるか
-		bool lowerLeft	= false;			//左下に行けるか
-		bool left		= false;			//左に行けるか
-		bool upperLeft	= false;			//左上に行けるか
 	};
 
 	//回転のデータ配列
@@ -76,98 +68,34 @@ private:
 		//Up
 		0.0f,						//目標の角度
 		RotationState::Up,			//回転の状態
-		true,						//上に行けるか
-		true,						//右上に行けるか
-		true,						//右に行けるか
-		true,						//右下に行けるか
-		false,						//下に行けるか
-		false,						//左下に行けるか
-		false,						//左に行けるか
-		false,						//左上に行けるか
 
 		//UpperRight
 		45.0f,						//目標の角度
 		RotationState::UpperRight,	//回転の状態
-		true,						//上に行けるか
-		true,						//右上に行けるか
-		true,						//右に行けるか
-		true,						//右下に行けるか
-		true,						//下に行けるか
-		false,						//左下に行けるか
-		false,						//左に行けるか
-		false,						//左上に行けるか
 
 		//Right
 		90.0f,						//目標の角度
 		RotationState::Right,		//回転の状態
-		true,						//上に行けるか
-		true,						//右上に行けるか
-		true,						//右に行けるか
-		true,						//右下に行けるか
-		true,						//下に行けるか
-		true,						//左下に行けるか
-		false,						//左に行けるか
-		false,						//左上に行けるか
 
 		//LowerRight
 		135.0f,						//目標の角度
 		RotationState::LowerRight,	//回転の状態
-		true,						//上に行けるか
-		true,						//右上に行けるか
-		true,						//右に行けるか
-		true,						//右下に行けるか
-		true,						//下に行けるか
-		true,						//左下に行けるか
-		true,						//左に行けるか
-		false,						//左上に行けるか
 
 		//Down
 		180.0f,						//目標の角度
 		RotationState::Down,		//回転の状態
-		false,						//上に行けるか
-		true,						//右上に行けるか
-		true,						//右に行けるか
-		true,						//右下に行けるか
-		true,						//下に行けるか
-		true,						//左下に行けるか
-		true,						//左に行けるか
-		true,						//左上に行けるか
 
 		//LowerLeft
 		225.0f,						//目標の角度
 		RotationState::LowerLeft,	//回転の状態
-		true,						//上に行けるか
-		false,						//右上に行けるか
-		true,						//右に行けるか
-		true,						//右下に行けるか
-		true,						//下に行けるか
-		true,						//左下に行けるか
-		true,						//左に行けるか
-		true,						//左上に行けるか
 
 		//Left
 		270.0f,						//目標の角度
 		RotationState::Left,		//回転の状態
-		true,						//上に行けるか
-		true,						//右上に行けるか
-		false,						//右に行けるか
-		true,						//右下に行けるか
-		false,						//下に行けるか
-		true,						//左下に行けるか
-		true,						//左に行けるか
-		true,						//左上に行けるか
 
 		//UpperLeft
 		315.0f,						//目標の角度
 		RotationState::UpperLeft,	//回転の状態
-		true,						//上に行けるか
-		true,						//右上に行けるか
-		true,						//右に行けるか
-		false,						//右下に行けるか
-		true,						//下に行けるか
-		true,						//左下に行けるか
-		true,						//左に行けるか
-		true,						//左上に行けるか
 	};
 public:
 
@@ -175,7 +103,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="info">配置データ</param>
-	Player(const LoadObjectInfo& info);
+	Player(const ObjectInfo& info);
 
 	/// <summary>
 	/// デストラクタ
@@ -185,9 +113,7 @@ public:
 	/// <summary>
 	/// プレイヤーの更新を行う
 	/// </summary>
-	/// <param name="input">外部装置の入力情報を参照する</param>
-	/// <param name="models">衝突判定を行うモデルのvector型の配列</param>
-	void Update(const std::shared_ptr<ObjectManager>& objManager);
+	void Update();
 
 	/// <summary>
 	/// プレイヤー関連の描画
@@ -250,6 +176,17 @@ public:
 	/// <returns>影を描画する高さ</returns>
 	float GetRoundShadowHeight() const { return roundShadowHeight_; }
 
+	/// <summary>
+	/// 死体を生成することが出来るか
+	/// </summary>
+	/// <returns>true:生成できる　false:出来ない</returns>
+	bool GetIsCorpseGeneratable() { return isCorpseGeneratable_; }
+
+	/// <summary>
+	/// 死体の配置情報を取得する
+	/// </summary>
+	/// <returns>死体の配置データ</returns>
+	const ObjectInfo& GetCorpseInfo() const { return corpseInfo_; }
 
 	///////Setter///////
 
@@ -295,6 +232,11 @@ public:
 	/// <param name="materialType">今踏んでいるオブジェクトが何出てきているか</param>
 	void SetRoundShadowHeightAndMaterial(const float height, const  Material materialType);
 
+	/// <summary>
+	/// 死体を生成することが出来るかのフラグを設定する
+	/// </summary>
+	/// <param name="isCorpseGeneratable">true：出来る　false：出来ない</param>
+	void SetIsCorpseGeneratable(const bool isCorpseGeneratable) { isCorpseGeneratable_ = isCorpseGeneratable; }
 private:
 
 	/////////////プレイヤーの挙動に関係する更新/////////////
@@ -302,8 +244,7 @@ private:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param>
-	void NormalUpdate(const std::shared_ptr<ObjectManager>& objManager);
+	void NormalUpdate();
 
 	/// <summary>
 	/// 移動の更新
@@ -323,26 +264,22 @@ private:
 	/// <summary>
 	/// ジャンプ
 	/// </summary>
-	/// <param name="input">外部装置の入力情報を参照する</param>
-	void JumpUpdate(const std::shared_ptr<ObjectManager>& objManager);
+	void JumpUpdate();
 
 	/// <summary>
 	/// プレイヤーの死体に与える情報を作る関数
 	/// </summary>
-	/// <param name="input">外部装置の入力情報を参照する</param>
-	void DeathUpdate(const std::shared_ptr<ObjectManager>& objManager);
+	void DeathUpdate();
 
 	/// <summary>
 	/// 死体の後処理
 	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param>
-	void CorpsePostProsessing(const std::shared_ptr<ObjectManager>& objManager);
+	void CorpsePostProsessing();
 
 	/// <summary>
 	/// プレイヤーの死体をvector配列で管理する関数
 	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param>
-	void CorpseGenerater(const std::shared_ptr<ObjectManager>& objManager);
+	void CorpseInfoGenerater();
 
 	/// <summary>
 	/// 荷物を運ぶ
@@ -357,8 +294,7 @@ private:
 	/// <summary>
 	/// クランクを回すポジションまで行く
 	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param>
-	void GoCrankRotationPosition(const std::shared_ptr<ObjectManager>& objManager);
+	void GoCrankRotationPosition();
 
 	/// <summary>
 	/// クランクを回転させるアップデート
@@ -369,26 +305,22 @@ private:
 	/// <summary>
 	/// クランクの更新
 	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param>
-	void CrankUpdate(const std::shared_ptr<ObjectManager>& objManager);
+	void CrankUpdate();
 
 	/// <summary>
 	/// レバーを倒すポジションへ行く
 	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param>
-	void GoLeverPullPosition(const std::shared_ptr<ObjectManager>& objManager);
+	void GoLeverPullPosition();
 
 	/// <summary>
 	/// レバーの更新
 	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param>
-	void LeverUpdate(const std::shared_ptr<ObjectManager>& objManager);
+	void LeverUpdate();
 
 	/// <summary>
 	/// 投擲物との衝突アップデート
 	/// </summary>
-	/// <param name="objManager">objManagerのポインタ</param> 
-	void BulletHitMeUpdate(const std::shared_ptr<ObjectManager>& objManager);
+	void BulletHitMeUpdate();
 
 private:
 
@@ -440,12 +372,13 @@ private:
 	float crankTargetAngle_ = 0.0f;								//クランクが目指す角度
 
 	bool debugCreativeMode_ = false;							//デバッグ用変数
+	bool isCorpseGeneratable_ = false;							//死体を生成することが出来るか
 
-	VECTOR checkPoint_ = {0.0f,0.0f, 0.0f};						//中間ポイント
 	VECTOR scale_ = {0.0f,0.0f, 0.0f};							//拡縮率
 
 	PlayerInfo playerInfo_ = {};								//プレイヤーの情報
 	PlayerStatus status_ = {};									//プレイヤーのステータス
+	ObjectInfo corpseInfo_ = {};								//死体の配置情報
 
 	Material materialSteppedOn_ = Material::Stone;				//足音用変数
 	RotationState currentRotState_ = RotationState::Up;			//回転ステータス
@@ -455,7 +388,7 @@ private:
 	std::shared_ptr<Lever> lever_;								//クランククラスのポインタ
 	std::shared_ptr<ObjectBase> corpseModelPointer_;			//持ち運ぶ死体のモデルポインタ
 
-	void(Player::* updateFunc_)(const std::shared_ptr<ObjectManager>& objManager);		//メンバ関数ポインタ
+	void(Player::* updateFunc_)();		//メンバ関数ポインタ
 	void(Player::* carryUpdateFunc_)();		//メンバ関数ポインタ
 };
 

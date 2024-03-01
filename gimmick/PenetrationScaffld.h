@@ -10,7 +10,7 @@ public:
 	/// <param name="handle">モデルハンドル</param>
 	/// <param name="materialType">マテリアルのタイプ</param>
 	/// <param name="objInfo">配置データ</param>
-	PenetrationScaffld(const int handle,const Material materialType,const LoadObjectInfo& objInfo);
+	PenetrationScaffld(const int handle,const Material materialType,const ObjectInfo& objInfo);
 
 	/// <summary>
 	/// デストラクタ

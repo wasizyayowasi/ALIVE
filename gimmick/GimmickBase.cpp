@@ -7,7 +7,7 @@
 #include "../util/ExternalFile.h"
 
 //作成済みのモデルをコピーするコンストラクタ
-GimmickBase::GimmickBase(const int handle, const Material materialType, const LoadObjectInfo& objInfo): OrnamentBase(handle, materialType,objInfo)
+GimmickBase::GimmickBase(const int handle, const Material materialType, const ObjectInfo& objInfo): OrnamentBase(handle, materialType,objInfo)
 {
 }
 
@@ -17,7 +17,7 @@ GimmickBase::~GimmickBase()
 }
 
 //指定のオブジェクトの配置データを取得する
-LoadObjectInfo GimmickBase::GetLoadObjectInfo(const std::string& name, int num)
+ObjectInfo GimmickBase::GetLoadObjectInfo(const std::string& name, int num)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
@@ -26,7 +26,7 @@ LoadObjectInfo GimmickBase::GetLoadObjectInfo(const std::string& name, int num)
 	std::string str = StrUtil::GetConcatenateNumAndStrings(name, ".", num);
 
 	//上記で取得した文字列のオブジェクトの配置データを取得する	
-	LoadObjectInfo objInfo = file.GetSpecifiedGimmickInfo(str);
+	ObjectInfo objInfo = file.GetSpecifiedGimmickInfo(str);
 
 	//配置データを返す
 	return objInfo;

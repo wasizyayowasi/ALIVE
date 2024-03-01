@@ -19,7 +19,7 @@ namespace
 }
 
 //コンストラクタ
-CrankScaffold::CrankScaffold(const int handle, const Material materialType, const LoadObjectInfo& objInfo) : GimmickBase(handle, materialType, objInfo)
+CrankScaffold::CrankScaffold(const int handle, const Material materialType, const ObjectInfo& objInfo) : GimmickBase(handle, materialType, objInfo)
 {
 	//短縮化
 	auto& file = ExternalFile::GetInstance();
@@ -28,7 +28,7 @@ CrankScaffold::CrankScaffold(const int handle, const Material materialType, cons
 	int num = StrUtil::GetNumberFromString(objInfo.name, ".");
 
 	//クランクの配置データを取得する
-	LoadObjectInfo crankData = GetLoadObjectInfo("Crank", num);
+	ObjectInfo crankData = GetLoadObjectInfo("Crank", num);
 
 	//インスタンス化
 	crank_ = std::make_shared<ManualCrank>(crankData);
@@ -128,10 +128,10 @@ void CrankScaffold::MoveModel()
 float CrankScaffold::GetUpperAndLowerDistanceSize(int num)
 {
 	//足場の上限の配置データを取得する
-	LoadObjectInfo upperLimitData = GetLoadObjectInfo("CrankUpperLimit", num);
+	ObjectInfo upperLimitData = GetLoadObjectInfo("CrankUpperLimit", num);
 
 	//足場の下限の配置データを取得する
-	LoadObjectInfo lowerLimitData = GetLoadObjectInfo("CrankLowerLimit", num);
+	ObjectInfo lowerLimitData = GetLoadObjectInfo("CrankLowerLimit", num);
 
 	//上限と下限の距離を取得する
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(upperLimitData.pos, lowerLimitData.pos);
