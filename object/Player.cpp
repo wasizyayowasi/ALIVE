@@ -76,6 +76,13 @@ namespace
 	//90度
 	constexpr float degree_of_90 = 90.0f;
 
+	//現在の角度から目標の角度まで動かすとき
+	//最大で何度まで動かすことが出来るか
+	constexpr float max_difference_angle = 135.0f;
+
+	//クランクを回すスピードの倍率
+	constexpr float crank_rot_speed_rate = 3.0f;
+
 	//ノックバック率
 	constexpr float knockback_rate = 0.96f;
 
@@ -158,6 +165,22 @@ void Player::Draw()
 	DrawPolygon3D();
 }
 
+//現在の角度から近い角度に回る
+void Player::RotateAtACloseAngle(float& differenceAngle, float targetAngle, float currentAngle)
+{
+	//一回転の角度
+	float oneRevolution = 360.0f;
+
+	if (differenceAngle >= oneRevolution / half)
+	{
+		differenceAngle = targetAngle - currentAngle - oneRevolution;
+	}
+	else if (differenceAngle <= -oneRevolution / half)
+	{
+		differenceAngle = targetAngle - currentAngle + oneRevolution;
+	}
+}
+
 //弾に当たったらノックバックを追加する
 void Player::BulletHitMe(const VECTOR& moveVec)
 {
@@ -175,31 +198,48 @@ void Player::BulletHitMe(const VECTOR& moveVec)
 }
 
 //どんな回転状態か取得する
-const RotationState& Player::WhatRotationState()
+Player::RotationState Player::WhatRotationState()
 {
 	//短縮化
 	auto& input = InputState::GetInstance();
 
 	//インプット情報
-	bool isTriggerUp = input.IsTriggered(InputType::Up);
-	bool isTriggerDown = input.IsTriggered(InputType::Down);
-	bool isTriggerLeft = input.IsTriggered(InputType::Left);
-	bool isTriggerRight = input.IsTriggered(InputType::Right);
-
-	//現在のステートのint型を取得
-	int currentRotStateNum = static_cast<int>(currentRotState_);
+	bool IsPressedUp = input.IsPressed(InputType::Up);
+	bool IsPressedDown = input.IsPressed(InputType::Down);
+	bool IsPressedLeft = input.IsPressed(InputType::Left);
+	bool IsPressedRight = input.IsPressed(InputType::Right);
 
 	//入力状況に応じて回転状態を返す
-	if (rotData_[currentRotStateNum].upperRight && isTriggerUp   && isTriggerRight)		return RotationState::UpperRight;
-	if (rotData_[currentRotStateNum].upperLeft  && isTriggerUp   && isTriggerLeft)		return RotationState::UpperLeft;
-	if (rotData_[currentRotStateNum].lowerRight && isTriggerDown && isTriggerRight)		return RotationState::LowerRight;
-	if (rotData_[currentRotStateNum].lowerLeft  && isTriggerDown && isTriggerLeft)		return RotationState::LowerLeft;
-	if (rotData_[currentRotStateNum].up         && isTriggerUp)							return RotationState::Up;
-	if (rotData_[currentRotStateNum].down       && isTriggerDown)						return RotationState::Down;
-	if (rotData_[currentRotStateNum].left       && isTriggerLeft)						return RotationState::Left;
-	if (rotData_[currentRotStateNum].right      && isTriggerRight)						return RotationState::Right;
+	if (IsPressedUp && IsPressedRight)		return RotationState::UpperRight;
+	if (IsPressedUp && IsPressedLeft)		return RotationState::UpperLeft;
+	if (IsPressedDown && IsPressedRight)	return RotationState::LowerRight;
+	if (IsPressedDown && IsPressedLeft)		return RotationState::LowerLeft;
+	if (IsPressedUp)						return RotationState::Up;
+	if (IsPressedDown)						return RotationState::Down;
+	if (IsPressedLeft)						return RotationState::Left;
+	if (IsPressedRight)						return RotationState::Right;
 
+	//現在のステートを返す
 	return currentRotState_;
+}
+
+//目標の角度に回転することが出来るか
+bool Player::CanRotation(float rotZ)
+{
+	//一回転の角度
+	float oneRevolution = 360.0f;
+
+	//目標の角度と現在の角度との差
+	float differenceAngle = rotData_[static_cast<int>(currentRotState_)].targetAngle_ - rotZ;
+
+	//現在の角度から近い角度に回る
+	RotateAtACloseAngle(differenceAngle, rotData_[static_cast<int>(currentRotState_)].targetAngle_, rotZ);
+
+	if (differenceAngle > max_difference_angle)			return false;
+	if (rotZ + differenceAngle < 0.0f)					return false;
+	if (rotZ + differenceAngle > crank_->GetMaxRotZ())	return false;
+
+	return true;
 }
 
 //ポジションの設定
@@ -556,14 +596,7 @@ void Player::RotationUpdate()
 
 	//常にプレイヤーモデルを大周りさせたくないので
 	//181度又は-181度以上の場合、逆回りにしてあげる
-	if (differenceAngle_ >= oneRevolution / half) 
-	{
-		differenceAngle_ = targetAngle_ - angle_ - oneRevolution;
-	}
-	else if (differenceAngle_ <= -oneRevolution / half)
-	{
-		differenceAngle_ = targetAngle_ - angle_ + oneRevolution;
-	}
+	RotateAtACloseAngle(differenceAngle_, targetAngle_, angle_);
 
 	//滑らかに回転させるため
 	//現在の角度に回転スピードを増減させている
@@ -739,7 +772,7 @@ void Player::CrankRotationUpdate(float rotZ)
 	//平行移動行列
 	MATRIX posMat = MGetTranslate(distance);
 	//回転行列
-	MATRIX rotMatZ = MGetRotZ(radian);
+	MATRIX rotMatZ = MGetRotZ(-radian);
 	MATRIX rotMatX = MGetRotX(x);
 
 	mat = MMult(rotMatX, rotMatZ);
@@ -757,14 +790,11 @@ void Player::CrankUpdate(const std::shared_ptr<ObjectManager>& objManager)
 	auto& input = InputState::GetInstance();
 	auto& sound = SoundManager::GetInstance();
 
-	//インプット情報
-	bool isTriggerUp    = input.IsTriggered(InputType::Up);
-	bool isTriggerDown  = input.IsTriggered(InputType::Down);
-	bool isTriggerLeft  = input.IsTriggered(InputType::Left);
-	bool isTriggerRight = input.IsTriggered(InputType::Right);
-
 	//移動ベクトルを0にする
 	status_.moveVec = VGet(0, 0, 0);
+
+	//クランクの回転を取得する(実際に値を変えるよう)
+	float rotZ = crank_->GetRotZ();
 
 	//クランクを回す処理を止める
 	if (input.IsTriggered(InputType::Activate))
@@ -774,74 +804,49 @@ void Player::CrankUpdate(const std::shared_ptr<ObjectManager>& objManager)
 		updateFunc_ = &Player::NormalUpdate;
 	}
 
+	//1フレーム前の回転状態
+	RotationState oldRotState = currentRotState_;
+
 	//どんな回転状態か取得する
 	currentRotState_ = WhatRotationState();
+
+	//目標の角度に回転することが出来るか
+	if (!CanRotation(rotZ))
+	{
+		currentRotState_ = oldRotState;
+	}
 
 	//クランクが目指す角度
 	crankTargetAngle_ = rotData_[static_cast<int>(currentRotState_)].targetAngle_;
 
-#if false
-	//クランクの回転を取得する(変化しているか確認用)
-	float oldRotZ = crank_->GetRotZ();
+	//現在の角度から目標の角度の差
+	float differenceAngle = crankTargetAngle_ - rotZ;
+	
+	//現在の角度から近い角度に回る
+	RotateAtACloseAngle(differenceAngle, crankTargetAngle_, rotZ);
 
-	//クランクの回転を取得する(実際に値を変えるよう)
-	float rotZ = crank_->GetRotZ();
-
-	int analogX = 0;
-	int analogY = 0;
-
-	//パッドのアナログ的なレバーの入力情報を得る
-	GetJoypadAnalogInput(&analogX, &analogY, DX_INPUT_KEY_PAD1);
-
-	float angle = 0.0f;
-	float result = 0.0f;
-
-	if (analogX != 0 || analogY != 0)
+	//目標の角度と現在の角度が同じで無ければ以降の処理を行う
+	if (differenceAngle != 0.0f)
 	{
-		angle = std::atan2(analogX, analogY);
+		//-の記号の付かない差の角度を取得する
+		float unsignedAngle = (std::max)(differenceAngle, -differenceAngle);
 
-		angle = angle / DX_PI_F * 180.0f;
+		//回転のスピードを取得する
+		float angleSpeed = differenceAngle / unsignedAngle;
 
-		angle = 180.0f - angle;
+		//実際に現在の角度にスピードを足す
+		rotZ = rotZ + angleSpeed * crank_rot_speed_rate;
 
-		angle -= oldRotZ;
-
-		rotZ += angle;
-
-		CrankRotationUpdate(-rotZ);
-	}
-
-	int naturalNumber = static_cast<int>((std::max)(rotZ, -rotZ));
-	float animTime = static_cast<float>(naturalNumber % 360) / 3;
-
-	model_->SetAnimationFrame(animTime);
-#endif
-
-#if false
-
-	if (input.IsPressed(InputType::Down))
-	{
-		rotZ = (std::max)(rotZ - 3.0f, crank_->GetMaxRotZ());
+		//クランクを回転させるアップデート
 		CrankRotationUpdate(rotZ);
 	}
-	else if (input.IsPressed(InputType::Up))
-	{
-		rotZ = (std::min)(rotZ + 3.0f, 0.0f);
-		CrankRotationUpdate(rotZ);
-	}
-
-	if (oldRotZ != rotZ && !sound.CheckSoundFile("crank"))
-	{
-		sound.Set3DSoundInfo(crank_->GetStandingPosition(), sound_range, "crank");
-		sound.PlaySE("crank");
-	}
-
+	
+	//角度に対するアニメーションフレーム数の取得
 	int naturalNumber = static_cast<int>((std::max)(rotZ, -rotZ));
-	float animTime = static_cast<float>(naturalNumber % 360) / 3;
+	float animTime = static_cast<float>(naturalNumber % static_cast<int>(crank_->GetMaxRotZ())) / crank_rot_speed_rate;
 
+	//アニメーションフレームの設定
 	model_->SetAnimationFrame(animTime);
-
-#endif
 }
 
 //レバーを倒すポジションへ行く

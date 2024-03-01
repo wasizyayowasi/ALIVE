@@ -10,21 +10,6 @@ class ObjectBase;
 class ManualCrank;
 class Lever;
 
-//回転のステート
-enum class RotationState
-{
-	Up,
-	UpperRight,
-	Right,
-	LowerRight,
-	Down,
-	LowerLeft,
-	Left,
-	UpperLeft,
-
-	Max,
-};
-
 class Player
 {
 private:
@@ -55,7 +40,20 @@ private:
 		bool isAnimLoop;						//アニメーションのループが必要か	//2byte
 	};
 
-	
+	//回転のステート
+	enum class RotationState
+	{
+		Up,
+		UpperRight,
+		Right,
+		LowerRight,
+		Down,
+		LowerLeft,
+		Left,
+		UpperLeft,
+
+		Max,
+	};
 
 	//回転のデータ
 	struct RotationData
@@ -197,6 +195,14 @@ public:
 	void Draw();
 
 	/// <summary>
+	/// 現在の角度から近い角度に回る
+	/// </summary>
+	/// <param name="differenceAngle">角度の違い</param>
+	/// <param name="targetAngle">目標の角度</param>
+	/// <param name="currentAngle">現在の角度</param>
+	void RotateAtACloseAngle(float& differenceAngle, float targetAngle, float currentAngle);
+
+	/// <summary>
 	/// 弾に当たったらノックバックを追加する
 	/// </summary>
 	void BulletHitMe(const VECTOR& moveVec);
@@ -205,7 +211,14 @@ public:
 	/// どんな回転状態か取得する
 	/// </summary>
 	/// <returns>回転状況</returns>
-	const RotationState& WhatRotationState();
+	RotationState WhatRotationState();
+
+	/// <summary>
+	/// 目標の角度に回転することが出来るか
+	/// </summary>
+	/// <param name="rotZ">現在の角度</param>
+	/// <returns>true:出来る  false:出来ない</returns>
+	bool CanRotation(float rotZ);
 
 	///////Getter///////
 
@@ -418,6 +431,7 @@ private:
 private:
 
 	int deathCount_ = 0;										//死んだ回数を記録する
+	int crankLaps_ = 0;											//クランクの周回数
 
 	float targetAngle_ = 0.0f;									//回転
 	float differenceAngle_ = 0.0f;								//目標の角度と現在の角度の差

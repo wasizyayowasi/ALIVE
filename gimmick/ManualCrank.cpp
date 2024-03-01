@@ -13,7 +13,7 @@
 namespace
 {
 	//最大回転値
-	constexpr float max_rot_Z = -359.0f;
+	constexpr float max_rot_Z = 360.0f;
 
 	//衝突判定用カプセルの半径
 	constexpr float radius_capsule = 60.0f;
@@ -27,7 +27,7 @@ ManualCrank::ManualCrank(const LoadObjectInfo& objInfo)
 {
 	//モデルクラスの初期化
 	model_ = std::make_shared<Model>(ModelManager::GetInstance().GetModelHandle(objData_[static_cast<int>(ObjectType::Crank)].name), Material::Iron);
-	model_->SetUseCollision(true,false);
+	model_->SetUseCollision(true,false,"Foundation");
 	model_->SetScale(objInfo.scale);
 	model_->SetPos(objInfo.pos);
 

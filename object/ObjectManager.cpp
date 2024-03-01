@@ -204,6 +204,7 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 		{
 			continue;
 		}
+
 		for (auto& corpseMt : table.second) 
 		{
 			if (!usedCorpseMtList_[corpseMt.name]) 
