@@ -59,6 +59,9 @@ void CrankScaffold::Update(Player& player)
 		player.SetCrankPointer(crank_);
 	}
 
+	//クランクの更新
+	crank_->Update();
+
 	//音を鳴らす
 	PlayStopCrankSound();
 

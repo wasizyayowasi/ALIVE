@@ -231,8 +231,9 @@ void Elevator::Move()
 	pos_.y = Easing::InOutCubic(elapsedTime_, total_time, targetPos_.y, pos_.y);
 
 	//移動終了後アニメーションを変更する
-	if (elapsedTime_ == total_time && !isDeparture_)
+	if (elapsedTime_ == total_time && !isStopping_)
 	{
+		isStopping_ = true;
 		PlayDoorSound();
 		model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::Open), false, false, anim_cange_frame);
 	}
@@ -268,6 +269,9 @@ void Elevator::TargetPosition()
 
 	//経過時間を0にする
 	elapsedTime_ = 0;
+
+	//停止しているフラグをfalseにする
+	isStopping_ = false;
 
 	//アニメーションを変更
 	model_->ChangeAnimation(static_cast<int>(ElevatorAnimType::Close), false, false, anim_cange_frame);

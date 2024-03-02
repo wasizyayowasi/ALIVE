@@ -1,10 +1,11 @@
 #include "ObjectManager.h"
 
 #include "Player.h"
+#include "Corpse.h"
 #include "EnemyBase.h"
 #include "ThrowEnemy.h"
 #include "ObjectBase.h"
-#include "Corpse.h"
+#include "StreetLight.h"
 #include "OrnamentBase.h"
 #include "SignBoardEnemy.h"
 
@@ -432,6 +433,13 @@ void ObjectManager::OrnamentGenerator(const std::string& name, const ObjectType 
 {
 	//短縮化
 	auto& model = ModelManager::GetInstance();
+
+	//ライトのインスタンス化
+	if (objType == ObjectType::StreetLight)
+	{
+		objects_[objType].push_front(std::make_shared<StreetLight>(model.GetModelHandle(name), materialType, objInfo));
+		return;
+	}
 
 	objects_[objType].push_front(std::make_shared<OrnamentBase>(model.GetModelHandle(name), materialType, objInfo));
 }

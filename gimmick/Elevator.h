@@ -105,7 +105,7 @@ private:
 
 	bool isDeparture_ = false;							//エレベーターが出発しているかどうか
 	bool isPlaySound_ = false;							//サウンドが再生中か
-	bool oldOnSwitch_ = false;							//1フレーム前のスイッチが押されていたかを取得する
+	bool isStopping_ = false;							//エレベーターは停止しているか
 
 	VECTOR targetPos_ = {};								//現在向かっているポジション
 

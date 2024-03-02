@@ -22,9 +22,25 @@ public:
 	virtual ~ManualCrank();
 
 	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();
+
+	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// クランクの音を再生
+	/// </summary>
+	void PlayCrankSound();
+
+	/// <summary>
+	/// サウンドを再生することが出来るか
+	/// </summary>
+	/// <returns></returns>
+	bool CanPlaySound() const;
 
 	/// <summary>
 	/// プレイヤーとモデルの当たり判定を行う
@@ -80,6 +96,7 @@ private:
 
 	float rotZ_ = 0.0f;					//Z軸の回転量
 	float radian_ = 0.0f;				//ラジアン
+	float oldRotZ_ = 0.0f;				//前フレームのZ軸の回転量
 
 	VECTOR pos_ = {};					//ポジション
 	VECTOR initPos_ = {};				//初期ポジション

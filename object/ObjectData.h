@@ -60,6 +60,7 @@ enum class ObjectType
 	BuildingC,
 	Building2A,
 	TunnelWall,
+	StreetLight,
 	BigBuildingA,
 	RedContainer,
 	BlueContainer,
@@ -275,6 +276,11 @@ static ObjectData objData_[static_cast<int>(ObjectType::Max)]
 	ObjectType::TunnelWall,
 	"TunnelWall",
 	Material::Stone,
+
+	//ŠX“”
+	ObjectType::StreetLight,
+	"StreetLight",
+	Material::Iron,
 
 	//‚Å‚©‚¢Œš•¨
 	ObjectType::BigBuildingA,

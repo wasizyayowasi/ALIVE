@@ -90,7 +90,7 @@ void GameMain::Init()
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
 
 	//仮でライト処理を消している
-	SetUseLighting(false);
+//	SetUseLighting(false);
 
 	//1mの範囲を設定する
 	Set3DSoundOneMetre(sound_3D_1m_value);
@@ -135,8 +135,8 @@ void GameMain::Draw()
 	EffectManager::GetInstance().Draw();
 
 	//スカイドームの描画
-	MV1SetPosition(skyHandle_, player_->GetStatus().pos);
-	MV1DrawModel(skyHandle_);
+//	MV1SetPosition(skyHandle_, player_->GetStatus().pos);
+//	MV1DrawModel(skyHandle_);
 
 	//弾の描画
 	shotManager_->Draw();
@@ -147,6 +147,8 @@ void GameMain::Draw()
 #ifdef _DEBUG
 	VECTOR pos = player_->GetStatus().pos;
 	DrawFormatString(0, 48, 0xffffff, "%.2f,%.2f,%.2f", pos.x, pos.y, pos.z);
+	int num = GetEnableLightHandleNum();
+	DrawFormatString(0, 64, 0xffffff, "%d", num);
 #endif // _DEBUG
 
 	SetDrawScreen(DX_SCREEN_BACK);

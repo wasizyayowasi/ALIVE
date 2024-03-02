@@ -5,6 +5,7 @@
 #include "../object/Player.h"
 #include "../util/InputState.h"
 #include "../util/ExternalFile.h"
+#include "../util/SoundManager.h"
 #include "../util/ModelManager.h"
 
 #include <algorithm>
@@ -20,6 +21,9 @@ namespace
 
 	//最小衝突数
 	constexpr int min_hit_num = 1;
+
+	//サウンドが聞こえる範囲
+	constexpr float sound_range = 1500.0f;
 }
 
 //コンストラクタ
@@ -47,11 +51,49 @@ ManualCrank::~ManualCrank()
 {
 }
 
+//更新
+void ManualCrank::Update()
+{
+	//サウンドを再生する
+	PlayCrankSound();
+
+	//1フレーム前の回転率を保存
+	oldRotZ_ = rotZ_;
+}
+
 //描画
 void ManualCrank::Draw()
 {
 	//描画
 	model_->Draw();
+}
+
+//クランクの音を再生
+void ManualCrank::PlayCrankSound()
+{
+	//短縮化
+	auto& sound = SoundManager::GetInstance();
+
+	//サウンドを再生することが出来るか
+	if (CanPlaySound())
+	{
+		sound.Set3DSoundInfo(pos_, sound_range, "crank");
+
+		//サウンドを再生
+		sound.PlaySE("crank");
+	}
+}
+
+//サウンドを再生することが出来るか
+bool ManualCrank::CanPlaySound() const
+{
+	//短縮化
+	auto& sound = SoundManager::GetInstance();
+
+	if (oldRotZ_ == rotZ_)					return false;
+	if(sound.CheckSoundFile("crank") == 1)  return false;
+
+	return true;
 }
 
 //プレイヤーとの衝突判定

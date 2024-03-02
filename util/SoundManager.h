@@ -51,7 +51,7 @@ public:
 	/// <summary>
 	/// サウンドが再生中か調べる
 	/// </summary>
-	/// <returns>1:再生中 1:終了</returns>
+	/// <returns>1:再生中 0:終了 -1:エラー</returns>
 	int CheckSoundFile(const std::string& name);
 
 

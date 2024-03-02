@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="object\StreetLight.cpp" />
     <ClCompile Include="util\GraphManager.cpp" />
     <ClCompile Include="object\LightBulb.cpp" />
     <ClCompile Include="object\Player.cpp" />
@@ -198,6 +199,7 @@
     <ClCompile Include="util\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="object\StreetLight.h" />
     <ClInclude Include="util\GraphManager.h" />
     <ClInclude Include="object\LightBulb.h" />
     <ClInclude Include="object\Player.h" />

@@ -63,6 +63,9 @@ private:
 	int fadeValue_ = 255;										//フェードの値
 	int fadeColor_ = 0x000000;									//背景の色
 
+	//ライトのハンドル
+	int lightHandle_ = -1;										//ライトのハンドル
+
 	int skyHandle_ = -1;										//スカイドームのハンドル
 	int makeScreenHandle_ = -1;									//作成したスクリーン画像
 	int totalDeathNum_ = 0;										//ゲーム開始からの総死亡数
