@@ -49,14 +49,23 @@ void LoadingScene::Init()
 	//外部ファイルのロード
 	ExternalFile::GetInstance().LoadFile();
 	
+	//モデルファイルパスを読み込む
+	ModelManager::GetInstance().LoadModelFilePath();
+
 	//モデルのロード
 	ModelManager::GetInstance().LoadModel();
 	
 	//サウンドファイルのロード
 	SoundManager::GetInstance().LoadSound();
 	
+	//画像のファイルパスを読み込む
+	GraphManager::GetInstance().LoadGraphFilePath();
+
 	//画像のロード
 	GraphManager::GetInstance().Load();
+
+	//分割画像のファイルパスを読み込む
+	EffectManager::GetInstance().LoadDivGraphFilePath();
 
 	//エッフェクト画像のロード
 	EffectManager::GetInstance().Load();

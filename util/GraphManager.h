@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <list>
 #include <string>
 
 class GraphManager
@@ -18,6 +19,11 @@ public:
 		static GraphManager instance;
 		return instance;
 	}
+
+	/// <summary>
+	/// 画像のファイルパスを読み込む
+	/// </summary>
+	void LoadGraphFilePath();
 
 	/// <summary>
 	/// 画像を読み込む
@@ -40,7 +46,7 @@ private:
 	GraphManager(const GraphManager&) = delete;
 	void operator = (const GraphManager&) = delete;
 private:
-	std::map<std::string, int> graphHandle_ = {};		//グラフテーブル
-
+	std::map<std::string, int> graphHandle_ = {};							//グラフテーブル
+	std::map<std::string, std::list<std::string>> graphFilePathInfo_;		//画像ファイルパスをまとめる
 };
 

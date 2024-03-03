@@ -4,7 +4,12 @@
 
 #include "../util/ExternalFile.h"
 
+#include <fstream>
+#include <cassert>
 #include <DxLib.h>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 //デストラクタ
 GraphManager::~GraphManager()
@@ -15,11 +20,42 @@ GraphManager::~GraphManager()
 	}
 }
 
+//画像のファイルパスを読み込む
+void GraphManager::LoadGraphFilePath()
+{
+	//読み込むファイルのパスを生成
+	std::string path = "data/jsonFile/graphPath.json";
+
+	//ファイルを開く
+	std::ifstream ifs(path.c_str());
+	assert(ifs);
+
+	//よくわかっていない
+	json json_;
+	ifs >> json_;
+
+	//ファイル名の取得
+	for (auto& place : json_["place"])
+	{
+		for (auto& name : place["name"])
+		{
+			for (auto& path : name)
+			{
+				graphFilePathInfo_[place["type"]].push_back(path);
+			}
+		}
+	}
+
+	//閉じる
+	ifs.close();
+}
+
+
 //画像の読み込み
 void GraphManager::Load()
 {
 	//画像をロードする
-	for (auto& place : ExternalFile::GetInstance().GetGraphFilePath())
+	for (auto& place : graphFilePathInfo_)
 	{
 		for (auto& name : place.second)
 		{

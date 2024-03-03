@@ -14,6 +14,7 @@
 #include "../object/ObjectManager.h"
 
 #include "../util/game.h"
+#include "../util/Util.h"
 #include "../util/model.h"
 #include "../util/Tutorial.h"
 #include "../util/InputState.h"
@@ -50,6 +51,9 @@ namespace
 
 	//スカイドームの初期位置
 	constexpr VECTOR skydorm_init_pos = { 0, 200, 0 };
+
+	//ディレクションライトの角度
+	constexpr VECTOR direction_light_dir = { 33.0f, -33.0f, 33.0f };
 }
 
 //コンストラクタ
@@ -65,8 +69,15 @@ GameMain::GameMain(SceneManager& manager) : SceneBase(manager),updateFunc_(&Game
 	objManager_ = std::make_shared<ObjectManager>();
 	checkCollisionModel_ = std::make_shared<CheckCollisionModel>();
 
+	//カメラのポジション
 	VECTOR pos = VAdd(player_->GetStatus().pos, camera_init_pos);
 	camera_ = std::make_shared<Camera>(pos, player_->GetStatus().pos);
+
+	//ディレクションライトに設定する
+	ChangeLightTypeDir(direction_light_dir);
+
+	//ライトのディフィーズカラーを設定する
+	SetLightDifColor(GetColorF(1.0f, 1.0f, 1.0f, 1.0f));
 
 	//ゲームオブジェクトの生成
 	objManager_->MainStageObjectGenerator();
@@ -88,9 +99,6 @@ void GameMain::Init()
 
 	//スクリーン画像の作成
 	makeScreenHandle_ = MakeScreen(Game::screen_width, Game::screen_height, true);
-
-	//仮でライト処理を消している
-//	SetUseLighting(false);
 
 	//1mの範囲を設定する
 	Set3DSoundOneMetre(sound_3D_1m_value);

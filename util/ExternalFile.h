@@ -7,18 +7,6 @@
 #include <DxLib.h>
 #include <unordered_map>
 
-//分割画像の構造体
-struct DivGraphData
-{
-	std::string name = {};	//名前
-
-	int divXNum = 0;		//画像のXの分割数
-	int divYNum = 0;		//画像のYno分割数
-
-	int divXSize = 0;		//画像のXの分割サイズ
-	int divYSize = 0;		//画像のYの分割サイズ
-};
-
 class ExternalFile
 {
 public:
@@ -56,21 +44,6 @@ public:
 	/// </summary>
 	/// <param name="num">死亡回数</param>
 	void SaveDataRewriteInfo(const int num);
-
-	/// <summary>
-	///	モデルファイルパスを読み込む
-	/// </summary>
-	void LoadModelFilePath();
-
-	/// <summary>
-	/// 画像のファイルパスを読み込む
-	/// </summary>
-	void LoadGraphFilePath();
-
-	/// <summary>
-	/// 分割画像のファイルパスを読み込む
-	/// </summary>
-	void LoadDivGraphFilePath();
 
 
 	////////////////Getter////////////////
@@ -194,24 +167,6 @@ public:
 	/// <returns>オブジェクトの配置データなどをまとめた変数</returns>
 	const std::unordered_map<std::string, std::list<ObjectInfo>>& GetLoadEndingStageObjectInfo()const { return loadEndStageObjInfo_; }
 
-	/// <summary>
-	/// モデルファイルパスを取得する
-	/// </summary>
-	/// <returns>ファイルパスをまとめたテーブル</returns>
-	const std::unordered_map<std::string, std::list<std::string>>& GetModelFilePath()const { return modelFilePathInfo_; }
-
-	/// <summary>
-	/// 画像ファイルパスを取得する
-	/// </summary>
-	/// <returns>ファイルパスをまとめたテーブル</returns>
-	const std::unordered_map<std::string, std::list<std::string>>& GetGraphFilePath()const { return graphFilePathInfo_; }
-
-	/// <summary>
-	/// 分割データを取得する
-	/// </summary>
-	/// <returns>分割データをまとめたテーブル</returns>
-	const std::unordered_map<std::string, std::list<DivGraphData>>& GetDivGraphData()const { return divGraphFilePathInfo_; }
-
 
 	////////////////Setter////////////////
 
@@ -273,9 +228,6 @@ private:
 	std::deque<int> pastTotalDeathNum_ = {};												//過去5回の死亡数
 
 	std::unordered_map<std::string, int> loadFile_;											//ロードしたファイル
-	std::unordered_map<std::string, std::list<std::string>>		modelFilePathInfo_;			//モデルファイルパスをまとめる
-	std::unordered_map<std::string, std::list<std::string>>		graphFilePathInfo_;			//画像ファイルパスをまとめる
-	std::unordered_map<std::string, std::list<DivGraphData>>	divGraphFilePathInfo_;		//分割画像ファイルパスをまとめる
 
 	std::unordered_map<std::string, std::list<ObjectInfo>>	loadMainStageObjInfo_;		//メインステージオブジェクトの配置データ
 	std::unordered_map<std::string, std::list<ObjectInfo>>	loadOpeningStageObjInfo_;	//オープニングステージオブジェクトの配置データ

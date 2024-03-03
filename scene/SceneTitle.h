@@ -204,6 +204,8 @@ private:
 	int UIfadeValue_ = 0;									//UIのフェード透過値
 	int fadeColor_ = 0x000000;								//黒
 
+	int spotLightHandle_ = -1;								//スポットライトのハンドル
+	int directionLightHandle_ = -1;							//ディレクションライトのハンドル
 	int fontHandle_ = -1;									//フォントハンドル
 	int titleHandle_ = -1;									//タイトル画像の保管変数
 
@@ -213,6 +215,8 @@ private:
 	SelectScene currentSelectScene_ = SelectScene::NewGame;	//現在の選択シーン
 	SelectScene oldSelectScene_ = SelectScene::NewGame;		//ひとつ前の選択シーン
 
+	VECTOR directionLightDir_ = { 0.0f, 0.0f, 0.0f };		//ディレクションライトの方向
+
 	std::shared_ptr<Camera> camera_;						//カメラのスパートポインタ
 	std::shared_ptr<UIItemManager> UI_;						//UIマネージャーのスマートポインタ
 	std::shared_ptr<LightBulb> lightBulb_;					//電球
@@ -221,8 +225,8 @@ private:
 	std::shared_ptr<ObjectManager> objManager_;				//オブジェクトマネージャーのスマートポインタ
 
 	std::vector<std::string> menuName_;						//メニューの文字列
-	std::vector<int> lightHandle_;							//ライトハンドル
-	std::vector<VECTOR> lightDir_;							//ライトのディレクション(方向)
+//	std::vector<int> lightHandle_;							//ライトハンドル
+//	std::vector<VECTOR> lightDir_;							//ライトのディレクション(方向)
 	std::vector<CameraInfo> cameraInfo_;					//カメラの情報
 
 	std::map<std::string, VECTOR> menuDrawPos_;				//メニューを描画する座標

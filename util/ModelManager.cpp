@@ -2,6 +2,12 @@
 
 #include "../util/ExternalFile.h"
 
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <cassert>
+
+using json = nlohmann::json;
+
 //デストラクタ
 ModelManager::~ModelManager()
 {
@@ -11,6 +17,36 @@ ModelManager::~ModelManager()
 	}
 }
 
+//モデルファイルパスを読み込む
+void ModelManager::LoadModelFilePath()
+{
+	//読み込むファイルのパスを生成
+	std::string path = "data/jsonFile/modelPath.json";
+
+	//ファイルを開く
+	std::ifstream ifs(path.c_str());
+	assert(ifs);
+
+	//よくわかっていない
+	json json_;
+	ifs >> json_;
+
+	//ファイル名の取得
+	for (auto& scene : json_["scene"])
+	{
+		for (auto& name : scene["name"])
+		{
+			for (auto& path : name)
+			{
+				modelFilePathInfo_[scene["type"]].push_back(path);
+			}
+		}
+	}
+
+	//閉じる
+	ifs.close();
+}
+
 //モデルのロード
 void ModelManager::LoadModel()
 {
@@ -18,7 +54,7 @@ void ModelManager::LoadModel()
 	auto& file = ExternalFile::GetInstance();
 
 	//モデルのロード
-	for (auto& type : file.GetModelFilePath())
+	for (auto& type : modelFilePathInfo_)
 	{
 		for (auto& name : type.second)
 		{

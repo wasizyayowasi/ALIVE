@@ -1,4 +1,5 @@
 #pragma once
+#include <list>
 #include <string>
 #include <DxLib.h>
 #include <unordered_map>
@@ -21,6 +22,11 @@ public:
 	}
 
 	/// <summary>
+	///	モデルファイルパスを読み込む
+	/// </summary>
+	void LoadModelFilePath();
+
+	/// <summary>
 	/// モデルをロードする
 	/// </summary>
 	void LoadModel();
@@ -39,6 +45,7 @@ private:
 	ModelManager(const ModelManager&) = delete;
 	void operator = (const ModelManager&) = delete;
 private:
-	std::unordered_map<std::string, int> modelHandle_;		//モデルハンドルテーブル
+	std::unordered_map<std::string, std::list<std::string>>	modelFilePathInfo_;			//モデルファイルパスをまとめる
+	std::unordered_map<std::string, int> modelHandle_;									//モデルハンドルテーブル
 };
 

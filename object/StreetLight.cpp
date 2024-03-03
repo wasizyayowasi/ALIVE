@@ -87,6 +87,7 @@ void StreetLight::Update(Player& player)
 
 	//ライトを点灯する
 	LightOn(distanceSize);
+
 }
 
 //プレイヤーの一定範囲内に入ったらライトを点灯する

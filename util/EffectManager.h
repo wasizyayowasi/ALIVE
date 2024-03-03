@@ -10,6 +10,18 @@ class Effect2D;
 
 class EffectManager
 {
+private:
+	//分割画像の構造体
+	struct DivGraphData
+	{
+		std::string name = {};	//名前
+
+		int divXNum = 0;		//画像のXの分割数
+		int divYNum = 0;		//画像のYno分割数
+
+		int divXSize = 0;		//画像のXの分割サイズ
+		int divYSize = 0;		//画像のYの分割サイズ
+	};
 public:
 	/// <summary>
 	/// デストラクタ
@@ -24,6 +36,11 @@ public:
 		static EffectManager instance;
 		return instance;
 	}
+
+	/// <summary>
+	/// 分割画像のファイルパスを読み込む
+	/// </summary>
+	void LoadDivGraphFilePath();
 
 	/// <summary>
 	/// 画像の読み込み
@@ -57,10 +74,10 @@ private:
 	EffectManager(const EffectManager&) = delete;
 	void operator = (const EffectManager&) = delete;
 private:
-	int arrayHandle_[30] = {};								//画像の配列
+	int arrayHandle_[30] = {};													//画像の配列
 
-	std::map<std::string, std::vector<int>> handle_ = {};	//画像テーブル
-	std::map<std::string,std::string> filepath_ = {};		//ファイルパス
-	std::list<std::shared_ptr<Effect2D>> effect2D_ = {};	//effect
+	std::map<std::string, std::vector<int>> handle_ = {};						//画像テーブル
+	std::map<std::string, std::list<DivGraphData>>	divGraphFilePathInfo_;		//分割画像ファイルパスをまとめる
+	std::list<std::shared_ptr<Effect2D>> effect2D_ = {};						//effect
 };
 

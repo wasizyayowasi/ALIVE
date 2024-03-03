@@ -149,11 +149,8 @@ SceneTitle::SceneTitle(SceneManager& manager): SceneBase(manager)
 //デストラクタ
 SceneTitle::~SceneTitle()
 {
-	for (auto& light : lightHandle_) 
-	{
-		DeleteLightHandle(light);
-	}
-	DeleteLightHandleAll();
+	DeleteLightHandle(spotLightHandle_);
+	DeleteLightHandle(directionLightHandle_);
 }
 
 //初期化
@@ -185,14 +182,11 @@ void SceneTitle::Update()
 	lightBulb_->Update();
 
 	//ライトの更新
-	SetLightDirection(lightBulb_->GetRotVec());
-	SetLightPosition(lightBulb_->GetFramePos());
+	SetLightDirectionHandle(spotLightHandle_,lightBulb_->GetRotVec());
+	SetLightPositionHandle (spotLightHandle_,lightBulb_->GetFramePos());
 
 	//ライトの方向設定
-	for (int i = 0;i < lightHandle_.size();i++)
-	{
-		SetLightDirectionHandle(lightHandle_[i], lightDir_[i]);
-	}
+	SetLightDirectionHandle(directionLightHandle_, directionLightDir_);
 	
 	(this->*updateFunc_)();
 }
@@ -317,36 +311,41 @@ void SceneTitle::LightSetting()
 {
 	SetUseLighting(true);
 
-	//スポットライトに変更する。ライトの設定
-	outAngle_ = MathUtil::DegreeToRadian(spot_light_out_angle);
-	inAngle_ = MathUtil::DegreeToRadian(spot_light_in_angle);
-	ChangeLightTypeSpot(lightBulb_->GetFramePos(), lightBulb_->GetRotVec(), 
-						outAngle_, inAngle_,
-						stop_light_range, attenuation_regardless_of_distance, 
-						attenuation_proportional_to_distance, 
-						attenuation_proportional_to_the_square_of_the_distance);
-
 	//ライトのディフューズカラーの設定
-	SetLightDifColor(spot_light_color);
+	SetLightDifColor(direction_light_color);
 
 	//ディレクションライト角度取得
 	VECTOR dir = direction_light_diagonally_lower_left;
 	dir = MathUtil::VECTORDegreeToRadian(dir);
 
 	//ディレクションライトの作成
-	lightHandle_.push_back(CreateDirLightHandle(dir));
-	lightDir_.push_back(dir);
-	SetLightDifColorHandle(lightHandle_[0], direction_light_color);
+	directionLightHandle_ = CreateDirLightHandle(dir);
+	directionLightDir_ = dir;
+	SetLightDifColorHandle(directionLightHandle_, direction_light_color);
 
 	//ディレクションライト角度取得
-	dir = direction_light_diagonally_lower_right;
-	dir = MathUtil::VECTORDegreeToRadian(dir);
+//	dir = direction_light_diagonally_lower_right;
+//	dir = MathUtil::VECTORDegreeToRadian(dir);
 
 	//ディレクションライトの作成
-	lightHandle_.push_back(CreateDirLightHandle(dir));
-	lightDir_.push_back(dir);
-	SetLightDifColorHandle(lightHandle_[1], direction_light_color);
+//	lightHandle_.push_back(CreateDirLightHandle(dir));
+//	lightDir_.push_back(dir);
+//	SetLightDifColorHandle(lightHandle_[1], direction_light_color);
+
+	//スポットライトの作成
+	outAngle_ = MathUtil::DegreeToRadian(spot_light_out_angle);
+	inAngle_ = MathUtil::DegreeToRadian(spot_light_in_angle);
+
+	spotLightHandle_ = CreateSpotLightHandle(lightBulb_->GetFramePos(), lightBulb_->GetRotVec(),
+											 outAngle_, inAngle_,
+											 stop_light_range, 
+											 attenuation_regardless_of_distance,
+											 attenuation_proportional_to_distance,
+											 attenuation_proportional_to_the_square_of_the_distance);
+
+	SetLightDifColorHandle(spotLightHandle_, spot_light_color);
 }
+
 
 //カメラの設定
 void SceneTitle::CameraPositionDataSetting()

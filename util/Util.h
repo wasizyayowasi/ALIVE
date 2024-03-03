@@ -20,11 +20,25 @@ namespace MathUtil
 	VECTOR VECTORDegreeToRadian(VECTOR rot);
 
 	/// <summary>
+	/// VECTOR型、弧度法を度数法に変換する
+	/// </summary>
+	/// <param name="rot">回転</param>
+	/// <returns>度数法に直した回転</returns>
+	VECTOR VECTORRadianToDegree(VECTOR rot);
+
+	/// <summary>
 	/// float型、度数法を弧度法に変換する
 	/// </summary>
 	/// <param name="angle">角度</param>
 	/// <returns>弧度</returns>
 	float DegreeToRadian(float angle);
+
+	/// <summary>
+	/// float型、弧度法を度数法に変換する
+	/// </summary>
+	/// <param name="angle">角度</param>
+	/// <returns>度数</returns>
+	float RadianToDegree(float angle);
 }
 
 namespace StrUtil 

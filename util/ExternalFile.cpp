@@ -24,10 +24,6 @@ ExternalFile::~ExternalFile()
 //ファイルをまとめて読み込む
 void ExternalFile::LoadFile()
 {
-	//モデルファイルパスの取得
-	LoadModelFilePath();
-	LoadGraphFilePath();
-	LoadDivGraphFilePath();
 	//ファイルのロード
 	LoadFileHandle("obj");
 	LoadFileHandle("end");
@@ -93,102 +89,6 @@ void ExternalFile::SaveDataRewriteInfo(const int num)
 	writeing_file.open(filename, std::ios::out);
 	writeing_file << saveData.dump() << std::endl;
 	writeing_file.close();
-}
-
-//モデルファイルパスを読み込む
-void ExternalFile::LoadModelFilePath()
-{
-	//読み込むファイルのパスを生成
-	std::string path = "data/jsonFile/modelPath.json";
-
-	//ファイルを開く
-	std::ifstream ifs(path.c_str());
-	assert(ifs);
-
-	//よくわかっていない
-	json json_;
-	ifs >> json_;
-
-	//ファイル名の取得
-	for (auto& scene : json_["scene"])
-	{
-		for (auto& name : scene["name"])
-		{
-			for (auto& path : name)
-			{
-				modelFilePathInfo_[scene["type"]].push_back(path);
-			}
-		}
-	}
-	
-	//閉じる
-	ifs.close();
-}
-
-//画像のファイルパスを読み込む
-void ExternalFile::LoadGraphFilePath()
-{
-	//読み込むファイルのパスを生成
-	std::string path = "data/jsonFile/graphPath.json";
-
-	//ファイルを開く
-	std::ifstream ifs(path.c_str());
-	assert(ifs);
-
-	//よくわかっていない
-	json json_;
-	ifs >> json_;
-
-	//ファイル名の取得
-	for (auto& place : json_["place"])
-	{
-		for (auto& name : place["name"])
-		{
-			for (auto& path : name)
-			{
-				graphFilePathInfo_[place["type"]].push_back(path);
-			}
-		}
-	}
-
-	//閉じる
-	ifs.close();
-}
-
-void ExternalFile::LoadDivGraphFilePath()
-{
-	//読み込むファイルのパスを生成
-	std::string path = "data/jsonFile/divGraphPath.json";
-
-	//ファイルを開く
-	std::ifstream ifs(path.c_str());
-	assert(ifs);
-
-	//よくわかっていない
-	json json_;
-	ifs >> json_;
-
-	//ファイル名の取得
-	for (auto& place : json_["place"])
-	{
-		for (auto& info : place["info"])
-		{
-			DivGraphData data = {};
-
-			data.name = info["path"];
-
-			data.divXNum = info["divXNum"];
-			data.divYNum = info["divYNum"];
-
-			data.divXSize = info["divXSize"];
-			data.divYSize = info["divYSize"];
-
-			divGraphFilePathInfo_[place["type"]].push_back(data);
-		}
-	}
-
-	//閉じる
-	ifs.close();
 }
 
 //特定のギミックの配置情報を取得する
