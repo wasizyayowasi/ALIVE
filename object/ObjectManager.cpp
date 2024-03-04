@@ -204,6 +204,7 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 		}
 	}
 
+	//“G‚Ì¶¬
 	for (auto& enemy : ExternalFile::GetInstance().GetEnemyInfo(playerPos))
 	{
 		if (!usedEnemyList_[enemy.name])
@@ -212,6 +213,7 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 		}
 	}
 
+	//€‘Ì‚ÌR‚Ì¶¬
 	for (auto& table : ExternalFile::GetInstance().GetGimmickInfo())
 	{
 		if (table.first != "CorpseMountain")

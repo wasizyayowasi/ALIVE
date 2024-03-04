@@ -23,13 +23,13 @@ namespace
 	constexpr float attenuation_regardless_of_distance = 0.0f;
 
 	//距離に比例して減衰するパラメーター
-	constexpr float attenuation_proportional_to_distance = 0.001f;
+	constexpr float attenuation_proportional_to_distance = 0.0009f;
 
 	//距離の2乗に比例して減衰するパラメーター
 	constexpr float attenuation_proportional_to_the_square_of_the_distance = 0.0f;
 
 	//ライトを有効にする距離
-	constexpr float light_enable_distance = 2000.0f;
+	constexpr float light_enable_distance = 2500.0f;
 
 	//ライトを置くフレームの名前
 	const std::string light_put_frame_name = "LightPos";
@@ -56,11 +56,15 @@ StreetLight::StreetLight(const int handle, const Material materialType, const Ob
 	//スポットライトのハンドルを作成
 	lightHandle_ = CreateSpotLightHandle(lightPos,light_dir,
 										 outerAngle, innerAngle,
-										 light_range,attenuation_regardless_of_distance,
+										 light_range,
+										 attenuation_regardless_of_distance,
 										 attenuation_proportional_to_distance,
 										 attenuation_proportional_to_the_square_of_the_distance);
 	//スポットライトの色を設定
 	SetLightDifColorHandle(lightHandle_, spot_light_color);
+
+	//ライトを無効にする
+	SetLightEnableHandle(lightHandle_, false);
 }
 
 //デストラクタ
@@ -87,7 +91,6 @@ void StreetLight::Update(Player& player)
 
 	//ライトを点灯する
 	LightOn(distanceSize);
-
 }
 
 //プレイヤーの一定範囲内に入ったらライトを点灯する

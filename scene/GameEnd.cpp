@@ -131,9 +131,6 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 	pigumo21FontHandle_ = font.GetFontHandle("ピグモ 0021");
 	pigumo42FontHandle_ = font.GetFontHandle("ピグモ 0042");
 
-	//ライト処理を行わない
-	SetUseLighting(false);
-
 	//3Dサウンドリスナーの情報を設定する
 	sound.Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
 }
