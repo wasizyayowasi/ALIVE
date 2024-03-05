@@ -69,6 +69,7 @@ private:
 	int divisionNum_ = 0;												//分割数
 	int corpseNum_ = 0;													//操作する死体の番号
 	int currentDivisionNum_ = 1;										//現在の分割数
+	int lightHandle_ = -1;												//ライトハンドル
 
 	static constexpr int fadeInterval_ = 60;							//フェードする間隔
 	int fadeTimer_ = fadeInterval_;										//タイマー

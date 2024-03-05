@@ -128,7 +128,15 @@ void Elevator::Update(Player& player)
 	//アニメーションが終了次第、移動を開始する
 	if (model_->IsAnimEnd()) 
 	{
-		Move();
+		//上昇ベクトルの取得
+		float upVecY = Move();
+
+		//プレイヤーの移動ベクトルに上昇ベクトルを足す
+		VECTOR playerMoveVec = player.GetStatus().moveVec;
+		playerMoveVec.y += upVecY;
+
+		//プレイヤーの移動ベクトルを設定する
+		player.SetMoveVec(playerMoveVec);
 	}
 }
 
@@ -222,8 +230,11 @@ void Elevator::SetInitState()
 }
 
 //エレベーターを移動させる
-void Elevator::Move()
+float Elevator::Move()
 {
+	//1フレーム前のY座標のベクトルを取得する
+	float oldPosY = pos_.y;
+	
 	//時間の更新
 	elapsedTime_ = (std::min)(elapsedTime_ + add_time, total_time);
 
@@ -254,6 +265,11 @@ void Elevator::Move()
 
 	//レバーを引く立ち位置の設定
 	movingLever_->SetStandingPos(VGet(standingPos.x, pos_.y + correction_y, standingPos.z));
+
+	//過去と現在のポジションの差を取得する
+	float upVecY = pos_.y - oldPosY;
+
+	return upVecY;
 }
 
 //移動先のポジションを取得する

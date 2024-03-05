@@ -207,7 +207,7 @@ public:
 	/// ベクトルを設定する
 	/// </summary>
 	/// <param name="vector">ベクトル</param>
-	void SetMoveVec(const VECTOR& vector) { status_.moveVec = vector; }
+	void SetMoveVec(VECTOR vector) { status_.moveVec = vector; }
 
 	/// <summary>
 	/// 持ち運ぶ事が出来るフラグと持ち運ぶモデルのポインタを受け取る

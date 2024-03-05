@@ -91,7 +91,8 @@ private:
 	/// <summary>
 	/// エレベーターを移動させる
 	/// </summary>
-	void Move();
+	/// <returns>上昇ベクトル</returns>
+	float Move();
 
 	/// <summary>
 	/// 移動先のポジションを取得する

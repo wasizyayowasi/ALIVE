@@ -9,6 +9,42 @@
 
 class ExternalFile
 {
+private:
+	//ファイルの種類
+	enum class File
+	{
+		End,
+		Main,
+		Room,
+		UIpos,
+		Enemy,
+		Gimmick,
+		StartPos,
+		Tutorial,
+		CameraGimmick,
+		CameraPosition,
+		MainSpecialObj,
+		TitleSpecialObj,
+
+		Max,
+	};
+
+	//ファイルの名前
+	std::string fileData_[static_cast<int>(File::Max)]
+	{
+		"End",
+		"Main",
+		"Room",
+		"UIpos",
+		"Enemy",
+		"Gimmick",
+		"StartPos",
+		"Tutorial",
+		"CameraGimmick",
+		"CameraPosition",
+		"MainSpecialObj",
+		"TitleSpecialObj",
+	};
 public:
 	/// <summary>
 	/// デストラクタ

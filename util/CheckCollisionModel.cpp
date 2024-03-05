@@ -24,15 +24,17 @@ namespace {
 	constexpr float capsel_radius = 20.0f;
 }
 
+//コンストラクタ
 CheckCollisionModel::CheckCollisionModel()
 {
 }
 
+//デストラクタ
 CheckCollisionModel::~CheckCollisionModel()
 {
 }
 
-/// 自分から一定範囲のオブジェクトとの衝突判定を得る
+// 自分から一定範囲のオブジェクトとの衝突判定を得る
 void CheckCollisionModel::CheckCollisionPersonalArea(const std::shared_ptr<Player>& player, const std::shared_ptr<ObjectManager>& objManager)
 {
 	//短縮化
@@ -72,7 +74,7 @@ void CheckCollisionModel::CheckCollisionPersonalArea(const std::shared_ptr<Playe
 	CheckWallAndFloor();
 }
 
-/// 衝突した壁と床のポリゴン数を数える
+// 衝突した壁と床のポリゴン数を数える
 void CheckCollisionModel::CheckWallAndFloor()
 {
 	hitWallNum = 0;
@@ -123,7 +125,7 @@ void CheckCollisionModel::CheckWallAndFloor()
 	}
 }
 
-/// 衝突したモデルのポリゴンが壁かを判断し、移動ベクトルを補正する
+// 衝突したモデルのポリゴンが壁かを判断し、移動ベクトルを補正する
 void CheckCollisionModel::CheckCollisionWall(const std::shared_ptr<Player>& player)
 {
 	//短縮化
@@ -191,7 +193,6 @@ void CheckCollisionModel::CheckCollisionWall(const std::shared_ptr<Player>& play
 	}
 
 
-	//TODO：以下の処理を別の関数にする
 	// 壁に当たっていたら壁から押し出す処理を行う
 	//当たったポリゴンの法線ベクトルの５倍をプレイヤーのポジションに足している
 	if (hitFlag_ && !isGoUpStep_)

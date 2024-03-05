@@ -25,18 +25,23 @@ ExternalFile::~ExternalFile()
 void ExternalFile::LoadFile()
 {
 	//ファイルのロード
-	LoadFileHandle("obj");
-	LoadFileHandle("end");
-	LoadFileHandle("room");
-	LoadFileHandle("UIpos");
-	LoadFileHandle("Enemy");
-	LoadFileHandle("gimmick");
-	LoadFileHandle("startPos");
-	LoadFileHandle("tutorial");
-	LoadFileHandle("cameraGimmick");
-	LoadFileHandle("cameraPosition");
-	LoadFileHandle("mainSpecialObj");
-	LoadFileHandle("titleSpecialObj");
+	//LoadFileHandle(fileData_[static_cast<int>(File::End)]);
+	//LoadFileHandle(fileData_[static_cast<int>(File::Main)]);
+	//LoadFileHandle(fileData_[static_cast<int>(File::Room)]);
+	//LoadFileHandle(fileData_[static_cast<int>(File::UIpos)]);
+	//LoadFileHandle(fileData_[static_cast<int>(File::Enemy)]);
+	//LoadFileHandle(fileData_[static_cast<int>(File::Gimmick)]);
+	//LoadFileHandle(fileData_[static_cast<int>(File::StartPos)]);
+	//LoadFileHandle(fileData_[static_cast<int>(File::Tutorial)]);
+	//LoadFileHandle(fileData_[static_cast<int>(File::CameraGimmick)]);
+	//LoadFileHandle(fileData_[static_cast<int>(File::CameraPosition)]);
+	//LoadFileHandle(fileData_[static_cast<int>(File::MainSpecialObj)]);
+	//LoadFileHandle(fileData_[static_cast<int>(File::TitleSpecialObj)]);
+
+	for (auto& file : fileData_)
+	{
+		LoadFileHandle(file);
+	}
 }
 
 //配置データを読み込む
@@ -45,19 +50,19 @@ void ExternalFile::LoadArrangementData()
 	LoadPlayerInfo();
 	LoadSaveDataInfo("saveData");
 	//マップに格納する
-	LoadObjectData("UIpos", loadUIInfo_);
-	LoadObjectData("startPos", loadStartPos_);
-	LoadObjectData("tutorial", loadTutorialInfo_);
-	LoadObjectData("mainSpecialObj", loadSpecialInfo_);
-	LoadObjectData("titleSpecialObj", loadSpecialInfo_);
-	LoadObjectData("cameraPosition", loadCameraPosInfo_);
+	LoadObjectData(fileData_[static_cast<int>(File::UIpos)], loadUIInfo_);
+	LoadObjectData(fileData_[static_cast<int>(File::StartPos)], loadStartPos_);
+	LoadObjectData(fileData_[static_cast<int>(File::Tutorial)], loadTutorialInfo_);
+	LoadObjectData(fileData_[static_cast<int>(File::MainSpecialObj)], loadSpecialInfo_);
+	LoadObjectData(fileData_[static_cast<int>(File::CameraPosition)], loadCameraPosInfo_);
+	LoadObjectData(fileData_[static_cast<int>(File::TitleSpecialObj)], loadSpecialInfo_);
 	//マップのリストに格納する
-	LoadObjectDataList("Enemy", loadEnemyInfo_);
-	LoadObjectDataList("end", loadEndStageObjInfo_);
-	LoadObjectDataList("gimmick", loadGimmickInfo_);
-	LoadObjectDataList("obj", loadMainStageObjInfo_);
-	LoadObjectDataList("room", loadOpeningStageObjInfo_);
-	LoadObjectDataList("cameraGimmick", loadCameraGimmickInfo_);
+	LoadObjectDataList(fileData_[static_cast<int>(File::Enemy)], loadEnemyInfo_);
+	LoadObjectDataList(fileData_[static_cast<int>(File::End)], loadEndStageObjInfo_);
+	LoadObjectDataList(fileData_[static_cast<int>(File::Gimmick)], loadGimmickInfo_);
+	LoadObjectDataList(fileData_[static_cast<int>(File::Main)], loadMainStageObjInfo_);
+	LoadObjectDataList(fileData_[static_cast<int>(File::Room)], loadOpeningStageObjInfo_);
+	LoadObjectDataList(fileData_[static_cast<int>(File::CameraGimmick)], loadCameraGimmickInfo_);
 }
 
 //ファイルを読み込む

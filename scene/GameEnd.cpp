@@ -70,6 +70,24 @@ namespace
 	//文字列の描画位置の横の補正値
 	constexpr int str_width_correction = 10;
 
+	//ライトの外側の角度
+	constexpr float light_outer_angle = 130.0f;
+
+	//ライトの内側の角度
+	constexpr float light_inner_angle = 60.0f;
+
+	//ライトの範囲
+	constexpr float light_range = 500.0f;
+
+	//距離関係なく減衰するパラメーター
+	constexpr float attenuation_regardless_of_distance = 0.0f;
+
+	//距離に比例して減衰するパラメーター
+	constexpr float attenuation_proportional_to_distance = 0.0009f;
+
+	//距離の2乗に比例して減衰するパラメーター
+	constexpr float attenuation_proportional_to_the_square_of_the_distance = 0.0f;
+
 	//音が聞こえる範囲
 	constexpr float sound_fange = 800.0f;
 
@@ -87,6 +105,12 @@ namespace
 
 	//初期カメラのターゲットポジション
 	constexpr VECTOR camera_init_target_pos = { 265, 314, 1777 };
+
+	//スポットライトのポジション
+	constexpr VECTOR spot_light_pos = { 235.0f,650.0f,-432.0f };
+
+	//ライトの方向
+	constexpr VECTOR light_dir = { 0.0f, -1.0f, 0.0f };
 
 	//死体の色
 	constexpr COLOR_F corpse_color = { 1.0f, 0.0f, 0.0f, 1.0f };
@@ -130,6 +154,20 @@ GameEnd::GameEnd(SceneManager& manager) : SceneBase(manager),updateFunc_(&GameEn
 	//フォントハンドルの取得
 	pigumo21FontHandle_ = font.GetFontHandle("ピグモ 0021");
 	pigumo42FontHandle_ = font.GetFontHandle("ピグモ 0042");
+
+	//外角を弧度法に変換する
+	float outerAngle = MathUtil::DegreeToRadian(light_outer_angle);
+
+	//内角を弧度法に変換する
+	float innerAngle = MathUtil::DegreeToRadian(light_inner_angle);
+
+	//スポットライトハンドルの作成
+	lightHandle_ = CreateSpotLightHandle(spot_light_pos, light_dir,
+										 outerAngle, innerAngle,
+										 light_range,
+										 attenuation_regardless_of_distance,
+										 attenuation_proportional_to_distance,
+										 attenuation_proportional_to_the_square_of_the_distance);
 
 	//3Dサウンドリスナーの情報を設定する
 	sound.Set3DSoundListenerInfo(camera_->GetPos(), camera_->GetTarget());
