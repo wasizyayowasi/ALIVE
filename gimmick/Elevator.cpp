@@ -33,6 +33,12 @@ namespace
 
 	//レバーに関するオブジェクトのY座標の補正値
 	constexpr float correction_y = 8.0f;
+
+	//エレベーターのカプセルの半径
+	constexpr float elevator_capsel_range = 200.0f;
+
+	//プレイヤーのカプセルの半径
+	constexpr float player_capsel_range = 20.0f;
 }
 
 //コンストラクタ
@@ -131,12 +137,19 @@ void Elevator::Update(Player& player)
 		//上昇ベクトルの取得
 		float upVecY = Move();
 
-		//プレイヤーの移動ベクトルに上昇ベクトルを足す
-		VECTOR playerMoveVec = player.GetStatus().moveVec;
-		playerMoveVec.y += upVecY;
+		//衝突判定を行う
+		int result = HitCheck_Capsule_Capsule(pos_, VGet(pos_.x, pos_.y + scale_.y * 2, pos_.z), elevator_capsel_range, playerPos, VGet(playerPos.x, playerPos.y, playerPos.z), player_capsel_range);
 
-		//プレイヤーの移動ベクトルを設定する
-		player.SetMoveVec(playerMoveVec);
+		//衝突していたら
+		if (result > 0)
+		{
+			//プレイヤーの移動ベクトルに上昇ベクトルを足す
+			VECTOR playerMoveVec = player.GetStatus().moveVec;
+			playerMoveVec.y += upVecY;
+
+			//プレイヤーの移動ベクトルを設定する
+			player.SetMoveVec(playerMoveVec);
+		}
 	}
 }
 
