@@ -802,6 +802,7 @@ void Player::CrankUpdate()
 		crank_.reset();
 		status_.situation.isGimmickCanBeOperated = false;
 		updateFunc_ = &Player::NormalUpdate;
+		return;
 	}
 
 	//1ƒtƒŒ[ƒ€‘O‚Ì‰ñ“]ó‘Ô
