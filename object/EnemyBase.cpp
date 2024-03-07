@@ -153,7 +153,7 @@ void EnemyBase::Draw()
 {
 	model_->Draw();
 #ifdef _DEBUG
-	Aster_->DebugDraw();
+//	Aster_->DebugDraw();
 #endif
 }
 
@@ -194,7 +194,7 @@ void EnemyBase::SearchForPlayer(const VECTOR& playerPos)
 
 	//上記の結果を度数法に変える
 	float radian = acos(innerProduct);
-	innerProduct = radian / DX_PI_F * 180.0f;
+	innerProduct = MathUtil::RadianToDegree(radian);
 
 	//視野の範囲内かつ距離がプレイヤーを視認できる距離よりも
 	//短かったらプレイヤーを検知したことにする

@@ -74,7 +74,8 @@ void Shot::Update()
 	float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(initialisePos_, pos_);
 
 	//距離サイズが一定ラインを超えると存在しているフラグをfalseにする
-	if (distanceSize > vanishing_line) {
+	if (distanceSize > vanishing_line)
+	{
 		isEnable_ = false;
 	}
 
@@ -104,7 +105,8 @@ void Shot::HitCheck(Player& player)
 	//衝突したらノックバックベクトルを作り
 	// 音を鳴らして
 	//プレイヤーのベクトルに設定し、存在するフラグをfalseにする
-	if (hit) {
+	if (hit) 
+	{
 		VECTOR nockBack = VScale(VNorm(moveVec_), knockback_rate);
 		player.BulletHitMe(nockBack);
 

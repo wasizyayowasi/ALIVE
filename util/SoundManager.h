@@ -1,7 +1,7 @@
 #pragma once
 #include <DxLib.h>
-#include<unordered_map>
-#include<string>
+#include <string>
+#include <unordered_map>
 
 class SoundManager
 {
