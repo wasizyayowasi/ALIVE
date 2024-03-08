@@ -216,6 +216,8 @@ void SceneTitle::Draw()
 	//UIの描画
 	UI_->DrawBillBoard(menuDrawPos_,UIfadeValue_, bill_board_size);
 
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
+
 	if (input.LastInputDevice()) 
 	{
 		//キー画像描画
@@ -233,10 +235,12 @@ void SceneTitle::Draw()
 		input.DrawPadGraph(static_cast<int>(InputType::Right)	, Game::screen_width / screen_split_num * right_split_num	, Game::screen_height - UI_correction_height, key_graph_size);
 		input.DrawPadGraph(static_cast<int>(InputType::Space)	, Game::screen_width / screen_split_num * decision_split_num, Game::screen_height - UI_correction_height, key_graph_size);
 	}	
-	
+
 	//キーの役割りの文字列の描画
 	DrawStringToHandle(Game::screen_width / screen_split_num * move_str_split_num, Game::screen_height - str_UI_correction_heignt, "移動", 0xffffff, fontHandle_);
 	input.DrawName(static_cast<int>(InputType::Space), Game::screen_width / screen_split_num * decision_str_split_num, Game::screen_height - str_UI_correction_heignt, 0xffffff, fontHandle_, true, true, "/");
+
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	//fadeValue_の値によって透過具合が変化するタイトルの描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, UIfadeValue_);
