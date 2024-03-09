@@ -340,11 +340,17 @@ void Player::NormalUpdate()
 		{
 			if (crank_ != nullptr)
 			{
+				//アニメーションの変更
+				ChangeAnimNo(PlayerAnimType::Walk, true, anim_change_time);
+
 				//クランクを動かす準備をする
 				updateFunc_ = &Player::GoCrankRotationPosition;
 			}
 			else if (lever_ != nullptr)
 			{
+				//アニメーションの変更
+				ChangeAnimNo(PlayerAnimType::Walk, true, anim_change_time);
+
 				//レバーを動かす準備をする
 				updateFunc_ = &Player::GoLeverPullPosition;
 			}

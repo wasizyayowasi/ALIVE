@@ -77,6 +77,7 @@ enum class ObjectType
 	Max,
 };
 
+//オブジェクトのデータ
 struct ObjectData
 {
 	ObjectType type = {};			//オブジェクトのタイプ
@@ -84,6 +85,7 @@ struct ObjectData
 	Material material = {};			//素材
 };
 
+//オブジェクトのデータ
 static ObjectData objData_[static_cast<int>(ObjectType::Max)]
 {
 	//敵
