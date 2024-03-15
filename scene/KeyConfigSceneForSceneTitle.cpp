@@ -283,7 +283,7 @@ void KeyConfigSceneForSceneTitle::Init()
 	int inputSize = static_cast<int>(input.inputNameTable_.size());
 
 	int no = 0;
-	for (auto& input : input.inputNameTable_)
+	for (const auto& input : input.inputNameTable_)
 	{
 		keyDrawPos_[input.second] = pos;
 		pos.y -= graph_gap_size;
@@ -300,7 +300,7 @@ void KeyConfigSceneForSceneTitle::Init()
 	padDrawPos_["戻る"] = file.GetUIPos("backUIPos");
 
 	int nameNo = 0;
-	for (auto& table : input.inputNameTable_)
+	for (const auto& table : input.inputNameTable_)
 	{
 		//メニューの追加
 		KeyUI_->AddMenu(namePosX, namePosY, UI_pos_x, UI_pos_y, table.second.c_str(), fontHandleSize21_);
@@ -332,7 +332,7 @@ void KeyConfigSceneForSceneTitle::End()
 	//現在のキー入力情報を外部データとして書き出す
 	input.SavekeyInfo();
 
-	for (auto& graph : keyTypeHandle_) 
+	for (const auto& graph : keyTypeHandle_)
 	{
 		DeleteGraph(graph);
 	}
@@ -420,7 +420,7 @@ void KeyConfigSceneForSceneTitle::KeyGraphDraw()
 	VECTOR pos = ExternalFile::GetInstance().GetUIPos("keyGraphPos");
 
 	int no = 0;
-	for (auto& key : input.tempMapTable_) 
+	for (const auto& key : input.tempMapTable_)
 	{
 		if (key.first == InputType::Creative) 
 		{

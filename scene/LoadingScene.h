@@ -4,7 +4,7 @@
 
 class UIItemManager;
 
-class LoadingScene : public SceneBase
+class LoadingScene final : public SceneBase
 {
 public:
 	/// <summary>

@@ -12,7 +12,7 @@ class ObjectManager;
 class ShotManager;
 class Tutorial;
 
-class GameMain : public SceneBase
+class GameMain final : public SceneBase
 {
 public:
 	/// <summary>

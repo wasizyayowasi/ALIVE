@@ -349,7 +349,7 @@ void InputState::SavekeyInfo()
 
 	//配列番号を進めるための変数(出来るなら書きたくない)
 	int i = 0;
-	for (auto& input : inputMapTable_)
+	for (const auto& input : inputMapTable_)
 	{
 		//inputMapTable_(map型)のキーをもとに値を取得する
 		//vectorのサイズを値のサイズ分用意する
@@ -433,14 +433,14 @@ void InputState::LoadKeyInfo(const std::string& filename)
 	int i = 0;
 
 	//各入力装置、idを取得
-	for (auto& keyInfo : json_["keyInfo"]) 
+	for (const auto& keyInfo : json_["keyInfo"])
 	{
 		inputInfo[i] = keyInfo;
 		i++;
 	}
 
 	//inputMapTable_に読み込んだデータを代入
-	for (auto& info : inputInfo) 
+	for (const auto& info : inputInfo)
 	{
 		//入力装置番号とキーidをそれぞれ保持するためのやつ(ひとまとめにできるなら死体)
 		std::unordered_map<int, int> keybord;
@@ -487,7 +487,7 @@ int InputState::GetInputNum(const int num, const InputCategory cat)
 
 	auto type = static_cast<InputType>(num);
 
-	for (auto& key : inputMapTable_[type]) 
+	for (const auto& key : inputMapTable_[type])
 	{
 		if (key.cat == cat)
 		{

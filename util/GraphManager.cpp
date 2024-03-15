@@ -14,7 +14,7 @@ using json = nlohmann::json;
 //デストラクタ
 GraphManager::~GraphManager()
 {
-	for (auto& graph : graphHandle_)
+	for (const auto& graph : graphHandle_)
 	{
 		DeleteGraph(graph.second);
 	}
@@ -35,11 +35,11 @@ void GraphManager::LoadGraphFilePath()
 	ifs >> json_;
 
 	//ファイル名の取得
-	for (auto& place : json_["place"])
+	for (const auto& place : json_["place"])
 	{
-		for (auto& name : place["name"])
+		for (const auto& name : place["name"])
 		{
-			for (auto& path : name)
+			for (const auto& path : name)
 			{
 				graphFilePathInfo_[place["type"]].push_back(path);
 			}
@@ -55,9 +55,9 @@ void GraphManager::LoadGraphFilePath()
 void GraphManager::Load()
 {
 	//画像をロードする
-	for (auto& place : graphFilePathInfo_)
+	for (const auto& place : graphFilePathInfo_)
 	{
-		for (auto& name : place.second)
+		for (const auto& name : place.second)
 		{
 			std::string path = "data/" + place.first + "/" + name + ".png";
 			graphHandle_[name] = Graph::LoadGraph(path.c_str());

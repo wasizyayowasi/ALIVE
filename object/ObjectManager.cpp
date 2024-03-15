@@ -53,11 +53,11 @@ void ObjectManager::MainStageObjectGenerator()
 	auto& file = ExternalFile::GetInstance();
 
 	//置物の生成
-	for (auto& objTable : file.GetLoadMainStageObjectInfo())
+	for (const auto& objTable : file.GetLoadMainStageObjectInfo())
 	{
-		for (auto& objInfo : objTable.second)
+		for (const auto& objInfo : objTable.second)
 		{
-			for (auto& data : objData_)
+			for (const auto& data : objData_)
 			{
 				if (objInfo.name == data.name)
 				{
@@ -68,11 +68,11 @@ void ObjectManager::MainStageObjectGenerator()
 	}
 
 	//ギミックの生成
-	for (auto& objTable : file.GetGimmickInfo())
+	for (const auto& objTable : file.GetGimmickInfo())
 	{
-		for (auto& objInfo : objTable.second)
+		for (const auto& objInfo : objTable.second)
 		{
-			for (auto& data : objData_)
+			for (const auto& data : objData_)
 			{
 				if (objTable.first == data.name)
 				{
@@ -90,11 +90,11 @@ void ObjectManager::OpeningStageObjectGenerator()
 	auto& file = ExternalFile::GetInstance();
 
 	//置物の生成
-	for (auto& objTable : file.GetLoadOpeningStageObjectInfo())
+	for (const auto& objTable : file.GetLoadOpeningStageObjectInfo())
 	{
-		for (auto& objInfo : objTable.second)
+		for (const auto& objInfo : objTable.second)
 		{
-			for (auto& data : objData_)
+			for (const auto& data : objData_)
 			{
 				if (objInfo.name == data.name)
 				{
@@ -112,11 +112,11 @@ void ObjectManager::EndStageObjectGenerator()
 	auto& file = ExternalFile::GetInstance();
 
 	//置物の生成
-	for (auto& objTable : file.GetLoadEndingStageObjectInfo()) 
+	for (const auto& objTable : file.GetLoadEndingStageObjectInfo())
 	{
-		for (auto& objInfo : objTable.second)
+		for (const auto& objInfo : objTable.second)
 		{
-			for (auto& data : objData_)
+			for (const auto& data : objData_)
 			{
 				if (objInfo.name == data.name)
 				{
@@ -144,7 +144,7 @@ void ObjectManager::CorpseGenerator(const int handle, const ObjectInfo& objInfo)
 void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& shotManager)
 {
 	//objects_の各要素のisEnableを取得し、無効になっていれば該当コンテナの削除
-	for (auto& list : objects_) 
+	for (auto& list : objects_)
 	{
 		list.second.remove_if([](std::shared_ptr<ObjectBase> obj) {return !obj->GetIsEnabled(); });
 	}
@@ -163,15 +163,15 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 	}
 
 	//死体とその他のオブジェクトの衝突判定を行う
-	for (auto& list : objects_) 
+	for (const auto& list : objects_)
 	{
-		for (auto& obj : list.second)
+		for (const auto& obj : list.second)
 		{
 			if (list.first == ObjectType::Corpse) 
 			{
 				continue;
 			}
-			for (auto& deadperson : objects_[ObjectType::Corpse])
+			for (const auto& deadperson : objects_[ObjectType::Corpse])
 			{
 				distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
 				if (distanceSize < not_update_range)
@@ -183,7 +183,7 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 	}
 
 	//enemyのShot
-	for (auto& obj : objects_[ObjectType::Enemy]) 
+	for (const auto& obj : objects_[ObjectType::Enemy])
 	{
 		if (std::dynamic_pointer_cast<ThrowEnemy>(obj) != nullptr)
 		{
@@ -192,9 +192,9 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 	}
 
 	//更新
-	for (auto& list : objects_)
+	for (const auto& list : objects_)
 	{
-		for (auto& obj : list.second) 
+		for (const auto& obj : list.second)
 		{
 			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(obj->GetPos(), playerPos);
 			if (distanceSize < not_update_range)
@@ -205,7 +205,7 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 	}
 
 	//敵の生成
-	for (auto& enemy : ExternalFile::GetInstance().GetEnemyInfo(playerPos))
+	for (const auto& enemy : ExternalFile::GetInstance().GetEnemyInfo(playerPos))
 	{
 		if (!usedEnemyList_[enemy.name])
 		{
@@ -214,14 +214,14 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 	}
 
 	//死体の山の生成
-	for (auto& table : ExternalFile::GetInstance().GetGimmickInfo())
+	for (const auto& table : ExternalFile::GetInstance().GetGimmickInfo())
 	{
 		if (table.first != "CorpseMountain")
 		{
 			continue;
 		}
 
-		for (auto& corpseMt : table.second) 
+		for (const auto& corpseMt : table.second)
 		{
 			if (!usedCorpseMtList_[corpseMt.name]) 
 			{
@@ -234,9 +234,9 @@ void ObjectManager::Update(Player& player,const std::shared_ptr<ShotManager>& sh
 //描画
 void ObjectManager::Draw()
 {
-	for (auto& objs : objects_) 
+	for (const auto& objs : objects_)
 	{
-		for (auto& obj : objs.second)
+		for (const auto& obj : objs.second)
 		{
 			obj->Draw();
 		}
@@ -246,9 +246,9 @@ void ObjectManager::Draw()
 //衝突判定に使用するモデルを取得する
 const std::list<std::shared_ptr<Model>>& ObjectManager::GetAllCheckCollModel()
 {
-	for (auto& obj : objects_)
+	for (const auto& obj : objects_)
 	{
-		for (auto& model : obj.second) 
+		for (const auto& model : obj.second)
 		{
 			if (model->GetIsCollCheck())
 			{
@@ -267,7 +267,7 @@ std::shared_ptr<Model> ObjectManager::GetSpecificModel(const ObjectType type)
 
 	//引数で指定されたオブジェクトのモデルポインタを上記で宣言した
 	//配列に代入する
-	for (auto& obj : objects_) 
+	for (const auto& obj : objects_)
 	{
 		//引数と違うタイプだった場合continue
 		if (obj.first != type) 
@@ -304,9 +304,9 @@ void ObjectManager::AddCheckCollModel()
 {
 	checkCollList_.clear();
 
-	for (auto& obj : objects_)
+	for (const auto& obj : objects_)
 	{
-		for (auto& objSecond : obj.second) 
+		for (const auto& objSecond : obj.second)
 		{
 			if (objSecond->AddCollModel() != nullptr) 
 			{

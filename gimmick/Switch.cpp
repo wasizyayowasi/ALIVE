@@ -75,7 +75,7 @@ void Switch::Draw()
 void Switch::DeleteHitResult()
 {
 	//Õ“ËŒ‹‰Ê‚Ìíœ
-	for (auto& result : hitDim_) 
+	for (const auto& result : hitDim_) 
 	{
 		MV1CollResultPolyDimTerminate(result);
 	}
@@ -137,7 +137,7 @@ void Switch::HitColl(const std::shared_ptr<ObjectBase>& corpse)
 bool Switch::ElevatorCollResult()
 {
 	//“–‚½‚Á‚Ä‚¢‚é”‚ğ”‚¦‚é
-	for (auto& result : hitDim_)
+	for (const auto& result : hitDim_)
 	{
 		if (result.HitNum > 0)
 		{
@@ -168,7 +168,7 @@ bool Switch::TransCollResult()
 	int hitNum = 0;
 
 	//“–‚½‚Á‚Ä‚¢‚é”‚ğ”‚¦‚é
-	for (auto& result : hitDim_) 
+	for (const auto& result : hitDim_) 
 	{
 		if (result.HitNum > 0)
 		{

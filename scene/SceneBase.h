@@ -2,7 +2,7 @@
 
 class SceneManager;
 
-class SceneBase
+class SceneBase abstract
 {
 public:
 	/// <summary>
@@ -19,22 +19,22 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	virtual void Init() = 0;
+	virtual void Init() abstract;
 
 	/// <summary>
 	/// 終了
 	/// </summary>
-	virtual void End() = 0;
+	virtual void End() abstract;
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	virtual void Update() = 0;
+	virtual void Update() abstract;
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	virtual void Draw() = 0;
+	virtual void Draw() abstract;
 protected:
 	SceneManager& manager_;			//シーンマネージャーの参照
 };

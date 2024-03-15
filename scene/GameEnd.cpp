@@ -209,7 +209,7 @@ void GameEnd::Draw()
 	boardModel_->Draw();
 
 	//Ž€‘Ìƒ‚ƒfƒ‹‚Ì•`‰æ
-	for (auto& corpse : corpseModel_) 
+	for (const auto& corpse : corpseModel_)
 	{
 		corpse.second->Draw();
 	}

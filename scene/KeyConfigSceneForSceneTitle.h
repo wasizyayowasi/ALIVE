@@ -8,7 +8,7 @@
 
 class UIItemManager;
 
-class KeyConfigSceneForSceneTitle : public SceneBase
+class KeyConfigSceneForSceneTitle final : public SceneBase
 {
 public:
 	/// <summary>

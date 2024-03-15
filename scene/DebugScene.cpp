@@ -103,7 +103,7 @@ void DebugScene::Draw()
 	int y = str_draw_pos_y;
 
 	//•¶Žš—ñ‚Ì•`‰æ
-	for (auto& scene : sceneName_) {
+	for (const auto& scene : sceneName_) {
 		DrawFormatString(0, y, 0xffffff, "%s", scene.c_str());
 		y += correction_pos_Y;
 	}

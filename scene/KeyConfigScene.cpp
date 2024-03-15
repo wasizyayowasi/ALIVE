@@ -147,7 +147,7 @@ void KeyConfigScene::Init()
 	float namePosY = static_cast<float>(Game::screen_height / screen_division_height * key_role_division_y);
 
 	int nameNo = 0;
-	for (auto& table : input.inputNameTable_) {
+	for (const auto& table : input.inputNameTable_) {
 		//ÉÅÉjÉÖÅ[ÇÃí«â¡
 		KeyUI_->AddMenu(namePosX, namePosY, UI_pos_x, UI_pos_y, table.second.c_str(), fontHandleSize21_);
 
@@ -284,7 +284,7 @@ void KeyConfigScene::KeyGraphDraw()
 	//âÊëúÇÃägèkó¶
 	float graphScale = 1.0f;
 
-	for (auto& key : input.tempMapTable_) {
+	for (const auto& key : input.tempMapTable_) {
 		
 		if (key.first == InputType::Creative) {
 			continue;

@@ -8,7 +8,7 @@ class Model;
 class Camera;
 class ObjectManager;
 
-class GameEnd : public SceneBase
+class GameEnd final : public SceneBase
 {
 public:
 	/// <summary>

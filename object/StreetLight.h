@@ -1,7 +1,7 @@
 #pragma once
 #include "OrnamentBase.h"
 
-class StreetLight : public OrnamentBase
+class StreetLight final : public OrnamentBase
 {
 public:
 	/// <summary>

@@ -18,15 +18,15 @@ EffectManager::EffectManager()
 //デストラクタ
 EffectManager::~EffectManager()
 {
-	for (auto& table : handle_)
+	for (const auto& table : handle_)
 	{
-		for (auto& graph : table.second)
+		for (const auto& graph : table.second)
 		{
 			DeleteGraph(graph);
 		}
 	}
 
-	for (auto& graph : arrayHandle_) 
+	for (const auto& graph : arrayHandle_)
 	{
 		DeleteGraph(graph);
 	}
@@ -47,9 +47,9 @@ void EffectManager::LoadDivGraphFilePath()
 	ifs >> json_;
 
 	//ファイル名の取得
-	for (auto& place : json_["place"])
+	for (const auto& place : json_["place"])
 	{
-		for (auto& info : place["info"])
+		for (const auto& info : place["info"])
 		{
 			DivGraphData data = {};
 
@@ -73,9 +73,9 @@ void EffectManager::LoadDivGraphFilePath()
 void EffectManager::Load()
 {
 	//分割画像の読み込み
-	for (auto& place : divGraphFilePathInfo_)
+	for (const auto& place : divGraphFilePathInfo_)
 	{
-		for (auto& info : place.second)
+		for (const auto& info : place.second)
 		{
 			//パスの作成
 			std::string path = "data/" + place.first + "/" + info.name + ".png";
@@ -101,7 +101,7 @@ void EffectManager::Update()
 	effect2D_.remove_if([](std::shared_ptr<Effect2D> effectPoint) {return !effectPoint->IsEnable(); });
 
 	//更新
-	for (auto& effect : effect2D_) 
+	for (const auto& effect : effect2D_)
 	{
 		effect->Update();
 	}
@@ -111,7 +111,7 @@ void EffectManager::Update()
 void EffectManager::Draw()
 {
 	//描画
-	for (auto& effect : effect2D_) 
+	for (const auto& effect : effect2D_)
 	{
 		effect->DrawBillboard();
 	}

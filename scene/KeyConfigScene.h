@@ -4,7 +4,7 @@
 
 class UIItemManager;
 
-class KeyConfigScene : public SceneBase
+class KeyConfigScene final : public SceneBase
 {
 public:
 

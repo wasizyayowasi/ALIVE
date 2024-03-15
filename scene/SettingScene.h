@@ -6,7 +6,7 @@
 class InputState;
 class UIItemManager;
 
-class SettingScene : public SceneBase
+class SettingScene final : public SceneBase
 {
 private:
 	//アップデートを行う項目

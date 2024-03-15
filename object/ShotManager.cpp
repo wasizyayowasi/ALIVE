@@ -28,7 +28,7 @@ ShotManager::~ShotManager()
 void ShotManager::Update()
 {
 	//’e‚ÌXV
-	for (auto& shot : shots_)
+	for (const auto& shot : shots_)
 	{
 		if (shot->GetIsEnabled())
 		{
@@ -44,7 +44,7 @@ void ShotManager::Update()
 void ShotManager::Draw()
 {
 	//’e‚Ì•`‰æ
-	for (auto& shot : shots_)
+	for (const auto& shot : shots_)
 	{
 		if (shot->GetIsEnabled()) 
 		{
@@ -57,7 +57,7 @@ void ShotManager::Draw()
 void ShotManager::Hit(Player& player)
 {
 	//’e‚ÆƒvƒŒƒCƒ„[‚ÌÕ“Ë”»’è
-	for (auto shot : shots_)
+	for (const auto shot : shots_)
 	{
 		if (shot->GetIsEnabled()) 
 		{

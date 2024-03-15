@@ -2,7 +2,7 @@
 #include "EnemyBase.h"
 #include <DxLib.h>
 
-class SignBoardEnemy : public EnemyBase
+class SignBoardEnemy final : public EnemyBase
 {
 public:
 	/// <summary>

@@ -3,7 +3,7 @@
 
 class InputState;
 
-class PopUpTextScene : public SceneBase
+class PopUpTextScene final : public SceneBase
 {
 public:
 	/// <summary>

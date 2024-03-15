@@ -12,7 +12,7 @@ class LightBulb;
 class UIItemManager;
 class ObjectManager;
 
-class SceneTitle : public SceneBase
+class SceneTitle final : public SceneBase
 {
 private:
 	//‘I‘ğ‚Å‚«‚éƒV[ƒ“

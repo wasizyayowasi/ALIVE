@@ -1,7 +1,7 @@
 #pragma once
 #include "EnemyBase.h"
 
-class ThrowEnemy : public EnemyBase
+class ThrowEnemy final : public EnemyBase
 {
 public:
 	/// <summary>

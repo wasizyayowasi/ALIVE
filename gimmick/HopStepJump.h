@@ -1,7 +1,7 @@
 #pragma once
 #include "GimmickBase.h"
 
-class HopStepJump : public GimmickBase
+class HopStepJump final : public GimmickBase
 {
 public:
 	/// <summary>

@@ -48,7 +48,7 @@ void CheckCollisionModel::CheckCollisionPersonalArea(const std::shared_ptr<Playe
 
 	//モデルと球の当たり判定
 	objManager->AddCheckCollModel();
-	for (auto& model : objManager->GetAllCheckCollModel()) {
+	for (const auto& model : objManager->GetAllCheckCollModel()) {
 		if (player->GetStatus().situation.isInTransit) {
 			if (player->GetDeadPersonModelPointer()->GetModelPointer() == model) {
 				continue;
@@ -82,7 +82,7 @@ void CheckCollisionModel::CheckWallAndFloor()
 
 	//前にとったモデルと球の当たり判定処理
 	int i = 0;
-	for (auto& result : hitDim_) 
+	for (const auto& result : hitDim_)
 	{
 		for (i = 0; i < result.hitDim.HitNum; i++) 
 		{
@@ -436,7 +436,7 @@ void CheckCollisionModel::FindThePolygonBelowThePlayer(const std::shared_ptr<Pla
 	std::unordered_map<Material, std::list<MV1_COLL_RESULT_POLY>> hitLine;
 
 	//オブジェクトのポリゴンを取得する
-	for (auto& model : objManager->GetAllCheckCollModel())
+	for (const auto& model : objManager->GetAllCheckCollModel())
 	{
 		//プレイヤーが何かを持ち運んでいる場合
 		//持ち運んでいるオブジェクトのポリゴンを取得しないようにしている
@@ -472,9 +472,9 @@ void CheckCollisionModel::FindThePolygonBelowThePlayer(const std::shared_ptr<Pla
 	Material materialType = Material::max;
 
 	//当たり判定の結果から一番近いポリゴンのY座標を取得する
-	for (auto& list : hitLine) 
+	for (const auto& list : hitLine)
 	{
-		for (auto& result : list.second) 
+		for (const auto& result : list.second)
 		{
 			
 			if (result.HitFlag == 0) 
@@ -514,9 +514,9 @@ void CheckCollisionModel::CheckCollCorpseModel(const std::shared_ptr<Player>& pl
 	}
 
 	//持ち運ぶ死体を取得する
-	for (auto& obj : objManager->GetSpecificObject(ObjectType::Corpse)) 
+	for (const auto& obj : objManager->GetSpecificObject(ObjectType::Corpse))
 	{
-		for (auto& hit : hitDim_)
+		for (const auto& hit : hitDim_)
 		{
 			//衝突結果が死体以外だったらcontinue
 			if (hit.model != obj->GetModelPointer())

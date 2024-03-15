@@ -20,7 +20,7 @@ SoundManager::SoundManager()
 //デストラクタ
 SoundManager::~SoundManager()
 {
-    for (auto& sound : nameAndHandleTable_) {
+    for (const auto& sound : nameAndHandleTable_) {
         DeleteSoundMem(sound.second);
     }
 

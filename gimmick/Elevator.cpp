@@ -107,14 +107,14 @@ void Elevator::Update(Player& player)
 	}
 
 	//レバーの更新
-	for (auto& lever : levers_)
+	for (const auto& lever : levers_)
 	{
 		lever->Update();
 	}
 
 	//レバーとプレイヤーの衝突判定を行い
 	//衝突していた場合プレイヤーにポインタを設定する
-	for (auto& lever : levers_)
+	for (const auto& lever : levers_)
 	{
 		if (lever->CollCheck(playerPos)) 
 		{

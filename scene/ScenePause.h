@@ -7,7 +7,7 @@
 
 class UIItemManager;
 
-class ScenePause : public SceneBase
+class ScenePause final : public SceneBase
 {
 public:
 	/// <summary>

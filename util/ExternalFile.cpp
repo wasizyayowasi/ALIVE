@@ -24,21 +24,7 @@ ExternalFile::~ExternalFile()
 //ファイルをまとめて読み込む
 void ExternalFile::LoadFile()
 {
-	//ファイルのロード
-	//LoadFileHandle(fileData_[static_cast<int>(File::End)]);
-	//LoadFileHandle(fileData_[static_cast<int>(File::Main)]);
-	//LoadFileHandle(fileData_[static_cast<int>(File::Room)]);
-	//LoadFileHandle(fileData_[static_cast<int>(File::UIpos)]);
-	//LoadFileHandle(fileData_[static_cast<int>(File::Enemy)]);
-	//LoadFileHandle(fileData_[static_cast<int>(File::Gimmick)]);
-	//LoadFileHandle(fileData_[static_cast<int>(File::StartPos)]);
-	//LoadFileHandle(fileData_[static_cast<int>(File::Tutorial)]);
-	//LoadFileHandle(fileData_[static_cast<int>(File::CameraGimmick)]);
-	//LoadFileHandle(fileData_[static_cast<int>(File::CameraPosition)]);
-	//LoadFileHandle(fileData_[static_cast<int>(File::MainSpecialObj)]);
-	//LoadFileHandle(fileData_[static_cast<int>(File::TitleSpecialObj)]);
-
-	for (auto& file : fileData_)
+	for (const auto& file : fileData_)
 	{
 		LoadFileHandle(file);
 	}
@@ -107,7 +93,7 @@ ObjectInfo ExternalFile::GetSpecifiedGimmickInfo(const std::string& name)
 
 	//引数の名前とloadGimmickInfo_の配列の中で名前が一致するものを探す
 	//一致した配列の情報を取得する
-	for (auto& specifiedObj : loadGimmickInfo_[gimmickName]) 
+	for (const auto& specifiedObj : loadGimmickInfo_[gimmickName])
 	{
 		if (specifiedObj.name != name)
 		{
@@ -128,7 +114,7 @@ ObjectInfo ExternalFile::GetCameraGimmickInfo(const VECTOR& playerPos, const std
 	float minDistance = 10000.0f;
 	ObjectInfo info = {};
 
-	for (auto& data : loadCameraGimmickInfo_[name])
+	for (const auto& data : loadCameraGimmickInfo_[name])
 	{
 		float distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(data.pos, playerPos);
 		if (minDistance > distanceSize)
@@ -145,7 +131,7 @@ ObjectInfo ExternalFile::GetTitleSpecifiedInfo(const std::string& name)
 {
 	ObjectInfo info = {};
 		
-	for (auto& obj : loadOpeningStageObjInfo_) 
+	for (const auto& obj : loadOpeningStageObjInfo_)
 	{
 		if (obj.first == name) 
 		{
@@ -161,7 +147,7 @@ ObjectInfo ExternalFile::GetMainSpecifiedInfo(const std::string& name)
 {
 	ObjectInfo info = {};
 
-	for (auto& obj : loadMainStageObjInfo_)
+	for (const auto& obj : loadMainStageObjInfo_)
 	{
 		if (obj.first == name)
 		{
@@ -177,7 +163,7 @@ ObjectInfo ExternalFile::GetEndSpecifiedInfo(const std::string& name)
 {
 	ObjectInfo info = {};
 
-	for (auto& obj : loadEndStageObjInfo_)
+	for (const auto& obj : loadEndStageObjInfo_)
 	{
 		if (obj.first == name)
 		{
@@ -195,9 +181,9 @@ std::list<ObjectInfo> ExternalFile::GetEnemyInfo(const VECTOR& playerPos)
 	float distanceSize = 0.0f;
 	float minSize = 3000.0f;
 
-	for (auto& list : loadEnemyInfo_) 
+	for (const auto& list : loadEnemyInfo_)
 	{
-		for (auto& enemy : list.second) 
+		for (const auto& enemy : list.second)
 		{
 			distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(enemy.pos, playerPos);
 			if (distanceSize < minSize) 
@@ -229,7 +215,7 @@ ObjectInfo ExternalFile::GetTutorialObjInfo(const VECTOR& pos)
 	float distanceSize = 0.0f;
 	float min = 10000.0f;
 
-	for (auto& tutorial : loadTutorialInfo_) 
+	for (const auto& tutorial : loadTutorialInfo_)
 	{
 		distanceSize = MathUtil::GetSizeOfDistanceTwoPoints(tutorial.second.pos, pos);
 		if (min > distanceSize) 
@@ -248,7 +234,7 @@ VECTOR ExternalFile::GetCameraTargetPos(const std::string& name)
 {
 	VECTOR pos = {};
 
-	for (auto& data : loadCameraPosInfo_) 
+	for (const auto& data : loadCameraPosInfo_)
 	{
 		auto& keyName = data.first;
 		if (keyName == name) 
@@ -265,7 +251,7 @@ VECTOR ExternalFile::GetUIPos(const std::string& name)
 {
 	VECTOR pos = {};
 
-	for (auto& data : loadUIInfo_) 
+	for (const auto& data : loadUIInfo_)
 	{
 		auto& keyName = data.first;
 		if (keyName == name) 

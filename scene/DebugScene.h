@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-class DebugScene : public SceneBase
+class DebugScene final : public SceneBase
 {
 public:
 	/// <summary>

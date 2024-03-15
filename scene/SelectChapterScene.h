@@ -4,7 +4,7 @@
 
 class Model;
 
-class SelectChapterScene : public SceneBase
+class SelectChapterScene final : public SceneBase
 {
 private:
 	//本のアニメーション

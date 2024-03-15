@@ -54,6 +54,9 @@ namespace {
 	//石を投げる距離
 	constexpr float throw_distance = 800.0f;
 
+	//範囲内に入ったらプレイヤーの方向を向く距離
+	constexpr float peasonal_space_range = 200.0f;
+
 	//右手のフレーム名
 	const char* const hand_framename = "mixamorig:RightHandIndex2";
 
@@ -204,6 +207,12 @@ void EnemyBase::SearchForPlayer(const VECTOR& playerPos)
 	}
 	else {
 		isDetection_ = false;
+	}
+
+	//一定距離内になったらプレイヤーを検知したことにする
+	if (distanceSize < peasonal_space_range)
+	{
+		isDetection_ = true;
 	}
 }
 

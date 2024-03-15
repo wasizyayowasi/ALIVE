@@ -303,7 +303,7 @@ void SceneTitle::UISetting()
 
 	//UImenuの作成
 	float y = UI_menu_init_pos_y;
-	for (auto& menu : menuName_)
+	for (const auto& menu : menuName_)
 	{
 		UI_->AddMenu(static_cast<float>(Game::screen_width / screen_half), static_cast<float>(Game::screen_height / screen_half) + y, UI_pos_x, UI_pos_y, menu.c_str(), fontHandle_);
 		y += UI_menu_gap_size;
@@ -326,15 +326,6 @@ void SceneTitle::LightSetting()
 	directionLightHandle_ = CreateDirLightHandle(dir);
 	directionLightDir_ = dir;
 	SetLightDifColorHandle(directionLightHandle_, direction_light_color);
-
-	//ディレクションライト角度取得
-//	dir = direction_light_diagonally_lower_right;
-//	dir = MathUtil::VECTORDegreeToRadian(dir);
-
-	//ディレクションライトの作成
-//	lightHandle_.push_back(CreateDirLightHandle(dir));
-//	lightDir_.push_back(dir);
-//	SetLightDifColorHandle(lightHandle_[1], direction_light_color);
 
 	//スポットライトの作成
 	outAngle_ = MathUtil::DegreeToRadian(spot_light_out_angle);

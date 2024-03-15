@@ -32,11 +32,11 @@ void ModelManager::LoadModelFilePath()
 	ifs >> json_;
 
 	//ファイル名の取得
-	for (auto& scene : json_["scene"])
+	for (const auto& scene : json_["scene"])
 	{
-		for (auto& name : scene["name"])
+		for (const auto& name : scene["name"])
 		{
-			for (auto& path : name)
+			for (const auto& path : name)
 			{
 				modelFilePathInfo_[scene["type"]].push_back(path);
 			}
@@ -54,9 +54,9 @@ void ModelManager::LoadModel()
 	auto& file = ExternalFile::GetInstance();
 
 	//モデルのロード
-	for (auto& type : modelFilePathInfo_)
+	for (const auto& type : modelFilePathInfo_)
 	{
-		for (auto& name : type.second)
+		for (const auto& name : type.second)
 		{
 			std::string path = "data/model/" + type.first + "/mv1/" + name + ".mv1";
 			modelHandle_[name] = MV1LoadModel(path.c_str());

@@ -80,7 +80,7 @@ void ScenePause::Init()
 	y += 40;
 #endif // _DEBUG
 
-	for (auto& menu : menuName_) 
+	for (const auto& menu : menuName_)
 	{
 		UI_->AddMenu(static_cast<float>(Game::screen_width / half), static_cast<float>(Game::screen_height / half + y), UI_pos_x, UI_pos_y, menu.c_str(), font);
 		y += UI_menu_gap_size;
