@@ -15,8 +15,8 @@ public:
 	/// インスタンス作成
 	/// </summary>
 	/// <returns>インスタンス</returns>
-	static GraphManager& GetInstance() {
-		static GraphManager instance;
+	static Command& GetInstance() {
+		static Command instance;
 		return instance;
 	}
 

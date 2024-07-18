@@ -31,7 +31,7 @@ namespace
 	constexpr int walk_anim_foot_step_frame_type_1 = 80;
 	constexpr int walk_anim_foot_step_frame_type_2 = 160;
 
-	//—‚¿‰e‚Ì’²“_”
+	//—‚¿‰e‚Ì’¸“_”
 	constexpr int shadow_vertex_num = 7;
 
 	//—‚¿‰e‚Åì‚éOŠpŒ`‚Ì”
